@@ -162,7 +162,10 @@ h3{ font-size:22px; font-weight:600; }
 /* =========================== HERO =========================== */
 .hero{
   position:relative;
-  padding:72px 0 0;
+  /* Full-screen hero: video fills the first screen (minus the sticky header) */
+  min-height:calc(100vh - 72px);
+  display:flex; flex-direction:column;
+  padding:40px 0 0;
   /* overflow visible so the floating search card can overhang the hero
      bottom edge; the decorative route is clipped by .hero-bg instead. */
   overflow:visible;
@@ -185,7 +188,10 @@ h3{ font-size:22px; font-weight:600; }
   .hero-video{ display:none; }
 }
 
-.hero-inner{ position:relative; z-index:1; max-width:760px; padding-bottom:44px; }
+.hero-inner{ position:relative; z-index:1; max-width:760px; padding-bottom:44px; margin-top:auto; }
+/* push the floating search bar to the bottom of the full-screen hero */
+.hero-search{ margin-top:auto; padding-bottom:28px; }
+.hero-search .search-bar{ margin-bottom:0; }
 .hero-inner h1{ font-size:clamp(34px,5vw,56px); margin-top:6px; }
 .hero-sub{ color:var(--ink-soft); font-size:17px; max-width:620px; margin-top:18px; }
 .hero-sub-light{ color:#F1E3D6; }
