@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // Конфиг из переменных окружения (со значениями по умолчанию для локального запуска).
@@ -60,7 +61,7 @@ func main() {
 // поэтому Allow-Credentials не нужен, а origin можно оставить "*".
 func withCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		w.Header().Set("Access-Control-Allow-Origin", resolveOrigin(r.Header.Get("Origin")))
 		w.Header().Set("Vary", "Origin")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
@@ -70,6 +71,24 @@ func withCORS(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+// resolveOrigin возвращает значение для Access-Control-Allow-Origin.
+// Поддерживает "*", список origin через запятую в ALLOWED_ORIGIN,
+// и всегда разрешает localhost/127.0.0.1 (для локальной разработки).
+func resolveOrigin(reqOrigin string) string {
+	if allowedOrigin == "*" || reqOrigin == "" {
+		return allowedOrigin
+	}
+	for _, o := range strings.Split(allowedOrigin, ",") {
+		if strings.TrimSpace(o) == reqOrigin {
+			return reqOrigin
+		}
+	}
+	if strings.HasPrefix(reqOrigin, "http://localhost:") || strings.HasPrefix(reqOrigin, "http://127.0.0.1:") {
+		return reqOrigin
+	}
+	return allowedOrigin
 }
 
 func handleHealth(w http.ResponseWriter, r *http.Request) {
