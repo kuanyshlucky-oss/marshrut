@@ -812,6 +812,50 @@ function wireSearch() {
 }
 
 /* ---------------------------------------------------------
+   HERO VIDEO — бесшовная петля (кроссфейд двух копий)
+   Два одинаковых видео сдвинуты на полдлительности; у стыка петли
+   активная копия плавно гаснет, вторая (в середине клипа) — держит
+   картинку. Резкого обрыва на loop не видно.
+   --------------------------------------------------------- */
+function wireHeroVideoLoop() {
+  const a = document.getElementById('heroVidA');
+  const b = document.getElementById('heroVidB');
+  if (!a || !b) return;
+
+  // При prefers-reduced-motion видео скрыто — петлю не запускаем
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const FADE = 0.7; // секунды перекрытия у краёв
+  let dur = 0, ticking = false;
+
+  const opacityFor = (t) => {
+    if (!dur) return 1;
+    const edge = Math.min(t, dur - t);      // расстояние до ближайшего стыка
+    return Math.max(0, Math.min(1, edge / FADE));
+  };
+
+  const tick = () => {
+    a.style.opacity = opacityFor(a.currentTime);
+    b.style.opacity = opacityFor(b.currentTime);
+    requestAnimationFrame(tick);
+  };
+  // Плавную петлю включаем только когда видео РЕАЛЬНО играет —
+  // иначе (автоплей заблокирован) остаётся обычный первый кадр (A видимо, B скрыто).
+  const startTick = () => { if (!ticking) { ticking = true; requestAnimationFrame(tick); } };
+
+  const start = () => {
+    dur = a.duration || 5;
+    try { b.currentTime = dur / 2; } catch (e) {}   // сдвиг на полклипа
+    a.play().catch(() => {});
+    b.play().catch(() => {});
+  };
+
+  a.addEventListener('playing', startTick);
+  if (a.readyState >= 1 && a.duration) start();
+  else a.addEventListener('loadedmetadata', start, { once: true });
+}
+
+/* ---------------------------------------------------------
    MOBILE NAV (burger)
    --------------------------------------------------------- */
 function wireMobileNav() {
@@ -846,4 +890,5 @@ document.addEventListener('DOMContentLoaded', () => {
   wireDirModal();
   wireQuiz();
   wireMobileNav();
+  wireHeroVideoLoop();
 });
