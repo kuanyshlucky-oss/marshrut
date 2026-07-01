@@ -1,0 +1,15 @@
+# локальная БД и данные
+/data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# собранный бинарник
+/server
+/out/
+marshrut-api
+marshrut-api.exe
+
+# окружение
+.env

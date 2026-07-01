@@ -1,0 +1,77 @@
+// Маршрут — API-сервер (Go + SQLite).
+// Заменяет localStorage-«бэкенд» фронтенда на настоящий REST API:
+// регистрация/логин (bcrypt + токен), профиль, избранные направления,
+// результаты тестов. Хранилище — SQLite (файл).
+package main
+
+import (
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+)
+
+// Конфиг из переменных окружения (со значениями по умолчанию для локального запуска).
+var (
+	allowedOrigin = env("ALLOWED_ORIGIN", "*")                       // домен фронта, напр. https://kuanyshlucky-oss.github.io
+	jwtSecret     = []byte(env("JWT_SECRET", "dev-secret-change-me")) // секрет для подписи токенов
+)
+
+func env(key, def string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return def
+}
+
+func main() {
+	port := env("PORT", "8080")
+	dbPath := env("DB_PATH", "data/marshrut.db")
+
+	// гарантируем существование папки под файл БД
+	if dir := filepath.Dir(dbPath); dir != "" && dir != "." {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			log.Fatalf("не удалось создать папку для БД: %v", err)
+		}
+	}
+
+	if err := initDB(dbPath); err != nil {
+		log.Fatalf("ошибка инициализации БД: %v", err)
+	}
+	log.Printf("БД готова: %s", dbPath)
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /api/health", handleHealth)
+	mux.HandleFunc("POST /api/auth/register", handleRegister)
+	mux.HandleFunc("POST /api/auth/login", handleLogin)
+	mux.HandleFunc("GET /api/me", auth(handleMe))
+	mux.HandleFunc("PUT /api/profile", auth(handleUpdateProfile))
+	mux.HandleFunc("POST /api/favorites/toggle", auth(handleToggleFavorite))
+	mux.HandleFunc("POST /api/results", auth(handleSaveResult))
+
+	log.Printf("Сервер слушает :%s (CORS origin: %s)", port, allowedOrigin)
+	if err := http.ListenAndServe(":"+port, withCORS(mux)); err != nil {
+		log.Fatal(err)
+	}
+}
+
+// withCORS добавляет CORS-заголовки и отвечает на preflight OPTIONS.
+// Авторизация — через заголовок Authorization: Bearer <token>, не cookie,
+// поэтому Allow-Credentials не нужен, а origin можно оставить "*".
+func withCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+		w.Header().Set("Vary", "Origin")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+func handleHealth(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+}

@@ -1,0 +1,24 @@
+# Render Blueprint для API «Маршрут».
+# Можно задеплоить вручную через дашборд Render (New → Web Service) —
+# этот файл нужен только если деплоите как Blueprint (New → Blueprint).
+services:
+  - type: web
+    name: marshrut-api
+    runtime: docker
+    rootDir: server
+    # план free — БД в контейнере эфемерна (сбрасывается при редеплое).
+    # Для сохранности данных на Render нужен платный диск (блок disk ниже)
+    # или переезд на Postgres. На Railway проще примонтировать том бесплатно.
+    plan: free
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true            # Render сгенерирует случайный секрет
+      - key: ALLOWED_ORIGIN
+        value: https://kuanyshlucky-oss.github.io
+      - key: DB_PATH
+        value: /app/data/marshrut.db
+    # --- Постоянное хранилище (платно на Render). Раскомментируйте на платном плане: ---
+    # disk:
+    #   name: data
+    #   mountPath: /app/data
+    #   sizeGB: 1
