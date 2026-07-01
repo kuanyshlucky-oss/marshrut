@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Маршрут — подготовка к магистратуре</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-header" id="siteHeader">
+  <div class="wrap header-row">
+    <a href="#" class="logo">
+      <span class="logo-mark" aria-hidden="true">⟁</span>
+      Маршрут
+    </a>
+
+    <nav class="main-nav" id="mainNav" aria-label="Главная навигация">
+      <a href="#catalog">Направления</a>
+      <a href="#how">Как поступить</a>
+      <a href="#account">Кабинет</a>
+      <a href="#about">О платформе</a>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn btn-ghost" id="btnGuestLogin" data-open-auth="login">Войти</button>
+      <button class="btn btn-primary" id="btnGuestRegister" data-open-auth="register">Начать подготовку</button>
+
+      <div class="user-chip hidden" id="userChip">
+        <span class="user-avatar" id="userAvatar">A</span>
+        <span class="user-name" id="userNameLabel">Имя</span>
+        <button class="btn btn-text" id="btnGoDashboard">Кабинет</button>
+        <button class="btn btn-text" id="btnLogout">Выйти</button>
+      </div>
+    </div>
+
+    <button class="nav-toggle" id="navToggle" aria-label="Открыть меню" aria-controls="mainNav" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true">
+      <svg viewBox="0 0 1200 600" preserveAspectRatio="none" class="route-svg">
+        <path d="M-20,520 C 220,420 280,560 480,460 S 760,260 920,300 S 1180,140 1240,80" />
+        <circle cx="-20" cy="520" r="6"></circle>
+        <circle cx="480" cy="460" r="6"></circle>
+        <circle cx="920" cy="300" r="6"></circle>
+        <circle cx="1240" cy="80" r="6"></circle>
+      </svg>
+    </div>
+    <div class="wrap hero-inner">
+      <p class="eyebrow">Подготовка к вступительным экзаменам в магистратуру</p>
+      <h1>Выберите направление<br>и подготовьтесь&nbsp;к&nbsp;поступлению</h1>
+      <p class="hero-sub">10 групп образовательных программ — от 7M01 до 7M12. По каждому направлению — 4 экзаменационных предмета: иностранный язык и ТГО для всех, плюс два профильных. Откройте предмет и получите список тем для подготовки.</p>
+    </div>
+
+    <!-- Search bar overlapping hero bottom edge -->
+    <div class="wrap">
+      <form class="filter-bar search-bar" id="searchBar">
+        <div class="filter-field filter-field-search">
+          <label for="fSearch">Поиск направления</label>
+          <input id="fSearch" type="text" placeholder="Код (7M06) или название…" autocomplete="off">
+        </div>
+        <button type="submit" class="btn btn-primary filter-submit">Найти</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ================= CATALOG (DIRECTIONS) ================= -->
+  <section class="section" id="catalog">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Каталог</p>
+        <h2>Направления магистратуры</h2>
+        <p class="result-count" id="resultCount">10 направлений</p>
+      </div>
+
+      <div class="card-grid" id="dirGrid"><!-- direction cards injected by script.js --></div>
+      <p class="empty-state hidden" id="catalogEmpty">Ничего не нашлось. Попробуйте другой запрос.</p>
+    </div>
+  </section>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section class="section section-muted" id="how">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Как устроен экзамен</p>
+        <h2>4 предмета на каждом направлении</h2>
+        <p class="section-note">Структура вступительного испытания одинакова: два общих предмета для всех и два профильных, зависящих от выбранной группы образовательных программ.</p>
+      </div>
+      <div class="step-grid">
+        <div class="step-card">
+          <span class="step-num">01</span>
+          <h3>Иностранный язык</h3>
+          <p>Английский, немецкий или французский. Общий предмет для всех направлений.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">02</span>
+          <h3>Тест готовности (ТГО)</h3>
+          <p>Проверка критического и аналитического мышления. Тоже общий для всех.</p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">03</span>
+          <h3>Профильный предмет №1</h3>
+          <p>Зависит от направления — например, программирование для 7M06 (ИКТ).</p>
+        </div>
+        <div class="step-card">
+          <span class="step-num">04</span>
+          <h3>Профильный предмет №2</h3>
+          <p>Второй профильный предмет направления. Открывается внутри карточки.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ACCOUNT / DASHBOARD ================= -->
+  <section class="section" id="account">
+    <div class="wrap">
+
+      <!-- Guest state: auth card -->
+      <div class="auth-zone" id="authZone">
+        <div class="section-head">
+          <p class="eyebrow">Личный кабинет</p>
+          <h2>Войдите, чтобы сохранять направления</h2>
+        </div>
+
+        <div class="auth-card">
+          <div class="auth-tabs">
+            <button class="auth-tab is-active" data-tab="login">Вход</button>
+            <button class="auth-tab" data-tab="register">Регистрация</button>
+          </div>
+
+          <form class="auth-form" id="loginForm" data-form="login">
+            <div class="form-row">
+              <label for="loginEmail">Email</label>
+              <input id="loginEmail" type="email" required placeholder="you@example.com">
+            </div>
+            <div class="form-row">
+              <label for="loginPassword">Пароль</label>
+              <input id="loginPassword" type="password" required placeholder="••••••••">
+            </div>
+            <p class="form-error" id="loginError"></p>
+            <button type="submit" class="btn btn-primary btn-block">Войти в кабинет</button>
+            <p class="form-hint">Демо-аккаунт: <code>demo@marshrut.ru</code> / <code>demo1234</code></p>
+          </form>
+
+          <form class="auth-form hidden" id="registerForm" data-form="register">
+            <div class="form-row">
+              <label for="regName">Имя</label>
+              <input id="regName" type="text" required placeholder="Как к вам обращаться">
+            </div>
+            <div class="form-row">
+              <label for="regEmail">Email</label>
+              <input id="regEmail" type="email" required placeholder="you@example.com">
+            </div>
+            <div class="form-row">
+              <label for="regPassword">Пароль</label>
+              <input id="regPassword" type="password" required minlength="6" placeholder="Минимум 6 символов">
+            </div>
+            <p class="form-error" id="registerError"></p>
+            <button type="submit" class="btn btn-primary btn-block">Создать аккаунт</button>
+          </form>
+
+          <p class="auth-disclaimer">Это макет: данные хранятся локально в браузере (имитация бэкенда), а не на сервере.</p>
+        </div>
+      </div>
+
+      <!-- Logged-in state: dashboard -->
+      <div class="dashboard hidden" id="dashboard">
+        <div class="section-head">
+          <p class="eyebrow">Личный кабинет</p>
+          <h2>С возвращением, <span id="dashName">Имя</span></h2>
+        </div>
+
+        <div class="dash-stack">
+          <div class="dash-grid">
+            <!-- Личные данные -->
+            <div class="dash-card">
+              <h3>Личные данные</h3>
+              <form class="profile-form" id="profileForm">
+                <div class="form-row">
+                  <label for="pfFullName">ФИО</label>
+                  <input id="pfFullName" type="text" placeholder="Фамилия Имя Отчество" autocomplete="name">
+                </div>
+                <div class="form-row">
+                  <label for="pfEmail">Email</label>
+                  <input id="pfEmail" type="email" readonly>
+                </div>
+                <div class="form-row">
+                  <label for="pfPhone">Телефон</label>
+                  <input id="pfPhone" type="tel" placeholder="+7 ___ ___ __ __" autocomplete="tel">
+                </div>
+                <div class="form-row">
+                  <label for="pfEducation">Образование</label>
+                  <input id="pfEducation" type="text" placeholder="Вуз, специальность, степень">
+                </div>
+                <div class="form-row">
+                  <label for="pfCity">Город</label>
+                  <select id="pfCity">
+                    <option value="">Не указан</option>
+                    <option value="Астана">Астана</option>
+                    <option value="Алматы">Алматы</option>
+                    <option value="Шымкент">Шымкент</option>
+                    <option value="Караганда">Караганда</option>
+                    <option value="Актобе">Актобе</option>
+                    <option value="Тараз">Тараз</option>
+                    <option value="Павлодар">Павлодар</option>
+                    <option value="Усть-Каменогорск">Усть-Каменогорск</option>
+                    <option value="Семей">Семей</option>
+                    <option value="Атырау">Атырау</option>
+                    <option value="Костанай">Костанай</option>
+                    <option value="Кызылорда">Кызылорда</option>
+                    <option value="Уральск">Уральск</option>
+                    <option value="Петропавловск">Петропавловск</option>
+                    <option value="Актау">Актау</option>
+                    <option value="Темиртау">Темиртау</option>
+                    <option value="Туркестан">Туркестан</option>
+                    <option value="Кокшетау">Кокшетау</option>
+                    <option value="Талдыкорган">Талдыкорган</option>
+                    <option value="Экибастуз">Экибастуз</option>
+                    <option value="Другой город">Другой город</option>
+                  </select>
+                </div>
+                <div class="profile-actions">
+                  <button type="submit" class="btn btn-primary">Сохранить данные</button>
+                  <span class="form-saved hidden" id="profileSaved">Сохранено ✓</span>
+                </div>
+              </form>
+            </div>
+
+            <!-- Результаты тестов -->
+            <div class="dash-card">
+              <h3>Результаты тестов</h3>
+              <div class="result-summary hidden" id="resultSummary"></div>
+              <table class="results-table" id="resultsTable">
+                <thead>
+                  <tr><th>Направление</th><th>Результат</th><th>Статус</th><th>Дата</th></tr>
+                </thead>
+                <tbody id="resultsBody"></tbody>
+              </table>
+              <p class="empty-state-sm hidden" id="dashResultsEmpty">Вы ещё не проходили тесты. Откройте направление в каталоге и нажмите «Пройти тест по направлению».</p>
+            </div>
+          </div>
+
+          <!-- Избранные направления -->
+          <div class="dash-card dash-card-wide">
+            <h3>Избранные направления</h3>
+            <ul class="dash-favorites" id="dashFavorites"></ul>
+            <p class="empty-state-sm hidden" id="dashFavEmpty">Вы пока не отметили ни одного направления — нажмите ☆ на карточке в каталоге выше.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= ABOUT / CONTACT ================= -->
+  <section class="section contact-band" id="about">
+    <div class="wrap contact-inner">
+      <div>
+        <p class="eyebrow eyebrow-light">Остались вопросы?</p>
+        <h2>Поможем выбрать направление и&nbsp;предметы</h2>
+        <p class="hero-sub hero-sub-light">Команда кураторов на связи каждый будний день — подскажем по структуре экзамена, профильным предметам и темам подготовки.</p>
+      </div>
+      <a href="#catalog" class="btn btn-light">Выбрать направление</a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo logo-footer"><span class="logo-mark" aria-hidden="true">⟁</span>Маршрут</a>
+      <p>Платформа подготовки к вступительным экзаменам в магистратуру по группам образовательных программ.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Платформа</h4>
+      <a href="#catalog">Направления</a>
+      <a href="#how">Как поступить</a>
+      <a href="#about">О платформе</a>
+    </div>
+    <div class="footer-col">
+      <h4>Аккаунт</h4>
+      <a href="#account" data-open-auth="login">Вход</a>
+      <a href="#account" data-open-auth="register">Регистрация</a>
+      <a href="#account">Личный кабинет</a>
+    </div>
+    <div class="footer-col">
+      <h4>Поддержка</h4>
+      <a href="#about">Связаться с нами</a>
+      <a href="#about">Частые вопросы</a>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span>© 2026 Маршрут. Учебный макет.</span>
+    <span>Сделано как фронтенд-демо с локальной имитацией бэкенда.</span>
+  </div>
+</footer>
+
+<!-- ================= QUIZ MODAL ================= -->
+<div class="modal-overlay hidden" id="quizModal">
+  <div class="modal quiz-modal">
+    <button class="modal-close" id="quizClose" aria-label="Закрыть">×</button>
+
+    <div id="quizIntro" class="quiz-intro">
+      <p class="eyebrow" id="quizCourseLabel">Направление</p>
+      <h3 id="quizTitle">Название теста</h3>
+      <p id="quizDesc">Описание теста.</p>
+      <ul class="quiz-meta">
+        <li><strong id="quizQCount">4</strong> вопроса</li>
+        <li><strong>6:00</strong> мин на тест</li>
+        <li>Проходной балл — <strong>60%</strong></li>
+      </ul>
+      <button class="btn btn-primary" id="quizStartBtn">Начать тест</button>
+    </div>
+
+    <div id="quizRun" class="quiz-run hidden">
+      <div class="quiz-progress-row">
+        <div class="quiz-dots" id="quizDots"></div>
+        <div class="quiz-timer" id="quizTimer">06:00</div>
+      </div>
+      <p class="quiz-question-num" id="quizQNum">Вопрос 1 из 4</p>
+      <h3 class="quiz-question" id="quizQuestion">Текст вопроса</h3>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-nav">
+        <button class="btn btn-ghost" id="quizPrevBtn">Назад</button>
+        <button class="btn btn-primary" id="quizNextBtn">Далее</button>
+      </div>
+    </div>
+
+    <div id="quizResult" class="quiz-result hidden">
+      <div class="stamp" id="quizStamp">
+        <span class="stamp-status" id="stampStatus">Сдано</span>
+        <span class="stamp-score" id="stampScore">3/4</span>
+      </div>
+      <h3 id="resultHeadline">Тест пройден</h3>
+      <p id="resultText">Вы ответили правильно на 3 из 4 вопросов.</p>
+      <div class="quiz-nav">
+        <button class="btn btn-ghost" id="quizRetryBtn">Пройти ещё раз</button>
+        <button class="btn btn-primary" id="quizDashBtn">В личный кабинет</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= DIRECTION → SUBJECTS → TOPICS MODAL ================= -->
+<div class="modal-overlay hidden" id="dirModal">
+  <div class="modal">
+    <button class="modal-close" id="dirClose" aria-label="Закрыть">×</button>
+    <div id="dirModalBody"><!-- injected by script.js --></div>
+  </div>
+</div>
+
+<!-- ================= TOAST ================= -->
+<div class="modal-overlay hidden" id="toastOverlay">
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
