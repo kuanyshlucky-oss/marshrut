@@ -307,49 +307,38 @@
   </div>
 </footer>
 
-<!-- ================= QUIZ MODAL ================= -->
-<div class="modal-overlay hidden" id="quizModal">
-  <div class="modal quiz-modal">
-    <button class="modal-close" id="quizClose" aria-label="Закрыть">×</button>
+<!-- ================= TEST PAGE (full-screen) ================= -->
+<div class="test-page hidden" id="testPage">
+  <button class="test-exit" id="testExit" aria-label="Выйти из теста">×</button>
+  <div class="test-page-inner">
 
-    <div id="quizIntro" class="quiz-intro">
-      <p class="eyebrow" id="quizCourseLabel">Направление</p>
-      <h3 id="quizTitle">Название теста</h3>
-      <p id="quizDesc">Описание теста.</p>
-      <ul class="quiz-meta">
-        <li><strong id="quizQCount">4</strong> вопроса</li>
-        <li><strong>6:00</strong> мин на тест</li>
-        <li>Проходной балл — <strong>60%</strong></li>
-      </ul>
-      <button class="btn btn-primary" id="quizStartBtn">Начать тест</button>
-    </div>
+    <div id="testRun">
+      <h2 class="test-title" id="testTitle">Тест</h2>
+      <p class="test-sub" id="testSub">Направление</p>
 
-    <div id="quizRun" class="quiz-run hidden">
-      <div class="quiz-progress-row">
-        <div class="quiz-dots" id="quizDots"></div>
-        <div class="quiz-timer" id="quizTimer">06:00</div>
-      </div>
-      <p class="quiz-question-num" id="quizQNum">Вопрос 1 из 4</p>
-      <h3 class="quiz-question" id="quizQuestion">Текст вопроса</h3>
-      <div class="quiz-options" id="quizOptions"></div>
-      <div class="quiz-nav">
-        <button class="btn btn-ghost" id="quizPrevBtn">Назад</button>
-        <button class="btn btn-primary" id="quizNextBtn">Далее</button>
+      <div class="test-qwrap">
+        <p class="test-question"><span class="test-qnum" id="testQNum">1.</span> <span id="testQuestion">Текст вопроса</span></p>
+        <div class="test-options" id="testOptions"></div>
+        <div class="test-foot">
+          <span class="test-hint">Нажмите <b>ENTER</b></span>
+          <button class="btn test-next" id="testNext">Далее</button>
+        </div>
       </div>
     </div>
 
-    <div id="quizResult" class="quiz-result hidden">
+    <div id="testResult" class="test-result hidden">
       <div class="stamp" id="quizStamp">
         <span class="stamp-status" id="stampStatus">Сдано</span>
         <span class="stamp-score" id="stampScore">3/4</span>
       </div>
       <h3 id="resultHeadline">Тест пройден</h3>
       <p id="resultText">Вы ответили правильно на 3 из 4 вопросов.</p>
-      <div class="quiz-nav">
+      <div class="test-result-nav">
         <button class="btn btn-ghost" id="quizRetryBtn">Пройти ещё раз</button>
         <button class="btn btn-primary" id="quizDashBtn">В личный кабинет</button>
       </div>
     </div>
+
   </div>
 </div>
 

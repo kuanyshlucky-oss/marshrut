@@ -226,9 +226,9 @@ function renderKTQuestion() {
     </div>
     <p class="quiz-question-num">Вопрос ${s.idx + 1} из ${s.flat.length}</p>
     <div class="kt-progress"><div class="kt-progress-bar" style="width:${((s.idx + 1) / s.flat.length) * 100}%"></div></div>
-    <h3 class="quiz-question">${item.q}</h3>
+    <h3 class="quiz-question">${esc(item.q)}</h3>
     <div class="quiz-options" id="ktOptions">
-      ${item.options.map((o, i) => `<button class="quiz-option ${s.answers[s.idx] === i ? 'is-selected' : ''}" data-opt="${i}">${o}</button>`).join('')}
+      ${item.options.map((o, i) => `<button class="quiz-option ${s.answers[s.idx] === i ? 'is-selected' : ''}" data-opt="${i}">${esc(o)}</button>`).join('')}
     </div>
     <div class="quiz-nav">
       <button class="btn btn-ghost" id="ktPrev" ${s.idx === 0 ? 'disabled' : ''}>Назад</button>

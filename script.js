@@ -448,87 +448,52 @@ function startQuiz(code) {
   const d = findDirection(code);
   activeQuiz = { code, qIndex: 0, answers: new Array(test.questions.length).fill(null) };
 
-  document.getElementById('quizCourseLabel').textContent = `${d.code} · ${d.name}`;
-  document.getElementById('quizTitle').textContent = test.title;
-  document.getElementById('quizDesc').textContent = `Проверьте свои знания по профильным предметам направления «${d.name}». Тест займёт около 5 минут.`;
-  document.getElementById('quizQCount').textContent = test.questions.length;
-
-  // открываем тест поверх модалки направления
+  document.getElementById('testTitle').textContent = test.title;
+  document.getElementById('testSub').textContent = `${d.code} · ${d.name}`;
+  document.getElementById('testRun').classList.remove('hidden');
+  document.getElementById('testResult').classList.add('hidden');
   document.getElementById('dirModal').classList.add('hidden');
-  showQuizStep('intro');
-  document.getElementById('quizModal').classList.remove('hidden');
-}
 
-function showQuizStep(step) {
-  document.getElementById('quizIntro').classList.toggle('hidden', step !== 'intro');
-  document.getElementById('quizRun').classList.toggle('hidden', step !== 'run');
-  document.getElementById('quizResult').classList.toggle('hidden', step !== 'result');
+  renderQuizQuestion();
+  document.getElementById('testPage').classList.remove('hidden');
+  document.body.classList.add('test-open');
+  window.scrollTo(0, 0);
 }
 
 function closeQuiz() {
-  document.getElementById('quizModal').classList.add('hidden');
-  stopQuizTimer();
+  document.getElementById('testPage').classList.add('hidden');
+  document.body.classList.remove('test-open');
   activeQuiz = null;
 }
 
-function beginQuizRun() {
-  const test = DIRECTION_TESTS[activeQuiz.code];
-  activeQuiz.qIndex = 0;
-  activeQuiz.answers = new Array(test.questions.length).fill(null);
-  activeQuiz.secondsLeft = 360;
-  renderQuizDots();
-  renderQuizQuestion();
-  showQuizStep('run');
-  startQuizTimer();
-}
-
-function renderQuizDots() {
-  const test = DIRECTION_TESTS[activeQuiz.code];
-  const dots = document.getElementById('quizDots');
-  dots.innerHTML = test.questions.map((_, i) => {
-    let cls = '';
-    if (i === activeQuiz.qIndex) cls = 'is-active';
-    else if (activeQuiz.answers[i] !== null) cls = 'is-done';
-    return `<span class="${cls}"></span>`;
-  }).join('');
+// экранирование HTML — варианты могут содержать <a>, <link> и т.п.
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 }
 
 function renderQuizQuestion() {
   const test = DIRECTION_TESTS[activeQuiz.code];
   const q = test.questions[activeQuiz.qIndex];
-  document.getElementById('quizQNum').textContent = `Вопрос ${activeQuiz.qIndex + 1} из ${test.questions.length}`;
-  document.getElementById('quizQuestion').textContent = q.q;
+  document.getElementById('testQNum').textContent = `${activeQuiz.qIndex + 1}.`;
+  document.getElementById('testQuestion').textContent = q.q;
 
-  const optionsEl = document.getElementById('quizOptions');
+  const optionsEl = document.getElementById('testOptions');
   optionsEl.innerHTML = q.options.map((opt, i) => `
-    <button class="quiz-option ${activeQuiz.answers[activeQuiz.qIndex] === i ? 'is-selected' : ''}" data-option="${i}">${opt}</button>
-  `).join('');
+    <button class="test-opt ${activeQuiz.answers[activeQuiz.qIndex] === i ? 'is-selected' : ''}" data-option="${i}">
+      <span class="test-radio" aria-hidden="true"></span><span class="test-opt-label">${esc(opt)}</span>
+    </button>`).join('');
   optionsEl.querySelectorAll('[data-option]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      activeQuiz.answers[activeQuiz.qIndex] = Number(btn.dataset.option);
-      renderQuizQuestion();
-      renderQuizDots();
-    });
+    btn.addEventListener('click', () => { activeQuiz.answers[activeQuiz.qIndex] = Number(btn.dataset.option); renderQuizQuestion(); });
   });
 
-  document.getElementById('quizPrevBtn').disabled = activeQuiz.qIndex === 0;
-  document.getElementById('quizNextBtn').textContent =
-    activeQuiz.qIndex === test.questions.length - 1 ? 'Завершить тест' : 'Далее';
+  document.getElementById('testNext').textContent =
+    activeQuiz.qIndex === test.questions.length - 1 ? 'Завершить' : 'Далее';
 }
 
-function startQuizTimer() {
-  updateTimerLabel();
-  activeQuiz.timerHandle = setInterval(() => {
-    activeQuiz.secondsLeft--;
-    updateTimerLabel();
-    if (activeQuiz.secondsLeft <= 0) { stopQuizTimer(); finishQuiz(); }
-  }, 1000);
-}
-function stopQuizTimer() { if (activeQuiz && activeQuiz.timerHandle) clearInterval(activeQuiz.timerHandle); }
-function updateTimerLabel() {
-  const m = Math.floor(activeQuiz.secondsLeft / 60).toString().padStart(2, '0');
-  const s = (activeQuiz.secondsLeft % 60).toString().padStart(2, '0');
-  document.getElementById('quizTimer').textContent = `${m}:${s}`;
+function quizNext() {
+  const test = DIRECTION_TESTS[activeQuiz.code];
+  if (activeQuiz.qIndex < test.questions.length - 1) { activeQuiz.qIndex++; renderQuizQuestion(); }
+  else finishQuiz();
 }
 
 function finishQuiz() {
@@ -536,15 +501,11 @@ function finishQuiz() {
   let score = 0;
   test.questions.forEach((q, i) => { if (activeQuiz.answers[i] === q.correct) score++; });
   const total = test.questions.length;
-  const pct = Math.round((score / total) * 100);
-  const passed = pct >= 60;
+  const passed = Math.round((score / total) * 100) >= 60;
 
   const user = API.getCurrentUser();
   if (user) {
-    // сохранение на сервере — асинхронно; кабинет обновим по готовности
-    API.saveResult(activeQuiz.code, score, total)
-      .then(() => renderDashboard())
-      .catch((e) => showToast(e.message));
+    API.saveResult(activeQuiz.code, score, total).then(() => renderDashboard()).catch((e) => showToast(e.message));
   }
 
   document.getElementById('quizStamp').classList.toggle('is-fail', !passed);
@@ -552,30 +513,35 @@ function finishQuiz() {
   document.getElementById('stampScore').textContent = `${score}/${total}`;
   document.getElementById('resultHeadline').textContent = passed ? 'Тест пройден' : 'Пока не получилось';
   document.getElementById('resultText').textContent = user
-    ? `Вы ответили правильно на ${score} из ${total} вопросов. Результат сохранён в личном кабинете.`
-    : `Вы ответили правильно на ${score} из ${total} вопросов. Войдите в аккаунт, чтобы сохранять результаты тестов.`;
+    ? `Правильно ${score} из ${total}. Результат сохранён в кабинете.`
+    : `Правильно ${score} из ${total}. Войдите в аккаунт, чтобы сохранять результаты.`;
 
-  showQuizStep('result');
+  document.getElementById('testRun').classList.add('hidden');
+  document.getElementById('testResult').classList.remove('hidden');
 }
 
 function wireQuiz() {
-  document.getElementById('quizClose').addEventListener('click', closeQuiz);
-  document.getElementById('quizModal').addEventListener('click', (e) => { if (e.target.id === 'quizModal') closeQuiz(); });
-  document.getElementById('quizStartBtn').addEventListener('click', beginQuizRun);
-
-  document.getElementById('quizPrevBtn').addEventListener('click', () => {
-    if (activeQuiz.qIndex > 0) { activeQuiz.qIndex--; renderQuizQuestion(); renderQuizDots(); }
-  });
-  document.getElementById('quizNextBtn').addEventListener('click', () => {
-    const test = DIRECTION_TESTS[activeQuiz.code];
-    if (activeQuiz.qIndex < test.questions.length - 1) { activeQuiz.qIndex++; renderQuizQuestion(); renderQuizDots(); }
-    else { stopQuizTimer(); finishQuiz(); }
-  });
-
-  document.getElementById('quizRetryBtn').addEventListener('click', beginQuizRun);
+  document.getElementById('testExit').addEventListener('click', closeQuiz);
+  document.getElementById('testNext').addEventListener('click', quizNext);
+  document.getElementById('quizRetryBtn').addEventListener('click', () => startQuiz(activeQuiz.code));
   document.getElementById('quizDashBtn').addEventListener('click', () => {
     closeQuiz();
     document.getElementById('account').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // Клавиатура: ENTER = далее, цифры 1-9 = выбор варианта, ESC = выход
+  document.addEventListener('keydown', (e) => {
+    const page = document.getElementById('testPage');
+    if (page.classList.contains('hidden')) return;
+    const onResult = !document.getElementById('testResult').classList.contains('hidden');
+    if (e.key === 'Escape') { closeQuiz(); return; }
+    if (onResult) return;
+    if (e.key === 'Enter') { e.preventDefault(); quizNext(); return; }
+    if (/^[1-9]$/.test(e.key)) {
+      const btns = document.querySelectorAll('#testOptions [data-option]');
+      const b = btns[Number(e.key) - 1];
+      if (b) b.click();
+    }
   });
 }
 
