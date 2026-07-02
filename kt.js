@@ -209,7 +209,7 @@ function openKT(code) {
 function beginKT(code, typeId, lang) {
   const a = assembleKT(typeId, code, lang);
   const flat = [];
-  a.blocks.forEach(b => b.questions.forEach(q => flat.push({ q: q.q, options: q.options, correct: q.correct, block: b.id })));
+  a.blocks.forEach(b => b.questions.forEach(q => flat.push({ q: q.q, options: q.options, correct: q.correct, why: q.why, block: b.id })));
   activeKT = { code, typeId, lang, flat, answers: new Array(flat.length).fill(null), idx: 0, secondsLeft: KT_TYPES[typeId].timeMin * 60, timer: null };
   renderKTQuestion();
   startKTTimer();
@@ -297,11 +297,13 @@ function finishKT() {
       </tbody>
     </table>
     ${res.reason ? `<p class="kt-reason">${res.reason}</p>` : ''}
-    <div class="quiz-nav">
+    <div class="quiz-nav kt-result-nav">
+      <button class="btn btn-ghost" id="ktReviewBtn">Работа над ошибками</button>
       <button class="btn btn-ghost" id="ktRetry">Пройти ещё раз</button>
       <button class="btn btn-primary" id="ktClose2">Закрыть</button>
     </div>
   `;
+  document.getElementById('ktReviewBtn').addEventListener('click', openKTReview);
   document.getElementById('ktRetry').addEventListener('click', () => openKT(s.code));
   document.getElementById('ktClose2').addEventListener('click', closeKT);
 }
@@ -310,6 +312,38 @@ function closeKT() {
   stopKTTimer();
   document.getElementById('ktModal').classList.add('hidden');
   activeKT = null;
+}
+
+// Работа над ошибками для КТ — полноэкранная страница разбора (#reviewPage).
+function openKTReview() {
+  const s = activeKT;
+  const d = findDirection(s.code);
+  document.getElementById('reviewSub').textContent = `${d.code} · КТ · ${KT_TYPES[s.typeId].label} · ${KT_LANGUAGES[s.lang]}`;
+  document.getElementById('reviewList').innerHTML = s.flat.map((item, i) => {
+    const ua = item ? s.answers[i] : null;
+    const wrong = ua !== item.correct;
+    const opts = item.options.map((o, oi) => {
+      let cls = 'rev-opt', tag = '';
+      if (oi === item.correct) { cls += ' correct'; tag = oi === ua ? '<span class="rev-tag ok">Ваш ответ ✓</span>' : '<span class="rev-tag ok">Правильный ответ</span>'; }
+      else if (oi === ua) { cls += ' wrong'; tag = '<span class="rev-tag bad">Ваш ответ ✗</span>'; }
+      return `<div class="${cls}"><span>${esc(o)}</span>${tag}</div>`;
+    }).join('');
+    const why = item.why
+      ? `<div class="rev-why"><b>Почему:</b> ${esc(item.why)}</div>`
+      : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(item.options[item.correct])}</div>`;
+    return `
+      <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
+        <span class="rev-block">${KT_BLOCK_LABELS[item.block]}</span>
+        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${esc(item.q)}</p>
+        <div class="rev-opts">${opts}</div>
+        ${why}
+      </div>`;
+  }).join('');
+
+  document.getElementById('ktModal').classList.add('hidden');
+  document.getElementById('reviewPage').classList.remove('hidden');
+  document.body.classList.add('test-open');
+  window.scrollTo(0, 0);
 }
 
 function wireKT() {

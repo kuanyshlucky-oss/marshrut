@@ -674,6 +674,7 @@ body.test-open{ overflow:hidden; }
   border-radius:14px; padding:20px 22px; margin-bottom:16px;
 }
 .rev-item.is-wrong{ border-color:rgba(224,133,133,.5); }
+.rev-block{ display:inline-block; font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent-soft); background:rgba(217,105,44,.16); padding:3px 9px; border-radius:999px; margin-bottom:10px; }
 .rev-q{ font-size:16px; font-weight:500; color:#fff; margin:0 0 14px; line-height:1.4; }
 .rev-opts{ display:flex; flex-direction:column; gap:8px; }
 .rev-opt{
