@@ -403,10 +403,12 @@ function renderDirectionView(code) {
       `).join('')}
     </ul>
     <button class="btn btn-primary btn-block" id="dirTestBtn">Пройти тест по направлению</button>
+    <button class="btn btn-ghost btn-block" id="dirKTBtn" style="margin-top:10px">Симуляция КТ (полный формат)</button>
   `;
 
   body.querySelectorAll('[data-open-subject]').forEach(btn => btn.addEventListener('click', () => renderSubjectView(code, btn.dataset.openSubject)));
   document.getElementById('dirTestBtn').addEventListener('click', () => startQuiz(code));
+  document.getElementById('dirKTBtn').addEventListener('click', () => { closeDirModal(); window.openKT(code); });
 }
 
 function renderSubjectView(code, subjectId) {

@@ -604,6 +604,41 @@ h3{ font-size:22px; font-weight:600; }
 .rs-value{ font-family:var(--font-mono); font-size:20px; font-weight:600; color:var(--ink); }
 .rs-dir{ flex-basis:100%; font-size:12px; color:var(--ink-soft); }
 
+/* =========================== КТ (симуляция) =========================== */
+.kt-field-label{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin:18px 0 8px; }
+.kt-choices{ display:flex; flex-direction:column; gap:8px; }
+.kt-choices:has(.sm){ flex-direction:row; flex-wrap:wrap; }
+.kt-choice{
+  text-align:left; border:1px solid var(--line); border-radius:var(--radius-m);
+  background:var(--surface); padding:12px 14px; display:flex; flex-direction:column; gap:3px;
+  transition:border-color .15s ease, background .15s ease;
+}
+.kt-choice.sm{ flex:1 1 auto; text-align:center; padding:10px 14px; font-size:14px; }
+.kt-choice:hover{ border-color:var(--accent); }
+.kt-choice.is-active{ border-color:var(--accent); background:var(--accent-soft); }
+.kt-choice-title{ font-weight:600; font-size:15px; }
+.kt-choice-sub{ font-size:12px; color:var(--ink-soft); }
+
+.kt-block-tag{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent-ink); background:var(--accent-soft); padding:4px 10px; border-radius:999px; }
+.kt-progress{ height:5px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin:6px 0 16px; }
+.kt-progress-bar{ height:100%; background:var(--accent); transition:width .2s ease; }
+
+.kt-stamp{
+  width:130px; height:130px; margin:6px auto 18px; border-radius:50%;
+  border:3px dashed var(--teal); color:var(--teal);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  transform:rotate(-6deg); font-family:var(--font-mono);
+}
+.kt-stamp.is-fail{ border-color:var(--danger); color:var(--danger); }
+.kt-stamp-status{ font-size:12px; text-transform:uppercase; letter-spacing:.06em; }
+.kt-stamp-score{ font-size:26px; font-weight:700; margin-top:4px; }
+
+.kt-result-table{ width:100%; border-collapse:collapse; font-size:13px; margin:18px 0 8px; }
+.kt-result-table th{ text-align:left; font-family:var(--font-mono); text-transform:uppercase; font-size:10px; color:var(--ink-soft); padding:6px; border-bottom:1px solid var(--line); }
+.kt-result-table td{ padding:9px 6px; border-bottom:1px solid var(--line); }
+.kt-result-table .kt-total-row td{ font-weight:600; border-top:2px solid var(--line); }
+.kt-reason{ font-size:13px; color:var(--danger); background:var(--danger-soft); border-radius:var(--radius-s); padding:10px 12px; margin:6px 0 14px; }
+
 /* =========================== RESPONSIVE =========================== */
 @media (max-width: 880px){
   .nav-toggle{ display:flex; }
