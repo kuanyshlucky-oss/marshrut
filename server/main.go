@@ -16,6 +16,7 @@ import (
 var (
 	allowedOrigin = env("ALLOWED_ORIGIN", "*")                       // домен фронта, напр. https://kuanyshlucky-oss.github.io
 	jwtSecret     = []byte(env("JWT_SECRET", "dev-secret-change-me")) // секрет для подписи токенов
+	adminKey      = env("ADMIN_KEY", "")                             // ключ для /api/admin/users (пусто = выключено)
 )
 
 func env(key, def string) string {
@@ -49,6 +50,7 @@ func main() {
 	mux.HandleFunc("PUT /api/profile", auth(handleUpdateProfile))
 	mux.HandleFunc("POST /api/favorites/toggle", auth(handleToggleFavorite))
 	mux.HandleFunc("POST /api/results", auth(handleSaveResult))
+	mux.HandleFunc("GET /api/admin/users", handleAdminUsers)
 
 	log.Printf("Сервер слушает :%s (CORS origin: %s)", port, allowedOrigin)
 	if err := http.ListenAndServe(":"+port, withCORS(mux)); err != nil {

@@ -162,6 +162,54 @@ func toggleFavorite(id int64, code string) error {
 	return err
 }
 
+// AdminUser — безопасное представление пользователя для админ-списка (без пароля).
+type AdminUser struct {
+	ID        int64    `json:"id"`
+	Name      string   `json:"name"`
+	Email     string   `json:"email"`
+	Phone     string   `json:"phone"`
+	Education string   `json:"education"`
+	City      string   `json:"city"`
+	Favorites []string `json:"favorites"`
+	Results   int      `json:"results"`
+	CreatedAt string   `json:"created_at"`
+}
+
+func listUsers() ([]AdminUser, error) {
+	rows, err := db.Query(`SELECT id, name, email, phone, education, city, created_at FROM users ORDER BY id`)
+	if err != nil {
+		return nil, err
+	}
+	var out []AdminUser
+	for rows.Next() {
+		var u AdminUser
+		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Education, &u.City, &u.CreatedAt); err != nil {
+			rows.Close()
+			return nil, err
+		}
+		u.Favorites = []string{}
+		out = append(out, u)
+	}
+	rows.Close()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	// дозагружаем избранное и число результатов по каждому
+	for i := range out {
+		fr, err := db.Query(`SELECT code FROM favorites WHERE user_id = ? ORDER BY rowid`, out[i].ID)
+		if err == nil {
+			for fr.Next() {
+				var c string
+				fr.Scan(&c)
+				out[i].Favorites = append(out[i].Favorites, c)
+			}
+			fr.Close()
+		}
+		db.QueryRow(`SELECT COUNT(*) FROM results WHERE user_id = ?`, out[i].ID).Scan(&out[i].Results)
+	}
+	return out, nil
+}
+
 func addResult(id int64, code string, score, total int) error {
 	_, err := db.Exec(
 		`INSERT INTO results(user_id, code, score, total, date) VALUES(?, ?, ?, ?, ?)`,

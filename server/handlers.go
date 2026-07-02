@@ -123,6 +123,25 @@ func handleToggleFavorite(w http.ResponseWriter, r *http.Request) {
 	handleMe(w, r)
 }
 
+// GET /api/admin/users?key=... — список зарегистрированных (без паролей).
+// Отключён, если не задан ADMIN_KEY.
+func handleAdminUsers(w http.ResponseWriter, r *http.Request) {
+	if adminKey == "" {
+		writeError(w, http.StatusForbidden, "Админ-доступ отключён: не задан ADMIN_KEY")
+		return
+	}
+	if r.URL.Query().Get("key") != adminKey {
+		writeError(w, http.StatusUnauthorized, "Неверный ключ")
+		return
+	}
+	users, err := listUsers()
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "Не удалось прочитать список пользователей")
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"count": len(users), "users": users})
+}
+
 // POST /api/results
 func handleSaveResult(w http.ResponseWriter, r *http.Request) {
 	var in struct {
