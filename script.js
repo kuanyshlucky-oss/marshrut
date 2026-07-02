@@ -183,10 +183,14 @@ const DIRECTION_TESTS = {
     { q: 'Закон сохранения энергии гласит, что энергия:', options: ['Всегда возрастает','Не возникает из ничего и не исчезает','Исчезает при трении','Равна массе тела'], correct: 1 },
   ]},
   '7M06': { title: 'Профильный тест: программирование и ВТ', questions: [
-    { q: 'Какой тег создаёт гиперссылку в HTML?', options: ['<link>','<a>','<href>','<nav>'], correct: 1 },
-    { q: 'Структура данных, работающая по принципу FIFO (первым пришёл — первым ушёл):', options: ['Стек','Очередь','Дерево','Граф'], correct: 1 },
-    { q: 'Команда SQL для выборки данных:', options: ['SELECT','UPDATE','DELETE','INSERT'], correct: 0 },
-    { q: 'Протокол защищённой передачи веб-страниц:', options: ['HTTP','FTP','HTTPS','SMTP'], correct: 2 },
+    { q: 'Какой тег создаёт гиперссылку в HTML?', options: ['<link>','<a>','<href>','<nav>'], correct: 1,
+      why: 'Тег <a> (anchor) с атрибутом href задаёт ссылку. <link> подключает внешние ресурсы (CSS), <nav> — блок навигации, тега <href> не существует.' },
+    { q: 'Структура данных, работающая по принципу FIFO (первым пришёл — первым ушёл):', options: ['Стек','Очередь','Дерево','Граф'], correct: 1,
+      why: 'Очередь работает по FIFO. Стек — по LIFO (последним пришёл — первым ушёл). Дерево и граф — нелинейные структуры.' },
+    { q: 'Команда SQL для выборки данных:', options: ['SELECT','UPDATE','DELETE','INSERT'], correct: 0,
+      why: 'SELECT читает (выбирает) данные. UPDATE изменяет, DELETE удаляет, INSERT добавляет строки.' },
+    { q: 'Протокол защищённой передачи веб-страниц:', options: ['HTTP','FTP','HTTPS','SMTP'], correct: 2,
+      why: 'HTTPS — это HTTP поверх TLS (шифрование). HTTP без шифрования, FTP — передача файлов, SMTP — отправка почты.' },
   ]},
   '7M07': { title: 'Профильный тест: техническая механика и графика', questions: [
     { q: 'Наука о прочности и деформации материалов:', options: ['Гидравлика','Сопротивление материалов','Термодинамика','Электротехника'], correct: 1 },
@@ -520,10 +524,52 @@ function finishQuiz() {
   document.getElementById('testResult').classList.remove('hidden');
 }
 
+// Работа над ошибками: разбор всех вопросов с правильными/неправильными ответами.
+function openReview() {
+  const test = DIRECTION_TESTS[activeQuiz.code];
+  const d = findDirection(activeQuiz.code);
+  let score = 0;
+  test.questions.forEach((q, i) => { if (activeQuiz.answers[i] === q.correct) score++; });
+  document.getElementById('reviewSub').textContent = `${d.code} · ${d.name} — ${score} из ${test.questions.length}`;
+
+  document.getElementById('reviewList').innerHTML = test.questions.map((q, i) => {
+    const ua = activeQuiz.answers[i]; // ответ пользователя (или null)
+    const wrong = ua !== q.correct;
+    const opts = q.options.map((o, oi) => {
+      let cls = 'rev-opt', tag = '';
+      if (oi === q.correct) { cls += ' correct'; tag = oi === ua ? '<span class="rev-tag ok">Ваш ответ ✓</span>' : '<span class="rev-tag ok">Правильный ответ</span>'; }
+      else if (oi === ua) { cls += ' wrong'; tag = '<span class="rev-tag bad">Ваш ответ ✗</span>'; }
+      return `<div class="${cls}"><span>${esc(o)}</span>${tag}</div>`;
+    }).join('');
+    const why = q.why
+      ? `<div class="rev-why"><b>Почему:</b> ${esc(q.why)}</div>`
+      : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(q.options[q.correct])}</div>`;
+    return `
+      <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
+        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${esc(q.q)}</p>
+        <div class="rev-opts">${opts}</div>
+        ${why}
+      </div>`;
+  }).join('');
+
+  document.getElementById('testPage').classList.add('hidden');
+  document.getElementById('reviewPage').classList.remove('hidden');
+  document.body.classList.add('test-open');
+  window.scrollTo(0, 0);
+}
+
+function closeReview() {
+  document.getElementById('reviewPage').classList.add('hidden');
+  document.body.classList.remove('test-open');
+  activeQuiz = null;
+}
+
 function wireQuiz() {
   document.getElementById('testExit').addEventListener('click', closeQuiz);
   document.getElementById('testNext').addEventListener('click', quizNext);
-  document.getElementById('quizRetryBtn').addEventListener('click', () => startQuiz(activeQuiz.code));
+  document.getElementById('reviewBtn').addEventListener('click', openReview);
+  document.getElementById('reviewExit').addEventListener('click', closeReview);
+  document.getElementById('reviewClose').addEventListener('click', closeReview);
   document.getElementById('quizDashBtn').addEventListener('click', () => {
     closeQuiz();
     document.getElementById('account').scrollIntoView({ behavior: 'smooth' });

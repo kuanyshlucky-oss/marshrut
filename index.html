@@ -334,11 +334,22 @@
       <h3 id="resultHeadline">Тест пройден</h3>
       <p id="resultText">Вы ответили правильно на 3 из 4 вопросов.</p>
       <div class="test-result-nav">
-        <button class="btn btn-ghost" id="quizRetryBtn">Пройти ещё раз</button>
+        <button class="btn btn-ghost" id="reviewBtn">Работа над ошибками</button>
         <button class="btn btn-primary" id="quizDashBtn">В личный кабинет</button>
       </div>
     </div>
 
+  </div>
+</div>
+
+<!-- ================= REVIEW PAGE (работа над ошибками) ================= -->
+<div class="test-page review-page hidden" id="reviewPage">
+  <button class="test-exit" id="reviewExit" aria-label="Закрыть разбор">×</button>
+  <div class="review-inner">
+    <h2 class="test-title">Работа над ошибками</h2>
+    <p class="test-sub" id="reviewSub">Направление</p>
+    <div id="reviewList"></div>
+    <div class="test-result-nav"><button class="btn btn-primary" id="reviewClose">Готово</button></div>
   </div>
 </div>
 

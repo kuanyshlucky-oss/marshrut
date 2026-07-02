@@ -665,6 +665,30 @@ body.test-open{ overflow:hidden; }
 .test-result-nav .btn-ghost{ border-color:rgba(255,255,255,.3); color:#EDECE6; }
 .test-result-nav .btn-ghost:hover{ background:rgba(255,255,255,.12); color:#fff; }
 
+/* =========================== REVIEW (работа над ошибками) =========================== */
+.review-inner{ max-width:760px; margin:0 auto; padding:70px 28px 60px; }
+.review-inner .test-title{ margin-bottom:0; }
+.review-inner .test-sub{ margin-bottom:34px; }
+.rev-item{
+  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.10);
+  border-radius:14px; padding:20px 22px; margin-bottom:16px;
+}
+.rev-item.is-wrong{ border-color:rgba(224,133,133,.5); }
+.rev-q{ font-size:16px; font-weight:500; color:#fff; margin:0 0 14px; line-height:1.4; }
+.rev-opts{ display:flex; flex-direction:column; gap:8px; }
+.rev-opt{
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:11px 14px; border-radius:10px; font-size:14px;
+  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.10); color:#C7CBD8;
+}
+.rev-opt.correct{ background:rgba(91,179,154,.14); border-color:#5BB39A; color:#D5F0E7; }
+.rev-opt.wrong{ background:rgba(224,133,133,.14); border-color:#E08585; color:#F6DCDC; }
+.rev-tag{ flex:0 0 auto; font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:.05em; padding:3px 8px; border-radius:999px; }
+.rev-tag.ok{ background:#5BB39A; color:#0E1A16; }
+.rev-tag.bad{ background:#E08585; color:#2A1010; }
+.rev-why{ margin-top:14px; font-size:14px; line-height:1.5; color:#B9BDCB; border-left:3px solid var(--accent); padding-left:12px; }
+.rev-why b{ color:#EDECE6; }
+
 /* =========================== КТ (симуляция) =========================== */
 .kt-field-label{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); margin:18px 0 8px; }
 .kt-choices{ display:flex; flex-direction:column; gap:8px; }
