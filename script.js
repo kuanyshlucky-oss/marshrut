@@ -219,115 +219,83 @@ function findDirection(code) { return DIRECTIONS.find(d => d.code === code); }
 function findSubject(direction, subjectId) { return subjectsFor(direction).find(s => s.id === subjectId); }
 
 /* ---------------------------------------------------------
-   2) "BACKEND" — имитация серверного API (localStorage)
+   2) BACKEND — реальный REST API (Go + SQLite, хостинг Render)
+   Объект API ходит по fetch() к серверу. Текущий пользователь
+   кэшируется в currentUser, чтобы getCurrentUser() оставался
+   синхронным для рендер-функций. Токен хранится в localStorage.
    --------------------------------------------------------- */
-const DB_KEY = 'marshrut_db_v3';
-const SESSION_KEY = 'marshrut_session_v3';
-const NETWORK_DELAY = 350;
+const API_BASE = 'https://marshrut-9c5z.onrender.com';
+const TOKEN_KEY = 'marshrut_token';
 
-function loadDB() {
-  const raw = localStorage.getItem(DB_KEY);
-  if (raw) return JSON.parse(raw);
-  const seeded = {
-    users: {
-      'demo@marshrut.ru': {
-        name: 'Демо Пользователь',
-        email: 'demo@marshrut.ru',
-        passwordHash: btoa('demo1234'),
-        profile: { fullName: 'Демо Пользователь', phone: '+7 700 000 00 00', education: 'КазНУ, бакалавр информатики', city: 'Алматы' },
-        favorites: ['7M06'],
-        results: [ { code: '7M06', score: 3, total: 4, date: '2026-06-18' } ],
-      },
-    },
-  };
-  localStorage.setItem(DB_KEY, JSON.stringify(seeded));
-  return seeded;
-}
-function saveDB(db) { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
-function getSession() { return localStorage.getItem(SESSION_KEY); }
-function setSession(email) { localStorage.setItem(SESSION_KEY, email); }
-function clearSession() { localStorage.removeItem(SESSION_KEY); }
+let currentUser = null; // кэш пользователя, полученного с сервера
 
-/* Гарантирует наличие новых полей у пользователя (на случай старых записей) */
-function normalizeUser(user) {
-  if (!user.profile) user.profile = { fullName: user.name || '', phone: '', education: '', city: '' };
-  if (!user.favorites) user.favorites = [];
-  if (!user.results) user.results = [];
-  return user;
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+function setToken(t) { localStorage.setItem(TOKEN_KEY, t); }
+function clearToken() { localStorage.removeItem(TOKEN_KEY); }
+
+async function apiFetch(path, { method = 'GET', body, auth = false } = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (auth) {
+    const t = getToken();
+    if (t) headers['Authorization'] = 'Bearer ' + t;
+  }
+  const res = await fetch(API_BASE + path, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  let data = null;
+  try { data = await res.json(); } catch (_) { /* тело может быть пустым */ }
+  if (!res.ok) {
+    throw new Error((data && data.error) ? data.error : `Ошибка сервера (${res.status})`);
+  }
+  return data;
 }
 
 const API = {
-  register(name, email, password) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const db = loadDB();
-        if (db.users[email]) { reject(new Error('Этот email уже зарегистрирован.')); return; }
-        db.users[email] = {
-          name, email, passwordHash: btoa(password),
-          profile: { fullName: name, phone: '', education: '', city: '' },
-          favorites: [], results: [],
-        };
-        saveDB(db);
-        setSession(email);
-        resolve(db.users[email]);
-      }, NETWORK_DELAY);
+  async register(name, email, password) {
+    const { token, user } = await apiFetch('/api/auth/register', {
+      method: 'POST', body: { name, email, password },
     });
+    setToken(token); currentUser = user; return user;
   },
 
-  login(email, password) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const db = loadDB();
-        const user = db.users[email];
-        if (!user || user.passwordHash !== btoa(password)) {
-          reject(new Error('Неверный email или пароль.'));
-          return;
-        }
-        setSession(email);
-        resolve(user);
-      }, NETWORK_DELAY);
+  async login(email, password) {
+    const { token, user } = await apiFetch('/api/auth/login', {
+      method: 'POST', body: { email, password },
     });
+    setToken(token); currentUser = user; return user;
   },
 
-  logout() { clearSession(); },
+  logout() { clearToken(); currentUser = null; },
 
-  getCurrentUser() {
-    const email = getSession();
-    if (!email) return null;
-    const db = loadDB();
-    return db.users[email] ? normalizeUser(db.users[email]) : null;
+  // Синхронно возвращает кэш (обновляется при login/fetchMe/мутациях)
+  getCurrentUser() { return currentUser; },
+
+  // Подтягивает пользователя по сохранённому токену (при загрузке страницы)
+  async fetchMe() {
+    if (!getToken()) { currentUser = null; return null; }
+    try {
+      currentUser = await apiFetch('/api/me', { auth: true });
+    } catch (_) {
+      clearToken(); currentUser = null; // токен невалиден/протух
+    }
+    return currentUser;
   },
 
-  updateProfile(profile) {
-    const email = getSession();
-    if (!email) return false;
-    const db = loadDB();
-    const user = normalizeUser(db.users[email]);
-    user.profile = { ...user.profile, ...profile };
-    if (profile.fullName) user.name = profile.fullName; // имя в шапке = ФИО
-    saveDB(db);
-    return true;
+  async updateProfile(profile) {
+    currentUser = await apiFetch('/api/profile', { method: 'PUT', auth: true, body: profile });
+    return currentUser;
   },
 
-  toggleFavorite(code) {
-    const email = getSession();
-    if (!email) return false;
-    const db = loadDB();
-    const user = normalizeUser(db.users[email]);
-    const i = user.favorites.indexOf(code);
-    if (i === -1) user.favorites.push(code); else user.favorites.splice(i, 1);
-    saveDB(db);
-    return user.favorites.includes(code);
+  async toggleFavorite(code) {
+    currentUser = await apiFetch('/api/favorites/toggle', { method: 'POST', auth: true, body: { code } });
+    return currentUser;
   },
 
-  saveResult(code, score, total) {
-    const email = getSession();
-    if (!email) return false;
-    const db = loadDB();
-    const user = normalizeUser(db.users[email]);
-    user.results.push({ code, score, total, date: new Date().toISOString().slice(0, 10) });
-    saveDB(db);
-    return true;
+  async saveResult(code, score, total) {
+    currentUser = await apiFetch('/api/results', { method: 'POST', auth: true, body: { code, score, total } });
+    return currentUser;
   },
 };
 
@@ -390,13 +358,18 @@ function pluralizeDirections(n) {
   return 'направлений';
 }
 
-function handleFavorite(code) {
+async function handleFavorite(code) {
   const user = API.getCurrentUser();
   if (!user) { showToast('Войдите в аккаунт, чтобы сохранять направления'); openAuth('login'); return; }
-  const nowFav = API.toggleFavorite(code);
-  showToast(nowFav ? 'Направление добавлено в избранное' : 'Направление убрано из избранного');
-  renderCatalog();
-  renderDashboard();
+  try {
+    await API.toggleFavorite(code);
+    const nowFav = API.getCurrentUser().favorites.includes(code);
+    showToast(nowFav ? 'Направление добавлено в избранное' : 'Направление убрано из избранного');
+    renderCatalog();
+    renderDashboard();
+  } catch (e) {
+    showToast(e.message);
+  }
 }
 
 /* ---------------------------------------------------------
@@ -566,8 +539,10 @@ function finishQuiz() {
 
   const user = API.getCurrentUser();
   if (user) {
-    API.saveResult(activeQuiz.code, score, total);
-    renderDashboard();
+    // сохранение на сервере — асинхронно; кабинет обновим по готовности
+    API.saveResult(activeQuiz.code, score, total)
+      .then(() => renderDashboard())
+      .catch((e) => showToast(e.message));
   }
 
   document.getElementById('quizStamp').classList.toggle('is-fail', !passed);
@@ -703,22 +678,43 @@ function renderDashboard() {
 function wireProfileForm() {
   const form = document.getElementById('profileForm');
   if (!form) return;
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    API.updateProfile({
-      fullName: document.getElementById('pfFullName').value.trim(),
-      phone: document.getElementById('pfPhone').value.trim(),
-      education: document.getElementById('pfEducation').value.trim(),
-      city: document.getElementById('pfCity').value.trim(),
-    });
-    const saved = document.getElementById('profileSaved');
-    saved.classList.remove('hidden');
-    clearTimeout(form._savedTimer);
-    form._savedTimer = setTimeout(() => saved.classList.add('hidden'), 2000);
-    refreshAuthUI();   // обновить имя в шапке
-    renderDashboard();
-    showToast('Личные данные сохранены');
+    const btn = form.querySelector('button[type="submit"]');
+    setBtnLoading(btn, true, 'Сохранение…');
+    try {
+      await API.updateProfile({
+        fullName: document.getElementById('pfFullName').value.trim(),
+        phone: document.getElementById('pfPhone').value.trim(),
+        education: document.getElementById('pfEducation').value.trim(),
+        city: document.getElementById('pfCity').value.trim(),
+      });
+      const saved = document.getElementById('profileSaved');
+      saved.classList.remove('hidden');
+      clearTimeout(form._savedTimer);
+      form._savedTimer = setTimeout(() => saved.classList.add('hidden'), 2000);
+      refreshAuthUI();   // обновить имя в шапке
+      renderDashboard();
+      showToast('Личные данные сохранены');
+    } catch (err) {
+      showToast(err.message);
+    } finally {
+      setBtnLoading(btn, false);
+    }
   });
+}
+
+/* Индикатор загрузки на кнопке (для медленного холодного старта сервера) */
+function setBtnLoading(btn, loading, label) {
+  if (!btn) return;
+  if (loading) {
+    btn.dataset.orig = btn.textContent;
+    btn.textContent = label || 'Подождите…';
+    btn.disabled = true;
+  } else {
+    if (btn.dataset.orig) btn.textContent = btn.dataset.orig;
+    btn.disabled = false;
+  }
 }
 
 function openAuth(tab) {
@@ -738,27 +734,43 @@ function wireAuth() {
   });
   document.querySelectorAll('.auth-tab').forEach(t => t.addEventListener('click', () => switchAuthTab(t.dataset.tab)));
 
-  document.getElementById('loginForm').addEventListener('submit', (e) => {
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
     const errorEl = document.getElementById('loginError');
+    const btn = e.target.querySelector('button[type="submit"]');
     errorEl.textContent = '';
-    API.login(email, password)
-      .then(() => { showToast('Добро пожаловать!'); afterAuthChange(); })
-      .catch(err => { errorEl.textContent = err.message; });
+    setBtnLoading(btn, true, 'Вход…');
+    try {
+      await API.login(email, password);
+      showToast('Добро пожаловать!');
+      afterAuthChange();
+    } catch (err) {
+      errorEl.textContent = err.message;
+    } finally {
+      setBtnLoading(btn, false);
+    }
   });
 
-  document.getElementById('registerForm').addEventListener('submit', (e) => {
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('regName').value.trim();
     const email = document.getElementById('regEmail').value.trim();
     const password = document.getElementById('regPassword').value;
     const errorEl = document.getElementById('registerError');
+    const btn = e.target.querySelector('button[type="submit"]');
     errorEl.textContent = '';
-    API.register(name, email, password)
-      .then(() => { showToast('Аккаунт создан'); afterAuthChange(); })
-      .catch(err => { errorEl.textContent = err.message; });
+    setBtnLoading(btn, true, 'Создаём аккаунт…');
+    try {
+      await API.register(name, email, password);
+      showToast('Аккаунт создан');
+      afterAuthChange();
+    } catch (err) {
+      errorEl.textContent = err.message;
+    } finally {
+      setBtnLoading(btn, false);
+    }
   });
 
   document.getElementById('btnLogout').addEventListener('click', () => {
@@ -879,11 +891,10 @@ function wireMobileNav() {
 /* ---------------------------------------------------------
    INIT
    --------------------------------------------------------- */
-document.addEventListener('DOMContentLoaded', () => {
-  loadDB();
+document.addEventListener('DOMContentLoaded', async () => {
+  // сразу рисуем то, что не зависит от пользователя, и вешаем обработчики
   renderCatalog();
   refreshAuthUI();
-  renderDashboard();
   wireAuth();
   wireProfileForm();
   wireSearch();
@@ -891,4 +902,11 @@ document.addEventListener('DOMContentLoaded', () => {
   wireQuiz();
   wireMobileNav();
   wireHeroVideoLoop();
+
+  // подтягиваем пользователя по сохранённому токену (может быть медленно
+  // на «холодном» сервере) и перерисовываем зависимые от него части
+  await API.fetchMe();
+  refreshAuthUI();
+  renderDashboard();
+  renderCatalog(); // чтобы подсветить избранное на карточках
 });
