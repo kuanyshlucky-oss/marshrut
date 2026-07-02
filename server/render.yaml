@@ -6,19 +6,14 @@ services:
     name: marshrut-api
     runtime: docker
     rootDir: server
-    # план free — БД в контейнере эфемерна (сбрасывается при редеплое).
-    # Для сохранности данных на Render нужен платный диск (блок disk ниже)
-    # или переезд на Postgres. На Railway проще примонтировать том бесплатно.
+    # Данные хранятся во внешней Postgres (Neon) — постоянно, не зависит от редеплоя.
     plan: free
     envVars:
       - key: JWT_SECRET
         generateValue: true            # Render сгенерирует случайный секрет
       - key: ALLOWED_ORIGIN
         value: https://kuanyshlucky-oss.github.io
-      - key: DB_PATH
-        value: /app/data/marshrut.db
-    # --- Постоянное хранилище (платно на Render). Раскомментируйте на платном плане: ---
-    # disk:
-    #   name: data
-    #   mountPath: /app/data
-    #   sizeGB: 1
+      - key: DATABASE_URL
+        sync: false                    # строка подключения Neon — задать вручную в дашборде
+      - key: ADMIN_KEY
+        sync: false                    # ключ для /api/admin/users — задать вручную

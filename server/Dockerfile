@@ -16,8 +16,7 @@ WORKDIR /app
 COPY --from=build /out/server /app/server
 
 ENV PORT=8080
-# на Render/Railway директорию data лучше примонтировать как диск/том (см. README)
-ENV DB_PATH=/app/data/marshrut.db
+# DATABASE_URL (строка подключения к Postgres) задаётся в окружении хостинга
 
 EXPOSE 8080
 CMD ["/app/server"]

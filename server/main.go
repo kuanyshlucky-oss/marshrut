@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 )
 
@@ -28,19 +27,15 @@ func env(key, def string) string {
 
 func main() {
 	port := env("PORT", "8080")
-	dbPath := env("DB_PATH", "data/marshrut.db")
-
-	// гарантируем существование папки под файл БД
-	if dir := filepath.Dir(dbPath); dir != "" && dir != "." {
-		if err := os.MkdirAll(dir, 0o755); err != nil {
-			log.Fatalf("не удалось создать папку для БД: %v", err)
-		}
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		log.Fatal("не задан DATABASE_URL (строка подключения к Postgres, напр. от Neon)")
 	}
 
-	if err := initDB(dbPath); err != nil {
+	if err := initDB(dsn); err != nil {
 		log.Fatalf("ошибка инициализации БД: %v", err)
 	}
-	log.Printf("БД готова: %s", dbPath)
+	log.Print("БД готова (Postgres)")
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", handleHealth)
