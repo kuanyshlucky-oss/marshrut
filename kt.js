@@ -157,53 +157,56 @@ function gradeKT(typeId, blockScores) {
 }
 
 /* =========================================================
-   UI: движок прохождения КТ (модалка #ktModal)
+   UI: движок прохождения КТ (полноэкранная страница #ktPage)
    ========================================================= */
 let activeKT = null; // { code, typeId, lang, flat:[{...q, block}], answers:[], idx, secondsLeft, timer }
 
-function ktEl() { return document.getElementById('ktModalBody'); }
+function ktEl() { return document.getElementById('ktPageBody'); }
 
-// Экран 1 — настройка (тип + язык)
+function showKTPage() {
+  document.getElementById('ktPage').classList.remove('hidden');
+  document.body.classList.add('test-open');
+  window.scrollTo(0, 0);
+}
+
+// Экран 1 — настройка: две секции (профильное / научно-педагогическое) + язык
 function openKT(code) {
   const d = findDirection(code);
   activeKT = { code };
   const body = ktEl();
   body.innerHTML = `
-    <p class="eyebrow">${d.code} · Симуляция КТ</p>
-    <h3 class="modal-title">Комплексное тестирование</h3>
-    <p class="modal-lead">Полный прогон с таймером и проверкой по правилам реального КТ: пороги по блокам и общий порог.</p>
+    <h2 class="test-title">Симуляция КТ</h2>
+    <p class="test-sub">${d.code} · ${d.name}</p>
+    <p class="kt-setup-lead">Полный прогон с таймером и проверкой по правилам реального комплексного тестирования.</p>
 
-    <p class="kt-field-label">Тип программы</p>
-    <div class="kt-choices" id="ktType">
+    <div class="kt-type-cards" id="ktType">
       ${Object.values(KT_TYPES).map((t, i) => `
-        <button class="kt-choice ${i === 0 ? 'is-active' : ''}" data-type="${t.id}">
-          <span class="kt-choice-title">${t.label}</span>
-          <span class="kt-choice-sub">${t.total} вопросов · порог ${t.thresholdTotal}${t.blockMin ? ' + минимумы по блокам' : ''}</span>
-        </button>
-      `).join('')}
+        <button class="kt-type-card ${i === 0 ? 'is-active' : ''}" data-type="${t.id}">
+          <span class="kt-type-name">${t.label}</span>
+          <span class="kt-type-total">${t.total} вопросов</span>
+          <span class="kt-type-meta">Порог ${t.thresholdTotal} · ${t.blockMin ? 'есть минимумы по блокам' : 'без минимумов по блокам'}</span>
+        </button>`).join('')}
     </div>
 
     <p class="kt-field-label">Иностранный язык</p>
-    <div class="kt-choices" id="ktLang">
-      ${Object.entries(KT_LANGUAGES).map(([k, v], i) => `
-        <button class="kt-choice sm ${i === 0 ? 'is-active' : ''}" data-lang="${k}">${v}</button>
-      `).join('')}
+    <div class="kt-lang-row" id="ktLang">
+      ${Object.entries(KT_LANGUAGES).map(([k, v], i) => `<button class="kt-lang ${i === 0 ? 'is-active' : ''}" data-lang="${k}">${v}</button>`).join('')}
     </div>
 
-    <button class="btn btn-primary btn-block" id="ktStartBtn" style="margin-top:20px">Начать КТ</button>
+    <button class="btn test-next kt-start" id="ktStartBtn">Начать КТ</button>
   `;
 
-  body.querySelectorAll('#ktType .kt-choice').forEach(b =>
-    b.addEventListener('click', () => { body.querySelectorAll('#ktType .kt-choice').forEach(x => x.classList.remove('is-active')); b.classList.add('is-active'); }));
-  body.querySelectorAll('#ktLang .kt-choice').forEach(b =>
-    b.addEventListener('click', () => { body.querySelectorAll('#ktLang .kt-choice').forEach(x => x.classList.remove('is-active')); b.classList.add('is-active'); }));
+  body.querySelectorAll('#ktType .kt-type-card').forEach(b =>
+    b.addEventListener('click', () => { body.querySelectorAll('#ktType .kt-type-card').forEach(x => x.classList.remove('is-active')); b.classList.add('is-active'); }));
+  body.querySelectorAll('#ktLang .kt-lang').forEach(b =>
+    b.addEventListener('click', () => { body.querySelectorAll('#ktLang .kt-lang').forEach(x => x.classList.remove('is-active')); b.classList.add('is-active'); }));
   document.getElementById('ktStartBtn').addEventListener('click', () => {
-    const typeId = body.querySelector('#ktType .kt-choice.is-active').dataset.type;
-    const lang = body.querySelector('#ktLang .kt-choice.is-active').dataset.lang;
+    const typeId = body.querySelector('#ktType .kt-type-card.is-active').dataset.type;
+    const lang = body.querySelector('#ktLang .kt-lang.is-active').dataset.lang;
     beginKT(code, typeId, lang);
   });
 
-  document.getElementById('ktModal').classList.remove('hidden');
+  showKTPage();
 }
 
 function beginKT(code, typeId, lang) {
@@ -218,29 +221,33 @@ function beginKT(code, typeId, lang) {
 function renderKTQuestion() {
   const s = activeKT;
   const item = s.flat[s.idx];
-  const blockLabel = KT_BLOCK_LABELS[item.block];
   ktEl().innerHTML = `
-    <div class="quiz-progress-row">
-      <span class="kt-block-tag">${blockLabel}</span>
-      <div class="quiz-timer" id="ktTimer">${fmtTime(s.secondsLeft)}</div>
+    <div class="kt-run-head">
+      <span class="kt-block-tag">${KT_BLOCK_LABELS[item.block]}</span>
+      <span class="kt-run-timer" id="ktTimer">${fmtTime(s.secondsLeft)}</span>
     </div>
-    <p class="quiz-question-num">Вопрос ${s.idx + 1} из ${s.flat.length}</p>
     <div class="kt-progress"><div class="kt-progress-bar" style="width:${((s.idx + 1) / s.flat.length) * 100}%"></div></div>
-    <h3 class="quiz-question">${esc(item.q)}</h3>
-    <div class="quiz-options" id="ktOptions">
-      ${item.options.map((o, i) => `<button class="quiz-option ${s.answers[s.idx] === i ? 'is-selected' : ''}" data-opt="${i}">${esc(o)}</button>`).join('')}
+    <p class="test-qnum-line">Вопрос ${s.idx + 1} из ${s.flat.length}</p>
+    <p class="test-question">${esc(item.q)}</p>
+    <div class="test-options" id="ktOptions">
+      ${item.options.map((o, i) => `
+        <button class="test-opt ${s.answers[s.idx] === i ? 'is-selected' : ''}" data-opt="${i}">
+          <span class="test-radio" aria-hidden="true"></span><span class="test-opt-label">${esc(o)}</span>
+        </button>`).join('')}
     </div>
-    <div class="quiz-nav">
-      <button class="btn btn-ghost" id="ktPrev" ${s.idx === 0 ? 'disabled' : ''}>Назад</button>
-      <button class="btn btn-primary" id="ktNext">${s.idx === s.flat.length - 1 ? 'Завершить' : 'Далее'}</button>
+    <div class="test-foot">
+      <span class="test-hint">Нажмите <b>ENTER</b></span>
+      <button class="btn test-next" id="ktNext">${s.idx === s.flat.length - 1 ? 'Завершить' : 'Далее'}</button>
     </div>
   `;
   ktEl().querySelectorAll('[data-opt]').forEach(b => b.addEventListener('click', () => { s.answers[s.idx] = Number(b.dataset.opt); renderKTQuestion(); }));
-  document.getElementById('ktPrev').addEventListener('click', () => { if (s.idx > 0) { s.idx--; renderKTQuestion(); } });
-  document.getElementById('ktNext').addEventListener('click', () => {
-    if (s.idx < s.flat.length - 1) { s.idx++; renderKTQuestion(); }
-    else finishKT();
-  });
+  document.getElementById('ktNext').addEventListener('click', ktNext);
+}
+
+function ktNext() {
+  const s = activeKT;
+  if (s.idx < s.flat.length - 1) { s.idx++; renderKTQuestion(); }
+  else finishKT();
 }
 
 function startKTTimer() {
@@ -273,12 +280,13 @@ function finishKT() {
 
   const d = findDirection(s.code);
   ktEl().innerHTML = `
+   <div class="kt-result-wrap">
     <div class="kt-stamp ${res.passed ? '' : 'is-fail'}">
       <span class="kt-stamp-status">${res.passed ? 'Пройдено' : 'Не пройдено'}</span>
       <span class="kt-stamp-score">${res.total}/${res.maxTotal}</span>
     </div>
-    <h3 class="modal-title" style="text-align:center">${res.passed ? 'КТ сдано' : 'КТ не сдано'}</h3>
-    <p class="modal-lead" style="text-align:center">${d.code} · ${KT_TYPES[s.typeId].label} · ${KT_LANGUAGES[s.lang]}</p>
+    <h2 class="test-title">${res.passed ? 'КТ сдано' : 'КТ не сдано'}</h2>
+    <p class="test-sub">${d.code} · ${KT_TYPES[s.typeId].label} · ${KT_LANGUAGES[s.lang]}</p>
 
     <table class="kt-result-table">
       <thead><tr><th>Блок</th><th>Балл</th><th>Мин.</th><th></th></tr></thead>
@@ -297,11 +305,12 @@ function finishKT() {
       </tbody>
     </table>
     ${res.reason ? `<p class="kt-reason">${res.reason}</p>` : ''}
-    <div class="quiz-nav kt-result-nav">
+    <div class="test-result-nav">
       <button class="btn btn-ghost" id="ktReviewBtn">Работа над ошибками</button>
       <button class="btn btn-ghost" id="ktRetry">Пройти ещё раз</button>
       <button class="btn btn-primary" id="ktClose2">Закрыть</button>
     </div>
+   </div>
   `;
   document.getElementById('ktReviewBtn').addEventListener('click', openKTReview);
   document.getElementById('ktRetry').addEventListener('click', () => openKT(s.code));
@@ -310,7 +319,8 @@ function finishKT() {
 
 function closeKT() {
   stopKTTimer();
-  document.getElementById('ktModal').classList.add('hidden');
+  document.getElementById('ktPage').classList.add('hidden');
+  document.body.classList.remove('test-open');
   activeKT = null;
 }
 
@@ -340,17 +350,27 @@ function openKTReview() {
       </div>`;
   }).join('');
 
-  document.getElementById('ktModal').classList.add('hidden');
+  document.getElementById('ktPage').classList.add('hidden');
   document.getElementById('reviewPage').classList.remove('hidden');
   document.body.classList.add('test-open');
   window.scrollTo(0, 0);
 }
 
 function wireKT() {
-  const modal = document.getElementById('ktModal');
-  if (!modal) return;
+  const page = document.getElementById('ktPage');
+  if (!page) return;
   document.getElementById('ktClose').addEventListener('click', closeKT);
-  modal.addEventListener('click', e => { if (e.target.id === 'ktModal') closeKT(); });
+  document.addEventListener('keydown', (e) => {
+    if (page.classList.contains('hidden')) return;
+    if (e.key === 'Escape') { closeKT(); return; }
+    if (!document.getElementById('ktNext')) return; // не на экране прохождения
+    if (e.key === 'Enter') { e.preventDefault(); ktNext(); return; }
+    if (/^[1-9]$/.test(e.key)) {
+      const btns = document.querySelectorAll('#ktOptions [data-opt]');
+      const b = btns[Number(e.key) - 1];
+      if (b) b.click();
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', wireKT);
