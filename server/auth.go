@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"crypto/hmac"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
@@ -15,6 +16,20 @@ import (
 )
 
 var errInvalidToken = errors.New("недействительный токен")
+
+// Случайная строка из безопасного алфавита (без похожих символов 0/O, 1/l/I).
+func randString(n int) string {
+	const alphabet = "abcdefghijkmnpqrstuvwxyz23456789ABCDEFGHJKLMNPQRSTUVWXYZ"
+	b := make([]byte, n)
+	rand.Read(b)
+	for i := range b {
+		b[i] = alphabet[int(b[i])%len(alphabet)]
+	}
+	return string(b)
+}
+
+func genPassword() string { return randString(10) }
+func genLogin() string    { return "st-" + randString(6) + "@marshrut.kz" }
 
 func hashPassword(pw string) (string, error) {
 	b, err := bcrypt.GenerateFromPassword([]byte(pw), bcrypt.DefaultCost)

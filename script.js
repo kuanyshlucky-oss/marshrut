@@ -772,18 +772,15 @@ function openAuth(tab) {
   switchAuthTab(tab || 'login');
 }
 
-function switchAuthTab(tab) {
-  document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('is-active', t.dataset.tab === tab));
-  document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
-  document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
+function switchAuthTab() {
+  // регистрация закрыта — всегда показываем форму входа
+  document.getElementById('loginForm').classList.remove('hidden');
 }
 
 function wireAuth() {
   document.querySelectorAll('[data-open-auth]').forEach(el => {
     el.addEventListener('click', (e) => { e.preventDefault(); openAuth(el.dataset.openAuth); });
   });
-  document.querySelectorAll('.auth-tab').forEach(t => t.addEventListener('click', () => switchAuthTab(t.dataset.tab)));
-
   document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
@@ -795,26 +792,6 @@ function wireAuth() {
     try {
       await API.login(email, password);
       showToast('Добро пожаловать!');
-      afterAuthChange();
-    } catch (err) {
-      errorEl.textContent = err.message;
-    } finally {
-      setBtnLoading(btn, false);
-    }
-  });
-
-  document.getElementById('registerForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('regName').value.trim();
-    const email = document.getElementById('regEmail').value.trim();
-    const password = document.getElementById('regPassword').value;
-    const errorEl = document.getElementById('registerError');
-    const btn = e.target.querySelector('button[type="submit"]');
-    errorEl.textContent = '';
-    setBtnLoading(btn, true, 'Создаём аккаунт…');
-    try {
-      await API.register(name, email, password);
-      showToast('Аккаунт создан');
       afterAuthChange();
     } catch (err) {
       errorEl.textContent = err.message;

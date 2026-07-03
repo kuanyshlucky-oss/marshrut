@@ -213,6 +213,17 @@ func listUsers() ([]AdminUser, error) {
 	return out, nil
 }
 
+func deleteUser(id int64) error {
+	if _, err := db.Exec(`DELETE FROM favorites WHERE user_id = $1`, id); err != nil {
+		return err
+	}
+	if _, err := db.Exec(`DELETE FROM results WHERE user_id = $1`, id); err != nil {
+		return err
+	}
+	_, err := db.Exec(`DELETE FROM users WHERE id = $1`, id)
+	return err
+}
+
 func addResult(id int64, code string, score, total int) error {
 	_, err := db.Exec(
 		`INSERT INTO results(user_id, code, score, total, date) VALUES($1, $2, $3, $4, $5)`,

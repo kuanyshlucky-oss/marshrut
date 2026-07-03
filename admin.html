@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Маршрут — Админка</title>
+<style>
+  :root{ --bg:#F6F2E9; --ink:#232A3B; --soft:#5B6275; --line:#DCD3BD; --accent:#D9692C; --accent-ink:#7A3414; --surface:#fff; --ok:#2F6F5E; --ok-soft:#DCEAE3; --danger:#B14545; --danger-soft:#F4DADA; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--ink); }
+  .wrap{ max-width:900px; margin:0 auto; padding:32px 20px 60px; }
+  h1{ font-size:24px; margin:0 0 4px; }
+  .sub{ color:var(--soft); font-size:14px; margin:0 0 24px; }
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px; margin-bottom:20px; box-shadow:0 8px 24px -14px rgba(35,42,59,.2); }
+  .card h2{ font-size:17px; margin:0 0 14px; }
+  label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--soft); margin:0 0 6px; font-family:'JetBrains Mono',monospace; }
+  input{ width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:inherit; margin-bottom:14px; }
+  input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+  .row{ display:flex; gap:12px; flex-wrap:wrap; }
+  .row > div{ flex:1 1 200px; }
+  button{ font-family:inherit; cursor:pointer; border:1px solid transparent; border-radius:999px; padding:10px 20px; font-size:14px; font-weight:600; }
+  .btn-primary{ background:var(--accent); color:#fff; }
+  .btn-primary:hover{ background:var(--accent-ink); }
+  .btn-ghost{ background:transparent; border-color:var(--line); color:var(--ink); }
+  .btn-ghost:hover{ border-color:var(--ink); }
+  .btn-del{ background:var(--danger-soft); color:var(--danger); padding:5px 12px; font-size:12px; border-radius:8px; }
+  .btn-del:hover{ background:var(--danger); color:#fff; }
+  .cred{ background:#1B2030; color:#EDECE6; border-radius:12px; padding:16px 18px; margin-top:14px; font-family:'JetBrains Mono',monospace; }
+  .cred .line{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:6px 0; }
+  .cred .k{ color:#9AA0B4; font-size:12px; }
+  .cred .v{ font-size:15px; }
+  .cred button{ background:rgba(255,255,255,.1); color:#fff; padding:5px 12px; font-size:12px; border-radius:8px; }
+  .cred .note{ color:#E0A060; font-size:12px; margin-top:8px; }
+  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  th{ text-align:left; font-family:'JetBrains Mono',monospace; text-transform:uppercase; font-size:10px; color:var(--soft); padding:8px 6px; border-bottom:1px solid var(--line); }
+  td{ padding:9px 6px; border-bottom:1px solid var(--line); }
+  .msg{ font-size:13px; margin-top:10px; }
+  .msg.err{ color:var(--danger); }
+  .msg.ok{ color:var(--ok); }
+  .hidden{ display:none; }
+  .keybar{ display:flex; gap:10px; align-items:flex-end; }
+  .keybar > div{ flex:1; }
+  .muted{ color:var(--soft); font-size:12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Маршрут — Админка</h1>
+  <p class="sub">Создание аккаунтов и управление пользователями. Публичная регистрация отключена.</p>
+
+  <!-- Ключ -->
+  <div class="card">
+    <h2>Доступ</h2>
+    <div class="keybar">
+      <div>
+        <label for="key">ADMIN_KEY</label>
+        <input id="key" type="password" placeholder="Ключ администратора" autocomplete="off">
+      </div>
+      <button class="btn-ghost" id="saveKey">Сохранить</button>
+    </div>
+    <p class="muted">Ключ хранится в этом браузере (localStorage).</p>
+  </div>
+
+  <!-- Создание -->
+  <div class="card">
+    <h2>Создать аккаунт</h2>
+    <div class="row">
+      <div>
+        <label for="cName">Имя (необязательно)</label>
+        <input id="cName" type="text" placeholder="Имя клиента">
+      </div>
+      <div>
+        <label for="cEmail">Логин / email (необязательно)</label>
+        <input id="cEmail" type="text" placeholder="оставьте пустым — сгенерируем">
+      </div>
+    </div>
+    <button class="btn-primary" id="createBtn">Сгенерировать аккаунт</button>
+    <div id="cred" class="cred hidden"></div>
+    <p id="createMsg" class="msg"></p>
+  </div>
+
+  <!-- Список -->
+  <div class="card">
+    <h2>Пользователи (<span id="count">0</span>) <button class="btn-ghost" id="reloadBtn" style="float:right;padding:5px 14px;font-size:12px">Обновить</button></h2>
+    <table>
+      <thead><tr><th>ID</th><th>Логин (email)</th><th>Имя</th><th>Город</th><th>Тестов</th><th>Создан</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <p id="listMsg" class="msg"></p>
+  </div>
+</div>
+
+<script>
+const API_BASE = 'https://marshrut-9c5z.onrender.com';
+const KEY = 'marshrut_admin_key';
+const $ = id => document.getElementById(id);
+
+function getKey(){ return localStorage.getItem(KEY) || ''; }
+$('key').value = getKey();
+$('saveKey').onclick = () => { localStorage.setItem(KEY, $('key').value.trim()); load(); };
+
+async function api(path, opts={}){
+  const url = API_BASE + path + (path.includes('?')?'&':'?') + 'key=' + encodeURIComponent(getKey());
+  const res = await fetch(url, { method: opts.method||'GET', headers:{'Content-Type':'application/json'}, body: opts.body?JSON.stringify(opts.body):undefined });
+  const data = await res.json().catch(()=>null);
+  if(!res.ok) throw new Error((data&&data.error)||('Ошибка '+res.status));
+  return data;
+}
+
+function copy(text, btn){ navigator.clipboard.writeText(text).then(()=>{ const t=btn.textContent; btn.textContent='✓'; setTimeout(()=>btn.textContent=t,1200); }); }
+
+$('createBtn').onclick = async () => {
+  const msg = $('createMsg'); msg.textContent=''; msg.className='msg';
+  const btn = $('createBtn'); btn.disabled=true; btn.textContent='Создаём…';
+  try{
+    const r = await api('/api/admin/create-user', { method:'POST', body:{ name:$('cName').value.trim(), email:$('cEmail').value.trim() } });
+    const cred = $('cred'); cred.classList.remove('hidden');
+    cred.innerHTML = `
+      <div class="line"><span class="k">Логин</span><span class="v" id="cvL">${r.login}</span><button data-c="${r.login}">Копир.</button></div>
+      <div class="line"><span class="k">Пароль</span><span class="v" id="cvP">${r.password}</span><button data-c="${r.password}">Копир.</button></div>
+      <div class="line"><span class="k">Строка</span><span class="v">${r.login} / ${r.password}</span><button data-c="${r.login} / ${r.password}">Копир.</button></div>
+      <p class="note">⚠ Пароль показан один раз — сохраните и передайте клиенту.</p>`;
+    cred.querySelectorAll('button').forEach(b=>b.onclick=()=>copy(b.dataset.c,b));
+    $('cName').value=''; $('cEmail').value='';
+    load();
+  }catch(e){ msg.textContent=e.message; msg.className='msg err'; }
+  btn.disabled=false; btn.textContent='Сгенерировать аккаунт';
+};
+
+async function del(id, login){
+  if(!confirm('Удалить аккаунт '+login+'? Данные (результаты, избранное) тоже удалятся.')) return;
+  try{ await api('/api/admin/delete-user', { method:'POST', body:{ id } }); load(); }
+  catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
+}
+
+async function load(){
+  const lm=$('listMsg'); lm.textContent=''; lm.className='msg';
+  if(!getKey()){ lm.textContent='Введите ADMIN_KEY.'; lm.className='msg err'; return; }
+  try{
+    const d = await api('/api/admin/users');
+    $('count').textContent = d.count;
+    $('rows').innerHTML = (d.users||[]).map(u=>`
+      <tr>
+        <td>${u.id}</td><td>${u.email}</td><td>${u.name||''}</td><td>${u.city||''}</td>
+        <td>${u.results}</td><td>${(u.created_at||'').slice(0,10)}</td>
+        <td><button class="btn-del" data-del="${u.id}" data-login="${u.email}">Удалить</button></td>
+      </tr>`).join('');
+    $('rows').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(Number(b.dataset.del), b.dataset.login));
+  }catch(e){ lm.textContent=e.message; lm.className='msg err'; }
+}
+
+$('reloadBtn').onclick = load;
+if(getKey()) load();
+</script>
+</body>
+</html>

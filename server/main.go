@@ -46,6 +46,8 @@ func main() {
 	mux.HandleFunc("POST /api/favorites/toggle", auth(handleToggleFavorite))
 	mux.HandleFunc("POST /api/results", auth(handleSaveResult))
 	mux.HandleFunc("GET /api/admin/users", handleAdminUsers)
+	mux.HandleFunc("POST /api/admin/create-user", handleAdminCreate)
+	mux.HandleFunc("POST /api/admin/delete-user", handleAdminDelete)
 
 	log.Printf("Сервер слушает :%s (CORS origin: %s)", port, allowedOrigin)
 	if err := http.ListenAndServe(":"+port, withCORS(mux)); err != nil {

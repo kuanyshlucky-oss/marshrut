@@ -27,7 +27,7 @@
 
     <div class="header-actions">
       <button class="btn btn-ghost" id="btnGuestLogin" data-open-auth="login">Войти</button>
-      <button class="btn btn-primary" id="btnGuestRegister" data-open-auth="register">Начать подготовку</button>
+      <button class="btn btn-primary" id="btnGuestRegister" data-open-auth="login">Войти в кабинет</button>
 
       <div class="user-chip hidden" id="userChip">
         <span class="user-avatar" id="userAvatar">A</span>
@@ -133,11 +133,6 @@
         </div>
 
         <div class="auth-card">
-          <div class="auth-tabs">
-            <button class="auth-tab is-active" data-tab="login">Вход</button>
-            <button class="auth-tab" data-tab="register">Регистрация</button>
-          </div>
-
           <form class="auth-form" id="loginForm" data-form="login">
             <div class="form-row">
               <label for="loginEmail">Email</label>
@@ -149,27 +144,10 @@
             </div>
             <p class="form-error" id="loginError"></p>
             <button type="submit" class="btn btn-primary btn-block">Войти в кабинет</button>
-            <p class="form-hint">Нет аккаунта? Зарегистрируйтесь — данные сохранятся на сервере.</p>
+            <p class="form-hint">Аккаунт выдаёт администратор — обратитесь к нему за логином и паролем.</p>
           </form>
 
-          <form class="auth-form hidden" id="registerForm" data-form="register">
-            <div class="form-row">
-              <label for="regName">Имя</label>
-              <input id="regName" type="text" required placeholder="Как к вам обращаться">
-            </div>
-            <div class="form-row">
-              <label for="regEmail">Email</label>
-              <input id="regEmail" type="email" required placeholder="you@example.com">
-            </div>
-            <div class="form-row">
-              <label for="regPassword">Пароль</label>
-              <input id="regPassword" type="password" required minlength="6" placeholder="Минимум 6 символов">
-            </div>
-            <p class="form-error" id="registerError"></p>
-            <button type="submit" class="btn btn-primary btn-block">Создать аккаунт</button>
-          </form>
-
-          <p class="auth-disclaimer">Данные хранятся на сервере (Go + SQLite). Аккаунт, профиль и результаты доступны с любого устройства.</p>
+          <p class="auth-disclaimer">Данные хранятся на сервере. Аккаунт, профиль и результаты доступны с любого устройства.</p>
         </div>
       </div>
 
@@ -292,7 +270,7 @@
     <div class="footer-col">
       <h4>Аккаунт</h4>
       <a href="#account" data-open-auth="login">Вход</a>
-      <a href="#account" data-open-auth="register">Регистрация</a>
+      <a href="admin.html">Админка</a>
       <a href="#account">Личный кабинет</a>
     </div>
     <div class="footer-col">

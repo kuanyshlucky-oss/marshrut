@@ -21,43 +21,84 @@ func decode(r *http.Request, v any) error {
 	return json.NewDecoder(io.LimitReader(r.Body, 1<<20)).Decode(v)
 }
 
-// POST /api/auth/register
+// POST /api/auth/register — самрегистрация закрыта. Аккаунты создаёт админ.
 func handleRegister(w http.ResponseWriter, r *http.Request) {
+	writeError(w, http.StatusForbidden, "Регистрация закрыта. Аккаунт выдаёт администратор.")
+}
+
+// Проверка админ-ключа (?key=). false + ответ, если не прошёл.
+func adminGuard(w http.ResponseWriter, r *http.Request) bool {
+	if adminKey == "" {
+		writeError(w, http.StatusForbidden, "Админ-доступ отключён: не задан ADMIN_KEY")
+		return false
+	}
+	if r.URL.Query().Get("key") != adminKey {
+		writeError(w, http.StatusUnauthorized, "Неверный ключ")
+		return false
+	}
+	return true
+}
+
+// POST /api/admin/create-user?key=... — генерит логин+пароль, создаёт аккаунт.
+func handleAdminCreate(w http.ResponseWriter, r *http.Request) {
+	if !adminGuard(w, r) {
+		return
+	}
 	var in struct {
-		Name     string `json:"name"`
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Name  string `json:"name"`
+		Email string `json:"email"`
 	}
-	if err := decode(r, &in); err != nil {
-		writeError(w, http.StatusBadRequest, "Неверный запрос")
-		return
+	_ = decode(r, &in)
+	name := strings.TrimSpace(in.Name)
+	email := strings.ToLower(strings.TrimSpace(in.Email))
+	if email == "" {
+		email = genLogin()
 	}
-	in.Name = strings.TrimSpace(in.Name)
-	in.Email = strings.ToLower(strings.TrimSpace(in.Email))
-	if in.Name == "" || in.Email == "" || len(in.Password) < 6 {
-		writeError(w, http.StatusBadRequest, "Заполните имя, email и пароль (минимум 6 символов)")
-		return
-	}
-	exists, err := emailExists(in.Email)
+	email = strings.ToLower(email) // логин регистронезависим (вход приводит к нижнему)
+	exists, err := emailExists(email)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "Ошибка сервера")
 		return
 	}
 	if exists {
-		writeError(w, http.StatusConflict, "Этот email уже зарегистрирован.")
+		writeError(w, http.StatusConflict, "Такой логин уже есть — попробуйте ещё раз")
 		return
 	}
-	hash, err := hashPassword(in.Password)
+	if name == "" {
+		name = email
+	}
+	pw := genPassword()
+	hash, err := hashPassword(pw)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "Ошибка сервера")
 		return
 	}
-	id, err := createUser(in.Name, in.Email, hash)
+	id, err := createUser(name, email, hash)
 	if err != nil {
-		writeError(w, http.StatusInternalServerError, "Не удалось создать пользователя")
+		writeError(w, http.StatusInternalServerError, "Не удалось создать аккаунт")
 		return
 	}
-	respondAuth(w, id)
+	// пароль отдаётся ОДИН раз — сохранить/передать клиенту
+	writeJSON(w, http.StatusOK, map[string]any{"id": id, "name": name, "login": email, "password": pw})
+}
+
+// POST /api/admin/delete-user?key=... {id}
+func handleAdminDelete(w http.ResponseWriter, r *http.Request) {
+	if !adminGuard(w, r) {
+		return
+	}
+	var in struct {
+		ID int64 `json:"id"`
+	}
+	if err := decode(r, &in); err != nil || in.ID <= 0 {
+		writeError(w, http.StatusBadRequest, "Не указан id")
+		return
+	}
+	if err := deleteUser(in.ID); err != nil {
+		writeError(w, http.StatusInternalServerError, "Не удалось удалить")
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 }
 
 // POST /api/auth/login
@@ -126,12 +167,7 @@ func handleToggleFavorite(w http.ResponseWriter, r *http.Request) {
 // GET /api/admin/users?key=... — список зарегистрированных (без паролей).
 // Отключён, если не задан ADMIN_KEY.
 func handleAdminUsers(w http.ResponseWriter, r *http.Request) {
-	if adminKey == "" {
-		writeError(w, http.StatusForbidden, "Админ-доступ отключён: не задан ADMIN_KEY")
-		return
-	}
-	if r.URL.Query().Get("key") != adminKey {
-		writeError(w, http.StatusUnauthorized, "Неверный ключ")
+	if !adminGuard(w, r) {
 		return
 	}
 	users, err := listUsers()
