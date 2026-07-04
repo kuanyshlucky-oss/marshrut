@@ -71,16 +71,23 @@
       <!-- Logged-in state: dashboard -->
       <div class="dashboard hidden" id="dashboard">
         <div class="section-head">
-          <p class="eyebrow">Личный кабинет</p>
-          <h2>С возвращением, <span id="dashName">Имя</span></h2>
+          <h2>Личный кабинет</h2>
         </div>
 
         <div class="dash-stack">
           <div class="dash-grid">
             <!-- Личные данные -->
             <div class="dash-card">
-              <h3>Личные данные</h3>
-              <form class="profile-form" id="profileForm">
+              <div class="pf-head">
+                <h3>Личные данные</h3>
+                <button type="button" class="btn btn-ghost pf-edit-btn hidden" id="pfEditBtn">✎ Редактировать</button>
+              </div>
+
+              <!-- Режим просмотра -->
+              <div class="profile-view hidden" id="profileView"></div>
+
+              <!-- Режим редактирования -->
+              <form class="profile-form hidden" id="profileForm">
                 <div class="form-row">
                   <label for="pfFullName">ФИО</label>
                   <input id="pfFullName" type="text" placeholder="Фамилия Имя Отчество" autocomplete="name">
@@ -162,7 +169,8 @@
                   </div>
                 </div>
                 <div class="profile-actions">
-                  <button type="submit" class="btn btn-primary">Сохранить данные</button>
+                  <button type="submit" class="btn btn-primary">Сохранить</button>
+                  <button type="button" class="btn btn-ghost hidden" id="pfCancelBtn">Отмена</button>
                   <span class="form-saved hidden" id="profileSaved">Сохранено ✓</span>
                 </div>
               </form>

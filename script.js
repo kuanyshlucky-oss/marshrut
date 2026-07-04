@@ -665,21 +665,12 @@ function renderDashboard() {
   const user = API.getCurrentUser();
   if (!user || !document.getElementById('dashboard')) return; // дашборд только на cabinet.html
 
-  document.getElementById('dashName').textContent = user.name;
-
-  // --- Личные данные ---
+  // --- Личные данные: просмотр или редактирование ---
   const p = user.profile;
-  document.getElementById('pfFullName').value = p.fullName || '';
-  document.getElementById('pfEmail').value = user.email || '';
-  document.getElementById('pfPhone').value = p.phone || '';
-  document.getElementById('pfEducation').value = p.education || '';
-  document.getElementById('pfCity').value = p.city || '';
-  document.getElementById('pfSpeciality').value = String(p.specialityId || 0);
-  document.getElementById('pfLanguage').value = p.language || '';
-  document.getElementById('pfTarget').value = p.targetType || '';
-  document.getElementById('pfForeign').value = p.foreignScore || '';
-  document.getElementById('pfProfileScore').value = p.profileScore || '';
-  document.getElementById('pfBonus').value = p.bonusPoints || '';
+  fillProfileForm(user);
+  renderProfileView(user);
+  // пустой профиль → сразу форма (без «Отмены»); есть данные → просмотр
+  setProfileMode(profileIsEmpty(p) ? 'first' : 'view');
 
   // калькулятор: префилл из профиля
   if (p.specialityId) document.getElementById('calcSpec').value = String(p.specialityId);
@@ -742,7 +733,82 @@ function renderDashboard() {
     </li>
   `).join('');
   favEmpty.classList.toggle('hidden', favs.length > 0);
-  list.querySelectorAll('[data-open-dir]').forEach(btn => btn.addEventListener('click', () => openDirection(btn.dataset.openDir)));
+  // клик по избранному → переход на тест направления (страница теста живёт на index.html)
+  list.querySelectorAll('[data-open-dir]').forEach(btn => btn.addEventListener('click', () => {
+    const code = btn.dataset.openDir;
+    if (typeof DIRECTION_TESTS !== 'undefined' && DIRECTION_TESTS[code]) {
+      location.href = 'index.html?test=' + encodeURIComponent(code);
+    } else {
+      showToast('Тест для этого направления временно недоступен');
+    }
+  }));
+}
+
+/* --- Личные данные: режимы просмотра / редактирования --- */
+function profileIsEmpty(p) {
+  return !(p.fullName || p.phone || p.education || p.city || p.specialityId);
+}
+
+function fillProfileForm(user) {
+  const p = user.profile;
+  document.getElementById('pfFullName').value = p.fullName || '';
+  document.getElementById('pfEmail').value = user.email || '';
+  document.getElementById('pfPhone').value = p.phone || '';
+  document.getElementById('pfEducation').value = p.education || '';
+  document.getElementById('pfCity').value = p.city || '';
+  document.getElementById('pfSpeciality').value = String(p.specialityId || 0);
+  document.getElementById('pfLanguage').value = p.language || '';
+  document.getElementById('pfTarget').value = p.targetType || '';
+  document.getElementById('pfForeign').value = p.foreignScore || '';
+  document.getElementById('pfProfileScore').value = p.profileScore || '';
+  document.getElementById('pfBonus').value = p.bonusPoints || '';
+}
+
+function renderProfileView(user) {
+  const view = document.getElementById('profileView');
+  if (!view) return;
+  const p = user.profile;
+  const spec = REF.specialities.find(s => s.id === p.specialityId);
+  const langNames = { rus: 'Русский', kaz: 'Казахский', eng: 'Английский' };
+  const targetNames = { grant: 'Грант', paid: 'Платное', any: 'Неважно' };
+  const dash = '—';
+  const rows = [
+    ['ФИО', p.fullName], ['Email', user.email], ['Телефон', p.phone],
+    ['Образование', p.education], ['Город', p.city],
+    ['Специальность', spec ? spec.name : ''],
+    ['Язык обучения', langNames[p.language] || ''],
+    ['Цель', targetNames[p.targetType] || ''],
+    ['Баллы КТ', (p.foreignScore || p.profileScore)
+      ? `ин. язык ${p.foreignScore || 0} · профильный ${p.profileScore || 0} · бонусы ${p.bonusPoints || 0}` : ''],
+  ];
+  view.innerHTML = rows.map(([k, v]) => `
+    <div class="pv-row"><span class="pv-key">${k}</span><span class="pv-val">${v ? esc(String(v)) : dash}</span></div>
+  `).join('');
+}
+
+// mode: 'view' | 'edit' | 'first' (первое заполнение — форма без «Отмены»)
+function setProfileMode(mode) {
+  const view = document.getElementById('profileView');
+  const form = document.getElementById('profileForm');
+  const editBtn = document.getElementById('pfEditBtn');
+  const cancelBtn = document.getElementById('pfCancelBtn');
+  if (!view || !form) return;
+  const editing = mode !== 'view';
+  view.classList.toggle('hidden', editing);
+  form.classList.toggle('hidden', !editing);
+  editBtn?.classList.toggle('hidden', editing);
+  cancelBtn?.classList.toggle('hidden', mode !== 'edit');
+}
+
+function wireProfileModes() {
+  const editBtn = document.getElementById('pfEditBtn');
+  const cancelBtn = document.getElementById('pfCancelBtn');
+  if (editBtn) editBtn.addEventListener('click', () => setProfileMode('edit'));
+  if (cancelBtn) cancelBtn.addEventListener('click', () => {
+    const u = API.getCurrentUser();
+    if (u) fillProfileForm(u); // отбросить несохранённые изменения
+    setProfileMode('view');
+  });
 }
 
 function wireProfileForm() {
@@ -770,7 +836,9 @@ function wireProfileForm() {
       clearTimeout(form._savedTimer);
       form._savedTimer = setTimeout(() => saved.classList.add('hidden'), 2000);
       refreshAuthUI();   // обновить имя в шапке
-      renderDashboard();
+      const u = API.getCurrentUser();
+      renderProfileView(u);
+      setProfileMode('view'); // после сохранения — режим просмотра
       showToast('Личные данные сохранены');
     } catch (err) {
       showToast(err.message);
@@ -1055,6 +1123,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   refreshAuthUI();
   wireAuth();
   wireProfileForm();
+  wireProfileModes();
   wireSearch();
   wireDirModal();
   wireQuiz();
@@ -1071,4 +1140,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   refreshAuthUI();
   renderDashboard();
   renderCatalog(); // чтобы подсветить избранное на карточках
+
+  // автозапуск теста по ссылке из кабинета: index.html?test=7M06
+  const testCode = new URLSearchParams(location.search).get('test');
+  if (testCode && document.getElementById('testPage')) {
+    if (DIRECTION_TESTS[testCode]) startQuiz(testCode);
+    else showToast('Тест для этого направления временно недоступен');
+  }
 });
