@@ -668,6 +668,20 @@ function renderDashboard() {
   document.getElementById('pfPhone').value = p.phone || '';
   document.getElementById('pfEducation').value = p.education || '';
   document.getElementById('pfCity').value = p.city || '';
+  document.getElementById('pfSpeciality').value = String(p.specialityId || 0);
+  document.getElementById('pfLanguage').value = p.language || '';
+  document.getElementById('pfTarget').value = p.targetType || '';
+  document.getElementById('pfForeign').value = p.foreignScore || '';
+  document.getElementById('pfProfileScore').value = p.profileScore || '';
+  document.getElementById('pfBonus').value = p.bonusPoints || '';
+
+  // калькулятор: префилл из профиля
+  if (p.specialityId) document.getElementById('calcSpec').value = String(p.specialityId);
+  if (p.foreignScore) document.getElementById('calcForeign').value = p.foreignScore;
+  if (p.profileScore) document.getElementById('calcProfile').value = p.profileScore;
+  if (p.bonusPoints) document.getElementById('calcBonus').value = p.bonusPoints;
+
+  loadRoadmap();
 
   // --- Результаты тестов ---
   const summary = document.getElementById('resultSummary');
@@ -738,6 +752,12 @@ function wireProfileForm() {
         phone: document.getElementById('pfPhone').value.trim(),
         education: document.getElementById('pfEducation').value.trim(),
         city: document.getElementById('pfCity').value.trim(),
+        specialityId: Number(document.getElementById('pfSpeciality').value) || 0,
+        language: document.getElementById('pfLanguage').value,
+        targetType: document.getElementById('pfTarget').value,
+        foreignScore: Number(document.getElementById('pfForeign').value) || 0,
+        profileScore: Number(document.getElementById('pfProfileScore').value) || 0,
+        bonusPoints: Number(document.getElementById('pfBonus').value) || 0,
       });
       const saved = document.getElementById('profileSaved');
       saved.classList.remove('hidden');
@@ -916,6 +936,112 @@ function wireMobileNav() {
 }
 
 /* ---------------------------------------------------------
+   МагистрТрек: справочники, дорожная карта, калькулятор
+   --------------------------------------------------------- */
+let REF = { specialities: [], universities: [] };
+
+async function loadRefs() {
+  try {
+    const [specs, unis] = await Promise.all([
+      apiFetch('/api/specialities'),
+      apiFetch('/api/universities'),
+    ]);
+    REF.specialities = specs || [];
+    REF.universities = unis || [];
+  } catch (_) { /* сервер спит — селекты останутся пустыми, не критично */ }
+
+  const pfSel = document.getElementById('pfSpeciality');
+  const calcSpec = document.getElementById('calcSpec');
+  const calcUni = document.getElementById('calcUni');
+  const specOpts = REF.specialities.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  if (pfSel) pfSel.innerHTML = '<option value="0">Не выбрана</option>' + specOpts;
+  if (calcSpec) calcSpec.innerHTML = specOpts;
+  if (calcUni) calcUni.innerHTML = REF.universities.map(u => `<option value="${u.id}">${esc(u.name)}</option>`).join('');
+}
+
+/* --- Дорожная карта --- */
+async function loadRoadmap() {
+  const list = document.getElementById('rmList');
+  if (!list || !API.getCurrentUser()) return;
+  try {
+    renderRoadmap(await apiFetch('/api/roadmap', { auth: true }));
+  } catch (_) {
+    document.getElementById('rmEmpty').classList.remove('hidden');
+  }
+}
+
+function renderRoadmap(data) {
+  document.getElementById('rmYear').textContent = data.year;
+  document.getElementById('rmProgressBar').style.width = data.progress + '%';
+  document.getElementById('rmProgressLabel').textContent = data.progress + '%';
+  document.getElementById('rmEmpty').classList.add('hidden');
+
+  const fmt = (d) => { const [y, m, day] = d.split('-'); return `до ${Number(day)}.${m}.${y}`; };
+  document.getElementById('rmList').innerHTML = data.steps.map(s => `
+    <li class="rm-step ${s.completed ? 'is-done' : ''}">
+      <button class="rm-check" data-rm="${s.template_id}" aria-label="Отметить шаг">${s.completed ? '✓' : ''}</button>
+      <span class="rm-text">${esc(s.description)}</span>
+      <span class="rm-deadline">${fmt(s.deadline)}</span>
+    </li>
+  `).join('');
+
+  document.querySelectorAll('[data-rm]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      try {
+        renderRoadmap(await apiFetch('/api/roadmap/toggle', {
+          method: 'POST', auth: true, body: { template_id: Number(btn.dataset.rm) },
+        }));
+      } catch (e) { showToast(e.message); }
+    });
+  });
+}
+
+/* --- Калькулятор шансов --- */
+const CALC_LEVELS = {
+  high:   { label: 'Высокий шанс',  cls: 'high' },
+  medium: { label: 'Средний шанс',  cls: 'medium' },
+  low:    { label: 'Низкий шанс',   cls: 'low' },
+  none:   { label: 'Ниже порога',   cls: 'low' },
+};
+
+function wireCalc() {
+  const btn = document.getElementById('calcBtn');
+  if (!btn) return;
+  btn.addEventListener('click', async () => {
+    const box = document.getElementById('calcResult');
+    const q = new URLSearchParams({
+      university_id: document.getElementById('calcUni').value,
+      speciality_id: document.getElementById('calcSpec').value,
+      foreign: document.getElementById('calcForeign').value || '0',
+      profile: document.getElementById('calcProfile').value || '0',
+      bonus: document.getElementById('calcBonus').value || '0',
+    });
+    setBtnLoading(btn, true, 'Считаем…');
+    try {
+      const r = await apiFetch('/api/calculate-chances?' + q.toString(), { auth: true });
+      const lv = CALC_LEVELS[r.level] || CALC_LEVELS.low;
+      const recs = (r.recommendations || []).map(rec => `
+        <li><b>${esc(rec.name)}</b> (${esc(rec.city)}) — проходной ${rec.avg_score}, конкурс ${rec.competition_ratio.toFixed(1)}</li>
+      `).join('');
+      box.innerHTML = `
+        <div class="calc-verdict ${lv.cls}">
+          <span class="calc-level">${lv.label}</span>
+          <span class="calc-score">${r.total} / проходной ${r.avg_passing_score}</span>
+        </div>
+        <p class="calc-msg">${esc(r.message)} Грантов: ${r.grant_count}, заявлений в прошлом году: ${r.applicants_count}.</p>
+        ${recs ? `<p class="calc-rec-head">Куда шансы выше:</p><ul class="calc-recs">${recs}</ul>` : ''}
+      `;
+      box.classList.remove('hidden');
+    } catch (e) {
+      box.innerHTML = `<p class="calc-msg">${esc(e.message)}</p>`;
+      box.classList.remove('hidden');
+    } finally {
+      setBtnLoading(btn, false);
+    }
+  });
+}
+
+/* ---------------------------------------------------------
    INIT
    --------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', async () => {
@@ -929,6 +1055,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireQuiz();
   wireMobileNav();
   wireHeroVideoLoop();
+  wireCalc();
+
+  // справочники нужны ДО renderDashboard (иначе селекты пустые и value не встанет)
+  await loadRefs();
 
   // подтягиваем пользователя по сохранённому токену (может быть медленно
   // на «холодном» сервере) и перерисовываем зависимые от него части

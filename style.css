@@ -680,6 +680,56 @@ body.test-open{ overflow:hidden; }
   border-radius:var(--radius-s); padding:10px 12px; margin:10px 0 14px;
 }
 
+/* =========================== МагистрТрек =========================== */
+.pf-subhead{ font-size:15px; margin:22px 0 12px; padding-top:16px; border-top:1px solid var(--line); }
+.pf-scores{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+
+/* Дорожная карта */
+.rm-year{ font-family:var(--font-mono); font-size:13px; color:var(--accent); }
+.rm-progress-row{ display:flex; align-items:center; gap:14px; margin:14px 0 18px; }
+.rm-progress{ flex:1; height:8px; background:var(--surface-2); border-radius:999px; overflow:hidden; }
+.rm-progress-bar{ height:100%; background:linear-gradient(90deg, var(--beige), var(--accent)); transition:width .3s ease; }
+.rm-progress-label{ font-family:var(--font-mono); font-size:13px; color:var(--ink-soft); min-width:40px; text-align:right; }
+.rm-list{ display:flex; flex-direction:column; }
+.rm-step{
+  display:flex; align-items:flex-start; gap:12px;
+  padding:12px 0; border-bottom:1px solid var(--line); font-size:14px;
+}
+.rm-step:last-child{ border-bottom:none; }
+.rm-check{
+  flex:0 0 auto; width:24px; height:24px; margin-top:-2px;
+  border-radius:50%; border:1.5px solid var(--ink-soft);
+  background:transparent; color:#0e1a16; font-size:14px; line-height:1;
+  transition:background .15s ease, border-color .15s ease;
+}
+.rm-check:hover{ border-color:var(--accent); }
+.rm-step.is-done .rm-check{ background:var(--teal); border-color:var(--teal); }
+.rm-text{ flex:1; }
+.rm-step.is-done .rm-text{ color:var(--ink-soft); text-decoration:line-through; }
+.rm-deadline{ flex:0 0 auto; font-family:var(--font-mono); font-size:12px; color:var(--accent); white-space:nowrap; }
+
+/* Калькулятор */
+.calc-form{ display:grid; grid-template-columns:2fr 2fr 1fr 1fr 1fr auto; gap:12px; align-items:end; }
+.calc-form .form-row{ margin-bottom:0; }
+.calc-result{ margin-top:18px; border-top:1px solid var(--line); padding-top:16px; }
+.calc-verdict{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:10px; }
+.calc-level{ font-family:var(--font-mono); font-size:13px; text-transform:uppercase; letter-spacing:.06em; padding:6px 14px; border-radius:999px; }
+.calc-verdict.high .calc-level{ background:var(--teal-soft); color:var(--teal); }
+.calc-verdict.medium .calc-level{ background:rgba(210,196,186,.15); color:var(--beige); }
+.calc-verdict.low .calc-level{ background:var(--danger-soft); color:var(--danger); }
+.calc-score{ font-family:var(--font-mono); font-size:18px; color:var(--ink); }
+.calc-msg{ font-size:14px; color:var(--ink-soft); margin:0 0 6px; }
+.calc-rec-head{ font-size:13px; font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.05em; color:var(--accent); margin:14px 0 8px; }
+.calc-recs{ display:flex; flex-direction:column; gap:6px; font-size:14px; color:var(--ink-soft); }
+.calc-recs b{ color:var(--ink); font-weight:500; }
+
+@media (max-width:880px){
+  .calc-form{ grid-template-columns:1fr 1fr; }
+  .pf-scores{ grid-template-columns:1fr; }
+  .rm-deadline{ display:block; }
+  .rm-step{ flex-wrap:wrap; }
+}
+
 /* =========================== RESPONSIVE =========================== */
 @media (max-width: 880px){
   .nav-toggle{ display:flex; }
