@@ -379,6 +379,7 @@ function renderDirectionCard(d) {
 
 function renderCatalog() {
   const grid = document.getElementById('dirGrid');
+  if (!grid) return; // каталог только на index.html
   const empty = document.getElementById('catalogEmpty');
   const count = document.getElementById('resultCount');
   const matched = DIRECTIONS.filter(directionMatchesSearch);
@@ -473,6 +474,7 @@ function closeDirModal() {
 }
 
 function wireDirModal() {
+  if (!document.getElementById('dirModal')) return;
   document.getElementById('dirClose').addEventListener('click', closeDirModal);
   document.getElementById('dirModal').addEventListener('click', (e) => { if (e.target.id === 'dirModal') closeDirModal(); });
   document.addEventListener('keydown', (e) => {
@@ -601,6 +603,7 @@ function closeReview() {
 }
 
 function wireQuiz() {
+  if (!document.getElementById('testPage')) return; // страница теста только на index.html
   document.getElementById('testExit').addEventListener('click', closeQuiz);
   document.getElementById('testNext').addEventListener('click', quizNext);
   document.getElementById('reviewBtn').addEventListener('click', openReview);
@@ -608,7 +611,7 @@ function wireQuiz() {
   document.getElementById('reviewClose').addEventListener('click', closeReview);
   document.getElementById('quizDashBtn').addEventListener('click', () => {
     closeQuiz();
-    document.getElementById('account').scrollIntoView({ behavior: 'smooth' });
+    location.href = 'cabinet.html';
   });
 
   // Клавиатура: ENTER = далее, цифры 1-9 = выбор варианта, ESC = выход
@@ -631,33 +634,36 @@ function wireQuiz() {
    6) АВТОРИЗАЦИЯ / ЛИЧНЫЙ КАБИНЕТ
    --------------------------------------------------------- */
 function refreshAuthUI() {
+  // элементы различаются на index.html и cabinet.html — всё null-safe
   const user = API.getCurrentUser();
   const chip = document.getElementById('userChip');
   const guestLogin = document.getElementById('btnGuestLogin');
   const guestRegister = document.getElementById('btnGuestRegister');
   const authZone = document.getElementById('authZone');
   const dashboard = document.getElementById('dashboard');
+  const avatar = document.getElementById('userAvatar');
+  const nameLabel = document.getElementById('userNameLabel');
 
   if (user) {
-    chip.classList.remove('hidden');
-    guestLogin.classList.add('hidden');
-    guestRegister.classList.add('hidden');
-    document.getElementById('userAvatar').textContent = (user.name || '?').trim()[0].toUpperCase();
-    document.getElementById('userNameLabel').textContent = user.name;
-    authZone.classList.add('hidden');
-    dashboard.classList.remove('hidden');
+    chip?.classList.remove('hidden');
+    guestLogin?.classList.add('hidden');
+    guestRegister?.classList.add('hidden');
+    if (avatar) avatar.textContent = (user.name || '?').trim()[0].toUpperCase();
+    if (nameLabel) nameLabel.textContent = user.name;
+    authZone?.classList.add('hidden');
+    dashboard?.classList.remove('hidden');
   } else {
-    chip.classList.add('hidden');
-    guestLogin.classList.remove('hidden');
-    guestRegister.classList.remove('hidden');
-    authZone.classList.remove('hidden');
-    dashboard.classList.add('hidden');
+    chip?.classList.add('hidden');
+    guestLogin?.classList.remove('hidden');
+    guestRegister?.classList.remove('hidden');
+    authZone?.classList.remove('hidden');
+    dashboard?.classList.add('hidden');
   }
 }
 
 function renderDashboard() {
   const user = API.getCurrentUser();
-  if (!user) return;
+  if (!user || !document.getElementById('dashboard')) return; // дашборд только на cabinet.html
 
   document.getElementById('dashName').textContent = user.name;
 
@@ -787,21 +793,19 @@ function setBtnLoading(btn, loading, label) {
   }
 }
 
-function openAuth(tab) {
+function openAuth() {
+  // кабинет живёт на отдельной странице; с других страниц — переход
+  const zone = document.getElementById('authZone');
+  if (!zone) { location.href = 'cabinet.html'; return; }
   document.getElementById('account').scrollIntoView({ behavior: 'smooth' });
-  switchAuthTab(tab || 'login');
-}
-
-function switchAuthTab() {
-  // регистрация закрыта — всегда показываем форму входа
-  document.getElementById('loginForm').classList.remove('hidden');
 }
 
 function wireAuth() {
   document.querySelectorAll('[data-open-auth]').forEach(el => {
-    el.addEventListener('click', (e) => { e.preventDefault(); openAuth(el.dataset.openAuth); });
+    el.addEventListener('click', (e) => { e.preventDefault(); openAuth(); });
   });
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
@@ -820,14 +824,14 @@ function wireAuth() {
     }
   });
 
-  document.getElementById('btnLogout').addEventListener('click', () => {
+  const btnLogout = document.getElementById('btnLogout');
+  if (btnLogout) btnLogout.addEventListener('click', () => {
     API.logout();
     showToast('Вы вышли из аккаунта');
     afterAuthChange();
   });
-  document.getElementById('btnGoDashboard').addEventListener('click', () => {
-    document.getElementById('account').scrollIntoView({ behavior: 'smooth' });
-  });
+  const btnGoDash = document.getElementById('btnGoDashboard');
+  if (btnGoDash) btnGoDash.addEventListener('click', () => { location.href = 'cabinet.html'; });
 }
 
 function afterAuthChange() {
@@ -858,6 +862,7 @@ function showToast(message) {
    ПОИСК
    --------------------------------------------------------- */
 function wireSearch() {
+  if (!document.getElementById('searchBar')) return;
   document.getElementById('searchBar').addEventListener('submit', (e) => {
     e.preventDefault();
     currentSearch = document.getElementById('fSearch').value.trim();

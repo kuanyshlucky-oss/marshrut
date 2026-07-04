@@ -22,13 +22,12 @@
       <a href="#catalog">Направления</a>
       <a href="heatmap.html">Карта вузов</a>
       <a href="#how">Как поступить</a>
-      <a href="#account">Кабинет</a>
+      <a href="cabinet.html">Кабинет</a>
       <a href="#about">О платформе</a>
     </nav>
 
     <div class="header-actions">
-      <button class="btn btn-ghost" id="btnGuestLogin" data-open-auth="login">Войти</button>
-      <button class="btn btn-primary" id="btnGuestRegister" data-open-auth="login">Войти в кабинет</button>
+      <a class="btn btn-primary" id="btnGuestRegister" href="cabinet.html">Войти в кабинет</a>
 
       <div class="user-chip hidden" id="userChip">
         <span class="user-avatar" id="userAvatar">A</span>
@@ -122,202 +121,6 @@
     </div>
   </section>
 
-  <!-- ================= ACCOUNT / DASHBOARD ================= -->
-  <section class="section" id="account">
-    <div class="wrap">
-
-      <!-- Guest state: auth card -->
-      <div class="auth-zone" id="authZone">
-        <div class="section-head">
-          <p class="eyebrow">Личный кабинет</p>
-          <h2>Войдите, чтобы сохранять направления</h2>
-        </div>
-
-        <div class="auth-card">
-          <form class="auth-form" id="loginForm" data-form="login">
-            <div class="form-row">
-              <label for="loginEmail">Логин</label>
-              <input id="loginEmail" type="text" required placeholder="логин от администратора" autocomplete="username">
-            </div>
-            <div class="form-row">
-              <label for="loginPassword">Пароль</label>
-              <input id="loginPassword" type="password" required placeholder="••••••••">
-            </div>
-            <p class="form-error" id="loginError"></p>
-            <button type="submit" class="btn btn-primary btn-block">Войти в кабинет</button>
-            <p class="form-hint">Аккаунт выдаёт администратор — обратитесь к нему за логином и паролем.</p>
-          </form>
-
-          <p class="auth-disclaimer">Данные хранятся на сервере. Аккаунт, профиль и результаты доступны с любого устройства.</p>
-        </div>
-      </div>
-
-      <!-- Logged-in state: dashboard -->
-      <div class="dashboard hidden" id="dashboard">
-        <div class="section-head">
-          <p class="eyebrow">Личный кабинет</p>
-          <h2>С возвращением, <span id="dashName">Имя</span></h2>
-        </div>
-
-        <div class="dash-stack">
-          <div class="dash-grid">
-            <!-- Личные данные -->
-            <div class="dash-card">
-              <h3>Личные данные</h3>
-              <form class="profile-form" id="profileForm">
-                <div class="form-row">
-                  <label for="pfFullName">ФИО</label>
-                  <input id="pfFullName" type="text" placeholder="Фамилия Имя Отчество" autocomplete="name">
-                </div>
-                <div class="form-row">
-                  <label for="pfEmail">Email</label>
-                  <input id="pfEmail" type="email" readonly>
-                </div>
-                <div class="form-row">
-                  <label for="pfPhone">Телефон</label>
-                  <input id="pfPhone" type="tel" placeholder="+7 ___ ___ __ __" autocomplete="tel">
-                </div>
-                <div class="form-row">
-                  <label for="pfEducation">Образование</label>
-                  <input id="pfEducation" type="text" placeholder="Вуз, специальность, степень">
-                </div>
-                <div class="form-row">
-                  <label for="pfCity">Город</label>
-                  <select id="pfCity">
-                    <option value="">Не указан</option>
-                    <option value="Астана">Астана</option>
-                    <option value="Алматы">Алматы</option>
-                    <option value="Шымкент">Шымкент</option>
-                    <option value="Караганда">Караганда</option>
-                    <option value="Актобе">Актобе</option>
-                    <option value="Тараз">Тараз</option>
-                    <option value="Павлодар">Павлодар</option>
-                    <option value="Усть-Каменогорск">Усть-Каменогорск</option>
-                    <option value="Семей">Семей</option>
-                    <option value="Атырау">Атырау</option>
-                    <option value="Костанай">Костанай</option>
-                    <option value="Кызылорда">Кызылорда</option>
-                    <option value="Уральск">Уральск</option>
-                    <option value="Петропавловск">Петропавловск</option>
-                    <option value="Актау">Актау</option>
-                    <option value="Темиртау">Темиртау</option>
-                    <option value="Туркестан">Туркестан</option>
-                    <option value="Кокшетау">Кокшетау</option>
-                    <option value="Талдыкорган">Талдыкорган</option>
-                    <option value="Экибастуз">Экибастуз</option>
-                    <option value="Другой город">Другой город</option>
-                  </select>
-                </div>
-                <h3 class="pf-subhead">Цель поступления</h3>
-                <div class="form-row">
-                  <label for="pfSpeciality">Специальность</label>
-                  <select id="pfSpeciality"><option value="0">Не выбрана</option></select>
-                </div>
-                <div class="form-row">
-                  <label for="pfLanguage">Язык обучения</label>
-                  <select id="pfLanguage">
-                    <option value="">Не указан</option>
-                    <option value="rus">Русский</option>
-                    <option value="kaz">Казахский</option>
-                    <option value="eng">Английский</option>
-                  </select>
-                </div>
-                <div class="form-row">
-                  <label for="pfTarget">Цель</label>
-                  <select id="pfTarget">
-                    <option value="">Не указана</option>
-                    <option value="grant">Грант</option>
-                    <option value="paid">Платное</option>
-                    <option value="any">Неважно</option>
-                  </select>
-                </div>
-                <div class="pf-scores">
-                  <div class="form-row">
-                    <label for="pfForeign">Ин. язык</label>
-                    <input id="pfForeign" type="number" min="0" max="100" placeholder="0">
-                  </div>
-                  <div class="form-row">
-                    <label for="pfProfileScore">Профильный</label>
-                    <input id="pfProfileScore" type="number" min="0" max="100" placeholder="0">
-                  </div>
-                  <div class="form-row">
-                    <label for="pfBonus">Бонусы</label>
-                    <input id="pfBonus" type="number" min="0" max="50" placeholder="0">
-                  </div>
-                </div>
-                <div class="profile-actions">
-                  <button type="submit" class="btn btn-primary">Сохранить данные</button>
-                  <span class="form-saved hidden" id="profileSaved">Сохранено ✓</span>
-                </div>
-              </form>
-            </div>
-
-            <!-- Результаты тестов -->
-            <div class="dash-card">
-              <h3>Результаты тестов</h3>
-              <div class="result-summary hidden" id="resultSummary"></div>
-              <table class="results-table" id="resultsTable">
-                <thead>
-                  <tr><th>Направление</th><th>Результат</th><th>Статус</th><th>Дата</th></tr>
-                </thead>
-                <tbody id="resultsBody"></tbody>
-              </table>
-              <p class="empty-state-sm hidden" id="dashResultsEmpty">Вы ещё не проходили тесты. Откройте направление в каталоге и нажмите «Пройти тест по направлению».</p>
-            </div>
-          </div>
-
-          <!-- Дорожная карта -->
-          <div class="dash-card dash-card-wide">
-            <h3>Дорожная карта поступления <span class="rm-year" id="rmYear"></span></h3>
-            <div class="rm-progress-row">
-              <div class="rm-progress"><div class="rm-progress-bar" id="rmProgressBar" style="width:0%"></div></div>
-              <span class="rm-progress-label" id="rmProgressLabel">0%</span>
-            </div>
-            <ul class="rm-list" id="rmList"></ul>
-            <p class="empty-state-sm hidden" id="rmEmpty">Не удалось загрузить дорожную карту.</p>
-          </div>
-
-          <!-- Калькулятор шансов -->
-          <div class="dash-card dash-card-wide">
-            <h3>Калькулятор шансов на грант</h3>
-            <div class="calc-form">
-              <div class="form-row">
-                <label for="calcUni">Университет</label>
-                <select id="calcUni"></select>
-              </div>
-              <div class="form-row">
-                <label for="calcSpec">Специальность</label>
-                <select id="calcSpec"></select>
-              </div>
-              <div class="form-row">
-                <label for="calcForeign">Ин. язык</label>
-                <input id="calcForeign" type="number" min="0" max="100" placeholder="0">
-              </div>
-              <div class="form-row">
-                <label for="calcProfile">Профильный</label>
-                <input id="calcProfile" type="number" min="0" max="100" placeholder="0">
-              </div>
-              <div class="form-row">
-                <label for="calcBonus">Бонусы</label>
-                <input id="calcBonus" type="number" min="0" max="50" placeholder="0">
-              </div>
-              <button class="btn btn-primary" id="calcBtn" type="button">Рассчитать</button>
-            </div>
-            <div class="calc-result hidden" id="calcResult"></div>
-          </div>
-
-          <!-- Избранные направления -->
-          <div class="dash-card dash-card-wide">
-            <h3>Избранные направления</h3>
-            <ul class="dash-favorites" id="dashFavorites"></ul>
-            <p class="empty-state-sm hidden" id="dashFavEmpty">Вы пока не отметили ни одного направления — нажмите ☆ на карточке в каталоге выше.</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
   <!-- ================= ABOUT / CONTACT ================= -->
   <section class="section contact-band" id="about">
     <div class="wrap contact-inner">
@@ -348,9 +151,9 @@
     </div>
     <div class="footer-col">
       <h4>Аккаунт</h4>
-      <a href="#account" data-open-auth="login">Вход</a>
+      <a href="cabinet.html">Вход</a>
       <a href="admin.html">Админка</a>
-      <a href="#account">Личный кабинет</a>
+      <a href="cabinet.html">Личный кабинет</a>
     </div>
     <div class="footer-col">
       <h4>Поддержка</h4>
