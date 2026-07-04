@@ -35,6 +35,9 @@ func main() {
 	if err := initDB(dsn); err != nil {
 		log.Fatalf("ошибка инициализации БД: %v", err)
 	}
+	if err := initTrack(); err != nil {
+		log.Fatalf("ошибка инициализации справочников: %v", err)
+	}
 	log.Print("БД готова (Postgres)")
 
 	mux := http.NewServeMux()
@@ -48,6 +51,13 @@ func main() {
 	mux.HandleFunc("GET /api/admin/users", handleAdminUsers)
 	mux.HandleFunc("POST /api/admin/create-user", handleAdminCreate)
 	mux.HandleFunc("POST /api/admin/delete-user", handleAdminDelete)
+	// МагистрТрек
+	mux.HandleFunc("GET /api/universities", handleUniversities)
+	mux.HandleFunc("GET /api/specialities", handleSpecialities)
+	mux.HandleFunc("GET /api/heatmap", handleHeatmap)
+	mux.HandleFunc("GET /api/calculate-chances", auth(handleCalculate))
+	mux.HandleFunc("GET /api/roadmap", auth(handleRoadmap))
+	mux.HandleFunc("POST /api/roadmap/toggle", auth(handleRoadmapToggle))
 
 	log.Printf("Сервер слушает :%s (CORS origin: %s)", port, allowedOrigin)
 	if err := http.ListenAndServe(":"+port, withCORS(mux)); err != nil {

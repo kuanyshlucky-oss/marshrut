@@ -21,6 +21,13 @@ type Profile struct {
 	Phone     string `json:"phone"`
 	Education string `json:"education"`
 	City      string `json:"city"`
+	// МагистрТрек: цель поступления и баллы КТ
+	SpecialityID int    `json:"specialityId"`
+	Language     string `json:"language"`   // rus / kaz / eng
+	TargetType   string `json:"targetType"` // grant / paid / any
+	ForeignScore int    `json:"foreignScore"`
+	ProfileScore int    `json:"profileScore"`
+	BonusPoints  int    `json:"bonusPoints"`
 }
 
 type Result struct {
@@ -101,8 +108,12 @@ func getUserAuth(email string) (int64, string, error) {
 func loadUser(id int64) (*User, error) {
 	u := &User{Favorites: []string{}, Results: []Result{}}
 	err := db.QueryRow(
-		`SELECT name, email, full_name, phone, education, city FROM users WHERE id = $1`, id,
-	).Scan(&u.Name, &u.Email, &u.Profile.FullName, &u.Profile.Phone, &u.Profile.Education, &u.Profile.City)
+		`SELECT name, email, full_name, phone, education, city,
+		        speciality_id, language, target_type, foreign_score, profile_score, bonus_points
+		 FROM users WHERE id = $1`, id,
+	).Scan(&u.Name, &u.Email, &u.Profile.FullName, &u.Profile.Phone, &u.Profile.Education, &u.Profile.City,
+		&u.Profile.SpecialityID, &u.Profile.Language, &u.Profile.TargetType,
+		&u.Profile.ForeignScore, &u.Profile.ProfileScore, &u.Profile.BonusPoints)
 	if err != nil {
 		return nil, err
 	}
@@ -139,16 +150,16 @@ func loadUser(id int64) (*User, error) {
 
 func updateProfile(id int64, p Profile) error {
 	// name в шапке = ФИО (как во фронтенде); если ФИО пустое — name не трогаем
-	if p.FullName != "" {
-		_, err := db.Exec(
-			`UPDATE users SET full_name = $1, phone = $2, education = $3, city = $4, name = $5 WHERE id = $6`,
-			p.FullName, p.Phone, p.Education, p.City, p.FullName, id,
-		)
-		return err
-	}
 	_, err := db.Exec(
-		`UPDATE users SET full_name = $1, phone = $2, education = $3, city = $4 WHERE id = $5`,
-		p.FullName, p.Phone, p.Education, p.City, id,
+		`UPDATE users SET
+			full_name = $1, phone = $2, education = $3, city = $4,
+			speciality_id = $5, language = $6, target_type = $7,
+			foreign_score = $8, profile_score = $9, bonus_points = $10,
+			name = CASE WHEN $1 <> '' THEN $1 ELSE name END
+		 WHERE id = $11`,
+		p.FullName, p.Phone, p.Education, p.City,
+		p.SpecialityID, p.Language, p.TargetType,
+		p.ForeignScore, p.ProfileScore, p.BonusPoints, id,
 	)
 	return err
 }
