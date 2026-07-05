@@ -48,7 +48,7 @@ button{ font-family:inherit; cursor:pointer; }
 .hidden{ display:none !important; }
 
 /* стеклянная панель (ключевой приём макета) */
-.glass, .auth-card, .dash-card, .dir-card, .step-card, .modal, .filter-bar{
+.glass, .auth-card, .dash-card, .dir-card, .path-step, .modal, .filter-bar{
   background:var(--glass);
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
@@ -311,18 +311,30 @@ h3{ font-size:22px; }
 }
 
 /* =========================== HOW / STEPS =========================== */
-.step-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; }
-.step-card{
-  border-radius:var(--radius-l); padding:26px 22px;
+/* =========================== ПУТЬ АБИТУРИЕНТА =========================== */
+.path-chain{ display:flex; align-items:stretch; gap:14px; }
+.path-step{
+  flex:1 1 0; min-width:0; border-radius:var(--radius-l);
+  padding:24px 18px; text-align:left; font-family:inherit; color:var(--ink);
+  cursor:default; transition:border-color .2s ease, transform .2s ease, background .2s ease;
 }
-.step-num{
+.path-step:hover{ border-color:rgba(0,219,233,.4); transform:translateY(-3px); }
+.path-step-active{ cursor:pointer; border-color:rgba(0,219,233,.35); }
+.path-step-active:hover{ background:rgba(0,219,233,.08); border-color:var(--accent); }
+.path-num{
   display:inline-flex; align-items:center; justify-content:center;
-  width:44px; height:44px; border-radius:50%;
+  width:40px; height:40px; border-radius:50%;
   font-family:var(--font-mono); font-size:13px; font-weight:500;
   color:var(--accent); background:transparent; border:1px solid rgba(0,219,233,.4);
 }
-.step-card h3{ font-size:19px; margin:16px 0 8px; }
-.step-card p{ color:var(--ink-soft); font-size:14px; margin:0; }
+.path-step h3{ font-size:16px; margin:14px 0 8px; }
+.path-step p{ color:var(--ink-soft); font-size:13px; margin:0; line-height:1.5; }
+.path-arrow{ flex:0 0 auto; display:flex; align-items:center; color:var(--accent); font-size:20px; opacity:.7; }
+
+@media (max-width:960px){
+  .path-chain{ flex-direction:column; }
+  .path-arrow{ justify-content:center; transform:rotate(90deg); padding:2px 0; }
+}
 
 /* =========================== AUTH / DASHBOARD =========================== */
 .auth-card{

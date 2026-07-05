@@ -1166,6 +1166,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireQuiz();
   wireMobileNav();
   wireHeroVideoLoop();
+  document.getElementById('pathPrepBtn')?.addEventListener('click', () => {
+    document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+  });
   wireCalc();
 
   // справочники нужны ДО renderDashboard (иначе селекты пустые и value не встанет)
