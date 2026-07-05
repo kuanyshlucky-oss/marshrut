@@ -685,6 +685,7 @@ body.test-open{ overflow:hidden; }
 .gate-lock{ font-size:44px; margin-bottom:18px; }
 .gate-modal h3{ font-size:20px; margin:0 0 14px; }
 .gate-modal p{ font-size:14px; color:var(--ink-soft); margin:0 0 26px; }
+.gate-buy-btn{ margin-top:12px; }
 
 /* =========================== Профиль: просмотр/редактирование =========================== */
 .pf-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
