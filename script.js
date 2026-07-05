@@ -736,8 +736,9 @@ function renderDashboard() {
     const pct = Math.round((r.score / r.total) * 100);
     const passed = pct >= 60;
     const d = findDirection(r.code);
+    const q = new URLSearchParams({ result: r.code, score: r.score, total: r.total, date: r.date });
     return `
-      <tr>
+      <tr class="results-row" data-href="index.html?${q.toString()}" tabindex="0">
         <td>${d ? `${d.code} · ${d.name}` : r.code}</td>
         <td>${r.score}/${r.total}</td>
         <td><span class="test-status-badge ${passed ? 'passed' : 'failed'}">${passed ? 'Сдан' : 'Не сдан'}</span></td>
@@ -745,6 +746,11 @@ function renderDashboard() {
       </tr>
     `;
   }).join('');
+  body.querySelectorAll('.results-row').forEach(tr => {
+    const go = () => location.href = tr.dataset.href;
+    tr.addEventListener('click', go);
+    tr.addEventListener('keydown', (e) => { if (e.key === 'Enter') go(); });
+  });
   empty.classList.toggle('hidden', rows.length > 0);
   table.classList.toggle('hidden', rows.length === 0);
 
@@ -1178,4 +1184,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (DIRECTION_TESTS[testCode]) startQuiz(testCode);
     else showToast('Тест для этого направления временно недоступен');
   }
+
+  // страница деталей пройденного теста: index.html?result=7M06&score=3&total=4&date=2026-07-05
+  const qs = new URLSearchParams(location.search);
+  const resultCode = qs.get('result');
+  if (resultCode && document.getElementById('resultPage')) {
+    const rDir = findDirection(resultCode);
+    if (requireAuth(rDir && rDir.code, rDir && rDir.name)) {
+      openResultDetail(resultCode, Number(qs.get('score')), Number(qs.get('total')), qs.get('date') || '');
+    }
+  }
 });
+
+/* Страница деталей пройденного теста (без данных о конкретных ответах —
+   БД хранит только score/total; показываем вопросы с правильными ответами). */
+function openResultDetail(code, score, total, date) {
+  const test = DIRECTION_TESTS[code];
+  const d = findDirection(code);
+  if (!test || !d) { showToast('Тест для этого направления недоступен'); return; }
+  const passed = total > 0 && Math.round((score / total) * 100) >= 60;
+
+  document.getElementById('resultStamp').classList.toggle('is-fail', !passed);
+  document.getElementById('resultStampStatus').textContent = passed ? 'Сдано' : 'Не сдано';
+  document.getElementById('resultStampScore').textContent = `${score}/${total}`;
+  document.getElementById('resultTitle').textContent = `${d.code} · ${d.name}`;
+  document.getElementById('resultSub').textContent = date ? `Пройден ${date}` : '';
+
+  document.getElementById('resultQList').innerHTML = test.questions.map((q, i) => {
+    const opts = q.options.map((o, oi) => `
+      <div class="rev-opt ${oi === q.correct ? 'correct' : ''}"><span>${esc(o)}</span>${oi === q.correct ? '<span class="rev-tag ok">Правильный ответ</span>' : ''}</div>
+    `).join('');
+    const why = q.why
+      ? `<div class="rev-why"><b>Почему:</b> ${esc(q.why)}</div>`
+      : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(q.options[q.correct])}</div>`;
+    return `
+      <div class="rev-item">
+        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${esc(q.q)}</p>
+        <div class="rev-opts">${opts}</div>
+        ${why}
+      </div>`;
+  }).join('');
+
+  document.getElementById('resultExit').onclick = () => location.href = 'cabinet.html';
+  document.getElementById('resultCloseBtn').onclick = () => location.href = 'cabinet.html';
+  document.getElementById('resultRetryBtn').onclick = () => startQuiz(code);
+
+  document.getElementById('resultPage').classList.remove('hidden');
+  document.body.classList.add('test-open');
+  window.scrollTo(0, 0);
+}

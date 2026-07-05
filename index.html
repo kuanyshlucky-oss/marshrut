@@ -216,6 +216,25 @@
   </div>
 </div>
 
+<!-- ================= RESULT DETAIL (пройденный тест) ================= -->
+<div class="test-page review-page hidden" id="resultPage">
+  <button class="test-exit" id="resultExit" aria-label="Закрыть">×</button>
+  <div class="review-inner">
+    <div class="kt-stamp" id="resultStamp">
+      <span class="kt-stamp-status" id="resultStampStatus">Сдано</span>
+      <span class="kt-stamp-score" id="resultStampScore">3/4</span>
+    </div>
+    <h2 class="test-title" id="resultTitle">Направление</h2>
+    <p class="test-sub" id="resultSub">Дата</p>
+    <p class="topics-head" style="margin-top:26px">Вопросы теста и правильные ответы</p>
+    <div id="resultQList"></div>
+    <div class="test-result-nav">
+      <button class="btn btn-ghost" id="resultRetryBtn">Пройти ещё раз</button>
+      <button class="btn btn-primary" id="resultCloseBtn">В личный кабинет</button>
+    </div>
+  </div>
+</div>
+
 <!-- ================= КТ SIMULATION (full-screen) ================= -->
 <div class="test-page hidden" id="ktPage">
   <button class="test-exit" id="ktClose" aria-label="Выйти из КТ">×</button>
