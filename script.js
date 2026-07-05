@@ -448,18 +448,19 @@ function renderDirectionView(code) {
   `;
 
   body.querySelectorAll('[data-open-subject]').forEach(btn => btn.addEventListener('click', () => renderSubjectView(code, btn.dataset.openSubject)));
-  document.getElementById('dirTestBtn').addEventListener('click', () => { if (requireAuth(d.name)) startQuiz(code); });
-  document.getElementById('dirKTBtn').addEventListener('click', () => { if (requireAuth(d.name)) { closeDirModal(); window.openKT(code); } });
+  document.getElementById('dirTestBtn').addEventListener('click', () => { if (requireAuth(d.code, d.name)) startQuiz(code); });
+  document.getElementById('dirKTBtn').addEventListener('click', () => { if (requireAuth(d.code, d.name)) { closeDirModal(); window.openKT(code); } });
 }
 
 /* Гейт: тест/КТ доступны только вошедшим. Возвращает true, если можно продолжать.
-   courseName — название направления для текста сообщения в WhatsApp. */
+   courseCode/courseName — код и название направления для текста сообщения в WhatsApp. */
 const WHATSAPP_PHONE = '77473334123';
-function requireAuth(courseName) {
+function requireAuth(courseCode, courseName) {
   if (API.getCurrentUser()) return true;
   const buyBtn = document.getElementById('gateBuyBtn');
   if (buyBtn) {
-    const text = `Здравствуйте! Я хочу приобрести доступ к курсу подготовки по направлению "${courseName || 'на сайте'}". Подскажите, пожалуйста, как произвести оплату?`;
+    const codePrefix = courseCode ? `*${courseCode}* ` : '';
+    const text = `Здравствуйте! Я хочу приобрести доступ к курсу подготовки по направлению "${codePrefix}${courseName || 'на сайте'}". Подскажите, пожалуйста, как произвести оплату?`;
     buyBtn.href = `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`;
   }
   document.getElementById('gateModal').classList.remove('hidden');
@@ -1167,7 +1168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // автозапуск теста по ссылке из кабинета: index.html?test=7M06
   const testCode = new URLSearchParams(location.search).get('test');
   const testCodeDir = testCode ? findDirection(testCode) : null;
-  if (testCode && document.getElementById('testPage') && requireAuth(testCodeDir && testCodeDir.name)) {
+  if (testCode && document.getElementById('testPage') && requireAuth(testCodeDir && testCodeDir.code, testCodeDir && testCodeDir.name)) {
     if (DIRECTION_TESTS[testCode]) startQuiz(testCode);
     else showToast('Тест для этого направления временно недоступен');
   }
