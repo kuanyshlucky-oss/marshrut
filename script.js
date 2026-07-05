@@ -553,6 +553,11 @@ function renderQuizQuestion() {
 
   document.getElementById('testNext').textContent =
     activeQuiz.qIndex === test.questions.length - 1 ? 'Завершить' : 'Далее';
+  document.getElementById('testPrev').disabled = activeQuiz.qIndex === 0;
+}
+
+function quizPrev() {
+  if (activeQuiz.qIndex > 0) { activeQuiz.qIndex--; renderQuizQuestion(); }
 }
 
 function quizNext() {
@@ -628,6 +633,7 @@ function closeReview() {
 function wireQuiz() {
   if (!document.getElementById('testPage')) return; // страница теста только на index.html
   document.getElementById('testExit').addEventListener('click', closeQuiz);
+  document.getElementById('testPrev').addEventListener('click', quizPrev);
   document.getElementById('testNext').addEventListener('click', quizNext);
   document.getElementById('reviewBtn').addEventListener('click', openReview);
   document.getElementById('reviewExit').addEventListener('click', closeReview);
