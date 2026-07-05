@@ -236,12 +236,19 @@ function renderKTQuestion() {
         </button>`).join('')}
     </div>
     <div class="test-foot">
+      <button class="btn test-prev" id="ktPrev" ${s.idx === 0 ? 'disabled' : ''}>← Назад</button>
       <span class="test-hint">Нажмите <b>ENTER</b></span>
       <button class="btn test-next" id="ktNext">${s.idx === s.flat.length - 1 ? 'Завершить' : 'Далее'}</button>
     </div>
   `;
   ktEl().querySelectorAll('[data-opt]').forEach(b => b.addEventListener('click', () => { s.answers[s.idx] = Number(b.dataset.opt); renderKTQuestion(); }));
+  document.getElementById('ktPrev').addEventListener('click', ktPrev);
   document.getElementById('ktNext').addEventListener('click', ktNext);
+}
+
+function ktPrev() {
+  const s = activeKT;
+  if (s.idx > 0) { s.idx--; renderKTQuestion(); }
 }
 
 function ktNext() {
