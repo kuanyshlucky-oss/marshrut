@@ -518,6 +518,7 @@ function startQuiz(code) {
   document.getElementById('testRun').classList.remove('hidden');
   document.getElementById('testResult').classList.add('hidden');
   document.getElementById('dirModal').classList.add('hidden');
+  document.getElementById('resultPage')?.classList.add('hidden'); // если открыт со страницы деталей прошлой попытки
 
   renderQuizQuestion();
   document.getElementById('testPage').classList.remove('hidden');
