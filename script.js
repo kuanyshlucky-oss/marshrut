@@ -448,8 +448,23 @@ function renderDirectionView(code) {
   `;
 
   body.querySelectorAll('[data-open-subject]').forEach(btn => btn.addEventListener('click', () => renderSubjectView(code, btn.dataset.openSubject)));
-  document.getElementById('dirTestBtn').addEventListener('click', () => startQuiz(code));
-  document.getElementById('dirKTBtn').addEventListener('click', () => { closeDirModal(); window.openKT(code); });
+  document.getElementById('dirTestBtn').addEventListener('click', () => { if (requireAuth()) startQuiz(code); });
+  document.getElementById('dirKTBtn').addEventListener('click', () => { if (requireAuth()) { closeDirModal(); window.openKT(code); } });
+}
+
+/* Гейт: тест/КТ доступны только вошедшим. Возвращает true, если можно продолжать. */
+function requireAuth() {
+  if (API.getCurrentUser()) return true;
+  document.getElementById('gateModal').classList.remove('hidden');
+  return false;
+}
+
+function wireGate() {
+  const modal = document.getElementById('gateModal');
+  if (!modal) return;
+  const close = () => modal.classList.add('hidden');
+  document.getElementById('gateClose').addEventListener('click', close);
+  modal.addEventListener('click', (e) => { if (e.target.id === 'gateModal') close(); });
 }
 
 function renderSubjectView(code, subjectId) {
@@ -1126,6 +1141,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireProfileModes();
   wireSearch();
   wireDirModal();
+  wireGate();
   wireQuiz();
   wireMobileNav();
   wireHeroVideoLoop();
@@ -1143,7 +1159,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // автозапуск теста по ссылке из кабинета: index.html?test=7M06
   const testCode = new URLSearchParams(location.search).get('test');
-  if (testCode && document.getElementById('testPage')) {
+  if (testCode && document.getElementById('testPage') && requireAuth()) {
     if (DIRECTION_TESTS[testCode]) startQuiz(testCode);
     else showToast('Тест для этого направления временно недоступен');
   }

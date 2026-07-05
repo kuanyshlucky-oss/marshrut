@@ -97,6 +97,11 @@ func resolveOrigin(reqOrigin string) string {
 	if strings.HasPrefix(reqOrigin, "http://localhost:") || strings.HasPrefix(reqOrigin, "http://127.0.0.1:") {
 		return reqOrigin
 	}
+	// file:// (страница открыта с диска) шлёт Origin: null — разрешаем:
+	// авторизация у нас не на CORS, а на ключах/токенах
+	if reqOrigin == "null" {
+		return "null"
+	}
 	return allowedOrigin
 }
 

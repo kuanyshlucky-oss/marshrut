@@ -680,6 +680,12 @@ body.test-open{ overflow:hidden; }
   border-radius:var(--radius-s); padding:10px 12px; margin:10px 0 14px;
 }
 
+/* =========================== AUTH GATE =========================== */
+.gate-modal{ max-width:420px; text-align:center; padding:40px 32px; }
+.gate-lock{ font-size:44px; margin-bottom:18px; }
+.gate-modal h3{ font-size:20px; margin:0 0 14px; }
+.gate-modal p{ font-size:14px; color:var(--ink-soft); margin:0 0 26px; }
+
 /* =========================== Профиль: просмотр/редактирование =========================== */
 .pf-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
 .pf-head h3{ margin:0; }
