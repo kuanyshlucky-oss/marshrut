@@ -224,6 +224,18 @@ func listUsers() ([]AdminUser, error) {
 	return out, nil
 }
 
+// Одна активная сессия на аккаунт: session_id в users сверяется с sid токена в auth().
+func getSessionID(uid int64) (string, error) {
+	var sid string
+	err := db.QueryRow(`SELECT session_id FROM users WHERE id = $1`, uid).Scan(&sid)
+	return sid, err
+}
+
+func setSessionID(uid int64, sid string) error {
+	_, err := db.Exec(`UPDATE users SET session_id = $1 WHERE id = $2`, sid, uid)
+	return err
+}
+
 func deleteUser(id int64) error {
 	if _, err := db.Exec(`DELETE FROM favorites WHERE user_id = $1`, id); err != nil {
 		return err

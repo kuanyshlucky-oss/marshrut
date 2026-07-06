@@ -287,9 +287,27 @@ async function apiFetch(path, { method = 'GET', body, auth = false } = {}) {
   let data = null;
   try { data = await res.json(); } catch (_) { /* тело может быть пустым */ }
   if (!res.ok) {
+    // Сессия вытеснена входом с другого устройства: сервер отвечает 401 с этим текстом.
+    if (auth && res.status === 401 && data && /друг(ого|ое) устрой/.test(data.error || '')) {
+      handleSessionKicked();
+    }
     throw new Error((data && data.error) ? data.error : `Ошибка сервера (${res.status})`);
   }
   return data;
+}
+
+/* Пользователя вытеснили новым входом на этот же аккаунт — разлогиниваем и уведомляем. */
+let sessionKickedHandled = false;
+function handleSessionKicked() {
+  if (sessionKickedHandled) return; // не дублировать при параллельных запросах
+  sessionKickedHandled = true;
+  clearToken();
+  currentUser = null;
+  if (typeof showToast === 'function') showToast('Вы вышли: выполнен вход в аккаунт с другого устройства');
+  refreshAuthUI?.();
+  if (location.pathname.endsWith('cabinet.html')) {
+    setTimeout(() => location.reload(), 1800);
+  }
 }
 
 const API = {
@@ -304,7 +322,7 @@ const API = {
     const { token, user } = await apiFetch('/api/auth/login', {
       method: 'POST', body: { email, password },
     });
-    setToken(token); currentUser = user; return user;
+    setToken(token); currentUser = user; sessionKickedHandled = false; return user;
   },
 
   logout() { clearToken(); currentUser = null; },

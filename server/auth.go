@@ -16,6 +16,7 @@ import (
 )
 
 var errInvalidToken = errors.New("недействительный токен")
+var errSessionReplaced = errors.New("сессия завершена: выполнен вход с другого устройства")
 
 // Случайная строка из безопасного алфавита (без похожих символов 0/O, 1/l/I).
 func randString(n int) string {
@@ -44,12 +45,14 @@ func checkPassword(hash, pw string) bool {
 // payload = {"uid":<id>,"exp":<unix>}. Без внешних зависимостей.
 
 type tokenClaims struct {
-	UID int64 `json:"uid"`
-	Exp int64 `json:"exp"`
+	UID int64  `json:"uid"`
+	SID string `json:"sid"` // идентификатор сессии — сверяется с users.session_id (одна активная сессия на аккаунт)
+	Exp int64  `json:"exp"`
 }
 
-func makeToken(uid int64) string {
-	claims := tokenClaims{UID: uid, Exp: time.Now().Add(7 * 24 * time.Hour).Unix()}
+// makeToken создаёт токен для новой сессии sid (генерируется в login/register/create-user).
+func makeToken(uid int64, sid string) string {
+	claims := tokenClaims{UID: uid, SID: sid, Exp: time.Now().Add(7 * 24 * time.Hour).Unix()}
 	raw, _ := json.Marshal(claims)
 	payload := base64.RawURLEncoding.EncodeToString(raw)
 	return payload + "." + sign(payload)
@@ -61,26 +64,26 @@ func sign(payload string) string {
 	return base64.RawURLEncoding.EncodeToString(m.Sum(nil))
 }
 
-func parseToken(token string) (int64, error) {
+func parseToken(token string) (tokenClaims, error) {
 	parts := strings.SplitN(token, ".", 2)
 	if len(parts) != 2 {
-		return 0, errInvalidToken
+		return tokenClaims{}, errInvalidToken
 	}
 	if !hmac.Equal([]byte(parts[1]), []byte(sign(parts[0]))) {
-		return 0, errInvalidToken
+		return tokenClaims{}, errInvalidToken
 	}
 	raw, err := base64.RawURLEncoding.DecodeString(parts[0])
 	if err != nil {
-		return 0, errInvalidToken
+		return tokenClaims{}, errInvalidToken
 	}
 	var c tokenClaims
 	if err := json.Unmarshal(raw, &c); err != nil {
-		return 0, errInvalidToken
+		return tokenClaims{}, errInvalidToken
 	}
 	if time.Now().Unix() > c.Exp {
-		return 0, errInvalidToken
+		return tokenClaims{}, errInvalidToken
 	}
-	return c.UID, nil
+	return c, nil
 }
 
 // --- Мидлвар авторизации ---
@@ -92,12 +95,22 @@ const userIDKey ctxKey = 0
 func auth(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
-		uid, err := parseToken(strings.TrimSpace(token))
+		claims, err := parseToken(strings.TrimSpace(token))
 		if err != nil {
 			writeError(w, http.StatusUnauthorized, "Требуется авторизация")
 			return
 		}
-		ctx := context.WithValue(r.Context(), userIDKey, uid)
+		current, err := getSessionID(claims.UID)
+		if err != nil {
+			writeError(w, http.StatusUnauthorized, "Требуется авторизация")
+			return
+		}
+		// пусто = ещё не логинился этим механизмом (старые токены до этого фикса) — пропускаем разово
+		if current != "" && current != claims.SID {
+			writeError(w, http.StatusUnauthorized, errSessionReplaced.Error())
+			return
+		}
+		ctx := context.WithValue(r.Context(), userIDKey, claims.UID)
 		next(w, r.WithContext(ctx))
 	}
 }
@@ -107,15 +120,21 @@ func currentUID(r *http.Request) int64 {
 	return uid
 }
 
-// respondAuth отдаёт {token, user} после успешного входа/регистрации.
+// respondAuth создаёт новую сессию (вытесняя предыдущую — один активный вход на аккаунт)
+// и отдаёт {token, user} после успешного входа/регистрации.
 func respondAuth(w http.ResponseWriter, uid int64) {
+	sid := randString(16)
+	if err := setSessionID(uid, sid); err != nil {
+		writeError(w, http.StatusInternalServerError, "Не удалось начать сессию")
+		return
+	}
 	u, err := loadUser(uid)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "Не удалось загрузить пользователя")
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]any{
-		"token": makeToken(uid),
+		"token": makeToken(uid, sid),
 		"user":  u,
 	})
 }
