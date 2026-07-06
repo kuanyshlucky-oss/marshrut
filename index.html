@@ -60,28 +60,55 @@
     <div class="wrap hero-inner">
       <p class="eyebrow">Подготовка к вступительным экзаменам в магистратуру</p>
       <h1>Выберите направление<br>и&nbsp;уверенно подготовьтесь к&nbsp;поступлению</h1>
-      <p class="hero-sub">10 групп образовательных программ — от 7M01 до 7M12. По каждому направлению — 4 экзаменационных предмета: иностранный язык и ТГО для всех, плюс два профильных. Откройте предмет и получите список тем для подготовки.</p>
+      <p class="hero-sub">147 групп образовательных программ по официальным итогам КТ-2025. Найдите свою группу по коду или названию — увидите реальную статистику прохождения порога.</p>
     </div>
 
     <!-- Search bar overlapping hero bottom edge -->
     <div class="wrap hero-search">
       <form class="filter-bar search-bar" id="searchBar">
         <div class="filter-field filter-field-search">
-          <label for="fSearch">Поиск направления</label>
-          <input id="fSearch" type="text" placeholder="Код (7M06) или название…" autocomplete="off">
+          <label for="fSearch">Я ищу программу по…</label>
+          <input id="fSearch" type="text" placeholder="Код (M094) или название — «информационные технологии»…" autocomplete="off">
         </div>
         <button type="submit" class="btn btn-primary filter-submit">Найти</button>
       </form>
     </div>
   </section>
 
-  <!-- ================= CATALOG (DIRECTIONS) ================= -->
+  <!-- ================= CATALOG (147 ГОП + статистика КТ-2025) ================= -->
   <section class="section" id="catalog">
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow">Каталог</p>
         <h2>Направления магистратуры</h2>
-        <p class="result-count" id="resultCount">10 направлений</p>
+        <p class="result-count" id="statsCount">147 групп</p>
+      </div>
+
+      <div class="kcat-tiles" id="catTiles"><!-- категории injected by script.js --></div>
+
+      <div class="kcat-toolbar">
+        <label for="statsSortSelect">Сортировка</label>
+        <select id="statsSortSelect">
+          <option value="alpha">По алфавиту</option>
+          <option value="passed">По % прохождения порога</option>
+          <option value="participants">По числу участников</option>
+        </select>
+      </div>
+
+      <div class="kcat-list" id="statsList"><!-- строки групп injected by script.js --></div>
+      <p class="empty-state hidden" id="statsEmpty">Ничего не нашлось. Попробуйте другой запрос.</p>
+
+      <div id="statsCard"></div>
+    </div>
+  </section>
+
+  <!-- ================= ПРАКТИКА (10 укрупнённых направлений: предметы + тесты + КТ) ================= -->
+  <section class="section section-muted" id="practice">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Практика</p>
+        <h2>Предметы, темы и симуляция КТ</h2>
+        <p class="result-count" id="resultCount">10 укрупнённых направлений</p>
       </div>
 
       <div class="card-grid" id="dirGrid"><!-- direction cards injected by script.js --></div>
