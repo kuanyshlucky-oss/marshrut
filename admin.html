@@ -104,8 +104,12 @@ $('key').value = getKey();
 $('saveKey').onclick = () => { localStorage.setItem(KEY, $('key').value.trim()); load(); };
 
 async function api(path, opts={}){
-  const url = API_BASE + path + (path.includes('?')?'&':'?') + 'key=' + encodeURIComponent(getKey());
-  const res = await fetch(url, { method: opts.method||'GET', headers:{'Content-Type':'application/json'}, body: opts.body?JSON.stringify(opts.body):undefined });
+  // ключ передаём заголовком, не query-строкой — так он не оседает в логах сервера/прокси
+  const res = await fetch(API_BASE + path, {
+    method: opts.method||'GET',
+    headers:{'Content-Type':'application/json', 'X-Admin-Key': getKey()},
+    body: opts.body?JSON.stringify(opts.body):undefined,
+  });
   const data = await res.json().catch(()=>null);
   if(!res.ok) throw new Error((data&&data.error)||('Ошибка '+res.status));
   return data;

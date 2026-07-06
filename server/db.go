@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"strings"
 	"time"
 
 	_ "github.com/jackc/pgx/v5/stdlib" // драйвер Postgres (pgx) для database/sql
@@ -190,38 +191,35 @@ type AdminUser struct {
 	CreatedAt string   `json:"created_at"`
 }
 
+// listUsers одним запросом (агрегаты вместо цикла N+1): избранное — через
+// string_agg, число результатов — коррелированный подзапрос со своим индексом.
 func listUsers() ([]AdminUser, error) {
-	rows, err := db.Query(`SELECT id, name, email, phone, education, city, created_at FROM users ORDER BY id`)
+	rows, err := db.Query(`
+		SELECT u.id, u.name, u.email, u.phone, u.education, u.city, u.created_at,
+		       COALESCE((SELECT string_agg(f.code, ',' ORDER BY f.code) FROM favorites f WHERE f.user_id = u.id), ''),
+		       (SELECT COUNT(*) FROM results r WHERE r.user_id = u.id)
+		FROM users u
+		ORDER BY u.id`)
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
+
 	out := []AdminUser{}
 	for rows.Next() {
 		var u AdminUser
-		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Education, &u.City, &u.CreatedAt); err != nil {
-			rows.Close()
+		var favCSV string
+		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Education, &u.City, &u.CreatedAt, &favCSV, &u.Results); err != nil {
 			return nil, err
 		}
-		u.Favorites = []string{}
+		if favCSV == "" {
+			u.Favorites = []string{}
+		} else {
+			u.Favorites = strings.Split(favCSV, ",")
+		}
 		out = append(out, u)
 	}
-	rows.Close()
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	for i := range out {
-		fr, err := db.Query(`SELECT code FROM favorites WHERE user_id = $1 ORDER BY code`, out[i].ID)
-		if err == nil {
-			for fr.Next() {
-				var c string
-				fr.Scan(&c)
-				out[i].Favorites = append(out[i].Favorites, c)
-			}
-			fr.Close()
-		}
-		db.QueryRow(`SELECT COUNT(*) FROM results WHERE user_id = $1`, out[i].ID).Scan(&out[i].Results)
-	}
-	return out, nil
+	return out, rows.Err()
 }
 
 // Одна активная сессия на аккаунт: session_id в users сверяется с sid токена в auth().
@@ -233,6 +231,15 @@ func getSessionID(uid int64) (string, error) {
 
 func setSessionID(uid int64, sid string) error {
 	_, err := db.Exec(`UPDATE users SET session_id = $1 WHERE id = $2`, sid, uid)
+	return err
+}
+
+// clearSessionID обнуляет активную сессию — используется при logout,
+// чтобы украденный/оставленный токен сразу переставал работать.
+// Пишем sentinelLoggedOut, а не пустую строку: пустая строка в auth() трактуется
+// как «легаси-токен, пропустить» — так мы бы случайно снова открыли доступ.
+func clearSessionID(uid int64) error {
+	_, err := db.Exec(`UPDATE users SET session_id = $1 WHERE id = $2`, sentinelLoggedOut, uid)
 	return err
 }
 

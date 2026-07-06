@@ -18,6 +18,12 @@ import (
 var errInvalidToken = errors.New("недействительный токен")
 var errSessionReplaced = errors.New("сессия завершена: выполнен вход с другого устройства")
 
+// sentinelLoggedOut пишется в users.session_id при logout — отличается от пустой
+// строки (та означает «легаси-токен без sid, пропустить») и не совпадёт ни с одним
+// реальным sid (randString использует свой алфавит без дефиса), поэтому все токены
+// пользователя сразу перестают проходить auth(). Без пустых/null-байт — просто TEXT.
+const sentinelLoggedOut = "logged-out-00000000"
+
 // Случайная строка из безопасного алфавита (без похожих символов 0/O, 1/l/I).
 func randString(n int) string {
 	const alphabet = "abcdefghijkmnpqrstuvwxyz23456789ABCDEFGHJKLMNPQRSTUVWXYZ"

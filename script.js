@@ -323,7 +323,13 @@ const API = {
     setToken(token); currentUser = user; sessionKickedHandled = false; return user;
   },
 
-  logout() { clearToken(); currentUser = null; },
+  logout() {
+    // локальный стейт чистим сразу (мгновенный отклик UI), а обнуление сессии
+    // на сервере шлём в фоне — best-effort, чтобы токен нельзя было переиспользовать
+    const token = getToken();
+    clearToken(); currentUser = null;
+    if (token) fetch(API_BASE + '/api/auth/logout', { method: 'POST', headers: { Authorization: 'Bearer ' + token } }).catch(() => {});
+  },
 
   // Синхронно возвращает кэш (обновляется при login/fetchMe/мутациях)
   getCurrentUser() { return currentUser; },

@@ -26,13 +26,14 @@ func handleRegister(w http.ResponseWriter, r *http.Request) {
 	writeError(w, http.StatusForbidden, "Регистрация закрыта. Аккаунт выдаёт администратор.")
 }
 
-// Проверка админ-ключа (?key=). false + ответ, если не прошёл.
+// Проверка админ-ключа. Читаем из заголовка X-Admin-Key (не из query-строки —
+// query-параметры оседают в логах сервера/прокси и в истории браузера).
 func adminGuard(w http.ResponseWriter, r *http.Request) bool {
 	if adminKey == "" {
 		writeError(w, http.StatusForbidden, "Админ-доступ отключён: не задан ADMIN_KEY")
 		return false
 	}
-	if r.URL.Query().Get("key") != adminKey {
+	if r.Header.Get("X-Admin-Key") != adminKey {
 		writeError(w, http.StatusUnauthorized, "Неверный ключ")
 		return false
 	}
@@ -143,6 +144,16 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	respondAuth(w, id)
+}
+
+// POST /api/auth/logout — обнуляет активную сессию на сервере (auth), чтобы
+// украденный/оставленный токен сразу переставал работать, а не жил до истечения TTL.
+func handleLogout(w http.ResponseWriter, r *http.Request) {
+	if err := clearSessionID(currentUID(r)); err != nil {
+		writeError(w, http.StatusInternalServerError, "Не удалось завершить сессию")
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 }
 
 // GET /api/me

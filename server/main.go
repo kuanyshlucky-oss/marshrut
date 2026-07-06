@@ -5,6 +5,7 @@
 package main
 
 import (
+	"compress/gzip"
 	"log"
 	"net/http"
 	"os"
@@ -43,15 +44,16 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /api/health", handleHealth)
 	mux.HandleFunc("POST /api/auth/register", handleRegister)
-	mux.HandleFunc("POST /api/auth/login", handleLogin)
+	mux.HandleFunc("POST /api/auth/login", rateLimit(loginLimiter, handleLogin))
+	mux.HandleFunc("POST /api/auth/logout", auth(handleLogout))
 	mux.HandleFunc("GET /api/me", auth(handleMe))
 	mux.HandleFunc("PUT /api/profile", auth(handleUpdateProfile))
 	mux.HandleFunc("POST /api/favorites/toggle", auth(handleToggleFavorite))
 	mux.HandleFunc("POST /api/results", auth(handleSaveResult))
 	mux.HandleFunc("GET /api/admin/users", handleAdminUsers)
-	mux.HandleFunc("POST /api/admin/create-user", handleAdminCreate)
+	mux.HandleFunc("POST /api/admin/create-user", rateLimit(adminLimiter, handleAdminCreate))
 	mux.HandleFunc("POST /api/admin/delete-user", handleAdminDelete)
-	mux.HandleFunc("POST /api/admin/reset-password", handleAdminResetPassword)
+	mux.HandleFunc("POST /api/admin/reset-password", rateLimit(adminLimiter, handleAdminResetPassword))
 	// МагистрТрек
 	mux.HandleFunc("GET /api/universities", handleUniversities)
 	mux.HandleFunc("GET /api/specialities", handleSpecialities)
@@ -61,9 +63,43 @@ func main() {
 	mux.HandleFunc("POST /api/roadmap/toggle", auth(handleRoadmapToggle))
 
 	log.Printf("Сервер слушает :%s (CORS origin: %s)", port, allowedOrigin)
-	if err := http.ListenAndServe(":"+port, withCORS(mux)); err != nil {
+	if err := http.ListenAndServe(":"+port, withSecurityHeaders(withCORS(withGzip(mux)))); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// withSecurityHeaders — базовые защитные заголовки (HTTPS сам по себе терминируется
+// на Render; здесь добавляем то, что зависит от приложения).
+func withSecurityHeaders(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("X-Content-Type-Options", "nosniff")
+		w.Header().Set("X-Frame-Options", "DENY")
+		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
+		next.ServeHTTP(w, r)
+	})
+}
+
+type gzipResponseWriter struct {
+	http.ResponseWriter
+	gz *gzip.Writer
+}
+
+func (g gzipResponseWriter) Write(b []byte) (int, error) { return g.gz.Write(b) }
+
+// withGzip сжимает JSON-ответы для клиентов, заявивших поддержку gzip
+// (браузеры — всегда; экономит трафик студентам на мобильном интернете).
+func withGzip(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+			next.ServeHTTP(w, r)
+			return
+		}
+		w.Header().Set("Content-Encoding", "gzip")
+		w.Header().Add("Vary", "Accept-Encoding")
+		gz := gzip.NewWriter(w)
+		defer gz.Close()
+		next.ServeHTTP(gzipResponseWriter{ResponseWriter: w, gz: gz}, r)
+	})
 }
 
 // withCORS добавляет CORS-заголовки и отвечает на preflight OPTIONS.
@@ -74,7 +110,7 @@ func withCORS(next http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Allow-Origin", resolveOrigin(r.Header.Get("Origin")))
 		w.Header().Set("Vary", "Origin")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Admin-Key")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
