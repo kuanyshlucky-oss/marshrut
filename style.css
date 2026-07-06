@@ -172,6 +172,8 @@ h3{ font-size:22px; }
 .nav-toggle.is-open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
 
 .user-chip{ display:flex; align-items:center; gap:8px; }
+.user-chip-link{ display:flex; align-items:center; gap:8px; text-decoration:none; }
+.user-chip-link:hover .user-name{ color:var(--accent); }
 .user-avatar{
   width:34px; height:34px; border-radius:50%;
   background:var(--surface-2); color:var(--accent);

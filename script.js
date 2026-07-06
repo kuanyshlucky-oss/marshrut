@@ -967,8 +967,6 @@ function wireAuth() {
     showToast('Вы вышли из аккаунта');
     afterAuthChange();
   });
-  const btnGoDash = document.getElementById('btnGoDashboard');
-  if (btnGoDash) btnGoDash.addEventListener('click', () => { location.href = 'cabinet.html'; });
 }
 
 function afterAuthChange() {
