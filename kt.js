@@ -82,21 +82,21 @@ const KT_LANG_POOL = {
 const KT_LANG_EN_STAGES = {
   listening: [
     { q: 'Where does the lecture take place?', options: ['Main hall', 'Room 204', 'Room 402', 'Library'], correct: 1,
-      audio: 'assets/listening/1.wav', video: 'assets/listening/1.mp4' },
+      audio: 'assets/listening/1.wav' },
     { q: 'When does the library reopen?', options: ['Friday', 'Saturday', 'Sunday', 'Monday'], correct: 3,
-      audio: 'assets/listening/2.wav', video: 'assets/listening/2.mp4' },
+      audio: 'assets/listening/2.wav' },
     { q: 'Where does the person turn left?', options: ['At the library', 'At the cafeteria', 'At the office', 'At the entrance'], correct: 1,
-      audio: 'assets/listening/3.wav', video: 'assets/listening/3.mp4' },
+      audio: 'assets/listening/3.wav' },
     { q: 'Why is the train delayed?', options: ['Weather', 'Technical issues', 'A strike', 'It is not delayed'], correct: 1,
-      audio: 'assets/listening/4.wav', video: 'assets/listening/4.mp4' },
+      audio: 'assets/listening/4.wav' },
     { q: 'What must be submitted by Friday?', options: ['Passport only', 'Transcript and recommendation letters', 'Just an essay', 'Nothing'], correct: 1,
-      audio: 'assets/listening/5.wav', video: 'assets/listening/5.mp4' },
+      audio: 'assets/listening/5.wav' },
     { q: 'What day is the seminar now held?', options: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'], correct: 3,
-      audio: 'assets/listening/6.wav', video: 'assets/listening/6.mp4' },
+      audio: 'assets/listening/6.wav' },
     { q: 'What should students collect first?', options: ['Textbooks', 'Student ID cards', 'Meal vouchers', 'Nothing'], correct: 1,
-      audio: 'assets/listening/7.wav', video: 'assets/listening/7.mp4' },
+      audio: 'assets/listening/7.wav' },
     { q: 'Where will the ceremony be held?', options: ['Outdoors', 'Main auditorium', 'Sports field', 'Parking lot'], correct: 1,
-      audio: 'assets/listening/8.wav', video: 'assets/listening/8.mp4' },
+      audio: 'assets/listening/8.wav' },
   ],
   reading: [
     { passage: 'Universities in Kazakhstan are increasingly offering joint degree programs with foreign partner institutions, allowing students to study one year abroad while completing their qualification in their home country.',
@@ -282,7 +282,7 @@ function beginKT(code, typeId, lang) {
   const flat = [];
   a.blocks.forEach(b => b.questions.forEach(q => flat.push({
     q: q.q, options: q.options, correct: q.correct, why: q.why, block: b.id,
-    stage: q.stage, audio: q.audio, video: q.video, passage: q.passage, // только для lang-блока (en)
+    stage: q.stage, audio: q.audio, passage: q.passage, // только для lang-блока (en)
   })));
   activeKT = { code, typeId, lang, flat, answers: new Array(flat.length).fill(null), idx: 0, secondsLeft: KT_TYPES[typeId].timeMin * 60, timer: null };
   renderKTQuestion();
@@ -295,10 +295,19 @@ function renderKTQuestion() {
   const blockTag = item.stage ? `${KT_BLOCK_LABELS[item.block]} · ${KT_LANG_STAGE_LABELS[item.stage]}` : KT_BLOCK_LABELS[item.block];
 
   const media = item.stage === 'listening'
-    ? `<div class="kt-listen-media">
-        ${item.video ? `<video class="kt-listen-video" src="${item.video}" autoplay muted loop playsinline></video>` : ''}
-        ${item.audio ? `<audio class="kt-listen-audio" controls src="${item.audio}"></audio>` : ''}
-       </div>`
+    ? (item.audio ? `
+      <div class="kt-audio-player" id="ktAudioPlayer">
+        <button class="kt-audio-play" id="ktAudioPlay" aria-label="Воспроизвести">
+          <svg class="ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+          <svg class="ico-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+        </button>
+        <div class="kt-audio-track" id="ktAudioTrack">
+          <div class="kt-audio-fill" id="ktAudioFill"></div>
+          <div class="kt-audio-knob" id="ktAudioKnob"></div>
+        </div>
+        <span class="kt-audio-time" id="ktAudioTime">0:00 / 0:00</span>
+        <audio id="ktAudioEl" src="${item.audio}" preload="auto"></audio>
+      </div>` : '')
     : item.stage === 'reading' && item.passage
       ? `<div class="kt-reading-passage">${esc(item.passage)}</div>`
       : '';
@@ -318,15 +327,64 @@ function renderKTQuestion() {
           <span class="test-radio" aria-hidden="true"></span><span class="test-opt-label">${esc(o)}</span>
         </button>`).join('')}
     </div>
-    <div class="test-foot">
-      <button class="btn test-prev" id="ktPrev" ${s.idx === 0 ? 'disabled' : ''}>← Назад</button>
-      <span class="test-hint">Нажмите <b>ENTER</b></span>
-      <button class="btn test-next" id="ktNext">${s.idx === s.flat.length - 1 ? 'Завершить' : 'Далее'}</button>
+    <div class="kt-nav">
+      <button class="kt-nav-btn kt-nav-prev" id="ktPrev" ${s.idx === 0 ? 'disabled' : ''} aria-label="Назад">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <span class="kt-nav-hint">Нажмите <b>ENTER</b></span>
+      <button class="kt-nav-btn kt-nav-next is-primary" id="ktNext">
+        <span>${s.idx === s.flat.length - 1 ? 'Завершить' : 'Далее'}</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
     </div>
   `;
   ktEl().querySelectorAll('[data-opt]').forEach(b => b.addEventListener('click', () => { s.answers[s.idx] = Number(b.dataset.opt); renderKTQuestion(); }));
   document.getElementById('ktPrev').addEventListener('click', ktPrev);
   document.getElementById('ktNext').addEventListener('click', ktNext);
+  wireKTAudioPlayer();
+}
+
+// Кастомный плеер для Listening (вместо нативных элементов управления браузера).
+function wireKTAudioPlayer() {
+  const wrap = document.getElementById('ktAudioPlayer');
+  if (!wrap) return;
+  const audio = document.getElementById('ktAudioEl');
+  const playBtn = document.getElementById('ktAudioPlay');
+  const track = document.getElementById('ktAudioTrack');
+  const fill = document.getElementById('ktAudioFill');
+  const knob = document.getElementById('ktAudioKnob');
+  const time = document.getElementById('ktAudioTime');
+
+  const fmt = (t) => {
+    if (!isFinite(t) || t < 0) t = 0;
+    const m = Math.floor(t / 60), s = Math.floor(t % 60);
+    return `${m}:${String(s).padStart(2, '0')}`;
+  };
+  const updateProgress = () => {
+    const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+    fill.style.width = pct + '%';
+    knob.style.left = pct + '%';
+    time.textContent = `${fmt(audio.currentTime)} / ${fmt(audio.duration)}`;
+  };
+  const seekFromEvent = (e) => {
+    const rect = track.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const pct = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
+    if (audio.duration) audio.currentTime = pct * audio.duration;
+    updateProgress();
+  };
+
+  playBtn.addEventListener('click', () => {
+    if (audio.paused) audio.play().catch(() => {});
+    else audio.pause();
+  });
+  audio.addEventListener('play', () => wrap.classList.add('is-playing'));
+  audio.addEventListener('pause', () => wrap.classList.remove('is-playing'));
+  audio.addEventListener('ended', () => wrap.classList.remove('is-playing'));
+  audio.addEventListener('timeupdate', updateProgress);
+  audio.addEventListener('loadedmetadata', updateProgress);
+  track.addEventListener('click', seekFromEvent);
+  updateProgress();
 }
 
 function ktPrev() {

@@ -675,10 +675,57 @@ body.test-open{ overflow:hidden; }
 }
 .test-qnum-line{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 8px; }
 
-/* Listening: анимированная сцена + плеер */
-.kt-listen-media{ margin:0 0 18px; border-radius:var(--radius-m); overflow:hidden; border:1px solid var(--line); }
-.kt-listen-video{ width:100%; max-height:220px; object-fit:cover; display:block; background:#000; }
-.kt-listen-audio{ width:100%; display:block; }
+/* Навигация по вопросам КТ (Назад/Далее) */
+.kt-nav{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:30px; }
+.kt-nav-hint{ font-size:12px; color:var(--ink-soft); font-style:italic; }
+.kt-nav-hint b{ font-style:normal; font-weight:600; color:var(--ink); font-family:var(--font-mono); }
+.kt-nav-btn{
+  display:flex; align-items:center; gap:8px; flex:0 0 auto;
+  padding:12px 22px; border-radius:999px; font-size:13px; font-weight:600;
+  font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.06em;
+  background:rgba(255,255,255,.03); border:1px solid var(--line); color:var(--ink);
+  transition:border-color .25s ease, color .25s ease, background .25s ease, box-shadow .25s ease, transform .15s ease;
+}
+.kt-nav-btn svg{ width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; }
+.kt-nav-btn:hover{ border-color:var(--accent); color:var(--accent); box-shadow:0 0 14px rgba(0,219,233,.2); transform:translateY(-1px); }
+.kt-nav-prev{ padding:12px 18px; }
+.kt-nav-btn:disabled{ opacity:.3; cursor:not-allowed; box-shadow:none; transform:none; }
+.kt-nav-btn:disabled:hover{ border-color:var(--line); color:var(--ink); }
+.kt-nav-next.is-primary{
+  background:var(--accent); border-color:var(--accent); color:#04222b;
+  box-shadow:0 0 18px rgba(0,219,233,.25);
+}
+.kt-nav-next.is-primary:hover{ box-shadow:0 0 24px rgba(0,219,233,.45); color:#04222b; }
+
+/* Listening: кастомный аудиоплеер (без видео, без нативных браузерных controls) */
+.kt-audio-player{
+  display:flex; align-items:center; gap:14px; margin:0 0 18px;
+  padding:14px 18px; border-radius:var(--radius-m);
+  background:var(--glass); border:1px solid var(--line);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+}
+.kt-audio-play{
+  flex:0 0 auto; width:44px; height:44px; border-radius:50%;
+  background:var(--accent-soft); border:1px solid rgba(0,219,233,.4);
+  display:flex; align-items:center; justify-content:center;
+  transition:background .2s ease, box-shadow .2s ease;
+}
+.kt-audio-play:hover{ box-shadow:0 0 14px rgba(0,219,233,.3); }
+.kt-audio-play svg{ width:18px; height:18px; fill:var(--accent); }
+.kt-audio-play .ico-pause{ display:none; }
+.kt-audio-player.is-playing .kt-audio-play .ico-play{ display:none; }
+.kt-audio-player.is-playing .kt-audio-play .ico-pause{ display:block; }
+.kt-audio-track{
+  flex:1 1 auto; position:relative; height:4px; border-radius:999px;
+  background:rgba(255,255,255,.1); cursor:pointer;
+}
+.kt-audio-fill{ position:absolute; top:0; left:0; height:100%; width:0; border-radius:999px; background:var(--accent); }
+.kt-audio-knob{
+  position:absolute; top:50%; left:0; width:11px; height:11px; border-radius:50%;
+  background:var(--accent); box-shadow:0 0 8px rgba(0,219,233,.6);
+  transform:translate(-50%,-50%); pointer-events:none;
+}
+.kt-audio-time{ flex:0 0 auto; font-family:var(--font-mono); font-size:12px; color:var(--ink-soft); white-space:nowrap; }
 /* Reading: карточка с текстом */
 .kt-reading-passage{
   background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-m);
