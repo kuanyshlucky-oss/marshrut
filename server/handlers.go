@@ -101,6 +101,31 @@ func handleAdminDelete(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 }
 
+// POST /api/admin/reset-password?key=... {id} — генерит новый пароль, возвращает его один раз.
+func handleAdminResetPassword(w http.ResponseWriter, r *http.Request) {
+	if !adminGuard(w, r) {
+		return
+	}
+	var in struct {
+		ID int64 `json:"id"`
+	}
+	if err := decode(r, &in); err != nil || in.ID <= 0 {
+		writeError(w, http.StatusBadRequest, "Не указан id")
+		return
+	}
+	pw := genPassword()
+	hash, err := hashPassword(pw)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "Ошибка сервера")
+		return
+	}
+	if err := setPasswordHash(in.ID, hash); err != nil {
+		writeError(w, http.StatusInternalServerError, "Не удалось сбросить пароль")
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"id": in.ID, "password": pw})
+}
+
 // POST /api/auth/login
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	var in struct {

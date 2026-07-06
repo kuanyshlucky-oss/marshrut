@@ -51,6 +51,7 @@ func main() {
 	mux.HandleFunc("GET /api/admin/users", handleAdminUsers)
 	mux.HandleFunc("POST /api/admin/create-user", handleAdminCreate)
 	mux.HandleFunc("POST /api/admin/delete-user", handleAdminDelete)
+	mux.HandleFunc("POST /api/admin/reset-password", handleAdminResetPassword)
 	// МагистрТрек
 	mux.HandleFunc("GET /api/universities", handleUniversities)
 	mux.HandleFunc("GET /api/specialities", handleSpecialities)

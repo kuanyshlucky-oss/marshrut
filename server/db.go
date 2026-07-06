@@ -236,6 +236,11 @@ func setSessionID(uid int64, sid string) error {
 	return err
 }
 
+func setPasswordHash(uid int64, hash string) error {
+	_, err := db.Exec(`UPDATE users SET password_hash = $1 WHERE id = $2`, hash, uid)
+	return err
+}
+
 func deleteUser(id int64) error {
 	if _, err := db.Exec(`DELETE FROM favorites WHERE user_id = $1`, id); err != nil {
 		return err

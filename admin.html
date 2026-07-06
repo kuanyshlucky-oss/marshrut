@@ -25,6 +25,10 @@
   .btn-ghost:hover{ border-color:var(--ink); }
   .btn-del{ background:var(--danger-soft); color:var(--danger); padding:5px 12px; font-size:12px; border-radius:8px; }
   .btn-del:hover{ background:var(--danger); color:#fff; }
+  .btn-reset{ background:var(--accent-soft,#F4DCC8); color:var(--accent-ink); padding:5px 12px; font-size:12px; border-radius:8px; white-space:nowrap; }
+  .btn-reset:hover{ background:var(--accent); color:#fff; }
+  .pw-cell{ font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .pw-cell .v{ color:var(--ok); font-weight:600; }
   .cred{ background:#1B2030; color:#EDECE6; border-radius:12px; padding:16px 18px; margin-top:14px; font-family:'JetBrains Mono',monospace; }
   .cred .line{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:6px 0; }
   .cred .k{ color:#9AA0B4; font-size:12px; }
@@ -83,7 +87,7 @@
   <div class="card">
     <h2>Пользователи (<span id="count">0</span>) <button class="btn-ghost" id="reloadBtn" style="float:right;padding:5px 14px;font-size:12px">Обновить</button></h2>
     <table>
-      <thead><tr><th>ID</th><th>Логин (email)</th><th>Имя</th><th>Город</th><th>Тестов</th><th>Создан</th><th></th></tr></thead>
+      <thead><tr><th>ID</th><th>Логин (email)</th><th>Имя</th><th>Город</th><th>Тестов</th><th>Создан</th><th>Пароль</th><th></th></tr></thead>
       <tbody id="rows"></tbody>
     </table>
     <p id="listMsg" class="msg"></p>
@@ -127,6 +131,17 @@ $('createBtn').onclick = async () => {
   btn.disabled=false; btn.textContent='Сгенерировать аккаунт';
 };
 
+async function resetPw(id, login){
+  if(!confirm('Сбросить пароль для '+login+'? Старый пароль перестанет работать.')) return;
+  const cell = $('pw-'+id);
+  try{
+    const r = await api('/api/admin/reset-password', { method:'POST', body:{ id } });
+    cell.innerHTML = `<span class="v">${r.password}</span> <button class="btn-reset" data-c="${r.password}">Копир.</button>`;
+    const b = cell.querySelector('button');
+    b.onclick = () => copy(r.password, b);
+  }catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
+}
+
 async function del(id, login){
   if(!confirm('Удалить аккаунт '+login+'? Данные (результаты, избранное) тоже удалятся.')) return;
   try{ await api('/api/admin/delete-user', { method:'POST', body:{ id } }); load(); }
@@ -143,9 +158,11 @@ async function load(){
       <tr>
         <td>${u.id}</td><td>${u.email}</td><td>${u.name||''}</td><td>${u.city||''}</td>
         <td>${u.results}</td><td>${(u.created_at||'').slice(0,10)}</td>
+        <td class="pw-cell" id="pw-${u.id}"><button class="btn-reset" data-reset="${u.id}" data-login="${u.email}">Сбросить пароль</button></td>
         <td><button class="btn-del" data-del="${u.id}" data-login="${u.email}">Удалить</button></td>
       </tr>`).join('');
     $('rows').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(Number(b.dataset.del), b.dataset.login));
+    $('rows').querySelectorAll('[data-reset]').forEach(b=>b.onclick=()=>resetPw(Number(b.dataset.reset), b.dataset.login));
   }catch(e){ lm.textContent=e.message; lm.className='msg err'; }
 }
 
