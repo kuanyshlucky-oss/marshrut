@@ -653,6 +653,17 @@ function closeReview() {
   activeQuiz = null;
 }
 
+// Запрет копирования/выделения текста вопросов, пока открыт тест/КТ/разбор (body.test-open).
+function wireAntiCopy() {
+  const guard = (e) => { if (document.body.classList.contains('test-open')) e.preventDefault(); };
+  ['copy', 'cut', 'contextmenu', 'selectstart'].forEach(evt => document.addEventListener(evt, guard));
+  document.addEventListener('keydown', (e) => {
+    if (!document.body.classList.contains('test-open')) return;
+    const k = e.key.toLowerCase();
+    if ((e.ctrlKey || e.metaKey) && (k === 'c' || k === 'x' || k === 'a' || k === 'u' || k === 's' || k === 'p')) e.preventDefault();
+  });
+}
+
 function wireQuiz() {
   if (!document.getElementById('testPage')) return; // страница теста только на index.html
   document.getElementById('testExit').addEventListener('click', closeQuiz);
@@ -1186,6 +1197,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireDirModal();
   wireGate();
   wireQuiz();
+  wireAntiCopy();
   wireMobileNav();
   wireHeroVideoLoop();
   document.getElementById('pathPrepBtn')?.addEventListener('click', () => {

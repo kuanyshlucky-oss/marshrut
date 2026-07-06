@@ -517,6 +517,14 @@ h3{ font-size:22px; }
 
 /* =========================== TEST PAGE (full-screen) =========================== */
 body.test-open{ overflow:hidden; }
+body.test-open .test-page,
+body.test-open #ktPage,
+body.test-open #reviewPage{
+  -webkit-user-select:none; -moz-user-select:none; user-select:none;
+}
+body.test-open .test-page input,
+body.test-open #ktPage input,
+body.test-open #reviewPage input{ user-select:text; }
 .test-page{
   position:fixed; inset:0; z-index:200;
   background:var(--bg); color:var(--ink);
