@@ -77,6 +77,72 @@ const KT_LANG_POOL = {
   ],
 };
 
+/* Английский — 3-этапный формат: Listening (аудио+видео-сцена) → Reading (текст) → Тесты (грамматика/лексика).
+   8 + 8 + 14 = 30, ровно блок «Иностранный язык» науч-пед формата КТ. */
+const KT_LANG_EN_STAGES = {
+  listening: [
+    { q: 'Where does the lecture take place?', options: ['Main hall', 'Room 204', 'Room 402', 'Library'], correct: 1,
+      audio: 'assets/listening/1.wav', video: 'assets/listening/1.mp4' },
+    { q: 'When does the library reopen?', options: ['Friday', 'Saturday', 'Sunday', 'Monday'], correct: 3,
+      audio: 'assets/listening/2.wav', video: 'assets/listening/2.mp4' },
+    { q: 'Where does the person turn left?', options: ['At the library', 'At the cafeteria', 'At the office', 'At the entrance'], correct: 1,
+      audio: 'assets/listening/3.wav', video: 'assets/listening/3.mp4' },
+    { q: 'Why is the train delayed?', options: ['Weather', 'Technical issues', 'A strike', 'It is not delayed'], correct: 1,
+      audio: 'assets/listening/4.wav', video: 'assets/listening/4.mp4' },
+    { q: 'What must be submitted by Friday?', options: ['Passport only', 'Transcript and recommendation letters', 'Just an essay', 'Nothing'], correct: 1,
+      audio: 'assets/listening/5.wav', video: 'assets/listening/5.mp4' },
+    { q: 'What day is the seminar now held?', options: ['Monday', 'Tuesday', 'Wednesday', 'Thursday'], correct: 3,
+      audio: 'assets/listening/6.wav', video: 'assets/listening/6.mp4' },
+    { q: 'What should students collect first?', options: ['Textbooks', 'Student ID cards', 'Meal vouchers', 'Nothing'], correct: 1,
+      audio: 'assets/listening/7.wav', video: 'assets/listening/7.mp4' },
+    { q: 'Where will the ceremony be held?', options: ['Outdoors', 'Main auditorium', 'Sports field', 'Parking lot'], correct: 1,
+      audio: 'assets/listening/8.wav', video: 'assets/listening/8.mp4' },
+  ],
+  reading: [
+    { passage: 'Universities in Kazakhstan are increasingly offering joint degree programs with foreign partner institutions, allowing students to study one year abroad while completing their qualification in their home country.',
+      q: 'What does a joint degree program allow?', options: ['Free tuition', 'Studying one year abroad', 'Skipping exams', 'An automatic scholarship'], correct: 1 },
+    { passage: 'Critical thinking is the ability to analyze information objectively and make a reasoned judgment. It involves evaluating sources, identifying bias, and questioning assumptions.',
+      q: 'Critical thinking mainly involves…', options: ['Memorizing facts', 'Evaluating and questioning information', 'Ignoring sources', 'Avoiding judgment'], correct: 1 },
+    { passage: "Master's programs typically require a comprehensive entrance examination that tests both a foreign language and a subject-specific area of knowledge.",
+      q: 'What does the entrance exam typically test?', options: ['Only sports', 'Foreign language and subject knowledge', 'Only handwriting', 'Nothing specific'], correct: 1 },
+    { passage: 'Time management is essential for graduate students, who must balance coursework, research, and often part-time work.',
+      q: 'Why is time management essential?', options: ['To balance coursework, research and work', 'To avoid studying', 'Because classes are short', 'It is not important'], correct: 0 },
+    { passage: 'Peer review is a process in which academic work is evaluated by other experts in the same field before publication.',
+      q: 'Who evaluates work in peer review?', options: ['Students', 'Other experts in the field', 'The author only', 'Random readers'], correct: 1 },
+    { passage: 'A thesis statement presents the main argument of an academic paper in one or two clear sentences.',
+      q: 'What does a thesis statement present?', options: ['The bibliography', 'The main argument', 'The page count', 'The title only'], correct: 1 },
+    { passage: "Plagiarism, or presenting someone else's work as your own, is considered a serious violation of academic integrity.",
+      q: 'Plagiarism is a violation of…', options: ['Academic integrity', 'Library rules only', 'The dress code', 'The attendance policy'], correct: 0 },
+    { passage: 'Scholarships for graduate study are often awarded based on academic merit, financial need, or a combination of both.',
+      q: 'Scholarships are often awarded based on…', options: ['Age only', 'Academic merit and/or financial need', 'Nationality only', 'A random draw'], correct: 1 },
+  ],
+  tests: [
+    { q: 'Choose correct: "By the time she graduates, she ___ five years of research."', options: ['has done', 'will have done', 'did', 'is doing'], correct: 1 },
+    { q: 'Synonym of "crucial".', options: ['minor', 'essential', 'optional', 'rare'], correct: 1 },
+    { q: 'Choose correct: "Neither the professor nor the students ___ satisfied."', options: ['was', 'were', 'is', 'be'], correct: 1 },
+    { q: 'Choose correct: "Despite ___ hard, he failed the exam."', options: ['study', 'studying', 'studied', 'to study'], correct: 1 },
+    { q: 'Antonym of "abundant".', options: ['plentiful', 'scarce', 'large', 'common'], correct: 1 },
+    { q: 'Choose correct passive: "The paper ___ by the committee next week."', options: ['will review', 'will be reviewed', 'reviews', 'reviewed'], correct: 1 },
+    { q: '"___ you finished the report, please send it to me."', options: ['Once', 'Despite', 'Although', 'Unless'], correct: 0 },
+    { q: 'Word meaning "to summarize briefly".', options: ['elaborate', 'condense', 'expand', 'prolong'], correct: 1 },
+    { q: 'Choose correct: "I wish I ___ more time to prepare."', options: ['have', 'had', 'has', 'having'], correct: 1 },
+    { q: 'Correct preposition: "The study is based ___ empirical data."', options: ['in', 'on', 'at', 'for'], correct: 1 },
+    { q: 'Choose correct conditional: "If the results ___ significant, we will publish them."', options: ['are', 'were', 'be', 'being'], correct: 0 },
+    { q: 'Synonym of "consequently".', options: ['therefore', 'however', 'meanwhile', 'instead'], correct: 0 },
+    { q: 'Choose correct: "The research, ___ took two years, is now complete."', options: ['which', 'who', 'whom', 'whose'], correct: 0 },
+    { q: 'Choose correct: "He is used to ___ long hours in the lab."', options: ['work', 'working', 'worked', 'works'], correct: 1 },
+  ],
+};
+
+// Плоский упорядоченный массив 30: Listening(8) → Reading(8) → Тесты(14), с меткой stage.
+const KT_LANG_EN_FLAT = [
+  ...KT_LANG_EN_STAGES.listening.map(x => ({ ...x, stage: 'listening' })),
+  ...KT_LANG_EN_STAGES.reading.map(x => ({ ...x, stage: 'reading' })),
+  ...KT_LANG_EN_STAGES.tests.map(x => ({ ...x, stage: 'tests' })),
+];
+
+const KT_LANG_STAGE_LABELS = { listening: 'Listening', reading: 'Reading', tests: 'Тесты' };
+
 const KT_LOGIC_POOL = [
   { q: 'Продолжите ряд: 2, 4, 8, 16, ?', options: ['24', '32', '20', '18'], correct: 1 },
   { q: 'Все розы — цветы. Некоторые цветы быстро вянут. Верно ли, что все розы быстро вянут?', options: ['Да', 'Нет', 'Иногда', 'Неизвестно'], correct: 3 },
@@ -111,10 +177,12 @@ function assembleKT(typeId, code, lang) {
   const type = KT_TYPES[typeId];
   const n = type.perBlock;
   const subjPool = ktSubjectPool(code);
+  // Английский — 3-этапный формат (Listening → Reading → Тесты), остальные языки — простой пул.
+  const langPool = lang === 'en' ? KT_LANG_EN_FLAT : KT_LANG_POOL[lang];
   return {
     typeId, code, lang,
     blocks: [
-      { id: 'lang',  label: KT_BLOCK_LABELS.lang + ' · ' + KT_LANGUAGES[lang], questions: ktCycle(KT_LANG_POOL[lang], n) },
+      { id: 'lang',  label: KT_BLOCK_LABELS.lang + ' · ' + KT_LANGUAGES[lang], questions: ktCycle(langPool, n) },
       { id: 'logic', label: KT_BLOCK_LABELS.logic, questions: ktCycle(KT_LOGIC_POOL, n) },
       { id: 'subj1', label: KT_BLOCK_LABELS.subj1, questions: ktCycle(subjPool, n) },
       { id: 'subj2', label: KT_BLOCK_LABELS.subj2, questions: ktCycle(subjPool, n) },
@@ -212,7 +280,10 @@ function openKT(code) {
 function beginKT(code, typeId, lang) {
   const a = assembleKT(typeId, code, lang);
   const flat = [];
-  a.blocks.forEach(b => b.questions.forEach(q => flat.push({ q: q.q, options: q.options, correct: q.correct, why: q.why, block: b.id })));
+  a.blocks.forEach(b => b.questions.forEach(q => flat.push({
+    q: q.q, options: q.options, correct: q.correct, why: q.why, block: b.id,
+    stage: q.stage, audio: q.audio, video: q.video, passage: q.passage, // только для lang-блока (en)
+  })));
   activeKT = { code, typeId, lang, flat, answers: new Array(flat.length).fill(null), idx: 0, secondsLeft: KT_TYPES[typeId].timeMin * 60, timer: null };
   renderKTQuestion();
   startKTTimer();
@@ -221,13 +292,25 @@ function beginKT(code, typeId, lang) {
 function renderKTQuestion() {
   const s = activeKT;
   const item = s.flat[s.idx];
+  const blockTag = item.stage ? `${KT_BLOCK_LABELS[item.block]} · ${KT_LANG_STAGE_LABELS[item.stage]}` : KT_BLOCK_LABELS[item.block];
+
+  const media = item.stage === 'listening'
+    ? `<div class="kt-listen-media">
+        ${item.video ? `<video class="kt-listen-video" src="${item.video}" autoplay muted loop playsinline></video>` : ''}
+        ${item.audio ? `<audio class="kt-listen-audio" controls src="${item.audio}"></audio>` : ''}
+       </div>`
+    : item.stage === 'reading' && item.passage
+      ? `<div class="kt-reading-passage">${esc(item.passage)}</div>`
+      : '';
+
   ktEl().innerHTML = `
     <div class="kt-run-head">
-      <span class="kt-block-tag">${KT_BLOCK_LABELS[item.block]}</span>
+      <span class="kt-block-tag">${blockTag}</span>
       <span class="kt-run-timer" id="ktTimer">${fmtTime(s.secondsLeft)}</span>
     </div>
     <div class="kt-progress"><div class="kt-progress-bar" style="width:${((s.idx + 1) / s.flat.length) * 100}%"></div></div>
     <p class="test-qnum-line">Вопрос ${s.idx + 1} из ${s.flat.length}</p>
+    ${media}
     <p class="test-question">${esc(item.q)}</p>
     <div class="test-options" id="ktOptions">
       ${item.options.map((o, i) => `

@@ -675,6 +675,16 @@ body.test-open{ overflow:hidden; }
 }
 .test-qnum-line{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 8px; }
 
+/* Listening: анимированная сцена + плеер */
+.kt-listen-media{ margin:0 0 18px; border-radius:var(--radius-m); overflow:hidden; border:1px solid var(--line); }
+.kt-listen-video{ width:100%; max-height:220px; object-fit:cover; display:block; background:#000; }
+.kt-listen-audio{ width:100%; display:block; }
+/* Reading: карточка с текстом */
+.kt-reading-passage{
+  background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-m);
+  padding:16px 18px; margin:0 0 18px; font-size:14px; line-height:1.6; color:var(--ink-soft);
+}
+
 .kt-result-wrap{ text-align:center; }
 .kt-stamp{
   width:140px; height:140px; margin:6px auto 18px; border-radius:50%;
