@@ -344,7 +344,7 @@ function renderStatsCatalog() {
   matched = sortStatsGroups(matched);
 
   listEl.innerHTML = matched.map(g => `
-    <button class="kcat-row ${g.code === selectedStatsCode ? 'is-active' : ''}" data-code="${g.code}">
+    <button class="kcat-row" data-code="${g.code}">
       <span class="kcat-row-code">${g.code}</span>
       <span class="kcat-row-name">${esc(g.name)}</span>
       <span class="kcat-row-pct" style="color:${g.passed_pct >= 50 ? 'var(--teal)' : 'var(--danger)'}">${g.passed_pct.toFixed(1)}%</span>
@@ -353,54 +353,95 @@ function renderStatsCatalog() {
   empty.classList.toggle('hidden', matched.length > 0);
   count.textContent = `${matched.length} ${pluralizeGroups(matched.length)}`;
 
-  listEl.querySelectorAll('[data-code]').forEach(btn => btn.addEventListener('click', () => selectStatsGroup(btn.dataset.code)));
+  listEl.querySelectorAll('[data-code]').forEach(btn => btn.addEventListener('click', () => openGopGroup(btn.dataset.code)));
+}
 
-  if (selectedStatsCode && !matched.some(g => g.code === selectedStatsCode)) {
-    selectedStatsCode = null;
-    renderStatsCard();
+/* Клик по группе — модалка (как в прежней «Практике»): статистика КТ-2025 +
+   предметы/темы. Темами пока заполнена только пилотная группа GOP_PILOT_CODE —
+   у остальных 146 показывается заглушка «материалы скоро появятся». */
+const GOP_PILOT_CODE = 'M001';
+const GOP_SUBJECTS = {
+  M001: [
+    ...COMMON_SUBJECTS,
+    { id: 'p1', title: 'Педагогика', sub: 'теория и практика обучения и воспитания', kind: 'profile', topics: [
+      'Дидактика: теория обучения', 'Теория и методика воспитания',
+      'Современные педагогические технологии', 'История педагогики и образования' ]},
+    { id: 'p2', title: 'Психология', sub: 'общая и возрастная психология', kind: 'profile', topics: [
+      'Общая психология: процессы и свойства', 'Возрастная и педагогическая психология',
+      'Психология личности', 'Социальная психология' ]},
+  ],
+};
+
+function openGopGroup(code) {
+  renderGopModalView(code);
+  document.getElementById('dirModal').classList.remove('hidden');
+}
+
+function renderGopModalView(code) {
+  const g = KT_STATS_GROUPS.find(x => x.code === code);
+  const subjects = GOP_SUBJECTS[code];
+  const body = document.getElementById('dirModalBody');
+  body.innerHTML = `
+    <p class="eyebrow">${g.code} · Магистратура</p>
+    <h3 class="modal-title">${esc(g.name)}</h3>
+    <div class="kcat-stat-grid" style="margin:14px 0 22px">
+      <div class="kcat-stat">
+        <div class="kcat-stat-label">Заявлений</div>
+        <div class="kcat-stat-value">${g.applications.toLocaleString('ru-RU')}</div>
+      </div>
+      <div class="kcat-stat">
+        <div class="kcat-stat-label">Участников КТ</div>
+        <div class="kcat-stat-value">${g.participants.toLocaleString('ru-RU')} <small>${g.participation_pct.toFixed(1)}%</small></div>
+      </div>
+      <div class="kcat-stat">
+        <div class="kcat-stat-label">Набрали порог</div>
+        <div class="kcat-stat-value" style="color:var(--teal)">${g.passed.toLocaleString('ru-RU')} <small>${g.passed_pct.toFixed(1)}%</small></div>
+      </div>
+      <div class="kcat-stat">
+        <div class="kcat-stat-label">Не набрали порог</div>
+        <div class="kcat-stat-value" style="color:var(--danger)">${g.failed.toLocaleString('ru-RU')} <small>${g.failed_pct.toFixed(1)}%</small></div>
+      </div>
+    </div>
+    ${subjects ? `
+      <p class="modal-lead">Вступительный экзамен включает предметы для подготовки. Выберите предмет, чтобы увидеть темы.</p>
+      <ul class="subject-list">
+        ${subjects.map(s => `
+          <li>
+            <button class="subject-row" data-open-gop-subject="${s.id}">
+              <span class="subject-kind ${s.kind === 'common' ? 'is-common' : 'is-profile'}">${s.kind === 'common' ? 'Общий' : 'Профильный'}</span>
+              <span class="subject-text">
+                <span class="subject-title">${s.title}</span>
+                <span class="subject-sub">${s.sub}</span>
+              </span>
+              <span class="subject-arrow" aria-hidden="true">→</span>
+            </button>
+          </li>
+        `).join('')}
+      </ul>
+    ` : `
+      <p class="modal-lead">Материалы по предметам и темам для этой группы пока не добавлены — скоро появятся.</p>
+    `}
+  `;
+  if (subjects) {
+    body.querySelectorAll('[data-open-gop-subject]').forEach(btn => btn.addEventListener('click', () => renderGopSubjectView(code, btn.dataset.openGopSubject)));
   }
 }
 
-function selectStatsGroup(code) {
-  selectedStatsCode = code;
-  renderStatsCatalog();
-  renderStatsCard();
-  document.getElementById('statsCard')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function renderStatsCard() {
-  const wrap = document.getElementById('statsCard');
-  if (!wrap) return;
-  const g = KT_STATS_GROUPS.find(x => x.code === selectedStatsCode);
-  if (!g) { wrap.innerHTML = ''; return; }
-  wrap.innerHTML = `
-    <div class="kcat-card">
-      <div class="kcat-card-code">${g.code}</div>
-      <div class="kcat-card-name">${esc(g.name)}</div>
-      <div class="kcat-stat-grid">
-        <div class="kcat-stat">
-          <div class="kcat-stat-label">Заявлений</div>
-          <div class="kcat-stat-value">${g.applications.toLocaleString('ru-RU')}</div>
-        </div>
-        <div class="kcat-stat">
-          <div class="kcat-stat-label">Участников КТ</div>
-          <div class="kcat-stat-value">${g.participants.toLocaleString('ru-RU')} <small>${g.participation_pct.toFixed(1)}%</small></div>
-        </div>
-        <div class="kcat-stat">
-          <div class="kcat-stat-label">Набрали порог</div>
-          <div class="kcat-stat-value" style="color:var(--teal)">${g.passed.toLocaleString('ru-RU')} <small>${g.passed_pct.toFixed(1)}%</small></div>
-        </div>
-        <div class="kcat-stat">
-          <div class="kcat-stat-label">Не набрали порог</div>
-          <div class="kcat-stat-value" style="color:var(--danger)">${g.failed.toLocaleString('ru-RU')} <small>${g.failed_pct.toFixed(1)}%</small></div>
-        </div>
-      </div>
-      <div class="kcat-bar-track">
-        <div class="kcat-bar-pass" style="width:${g.passed_pct}%"></div>
-        <div class="kcat-bar-fail" style="width:${g.failed_pct}%"></div>
-      </div>
-    </div>
+function renderGopSubjectView(code, subjectId) {
+  const g = KT_STATS_GROUPS.find(x => x.code === code);
+  const s = GOP_SUBJECTS[code].find(x => x.id === subjectId);
+  const body = document.getElementById('dirModalBody');
+  body.innerHTML = `
+    <button class="back-link" id="gopSubjectBack">← ${g.code} · ${esc(g.name)}</button>
+    <p class="eyebrow">${s.kind === 'common' ? 'Общий предмет' : 'Профильный предмет'}</p>
+    <h3 class="modal-title">${s.title}</h3>
+    <p class="modal-lead">${s.sub}</p>
+    <p class="topics-head">Темы для подготовки</p>
+    <ol class="topic-list">
+      ${s.topics.map(t => `<li><span class="topic-dot" aria-hidden="true"></span>${t}</li>`).join('')}
+    </ol>
   `;
+  document.getElementById('gopSubjectBack').addEventListener('click', () => renderGopModalView(code));
 }
 
 function subjectsFor(direction) { return [...COMMON_SUBJECTS, ...direction.profile]; }
@@ -520,7 +561,6 @@ let activeQuiz = null; // { code, qIndex, answers, timerHandle, secondsLeft }
 let statsSearch = '';
 let statsSortKey = 'alpha';
 let activeCategory = null;
-let selectedStatsCode = null;
 
 /* ---------------------------------------------------------
    3) РЕНДЕР: КАТАЛОГ НАПРАВЛЕНИЙ
@@ -1297,10 +1337,11 @@ function renderRoadmap(data) {
 
 /* --- Калькулятор шансов --- */
 const CALC_LEVELS = {
-  high:   { label: 'Высокий шанс',  cls: 'high' },
-  medium: { label: 'Средний шанс',  cls: 'medium' },
-  low:    { label: 'Низкий шанс',   cls: 'low' },
-  none:   { label: 'Ниже порога',   cls: 'low' },
+  high:    { label: 'Высокий шанс',    cls: 'high' },
+  medium:  { label: 'Средний шанс',    cls: 'medium' },
+  low:     { label: 'Низкий шанс',     cls: 'low' },
+  none:    { label: 'Ниже порога',     cls: 'low' },
+  no_data: { label: 'Нет данных по вузу', cls: 'medium' },
 };
 
 function wireCalc() {
@@ -1319,6 +1360,20 @@ function wireCalc() {
     try {
       const r = await apiFetch('/api/calculate-chances?' + q.toString(), { auth: true });
       const lv = CALC_LEVELS[r.level] || CALC_LEVELS.low;
+      const kt = r.kt_stats ? `<p class="calc-kt">По стране на КТ-2025 порог набрали <b>${r.kt_stats.passed_pct.toFixed(1)}%</b> из ${r.kt_stats.participants} участников этой группы.</p>` : '';
+
+      if (r.level === 'no_data') {
+        box.innerHTML = `
+          <div class="calc-verdict ${lv.cls}">
+            <span class="calc-level">${lv.label}</span>
+            <span class="calc-score">Балл: ${r.total}</span>
+          </div>
+          <p class="calc-msg">${esc(r.message)}</p>
+        `;
+        box.classList.remove('hidden');
+        return;
+      }
+
       const recs = (r.recommendations || []).map(rec => `
         <li><b>${esc(rec.name)}</b> (${esc(rec.city)}) — проходной ${rec.avg_score}, конкурс ${rec.competition_ratio.toFixed(1)}</li>
       `).join('');
@@ -1328,6 +1383,7 @@ function wireCalc() {
           <span class="calc-score">${r.total} / проходной ${r.avg_passing_score}</span>
         </div>
         <p class="calc-msg">${esc(r.message)} Грантов: ${r.grant_count}, заявлений в прошлом году: ${r.applicants_count}.</p>
+        ${kt}
         ${recs ? `<p class="calc-rec-head">Куда шансы выше:</p><ul class="calc-recs">${recs}</ul>` : ''}
       `;
       box.classList.remove('hidden');
@@ -1359,7 +1415,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireMobileNav();
   wireHeroVideoLoop();
   document.getElementById('pathPrepBtn')?.addEventListener('click', () => {
-    document.getElementById('practice').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
   });
   wireCalc();
 
