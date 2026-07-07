@@ -372,6 +372,25 @@ h3{ font-size:22px; }
 .kcat-bar-pass{ background:var(--teal); height:100%; }
 .kcat-bar-fail{ background:var(--danger); height:100%; }
 
+/* =========================== О ПЛАТФОРМЕ: сетка возможностей =========================== */
+.feat-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+}
+.feat-card{
+  border-radius:var(--radius-l); padding:26px 24px;
+  background:var(--glass);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  border:1px solid var(--line);
+  transition:border-color .25s ease, transform .25s ease;
+}
+.feat-card:hover{ border-color:rgba(0,219,233,.4); transform:translateY(-3px); }
+.feat-icon{ display:block; width:26px; height:26px; color:var(--accent); margin-bottom:16px; }
+.feat-icon svg{ width:100%; height:100%; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.feat-card h3{ font-size:17px; margin:0 0 8px; color:#fff; }
+.feat-card p{ font-size:14px; color:var(--ink-soft); margin:0; line-height:1.55; }
+
 /* =========================== HOW / STEPS =========================== */
 /* =========================== ПУТЬ АБИТУРИЕНТА =========================== */
 .path-chain{ display:flex; align-items:stretch; gap:14px; }
