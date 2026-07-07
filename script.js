@@ -377,6 +377,11 @@ function openGopGroup(code) {
   document.getElementById('dirModal').classList.remove('hidden');
 }
 
+/* Тест/КТ для пилотной группы переиспользуют данные направления 7M01 (Педагогические
+   науки) — тот же профиль (педагогика+психология), пока под каждую из 147 групп
+   отдельный банк вопросов не подготовлен. */
+const GOP_DIRECTION_MAP = { M001: '7M01' };
+
 function renderGopModalView(code) {
   const g = KT_STATS_GROUPS.find(x => x.code === code);
   const subjects = GOP_SUBJECTS[code];
@@ -421,9 +426,18 @@ function renderGopModalView(code) {
     ` : `
       <p class="modal-lead">Материалы по предметам и темам для этой группы пока не добавлены — скоро появятся.</p>
     `}
+    ${GOP_DIRECTION_MAP[code] ? `
+      <button class="btn btn-primary btn-block" id="gopTestBtn">Пройти тест по направлению</button>
+      <button class="btn btn-ghost btn-block" id="gopKTBtn" style="margin-top:10px">Симуляция КТ (полный формат)</button>
+    ` : ''}
   `;
   if (subjects) {
     body.querySelectorAll('[data-open-gop-subject]').forEach(btn => btn.addEventListener('click', () => renderGopSubjectView(code, btn.dataset.openGopSubject)));
+  }
+  const dirCode = GOP_DIRECTION_MAP[code];
+  if (dirCode) {
+    document.getElementById('gopTestBtn').addEventListener('click', () => { if (requireAuth(g.code, g.name)) startQuiz(dirCode); });
+    document.getElementById('gopKTBtn').addEventListener('click', () => { if (requireAuth(g.code, g.name)) { closeDirModal(); window.openKT(dirCode); } });
   }
 }
 
