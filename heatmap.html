@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JetisHub — Тепловая карта вузов</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/brand/favicon.png" type="image/png">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
   :root{
@@ -20,8 +21,8 @@
     padding:0 28px; height:64px;
     background:rgba(19,19,19,.85); backdrop-filter:blur(12px); border-bottom:1px solid var(--line);
   }
-  .logo{ font-family:'Libre Caslon Text',serif; font-size:20px; color:var(--ink); text-decoration:none; }
-  .logo span{ color:var(--accent); }
+  .logo{ display:inline-flex; align-items:center; gap:8px; font-family:'Libre Caslon Text',serif; font-size:20px; color:var(--ink); text-decoration:none; }
+  .logo-mark{ width:22px; height:22px; display:block; }
   .controls{ display:flex; align-items:center; gap:12px; }
   label{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); }
   select{
@@ -49,7 +50,7 @@
 </head>
 <body>
 <header>
-  <a class="logo" href="index.html"><span>⟁</span> JetisHub</a>
+  <a class="logo" href="index.html"><img class="logo-mark" src="assets/brand/logo-128.png" alt="" aria-hidden="true"> JetisHub</a>
   <div class="controls">
     <label for="spec">Специальность</label>
     <select id="spec"></select>
