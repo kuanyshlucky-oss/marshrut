@@ -6,7 +6,7 @@
 <title>JetisHub — подготовка к магистратуре</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Geist:wght@300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="icon" href="assets/brand/favicon.png" type="image/png">
+<link rel="icon" href="assets/brand/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,8 +15,8 @@
 <header class="site-header" id="siteHeader">
   <div class="wrap header-row">
     <a href="#" class="logo">
-      <img class="logo-mark" src="assets/brand/logo-128.png" alt="" aria-hidden="true">
-      JetisHub
+      <img class="logo-mark" src="assets/brand/logo.svg" alt="" aria-hidden="true">
+      <span class="logo-text">JetisHub<span class="logo-tag">Магистратураға жолыңыз</span></span>
     </a>
 
     <nav class="main-nav" id="mainNav" aria-label="Главная навигация">
@@ -202,7 +202,36 @@
 <footer class="site-footer">
   <div class="wrap footer-grid">
     <div class="footer-brand">
-      <a href="#" class="logo logo-footer"><img class="logo-mark" src="assets/brand/logo-128.png" alt="" aria-hidden="true">JetisHub</a>
+      <a href="#" class="logo-full-link" aria-label="JetisHub — Магистратураға жолыңыз">
+        <svg class="logo-full" viewBox="0 0 660 200" fill="none" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="jhTile" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#8B5E3C"/><stop offset="1" stop-color="#5C3E22"/>
+            </linearGradient>
+            <linearGradient id="jhHub" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#8B5E3C"/><stop offset="1" stop-color="#CBA35C"/>
+            </linearGradient>
+          </defs>
+          <rect x="20" y="40" width="120" height="120" rx="26" fill="url(#jhTile)"/>
+          <g fill="#F1EDEA">
+            <ellipse cx="80" cy="78.4" rx="5.4" ry="13.8"/>
+            <ellipse cx="58.4" cy="100" rx="13.8" ry="5.4"/>
+            <ellipse cx="101.6" cy="100" rx="13.8" ry="5.4"/>
+            <ellipse cx="80" cy="121.6" rx="5.4" ry="13.8"/>
+            <circle cx="80" cy="100" r="4.2"/>
+          </g>
+          <g fill="#CBA35C">
+            <path d="M80 56.9 84.7 61.6 80 66.3 75.3 61.6Z"/>
+            <path d="M41.6 95.3 46.3 100 41.6 104.7 36.9 100Z"/>
+            <path d="M118.4 95.3 123.1 100 118.4 104.7 113.7 100Z"/>
+            <path d="M80 133.7 84.7 138.4 80 143.1 75.3 138.4Z"/>
+          </g>
+          <text x="168" y="118" font-family="'Libre Caslon Text', Georgia, serif" font-size="76" letter-spacing="1">
+            <tspan fill="currentColor">Jetis</tspan><tspan fill="url(#jhHub)">Hub</tspan>
+          </text>
+          <text x="170" y="150" font-family="'JetBrains Mono', monospace" font-size="15" letter-spacing="6.5" fill="currentColor" opacity="0.55">МАГИСТРАТУРАҒА ЖОЛЫҢЫЗ</text>
+        </svg>
+      </a>
       <p>Платформа подготовки к вступительным экзаменам в магистратуру по группам образовательных программ.</p>
     </div>
     <div class="footer-col">

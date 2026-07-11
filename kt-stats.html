@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JetisHub — Статистика КТ 2025</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:wght@400;700&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="icon" href="assets/brand/favicon.png" type="image/png">
+<link rel="icon" href="assets/brand/logo.svg" type="image/svg+xml">
 <style>
   :root{
     --bg:#131313; --surface:#1c1b1b; --ink:#e5e2e1; --ink-soft:#a9adae;
-    --line:rgba(255,255,255,.10); --accent:#00dbe9; --beige:#d2c4ba;
+    --line:rgba(255,255,255,.10); --accent:#cba35c; --accent-on:#2a1b06; --beige:#d2c4ba;
     --good:#4caf7d; --bad:#e05252;
     --mono:'JetBrains Mono',monospace;
   }
@@ -23,6 +23,8 @@
   }
   .logo{ display:inline-flex; align-items:center; gap:8px; font-family:'Libre Caslon Text',serif; font-size:20px; color:var(--ink); text-decoration:none; }
   .logo-mark{ width:22px; height:22px; display:block; }
+  .logo-text{ display:flex; flex-direction:column; line-height:1; }
+  .logo-tag{ font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-top:3px; }
   .back{ color:var(--ink-soft); font-size:14px; text-decoration:none; }
   .back:hover{ color:var(--accent); }
 
@@ -49,7 +51,7 @@
     border-bottom:1px solid var(--line); transition:background .15s;
   }
   .row:last-child{ border-bottom:none; }
-  .row:hover, .row.is-active{ background:rgba(0,219,233,.08); }
+  .row:hover, .row.is-active{ background:rgba(139,94,60,.10); }
   .row-code{ font-family:var(--mono); font-size:12px; color:var(--ink-soft); flex:0 0 52px; }
   .row-name{ font-size:14px; flex:1; }
   .row-pct{ font-family:var(--mono); font-size:13px; flex:0 0 auto; }
@@ -83,7 +85,7 @@
 </head>
 <body>
 <header>
-  <a class="logo" href="index.html"><img class="logo-mark" src="assets/brand/logo-128.png" alt="" aria-hidden="true"> JetisHub</a>
+  <a class="logo" href="index.html"><img class="logo-mark" src="assets/brand/logo.svg" alt="" aria-hidden="true"> <span class="logo-text">JetisHub<span class="logo-tag">Магистратураға жолыңыз</span></span></a>
   <a class="back" href="index.html">← На главную</a>
 </header>
 

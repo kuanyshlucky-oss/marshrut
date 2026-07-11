@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JetisHub — Как устроен экзамен</title>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="icon" href="assets/brand/favicon.png" type="image/png">
+<link rel="icon" href="assets/brand/logo.svg" type="image/svg+xml">
 <style>
   :root{
     --bg:#131313; --surface:#1c1b1b; --surface-2:#242322;
     --ink:#e5e2e1; --ink-soft:#a9adae; --line:rgba(255,255,255,.10);
-    --accent:#00dbe9; --beige:#d2c4ba;
+    --accent:#cba35c; --accent-on:#2a1b06; --beige:#d2c4ba;
     --green:#4caf7d; --yellow:#e6c34a; --red:#e05252;
     --serif:'Libre Caslon Text',Georgia,serif; --mono:'JetBrains Mono',monospace;
   }
@@ -26,6 +26,8 @@
   }
   .logo{ display:inline-flex; align-items:center; gap:8px; font-family:var(--serif); font-size:20px; color:var(--ink); text-decoration:none; }
   .logo-mark{ width:22px; height:22px; display:block; }
+  .logo-text{ display:flex; flex-direction:column; line-height:1; }
+  .logo-tag{ font-family:var(--mono); font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-top:3px; }
   .back{ color:var(--ink-soft); font-size:14px; text-decoration:none; }
   .back:hover{ color:var(--accent); }
 
@@ -52,8 +54,8 @@
     transition:border-color .2s, color .2s, transform .2s; cursor:pointer;
   }
   .btn:hover{ border-color:var(--accent); color:var(--accent); transform:translateY(-2px); }
-  .btn.solid{ background:var(--accent); border-color:var(--accent); color:#00232a; font-weight:600; }
-  .btn.solid:hover{ background:#7df4ff; color:#00232a; }
+  .btn.solid{ background:var(--accent); border-color:var(--accent); color:var(--accent-on); font-weight:600; }
+  .btn.solid:hover{ background:#e0bd7f; color:var(--accent-on); }
 
   /* Экран 2: таймлайн */
   .timeline{ margin:34px 0 10px; }
@@ -74,7 +76,7 @@
     padding:26px; text-align:left; margin:26px 0; backdrop-filter:blur(14px);
     box-shadow:0 20px 50px -20px rgba(0,0,0,.6);
   }
-  .qcard .tag{ font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); background:rgba(0,219,233,.1); padding:4px 10px; border-radius:999px; }
+  .qcard .tag{ font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); background:rgba(139,94,60,.12); padding:4px 10px; border-radius:999px; }
   .qcard .q{ font-size:17px; font-weight:500; color:#fff; margin:14px 0; }
   .qopt{
     display:flex; align-items:center; gap:12px; padding:11px 14px; margin-bottom:8px;
@@ -137,7 +139,7 @@
 <body>
 
 <header>
-  <a class="logo" href="index.html"><img class="logo-mark" src="assets/brand/logo-128.png" alt="" aria-hidden="true"> JetisHub</a>
+  <a class="logo" href="index.html"><img class="logo-mark" src="assets/brand/logo.svg" alt="" aria-hidden="true"> <span class="logo-text">JetisHub<span class="logo-tag">Магистратураға жолыңыз</span></span></a>
   <a class="back" href="kt-stats.html">Экзамен</a>
   <a class="back" href="index.html">← На главную</a>
 </header>
