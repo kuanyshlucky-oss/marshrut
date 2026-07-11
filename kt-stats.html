@@ -8,9 +8,9 @@
 <link rel="icon" href="assets/brand/logo.svg" type="image/svg+xml">
 <style>
   :root{
-    --bg:#131313; --surface:#1c1b1b; --ink:#e5e2e1; --ink-soft:#a9adae;
-    --line:rgba(255,255,255,.10); --accent:#cba35c; --accent-on:#2a1b06; --beige:#d2c4ba;
-    --good:#4caf7d; --bad:#e05252;
+    --bg:#F5F0E6; --surface:#FFFFFF; --ink:#2D2D2D; --ink-soft:#746B60;
+    --line:rgba(45,34,26,.12); --accent:#4A342B; --accent-on:#F5F0E6; --beige:#C9A35C;
+    --good:#3F8A68; --bad:#B3261E;
     --mono:'JetBrains Mono',monospace;
   }
   *{ box-sizing:border-box; }
@@ -19,14 +19,14 @@
     position:sticky; top:0; z-index:1100;
     display:flex; align-items:center; justify-content:space-between; gap:16px;
     padding:0 28px; height:64px;
-    background:rgba(19,19,19,.85); backdrop-filter:blur(12px); border-bottom:1px solid var(--line);
+    background:var(--accent); border-bottom:1px solid rgba(245,240,230,.12);
   }
-  .logo{ display:inline-flex; align-items:center; gap:8px; font-family:'Libre Caslon Text',serif; font-size:20px; color:var(--ink); text-decoration:none; }
-  .logo-mark{ width:22px; height:22px; display:block; }
+  .logo{ display:inline-flex; align-items:center; gap:8px; font-family:'Libre Caslon Text',serif; font-size:20px; color:var(--accent-on); text-decoration:none; }
+  .logo-mark{ width:22px; height:22px; display:block; border-radius:22%; box-shadow:0 0 0 1px rgba(245,240,230,.4); }
   .logo-text{ display:flex; flex-direction:column; line-height:1; }
-  .logo-tag{ font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-top:3px; }
-  .back{ color:var(--ink-soft); font-size:14px; text-decoration:none; }
-  .back:hover{ color:var(--accent); }
+  .logo-tag{ font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--beige); margin-top:3px; }
+  .back{ color:rgba(245,240,230,.75); font-size:14px; text-decoration:none; }
+  .back:hover{ color:var(--accent-on); }
 
   main{ max-width:960px; margin:0 auto; padding:36px 24px 80px; }
   h1{ font-family:'Libre Caslon Text',serif; font-size:32px; margin:0 0 6px; }

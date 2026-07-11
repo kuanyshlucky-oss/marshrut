@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
   :root{
-    --bg:#131313; --surface:#1c1b1b; --ink:#e5e2e1; --ink-soft:#a9adae;
-    --line:rgba(255,255,255,.10); --accent:#cba35c; --accent-on:#2a1b06; --beige:#d2c4ba;
+    --bg:#F5F0E6; --surface:#FFFFFF; --ink:#2D2D2D; --ink-soft:#746B60;
+    --line:rgba(45,34,26,.12); --accent:#4A342B; --accent-on:#F5F0E6; --beige:#C9A35C;
     --mono:'JetBrains Mono',monospace;
   }
   *{ box-sizing:border-box; }
@@ -19,21 +19,21 @@
     position:sticky; top:0; z-index:1100;
     display:flex; align-items:center; justify-content:space-between; gap:16px;
     padding:0 28px; height:64px;
-    background:rgba(19,19,19,.85); backdrop-filter:blur(12px); border-bottom:1px solid var(--line);
+    background:var(--accent); border-bottom:1px solid rgba(245,240,230,.12);
   }
-  .logo{ display:inline-flex; align-items:center; gap:8px; font-family:'Libre Caslon Text',serif; font-size:20px; color:var(--ink); text-decoration:none; }
-  .logo-mark{ width:22px; height:22px; display:block; }
+  .logo{ display:inline-flex; align-items:center; gap:8px; font-family:'Libre Caslon Text',serif; font-size:20px; color:var(--accent-on); text-decoration:none; }
+  .logo-mark{ width:22px; height:22px; display:block; border-radius:22%; box-shadow:0 0 0 1px rgba(245,240,230,.4); }
   .logo-text{ display:flex; flex-direction:column; line-height:1; }
-  .logo-tag{ font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-top:3px; }
+  .logo-tag{ font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--beige); margin-top:3px; }
   .controls{ display:flex; align-items:center; gap:12px; }
-  label{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft); }
+  label{ font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:rgba(245,240,230,.7); }
   select{
-    background:var(--surface); color:var(--ink); border:1px solid var(--line);
+    background:#FFFFFF; color:var(--ink); border:1px solid var(--line);
     border-radius:8px; padding:9px 12px; font-size:14px; font-family:inherit;
   }
-  select:focus{ outline:2px solid var(--accent); outline-offset:1px; }
-  .back{ color:var(--ink-soft); font-size:14px; text-decoration:none; }
-  .back:hover{ color:var(--accent); }
+  select:focus{ outline:2px solid var(--beige); outline-offset:1px; }
+  .back{ color:rgba(245,240,230,.75); font-size:14px; text-decoration:none; }
+  .back:hover{ color:var(--accent-on); }
   #map{ height:calc(100vh - 64px - 46px); }
   .legend{
     display:flex; align-items:center; justify-content:center; gap:18px; flex-wrap:wrap;
@@ -41,8 +41,6 @@
     background:var(--surface); border-top:1px solid var(--line); font-family:var(--mono);
   }
   .dot{ display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:6px; vertical-align:-1px; }
-  /* тёмные тайлы: приглушаем стандартную OSM-подложку */
-  .leaflet-tile{ filter:brightness(.65) contrast(1.1) saturate(.55); }
   .leaflet-popup-content-wrapper{ background:var(--surface); color:var(--ink); border-radius:10px; border:1px solid var(--line); }
   .leaflet-popup-tip{ background:var(--surface); }
   .pp-name{ font-weight:600; margin:0 0 6px; font-size:14px; }
