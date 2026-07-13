@@ -200,20 +200,17 @@ h3{ font-size:22px; }
   background:var(--bg);
 }
 .hero-bg{ position:absolute; inset:0; z-index:0; overflow:hidden; }
-.hero-video{
+.hero-photo{
   position:absolute; inset:0; width:100%; height:100%;
-  object-fit:cover; display:block;
-  filter:saturate(.6) brightness(.55);
+  object-fit:cover; object-position:center 30%; display:block;
+  filter:saturate(.85) brightness(.68) sepia(.12);
 }
-/* тёмный коричневый градиент поверх видео, растворяется в кремовом фоне страницы */
+/* тёмный коричневый градиент поверх фото, растворяется в кремовом фоне страницы */
 .hero-overlay{
   position:absolute; inset:0;
   background:
     linear-gradient(180deg, rgba(42,27,17,.6) 0%, rgba(42,27,17,.5) 45%, var(--bg) 100%),
     radial-gradient(ellipse at 70% 30%, rgba(201,163,92,.12) 0%, transparent 55%);
-}
-@media (prefers-reduced-motion: reduce){
-  .hero-video{ display:none; }
 }
 
 .hero-inner{
