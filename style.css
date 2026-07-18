@@ -860,6 +860,11 @@ body.test-open #reviewPage input{ user-select:text; }
   background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-m);
   padding:16px 18px; margin:0 0 18px; font-size:14px; line-height:1.6; color:var(--ink-soft);
 }
+.kt-question-image{
+  background:#FFFFFF; border:1px solid var(--line); border-radius:var(--radius-m);
+  padding:14px 16px; margin:0 0 18px; overflow-x:auto;
+}
+.kt-question-image img{ display:block; max-width:100%; height:auto; }
 
 .kt-result-wrap{ text-align:center; }
 .kt-stamp{
