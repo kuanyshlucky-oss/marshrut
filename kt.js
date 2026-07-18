@@ -366,7 +366,13 @@ function renderKTQuestion() {
       ? `<div class="kt-reading-passage">${esc(item.passage)}</div>`
       : '';
 
+  const qnav = s.flat.map((q, i) => {
+    const cls = i === s.idx ? 'is-current' : (s.answers[i] != null && (!Array.isArray(s.answers[i]) || s.answers[i].length) ? 'is-answered' : '');
+    return `<button class="kt-qnav-btn ${cls}" data-idx="${i}">${i + 1}</button>`;
+  }).join('');
+
   ktEl().innerHTML = `
+    <div class="kt-qnav" id="ktQnav">${qnav}</div>
     <div class="kt-run-head">
       <span class="kt-block-tag">${blockTag}</span>
       <span class="kt-run-timer" id="ktTimer">${fmtTime(s.secondsLeft)}</span>
@@ -412,6 +418,9 @@ function renderKTQuestion() {
   }));
   document.getElementById('ktPrev').addEventListener('click', ktPrev);
   document.getElementById('ktNext').addEventListener('click', ktNext);
+  ktEl().querySelectorAll('.kt-qnav-btn').forEach(b => b.addEventListener('click', () => ktGoTo(Number(b.dataset.idx))));
+  const curBtn = ktEl().querySelector('.kt-qnav-btn.is-current');
+  if (curBtn) curBtn.scrollIntoView({ block: 'nearest', inline: 'center' });
   wireKTAudioPlayer();
 }
 
@@ -467,6 +476,11 @@ function ktNext() {
   const s = activeKT;
   if (s.idx < s.flat.length - 1) { s.idx++; renderKTQuestion(); }
   else finishKT();
+}
+
+function ktGoTo(idx) {
+  const s = activeKT;
+  if (idx >= 0 && idx < s.flat.length) { s.idx = idx; renderKTQuestion(); }
 }
 
 function startKTTimer() {
