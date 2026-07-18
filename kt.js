@@ -42,6 +42,11 @@ const KT_BLOCK_LABELS = {
   subj2: 'Профильный предмет №2',
 };
 
+// Реальные названия профильных предметов по коду направления (пока заполнено только для 7M01/M001).
+const KT_SUBJECT_NAMES = {
+  '7M01': { subj1: 'Педагогика', subj2: 'Психология' },
+};
+
 /* ---------- Пулы вопросов (демо; дополняются) ---------- */
 
 const KT_LANG_POOL = {
@@ -341,7 +346,7 @@ function beginKT(code, typeId, lang) {
 function renderKTQuestion() {
   const s = activeKT;
   const item = s.flat[s.idx];
-  const blockTag = item.stage ? `${KT_BLOCK_LABELS[item.block]} · ${KT_LANG_STAGE_LABELS[item.stage]}` : KT_BLOCK_LABELS[item.block];
+  const blockTag = item.stage ? `${ktBlockLabel(s.code, item.block)} · ${KT_LANG_STAGE_LABELS[item.stage]}` : ktBlockLabel(s.code, item.block);
 
   const media = item.stage === 'listening'
     ? (item.audio ? `
@@ -539,10 +544,31 @@ function closeKT() {
 }
 
 // Работа над ошибками для КТ — полноэкранная страница разбора (#reviewPage).
+function ktBlockLabel(code, block) {
+  return (KT_SUBJECT_NAMES[code] && KT_SUBJECT_NAMES[code][block]) || KT_BLOCK_LABELS[block];
+}
+
 function openKTReview() {
   const s = activeKT;
   const d = findDirection(s.code);
   document.getElementById('reviewSub').textContent = `${d.code} · КТ · ${KT_TYPES[s.typeId].label} · ${KT_LANGUAGES[s.lang]}`;
+
+  // Навигация по разделам сверху (requirement: клик переходит к вопросам раздела).
+  const blockOrder = ['lang', 'logic', 'subj1', 'subj2'];
+  const firstIdxByBlock = {};
+  s.flat.forEach((item, i) => { if (!(item.block in firstIdxByBlock)) firstIdxByBlock[item.block] = i; });
+  document.getElementById('reviewNav').innerHTML = blockOrder.filter(b => b in firstIdxByBlock).map(b => {
+    const label = b === 'lang' ? `${ktBlockLabel(s.code, b)} · ${KT_LANGUAGES[s.lang]}` : ktBlockLabel(s.code, b);
+    return `<button class="review-nav-btn" data-jump="${firstIdxByBlock[b]}">${esc(label)}</button>`;
+  }).join('');
+  document.getElementById('reviewNav').querySelectorAll('[data-jump]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const items = document.querySelectorAll('#reviewList .rev-item');
+      const target = items[Number(btn.dataset.jump)];
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
   document.getElementById('reviewList').innerHTML = s.flat.map((item, i) => {
     const ua = s.answers[i];
     const isMulti = Array.isArray(item.correct);
@@ -563,7 +589,7 @@ function openKTReview() {
     const why = item.explanations ? '' : (item.why
       ? `<div class="rev-why"><b>Почему:</b> ${esc(item.why)}</div>`
       : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(item.options[correctSet[0]])}</div>`);
-    const blockTag = item.stage ? `${KT_BLOCK_LABELS[item.block]} · ${KT_LANG_STAGE_LABELS[item.stage]}` : KT_BLOCK_LABELS[item.block];
+    const blockTag = item.stage ? `${ktBlockLabel(s.code, item.block)} · ${KT_LANG_STAGE_LABELS[item.stage]}` : ktBlockLabel(s.code, item.block);
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <span class="rev-block">${blockTag}</span>

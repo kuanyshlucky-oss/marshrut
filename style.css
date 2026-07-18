@@ -643,7 +643,7 @@ body.test-open #reviewPage input{ user-select:text; }
 }
 @keyframes testFade{ from{ opacity:0; } to{ opacity:1; } }
 .test-exit{
-  position:fixed; top:22px; right:26px; z-index:2;
+  position:fixed; top:22px; right:26px; z-index:3;
   width:40px; height:40px; border-radius:50%;
   background:rgba(45,34,26,.05); border:1px solid var(--line);
   color:var(--ink); font-size:22px; line-height:1;
@@ -720,7 +720,18 @@ body.test-open #reviewPage input{ user-select:text; }
 /* =========================== REVIEW (работа над ошибками) =========================== */
 .review-inner{ max-width:780px; margin:0 auto; padding:70px 28px 60px; }
 .review-inner .test-title{ margin-bottom:0; }
-.review-inner .test-sub{ margin-bottom:34px; }
+.review-inner .test-sub{ margin-bottom:14px; }
+.review-nav{
+  display:flex; flex-wrap:wrap; gap:8px; margin:0 0 26px; padding:14px 0 20px;
+  border-bottom:1px solid var(--line); position:sticky; top:0; background:var(--bg); z-index:2;
+}
+.review-nav-btn{
+  background:var(--bg); border:1px solid var(--beige); color:var(--ink);
+  font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.06em; font-size:11px;
+  border-radius:var(--radius-s); padding:9px 16px;
+  transition:border-color .25s ease, color .25s ease, box-shadow .25s ease;
+}
+.review-nav-btn:hover{ border-color:var(--accent); color:var(--accent); box-shadow:0 0 14px rgba(139,94,60,.25); }
 .rev-item{
   background:var(--glass);
   backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
