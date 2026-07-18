@@ -460,7 +460,9 @@ h3{ font-size:22px; }
   color:var(--ink-soft);
 }
 .auth-tab.is-active{ border-color:var(--accent); color:var(--accent); }
-.form-row{ display:flex; flex-direction:column; gap:6px; margin-bottom:18px; }
+.form-row{ display:flex; flex-direction:column; gap:6px; margin-bottom:18px; min-width:0; }
+.form-row input,
+.form-row select{ width:100%; }
 .form-row label{ font-size:11px; font-family:var(--font-mono); color:var(--ink-soft); text-transform:uppercase; letter-spacing:.1em; }
 .form-row input,
 .form-row select{
@@ -1012,6 +1014,7 @@ body.test-open #reviewPage input{ user-select:text; }
     background:linear-gradient(180deg, rgba(42,27,17,.75) 0%, rgba(42,27,17,.65) 55%, var(--bg) 100%);
   }
   .kt-type-cards{ grid-template-columns:1fr; }
+  .calc-form{ grid-template-columns:1fr; }
 }
 @media (max-width: 560px){
   .header-row{ height:64px; }
