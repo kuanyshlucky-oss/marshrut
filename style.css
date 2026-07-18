@@ -650,6 +650,16 @@ body.test-open #reviewPage input{ user-select:text; }
   transition:border-color .25s ease, color .25s ease;
 }
 .test-exit:hover{ border-color:var(--accent); color:var(--accent); }
+.scroll-top-btn{
+  position:fixed; bottom:26px; right:26px; z-index:3;
+  width:44px; height:44px; border-radius:50%;
+  background:var(--accent); border:1px solid var(--accent); color:var(--accent-on);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 4px 16px rgba(45,34,26,.25);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.scroll-top-btn svg{ width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.scroll-top-btn:hover{ transform:translateY(-2px); box-shadow:0 6px 20px rgba(45,34,26,.32); }
 .test-page-inner{
   max-width:680px; margin:0 auto; min-height:100%;
   display:flex; flex-direction:column; justify-content:center;

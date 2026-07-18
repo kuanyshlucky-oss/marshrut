@@ -1024,6 +1024,9 @@ function wireQuiz() {
   document.getElementById('reviewBtn').addEventListener('click', openReview);
   document.getElementById('reviewExit').addEventListener('click', closeReview);
   document.getElementById('reviewClose').addEventListener('click', closeReview);
+  document.getElementById('reviewScrollTop').addEventListener('click', () => {
+    document.getElementById('reviewPage').scrollTo({ top: 0, behavior: 'smooth' });
+  });
   document.getElementById('quizDashBtn').addEventListener('click', () => {
     closeQuiz();
     location.href = 'cabinet.html';
