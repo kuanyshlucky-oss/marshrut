@@ -1189,6 +1189,9 @@ function refreshAuthUI() {
     chip?.classList.add('hidden');
     guestLogin?.classList.remove('hidden');
     guestRegister?.classList.remove('hidden');
+    // Токен оказался невалидным/просроченным (или его не было) — снимаем класс,
+    // который до fetchMe() прятал гостевой экран, иначе он останется скрытым навсегда.
+    document.documentElement.classList.remove('has-token');
     authZone?.classList.remove('hidden');
     dashboard?.classList.add('hidden');
   }
@@ -1634,7 +1637,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   // сразу рисуем то, что не зависит от пользователя, и вешаем обработчики
   renderCatalog();
   renderStatsCatalog();
-  refreshAuthUI();
+  // Если токен уже есть в localStorage, пользователь почти наверняка залогинен —
+  // скрываем гостевой экран («Войдите, чтобы продолжить») сразу, не дожидаясь
+  // fetchMe(), иначе на долю секунды мелькает неверное состояние. Дашборд по
+  // умолчанию и так скрыт разметкой (class="hidden"), покажем его позже.
+  if (getToken()) document.getElementById('authZone')?.classList.add('hidden');
+  else refreshAuthUI();
   wireAuth();
   wireProfileForm();
   wireProfileModes();
