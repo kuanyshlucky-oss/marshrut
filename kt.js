@@ -31,8 +31,6 @@ const KT_TYPES = {
 
 const KT_LANGUAGES = {
   en: 'Английский',
-  de: 'Немецкий',
-  fr: 'Французский',
 };
 
 const KT_BLOCK_LABELS = {

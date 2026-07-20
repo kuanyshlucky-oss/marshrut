@@ -1667,6 +1667,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     else showToast('Тест для этого направления временно недоступен');
   }
 
+  // автозапуск симуляции КТ по ссылке (например, со страницы статистики): index.html?kt=7M01
+  const ktCode = new URLSearchParams(location.search).get('kt');
+  const ktCodeDir = ktCode ? findDirection(ktCode) : null;
+  if (ktCode && document.getElementById('ktPage') && requireAuth(ktCodeDir && ktCodeDir.code, ktCodeDir && ktCodeDir.name)) {
+    if (DIRECTION_TESTS[ktCode] && window.openKT) window.openKT(ktCode);
+    else showToast('Симуляция КТ для этого направления временно недоступна');
+  }
+
   // страница деталей пройденного теста: index.html?result=7M06&score=3&total=4&date=2026-07-05
   const qs = new URLSearchParams(location.search);
   const resultCode = qs.get('result');
