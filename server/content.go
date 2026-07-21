@@ -2,9 +2,17 @@ package main
 
 import (
 	"embed"
+	"encoding/json"
 	"sort"
 	"strings"
 )
+
+// gopCodeByDirection — код группы образовательных программ (ГОП, из официальной
+// статистики КТ, напр. "M001") для внутреннего кода направления — только для
+// удобного отображения в админке, на доступ не влияет.
+var gopCodeByDirection = map[string]string{
+	"7M01": "M001",
+}
 
 // Банки вопросов по направлениям — раньше лежали прямо в публичном script.js
 // (значит, были читаемы кем угодно без логина), теперь встроены в бинарник
@@ -40,5 +48,31 @@ func listContentCodes() []string {
 		}
 	}
 	sort.Strings(out)
+	return out
+}
+
+// ContentInfo — то, что видит админ при выдаче доступа: код + человекочитаемое
+// название + код ГОП, если известен (напр. 7M01 → M001).
+type ContentInfo struct {
+	Code    string `json:"code"`
+	GopCode string `json:"gopCode,omitempty"`
+	Title   string `json:"title"`
+}
+
+func listContentInfo() []ContentInfo {
+	codes := listContentCodes()
+	out := make([]ContentInfo, 0, len(codes))
+	for _, code := range codes {
+		info := ContentInfo{Code: code, GopCode: gopCodeByDirection[code]}
+		if b, ok := testContentBytes(code); ok {
+			var t struct {
+				Title string `json:"title"`
+			}
+			if json.Unmarshal(b, &t) == nil {
+				info.Title = t.Title
+			}
+		}
+		out = append(out, info)
+	}
 	return out
 }

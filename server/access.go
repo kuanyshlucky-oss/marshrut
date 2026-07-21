@@ -69,12 +69,13 @@ func handleGetTestContent(w http.ResponseWriter, r *http.Request) {
 	w.Write(b)
 }
 
-// GET /api/admin/test-codes?key=... — список кодов, у которых вообще есть контент.
+// GET /api/admin/test-codes?key=... — список тестов (код + название), у которых
+// вообще есть контент, для выпадающего списка в админке.
 func handleAdminTestCodes(w http.ResponseWriter, r *http.Request) {
 	if !adminGuard(w, r) {
 		return
 	}
-	writeJSON(w, http.StatusOK, map[string]any{"codes": listContentCodes()})
+	writeJSON(w, http.StatusOK, map[string]any{"tests": listContentInfo()})
 }
 
 // POST /api/admin/grant-access?key=... {user_id, code}

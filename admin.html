@@ -166,23 +166,30 @@ async function del(id, login){
   catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
 }
 
-// Список кодов, у которых вообще есть контент теста — подгружается один раз,
+// Список тестов, у которых вообще есть контент — подгружается один раз,
 // чтобы не хардкодить в админке, какие направления доступны для выдачи.
+// Каждый элемент: {code, gopCode?, title} — gopCode/title для человекочитаемой подписи.
 let testCodes = [];
 async function loadTestCodes(){
-  try{ testCodes = (await api('/api/admin/test-codes')).codes || []; }
+  try{ testCodes = (await api('/api/admin/test-codes')).tests || []; }
   catch(e){ testCodes = []; }
+}
+function testLabel(code){
+  const t = testCodes.find(x => x.code === code);
+  if (!t) return code;
+  const prefix = t.gopCode ? `${t.gopCode} · ${t.code}` : t.code;
+  return t.title ? `${prefix} — ${t.title}` : prefix;
 }
 
 function accessCellHtml(u){
   const given = u.access || [];
   const chips = given.map(code => `
-    <span class="access-chip">${code}<button data-revoke="${u.id}" data-code="${code}" title="Отозвать доступ">×</button></span>
+    <span class="access-chip" title="${testLabel(code)}">${code}<button data-revoke="${u.id}" data-code="${code}" title="Отозвать доступ">×</button></span>
   `).join('');
-  const available = testCodes.filter(c => !given.includes(c));
+  const available = testCodes.filter(t => !given.includes(t.code));
   const select = available.length
     ? `<div class="access-add">
-         <select data-add-select="${u.id}">${available.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
+         <select data-add-select="${u.id}">${available.map(t=>`<option value="${t.code}">${testLabel(t.code)}</option>`).join('')}</select>
          <button class="btn-ghost" data-grant="${u.id}">Выдать</button>
        </div>`
     : (given.length ? '' : '<span class="muted">Нет доступных кодов</span>');
