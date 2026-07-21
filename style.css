@@ -823,6 +823,14 @@ body.test-open #reviewPage input{ user-select:text; }
 .rev-opt.wrong .rev-opt-expl{ color:var(--danger); }
 .rev-why{ margin-top:14px; font-size:14px; line-height:1.55; color:var(--ink-soft); border-left:2px solid var(--accent); padding-left:12px; }
 .rev-why b{ color:var(--ink); }
+.rev-konspekt-btn{
+  display:inline-flex; align-items:center; gap:8px; margin-top:14px;
+  font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--accent); text-decoration:none; border:1px solid rgba(139,94,60,.4);
+  border-radius:var(--radius-s); padding:9px 14px;
+  transition:border-color .2s ease, background .2s ease;
+}
+.rev-konspekt-btn:hover{ border-color:var(--accent); background:var(--accent-soft); }
 
 /* =========================== КТ full-screen =========================== */
 .kt-setup-lead{ text-align:center; color:var(--ink-soft); font-size:15px; max-width:520px; margin:12px auto 34px; }

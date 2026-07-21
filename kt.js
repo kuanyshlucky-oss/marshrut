@@ -431,7 +431,7 @@ function beginKT(code, typeId, lang) {
   const a = assembleKT(typeId, code, lang);
   const flat = [];
   a.blocks.forEach(b => b.questions.forEach(q => flat.push({
-    q: q.q, options: q.options, correct: q.correct, why: q.why, explanations: q.explanations, image: q.image, block: b.id,
+    q: q.q, options: q.options, correct: q.correct, why: q.why, explanations: q.explanations, image: q.image, topic: q.topic, block: b.id,
     stage: q.stage, audio: q.audio, passage: q.passage, // только для lang-блока (en)
   })));
   activeKT = { code, typeId, lang, flat, answers: new Array(flat.length).fill(null), idx: 0, secondsLeft: KT_TYPES[typeId].timeMin * 60, timer: null };
@@ -700,6 +700,8 @@ function openKTReview() {
       ? `<div class="rev-why"><b>Почему:</b> ${esc(item.why)}</div>`
       : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(item.options[correctSet[0]])}</div>`);
     const blockTag = item.stage ? `${ktBlockLabel(s.code, item.block)} · ${KT_LANG_STAGE_LABELS[item.stage]}` : ktBlockLabel(s.code, item.block);
+    // Ссылка на конспект по теме вопроса — только при неверном ответе (только для Педагогики/Психологии).
+    const konspekt = wrong && typeof conspectLink === 'function' ? conspectLink(item.topic) : '';
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <span class="rev-block">${blockTag}</span>
@@ -707,6 +709,7 @@ function openKTReview() {
         ${item.image ? `<div class="kt-question-image"><img src="${item.image}" alt="Условие вопроса"></div>` : ''}
         <div class="rev-opts">${opts}</div>
         ${why}
+        ${konspekt}
       </div>`;
   }).join('');
 
