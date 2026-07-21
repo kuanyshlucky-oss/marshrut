@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JetisHub — Конспект</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/brand/logo.svg" type="image/svg+xml">
+<style>
+  :root{
+    --bg:#F5F0E6; --surface:#FFFFFF; --ink:#2D2D2D; --ink-soft:#746B60;
+    --line:rgba(45,34,26,.12); --accent:#4A342B; --accent-on:#F5F0E6; --beige:#C9A35C;
+    --serif:'Libre Caslon Text',Georgia,serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--bg); color:var(--ink); font-family:'Geist',system-ui,sans-serif;
+    -webkit-user-select:none; user-select:none;
+  }
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 20px; height:60px;
+    background:var(--accent); border-bottom:1px solid rgba(245,240,230,.12);
+  }
+  .back{ color:rgba(245,240,230,.8); font-size:14px; text-decoration:none; font-family:var(--mono); }
+  .back:hover{ color:var(--accent-on); }
+  .doc-title{ color:var(--accent-on); font-family:var(--serif); font-size:17px; }
+  .spacer{ width:70px; }
+
+  main{ padding:84px 16px 40px; display:flex; flex-direction:column; align-items:center; min-height:100vh; }
+  .page-wrap{
+    max-width:760px; width:100%; background:var(--surface); border:1px solid var(--line);
+    border-radius:14px; box-shadow:0 12px 32px -12px rgba(45,34,26,.2); overflow:hidden;
+  }
+  .page-wrap img{
+    width:100%; display:block; pointer-events:none;
+    -webkit-user-drag:none; -webkit-touch-callout:none;
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:center; gap:18px;
+    margin-top:22px; font-family:var(--mono); font-size:13px; color:var(--ink-soft);
+  }
+  .nav button{
+    font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.06em;
+    border:1px solid var(--line); background:var(--surface); color:var(--ink);
+    border-radius:8px; padding:9px 16px; cursor:pointer; transition:border-color .2s, color .2s;
+  }
+  .nav button:hover:not(:disabled){ border-color:var(--accent); color:var(--accent); }
+  .nav button:disabled{ opacity:.35; cursor:default; }
+  .hint{ margin-top:14px; font-size:12px; color:var(--ink-soft); text-align:center; max-width:500px; }
+  .missing{ padding:120px 20px; text-align:center; color:var(--ink-soft); }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="javascript:history.length>1?history.back():location.assign('cabinet.html')">← Назад</a>
+  <span class="doc-title" id="docTitle"></span>
+  <span class="spacer"></span>
+</header>
+<main id="main"></main>
+<script>
+  const DOCS = {
+    pedagogika:   { title: 'Педагогика', pages: 5 },
+    psikhologiya: { title: 'Психология', pages: 4 },
+  };
+
+  const params = new URLSearchParams(location.search);
+  const file = params.get('file');
+  const doc = DOCS[file];
+  let page = Math.max(1, parseInt(params.get('page'), 10) || 1);
+
+  const main = document.getElementById('main');
+  const docTitleEl = document.getElementById('docTitle');
+
+  if (!doc) {
+    main.innerHTML = '<div class="missing">Конспект не найден.</div>';
+  } else {
+    if (page > doc.pages) page = doc.pages;
+    docTitleEl.textContent = doc.title;
+    render();
+  }
+
+  function render() {
+    const url = new URL(location.href);
+    url.searchParams.set('file', file);
+    url.searchParams.set('page', page);
+    history.replaceState(null, '', url);
+
+    main.innerHTML = `
+      <div class="page-wrap">
+        <img src="assets/konspekty/img/${file}/page-${page}.jpg" alt="${doc.title}, страница ${page}"
+             oncontextmenu="return false" ondragstart="return false">
+      </div>
+      <div class="nav">
+        <button id="prevBtn" ${page <= 1 ? 'disabled' : ''}>← Пред.</button>
+        <span>Страница ${page} из ${doc.pages}</span>
+        <button id="nextBtn" ${page >= doc.pages ? 'disabled' : ''}>След. →</button>
+      </div>
+      <p class="hint">Материал доступен только для просмотра. Копирование и сохранение файла отключены.</p>
+    `;
+    document.getElementById('prevBtn').addEventListener('click', () => { if (page > 1) { page--; render(); } });
+    document.getElementById('nextBtn').addEventListener('click', () => { if (page < doc.pages) { page++; render(); } });
+  }
+
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && ['s','p','u','c'].includes(e.key.toLowerCase())) e.preventDefault();
+  });
+</script>
+</body>
+</html>

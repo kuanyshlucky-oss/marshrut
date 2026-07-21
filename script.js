@@ -173,7 +173,10 @@ const CONSPECTS = {
 function conspectLink(topic) {
   const c = topic && CONSPECTS[topic];
   if (!c) return '';
-  return `<a class="rev-konspekt-btn" href="${c.file}#page=${c.page}" target="_blank" rel="noopener">Открыть конспект: ${esc(c.title)}</a>`;
+  // Конспект открывается через свою страницу-просмотрщик (картинки, без текстового слоя PDF),
+  // а не прямой ссылкой на файл — чтобы текст нельзя было выделить и скопировать.
+  const doc = c.file.split('/').pop().replace('.pdf', '');
+  return `<a class="rev-konspekt-btn" href="konspekt.html?file=${doc}&page=${c.page}" target="_blank" rel="noopener">Открыть конспект: ${esc(c.title)}</a>`;
 }
 
 const DIRECTION_TESTS = {
