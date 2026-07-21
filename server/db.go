@@ -189,15 +189,18 @@ type AdminUser struct {
 	Favorites []string `json:"favorites"`
 	Results   int      `json:"results"`
 	CreatedAt string   `json:"created_at"`
+	Access    []string `json:"access"`
 }
 
-// listUsers одним запросом (агрегаты вместо цикла N+1): избранное — через
-// string_agg, число результатов — коррелированный подзапрос со своим индексом.
+// listUsers одним запросом (агрегаты вместо цикла N+1): избранное и выданный
+// доступ к тестам — через string_agg, число результатов — коррелированный
+// подзапрос со своим индексом.
 func listUsers() ([]AdminUser, error) {
 	rows, err := db.Query(`
 		SELECT u.id, u.name, u.email, u.phone, u.education, u.city, u.created_at,
 		       COALESCE((SELECT string_agg(f.code, ',' ORDER BY f.code) FROM favorites f WHERE f.user_id = u.id), ''),
-		       (SELECT COUNT(*) FROM results r WHERE r.user_id = u.id)
+		       (SELECT COUNT(*) FROM results r WHERE r.user_id = u.id),
+		       COALESCE((SELECT string_agg(a.code, ',' ORDER BY a.code) FROM test_access a WHERE a.user_id = u.id), '')
 		FROM users u
 		ORDER BY u.id`)
 	if err != nil {
@@ -208,14 +211,19 @@ func listUsers() ([]AdminUser, error) {
 	out := []AdminUser{}
 	for rows.Next() {
 		var u AdminUser
-		var favCSV string
-		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Education, &u.City, &u.CreatedAt, &favCSV, &u.Results); err != nil {
+		var favCSV, accessCSV string
+		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Education, &u.City, &u.CreatedAt, &favCSV, &u.Results, &accessCSV); err != nil {
 			return nil, err
 		}
 		if favCSV == "" {
 			u.Favorites = []string{}
 		} else {
 			u.Favorites = strings.Split(favCSV, ",")
+		}
+		if accessCSV == "" {
+			u.Access = []string{}
+		} else {
+			u.Access = strings.Split(accessCSV, ",")
 		}
 		out = append(out, u)
 	}

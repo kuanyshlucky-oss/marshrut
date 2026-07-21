@@ -358,14 +358,22 @@
   </div>
 </div>
 
+<!-- ================= ВЫБОР ПРЕДМЕТА (перед простым тестом) ================= -->
+<div class="modal-overlay hidden" id="subjectModal">
+  <div class="modal">
+    <button class="modal-close" id="subjectClose" aria-label="Закрыть">×</button>
+    <div id="subjectModalBody"><!-- injected by script.js --></div>
+  </div>
+</div>
+
 <!-- ================= AUTH GATE (тест/КТ только для вошедших) ================= -->
 <div class="modal-overlay hidden" id="gateModal">
   <div class="modal gate-modal">
     <button class="modal-close" id="gateClose" aria-label="Закрыть">×</button>
     <div class="gate-lock" aria-hidden="true">🔒</div>
-    <h3>Доступ к тестированию открывается после входа</h3>
-    <p>Для прохождения теста и симуляции КТ необходим личный аккаунт. Войдите в систему или обратитесь к администратору для получения доступа.</p>
-    <a class="btn btn-primary btn-block" href="cabinet.html">Войти в личный кабинет</a>
+    <h3 id="gateTitle">Доступ к тестированию открывается после входа</h3>
+    <p id="gateLead">Для прохождения теста и симуляции КТ необходим личный аккаунт. Войдите в систему или обратитесь к администратору для получения доступа.</p>
+    <a class="btn btn-primary btn-block" href="cabinet.html" id="gateLoginBtn">Войти в личный кабинет</a>
     <a class="btn btn-ghost btn-block gate-buy-btn" id="gateBuyBtn" href="#" target="_blank" rel="noopener">Приобрести курс</a>
   </div>
 </div>

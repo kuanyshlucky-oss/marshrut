@@ -288,11 +288,11 @@ function ktCycle(pool, n) {
 // Пул профильных вопросов направления. Если у направления есть разбивка
 // по предметам (bySubject — сейчас только 7M01: Педагогика/Психология), берём
 // её; иначе (остальные направления) — общий синтетический пул для обоих блоков.
-function ktSubjectPool(code, subjectKey) {
-  const t = DIRECTION_TESTS[code];
-  if (!t) return [];
-  if (t.bySubject && t.bySubject[subjectKey]) return t.bySubject[subjectKey];
-  return t.questions || [];
+// content — уже загруженный с бэкенда объект (см. getOrFetchTestContent в script.js).
+function ktSubjectPool(content, subjectKey) {
+  if (!content) return [];
+  if (content.bySubject && content.bySubject[subjectKey]) return content.bySubject[subjectKey];
+  return content.questions || [];
 }
 
 // Английский распределяется пропорционально по трём разделам (Listening/Grammar/Reading),
@@ -310,7 +310,8 @@ function ktCycleStaged(stageDefs, n) {
 }
 
 // Собирает КТ: массив блоков [{id,label,questions:[{q,options,correct}]}].
-function assembleKT(typeId, code, lang) {
+// content — уже загруженный с бэкенда банк вопросов направления (см. beginKT).
+function assembleKT(typeId, code, content, lang) {
   const type = KT_TYPES[typeId];
   const n = type.perBlock;
   const langPool = lang === 'en'
@@ -325,8 +326,8 @@ function assembleKT(typeId, code, lang) {
     blocks: [
       { id: 'lang',  label: KT_BLOCK_LABELS.lang + ' · ' + KT_LANGUAGES[lang], questions: langPool },
       { id: 'logic', label: KT_BLOCK_LABELS.logic, questions: ktCycle(KT_LOGIC_POOL, n) },
-      { id: 'subj1', label: KT_BLOCK_LABELS.subj1, questions: ktCycle(ktSubjectPool(code, 'subj1'), n) },
-      { id: 'subj2', label: KT_BLOCK_LABELS.subj2, questions: ktCycle(ktSubjectPool(code, 'subj2'), n) },
+      { id: 'subj1', label: KT_BLOCK_LABELS.subj1, questions: ktCycle(ktSubjectPool(content, 'subj1'), n) },
+      { id: 'subj2', label: KT_BLOCK_LABELS.subj2, questions: ktCycle(ktSubjectPool(content, 'subj2'), n) },
     ],
   };
 }
@@ -427,8 +428,10 @@ function openKT(code) {
   showKTPage();
 }
 
-function beginKT(code, typeId, lang) {
-  const a = assembleKT(typeId, code, lang);
+async function beginKT(code, typeId, lang) {
+  const content = await getOrFetchTestContent(code);
+  if (!content) return; // нет доступа или ошибка сети — гейт/тост уже показаны
+  const a = assembleKT(typeId, code, content, lang);
   const flat = [];
   a.blocks.forEach(b => b.questions.forEach(q => flat.push({
     q: q.q, options: q.options, correct: q.correct, why: q.why, explanations: q.explanations, image: q.image, topic: q.topic, block: b.id,

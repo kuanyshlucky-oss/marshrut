@@ -7,6 +7,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY *.go ./
+COPY content ./content
 RUN CGO_ENABLED=0 GOOS=linux go build -o /out/server .
 
 # --- Рантайм ---

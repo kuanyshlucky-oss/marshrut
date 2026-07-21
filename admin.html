@@ -45,6 +45,20 @@
   .keybar{ display:flex; gap:10px; align-items:flex-end; }
   .keybar > div{ flex:1; }
   .muted{ color:var(--soft); font-size:12px; }
+  .access-cell{ min-width:170px; }
+  .access-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px; }
+  .access-chip{
+    display:inline-flex; align-items:center; gap:6px; background:var(--ok-soft); color:var(--ok);
+    border-radius:999px; padding:3px 6px 3px 10px; font-family:'JetBrains Mono',monospace; font-size:11px;
+  }
+  .access-chip button{
+    background:transparent; border:none; color:inherit; font-size:13px; line-height:1; padding:2px 4px;
+    border-radius:50%; font-weight:700;
+  }
+  .access-chip button:hover{ background:rgba(0,0,0,.08); }
+  .access-add{ display:flex; gap:6px; }
+  .access-add select{ flex:1; padding:6px 8px; border:1px solid var(--line); border-radius:6px; font-size:12px; font-family:inherit; margin:0; }
+  .access-add button{ padding:5px 10px; font-size:12px; }
 </style>
 </head>
 <body>
@@ -87,7 +101,7 @@
   <div class="card">
     <h2>Пользователи (<span id="count">0</span>) <button class="btn-ghost" id="reloadBtn" style="float:right;padding:5px 14px;font-size:12px">Обновить</button></h2>
     <table>
-      <thead><tr><th>ID</th><th>Логин (email)</th><th>Имя</th><th>Город</th><th>Тестов</th><th>Создан</th><th>Пароль</th><th></th></tr></thead>
+      <thead><tr><th>ID</th><th>Логин (email)</th><th>Имя</th><th>Город</th><th>Тестов</th><th>Доступ к тестам</th><th>Создан</th><th>Пароль</th><th></th></tr></thead>
       <tbody id="rows"></tbody>
     </table>
     <p id="listMsg" class="msg"></p>
@@ -152,21 +166,63 @@ async function del(id, login){
   catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
 }
 
+// Список кодов, у которых вообще есть контент теста — подгружается один раз,
+// чтобы не хардкодить в админке, какие направления доступны для выдачи.
+let testCodes = [];
+async function loadTestCodes(){
+  try{ testCodes = (await api('/api/admin/test-codes')).codes || []; }
+  catch(e){ testCodes = []; }
+}
+
+function accessCellHtml(u){
+  const given = u.access || [];
+  const chips = given.map(code => `
+    <span class="access-chip">${code}<button data-revoke="${u.id}" data-code="${code}" title="Отозвать доступ">×</button></span>
+  `).join('');
+  const available = testCodes.filter(c => !given.includes(c));
+  const select = available.length
+    ? `<div class="access-add">
+         <select data-add-select="${u.id}">${available.map(c=>`<option value="${c}">${c}</option>`).join('')}</select>
+         <button class="btn-ghost" data-grant="${u.id}">Выдать</button>
+       </div>`
+    : (given.length ? '' : '<span class="muted">Нет доступных кодов</span>');
+  return `<div class="access-chips">${chips}</div>${select}`;
+}
+
+async function grantAccess(userId, code){
+  try{ await api('/api/admin/grant-access', { method:'POST', body:{ user_id:userId, code } }); load(); }
+  catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
+}
+
+async function revokeAccess(userId, code){
+  if(!confirm('Отозвать доступ к тесту '+code+'?')) return;
+  try{ await api('/api/admin/revoke-access', { method:'POST', body:{ user_id:userId, code } }); load(); }
+  catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
+}
+
 async function load(){
   const lm=$('listMsg'); lm.textContent=''; lm.className='msg';
   if(!getKey()){ lm.textContent='Введите ADMIN_KEY.'; lm.className='msg err'; return; }
   try{
+    if(!testCodes.length) await loadTestCodes();
     const d = await api('/api/admin/users');
     $('count').textContent = d.count;
     $('rows').innerHTML = (d.users||[]).map(u=>`
       <tr>
         <td>${u.id}</td><td>${u.email}</td><td>${u.name||''}</td><td>${u.city||''}</td>
-        <td>${u.results}</td><td>${(u.created_at||'').slice(0,10)}</td>
+        <td>${u.results}</td>
+        <td class="access-cell">${accessCellHtml(u)}</td>
+        <td>${(u.created_at||'').slice(0,10)}</td>
         <td class="pw-cell" id="pw-${u.id}"><button class="btn-reset" data-reset="${u.id}" data-login="${u.email}">Сбросить пароль</button></td>
         <td><button class="btn-del" data-del="${u.id}" data-login="${u.email}">Удалить</button></td>
       </tr>`).join('');
     $('rows').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(Number(b.dataset.del), b.dataset.login));
     $('rows').querySelectorAll('[data-reset]').forEach(b=>b.onclick=()=>resetPw(Number(b.dataset.reset), b.dataset.login));
+    $('rows').querySelectorAll('[data-revoke]').forEach(b=>b.onclick=()=>revokeAccess(Number(b.dataset.revoke), b.dataset.code));
+    $('rows').querySelectorAll('[data-grant]').forEach(b=>b.onclick=()=>{
+      const sel = $('rows').querySelector(`[data-add-select="${b.dataset.grant}"]`);
+      if(sel && sel.value) grantAccess(Number(b.dataset.grant), sel.value);
+    });
   }catch(e){ lm.textContent=e.message; lm.className='msg err'; }
 }
 

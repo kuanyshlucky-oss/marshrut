@@ -39,6 +39,9 @@ func main() {
 	if err := initTrack(); err != nil {
 		log.Fatalf("ошибка инициализации справочников: %v", err)
 	}
+	if err := initAccess(); err != nil {
+		log.Fatalf("ошибка инициализации доступа к тестам: %v", err)
+	}
 	log.Print("БД готова (Postgres)")
 
 	mux := http.NewServeMux()
@@ -54,6 +57,10 @@ func main() {
 	mux.HandleFunc("POST /api/admin/create-user", rateLimit(adminLimiter, handleAdminCreate))
 	mux.HandleFunc("POST /api/admin/delete-user", handleAdminDelete)
 	mux.HandleFunc("POST /api/admin/reset-password", rateLimit(adminLimiter, handleAdminResetPassword))
+	mux.HandleFunc("GET /api/admin/test-codes", handleAdminTestCodes)
+	mux.HandleFunc("POST /api/admin/grant-access", handleAdminGrantAccess)
+	mux.HandleFunc("POST /api/admin/revoke-access", handleAdminRevokeAccess)
+	mux.HandleFunc("GET /api/tests/{code}", auth(handleGetTestContent))
 	// МагистрТрек
 	mux.HandleFunc("GET /api/universities", handleUniversities)
 	mux.HandleFunc("GET /api/specialities", handleSpecialities)
