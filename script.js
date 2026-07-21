@@ -180,7 +180,6 @@ function conspectLink(topic) {
 }
 
 const INTERACTIVE_TEST_CODES = ["7M01","7M02","7M03","7M04","7M05","7M06","7M07","7M08","7M11","7M12"]; // какие направления имеют интерактивный тест (не секрет — просто UI-подсказка, доступ проверяется на бэкенде)
-const SUBJECT_LABELS = { subj1: 'Педагогика', subj2: 'Психология' };
 
 /* Статистика КТ-2025 по 147 группам образовательных программ (официальная сводка НЦТ).
    Используется новым каталогом на главной (поиск + категории + карточка статистики). */
@@ -727,42 +726,33 @@ function shuffleArr(arr) {
 const QUIZ_MAX_QUESTIONS = 50;
 
 async function startQuiz(code) {
-  const content = await getOrFetchTestContent(code);
-  if (!content) return; // нет доступа или ошибка сети — гейт/тост уже показаны
-
-  if (content.bySubject && Object.keys(content.bySubject).length) {
-    showSubjectPicker(code, content);
-  } else {
-    beginQuizWithSubject(code, content, null);
-  }
+  showSubjectPicker(code);
 }
 
-// Экран выбора предмета — только для простого теста (не для симуляции КТ,
-// та специально всегда комбинированная, как настоящий экзамен).
-function showSubjectPicker(code, content) {
+// Экран выбора предмета — только для простого теста (не для симуляции КТ, та
+// специально всегда комбинированная, как настоящий экзамен). Всегда 4 секции,
+// как на настоящем КТ: 2 общих (Английский, ТГО) + 2 профильных. Общие секции
+// не требуют выданного доступа (как и в симуляции КТ) — только вход в аккаунт;
+// доступ проверяется отдельно, только при выборе профильного предмета.
+function showSubjectPicker(code) {
   const d = findDirection(code);
+  const subj = (typeof KT_SUBJECT_NAMES !== 'undefined' && KT_SUBJECT_NAMES[code])
+    || { subj1: 'Профильный предмет №1', subj2: 'Профильный предмет №2' };
   const body = document.getElementById('subjectModalBody');
-  const subjKeys = Object.keys(content.bySubject);
   body.innerHTML = `
     <p class="eyebrow">${d ? d.code + ' · ' : ''}Пройти тест</p>
     <h3 class="modal-title">Выберите предмет</h3>
-    <p class="modal-lead">Можно потренироваться по одному предмету отдельно или пройти тест по всем сразу.</p>
+    <p class="modal-lead">Тест состоит из 4 предметов, как на настоящем КТ — потренируйтесь по каждому отдельно.</p>
     <div class="kt-type-cards">
-      ${subjKeys.map(key => `
-        <button class="kt-type-card" data-subject="${key}">
-          <span class="kt-type-name">${SUBJECT_LABELS[key] || key}</span>
-          <span class="kt-type-total">${content.bySubject[key].length} вопросов</span>
-        </button>
-      `).join('')}
-      <button class="kt-type-card" data-subject="">
-        <span class="kt-type-name">Все вопросы</span>
-        <span class="kt-type-total">${content.questions.length} вопросов</span>
-      </button>
+      <button class="kt-type-card" data-subject="lang"><span class="kt-type-name">Английский</span></button>
+      <button class="kt-type-card" data-subject="logic"><span class="kt-type-name">ТГО</span></button>
+      <button class="kt-type-card" data-subject="subj1"><span class="kt-type-name">${subj.subj1}</span></button>
+      <button class="kt-type-card" data-subject="subj2"><span class="kt-type-name">${subj.subj2}</span></button>
     </div>
   `;
   body.querySelectorAll('[data-subject]').forEach(btn => btn.addEventListener('click', () => {
     document.getElementById('subjectModal').classList.add('hidden');
-    beginQuizWithSubject(code, content, btn.dataset.subject || null);
+    beginQuizSection(code, btn.dataset.subject);
   }));
   document.getElementById('subjectModal').classList.remove('hidden');
 }
@@ -775,17 +765,32 @@ function wireSubjectModal() {
   modal.addEventListener('click', (e) => { if (e.target.id === 'subjectModal') close(); });
 }
 
-function beginQuizWithSubject(code, content, subjectKey) {
+async function beginQuizSection(code, section) {
   const d = findDirection(code);
-  const source = subjectKey ? content.bySubject[subjectKey] : content.questions;
+  let source, title;
+  if (section === 'lang') {
+    source = [...KT_LANG_EN_STAGES.listening, ...KT_LANG_EN_STAGES.grammar, ...KT_LANG_EN_STAGES.reading];
+    title = 'Английский язык';
+  } else if (section === 'logic') {
+    source = KT_LOGIC_POOL;
+    title = 'Тест готовности к обучению (ТГО)';
+  } else {
+    // Профильный предмет — здесь и только здесь нужен выданный доступ.
+    const content = await getOrFetchTestContent(code);
+    if (!content) return; // нет доступа или ошибка сети — гейт/тост уже показаны
+    source = (content.bySubject && content.bySubject[section]) ? content.bySubject[section] : content.questions;
+    const names = (typeof KT_SUBJECT_NAMES !== 'undefined' && KT_SUBJECT_NAMES[code]) || null;
+    title = (names && names[section]) || content.title;
+  }
+
   // Пул перемешивается и ограничивается разумной длиной теста, чтобы при большом
   // банке вопросов (несколько вариантов) каждая попытка была разной, а не показывала
   // все вопросы подряд за одну сессию.
   const pool = shuffleArr(source).slice(0, QUIZ_MAX_QUESTIONS);
-  activeQuiz = { code, subjectKey, qIndex: 0, answers: new Array(pool.length).fill(null), pool };
+  activeQuiz = { code, section, qIndex: 0, answers: new Array(pool.length).fill(null), pool };
 
-  document.getElementById('testTitle').textContent = subjectKey ? (SUBJECT_LABELS[subjectKey] || content.title) : content.title;
-  document.getElementById('testSub').textContent = `${d.code} · ${d.name}`;
+  document.getElementById('testTitle').textContent = title;
+  document.getElementById('testSub').textContent = d ? `${d.code} · ${d.name}` : '';
   document.getElementById('testRun').classList.remove('hidden');
   document.getElementById('testResult').classList.add('hidden');
   document.getElementById('dirModal').classList.add('hidden');
@@ -808,10 +813,44 @@ function esc(s) {
   return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 }
 
+// Номерная навигация по вопросам (как в симуляции КТ) — клик прыгает на вопрос,
+// текущий подсвечен акцентом, отвеченные становятся тёмными.
+function renderQuizQnav() {
+  const qnav = document.getElementById('testQnav');
+  if (!qnav) return;
+  qnav.innerHTML = activeQuiz.pool.map((q, i) => {
+    const ans = activeQuiz.answers[i];
+    const answered = ans != null && (!Array.isArray(ans) || ans.length);
+    const cls = i === activeQuiz.qIndex ? 'is-current' : (answered ? 'is-answered' : '');
+    return `<button class="kt-qnav-btn ${cls}" data-idx="${i}">${i + 1}</button>`;
+  }).join('');
+  qnav.querySelectorAll('.kt-qnav-btn').forEach(b => b.addEventListener('click', () => quizGoTo(Number(b.dataset.idx))));
+  const curBtn = qnav.querySelector('.kt-qnav-btn.is-current');
+  if (curBtn) curBtn.scrollIntoView({ block: 'nearest', inline: 'center' });
+}
+
+function quizGoTo(idx) {
+  if (idx >= 0 && idx < activeQuiz.pool.length) { activeQuiz.qIndex = idx; renderQuizQuestion(); }
+}
+
 function renderQuizQuestion() {
   const q = activeQuiz.pool[activeQuiz.qIndex];
+  renderQuizQnav();
   document.getElementById('testQNum').textContent = `${activeQuiz.qIndex + 1}.`;
   document.getElementById('testQuestion').textContent = q.q;
+
+  // Аудио (Listening) или текст для чтения (Reading) — только у блока «Английский».
+  const mediaEl = document.getElementById('testMedia');
+  if (mediaEl) {
+    mediaEl.innerHTML = q.audio
+      ? `<audio controls preload="none" src="${q.audio}" class="quiz-audio-player"></audio>`
+      : (q.passage ? `<div class="kt-reading-passage">${esc(q.passage)}</div>` : '');
+  }
+  // Картинка к вопросу — есть у части вопросов ТГО (математика).
+  const imageEl = document.getElementById('testImage');
+  if (imageEl) {
+    imageEl.innerHTML = q.image ? `<div class="kt-question-image"><img src="${q.image}" alt="Условие вопроса"></div>` : '';
+  }
 
   const isMulti = Array.isArray(q.correct);
   const curAns = activeQuiz.answers[activeQuiz.qIndex];
@@ -926,6 +965,7 @@ function openReview() {
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${esc(q.q)}</p>
+        ${q.image ? `<div class="kt-question-image"><img src="${q.image}" alt="Условие вопроса"></div>` : ''}
         <div class="rev-opts">${opts}</div>
         ${why}
         ${konspekt}

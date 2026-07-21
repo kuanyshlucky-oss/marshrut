@@ -955,6 +955,7 @@ body.test-open #reviewPage input{ user-select:text; }
   padding:14px 16px; margin:0 0 18px; overflow-x:auto;
 }
 .kt-question-image img{ display:block; max-width:100%; height:auto; }
+.quiz-audio-player{ width:100%; margin:0 0 18px; }
 
 .kt-result-wrap{ text-align:center; }
 .kt-stamp{
