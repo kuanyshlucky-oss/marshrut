@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JetisHub — Конспекты</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/brand/logo.svg" type="image/svg+xml">
+<style>
+  :root{
+    --bg:#F5F0E6; --surface:#FFFFFF; --ink:#2D2D2D; --ink-soft:#746B60;
+    --line:rgba(45,34,26,.12); --accent:#4A342B; --accent-on:#F5F0E6; --beige:#C9A35C;
+    --serif:'Libre Caslon Text',Georgia,serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--bg); color:var(--ink); font-family:'Geist',system-ui,sans-serif;
+    -webkit-user-select:none; user-select:none;
+  }
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 20px; height:60px;
+    background:var(--accent); border-bottom:1px solid rgba(245,240,230,.12);
+  }
+  .back{ color:rgba(245,240,230,.8); font-size:14px; text-decoration:none; font-family:var(--mono); }
+  .back:hover{ color:var(--accent-on); }
+  .doc-title{ color:var(--accent-on); font-family:var(--serif); font-size:17px; }
+  .spacer{ width:70px; }
+
+  .lib-layout{ display:flex; padding-top:60px; min-height:100vh; align-items:stretch; }
+
+  .lib-sidebar{
+    flex:0 0 320px; max-width:320px; border-right:1px solid var(--line);
+    padding:24px 0; overflow-y:auto; max-height:calc(100vh - 60px); position:sticky; top:60px;
+  }
+  .lib-sidebar h2{
+    font-family:var(--serif); font-weight:400; font-size:19px; margin:0 22px 14px;
+  }
+  .lib-topic-list{ display:flex; flex-direction:column; }
+  .lib-topic-btn{
+    display:block; width:100%; text-align:left; background:transparent; border:none;
+    border-left:3px solid transparent; padding:12px 22px; font-size:13.5px; line-height:1.4;
+    color:var(--ink-soft); cursor:pointer; transition:background .2s ease, color .2s ease, border-color .2s ease;
+  }
+  .lib-topic-btn:hover{ background:rgba(45,34,26,.04); color:var(--ink); }
+  .lib-topic-btn.is-active{ border-left-color:var(--accent); background:rgba(139,94,60,.06); color:var(--ink); font-weight:600; }
+
+  .lib-preview{ flex:1 1 auto; padding:32px 28px 60px; display:flex; flex-direction:column; align-items:center; }
+  .lib-preview-title{ font-family:var(--serif); font-weight:400; font-size:22px; max-width:760px; width:100%; margin:0 0 18px; }
+  .page-wrap{
+    max-width:760px; width:100%; background:var(--surface); border:1px solid var(--line);
+    border-radius:14px; box-shadow:0 12px 32px -12px rgba(45,34,26,.2); overflow:hidden;
+    display:flex; flex-direction:column; gap:1px; background-color:var(--line);
+  }
+  .page-wrap img{
+    width:100%; display:block; pointer-events:none; background:var(--surface);
+    -webkit-user-drag:none; -webkit-touch-callout:none;
+  }
+  .hint{ margin-top:16px; font-size:12px; color:var(--ink-soft); text-align:center; max-width:500px; }
+  .missing{ padding:120px 20px; text-align:center; color:var(--ink-soft); }
+  .missing a{ color:var(--accent); }
+
+  @media (max-width:860px){
+    .lib-layout{ flex-direction:column; }
+    .lib-sidebar{
+      position:static; max-height:none; flex:0 0 auto; max-width:none;
+      border-right:none; border-bottom:1px solid var(--line);
+      display:flex; flex-direction:column; padding:16px 0;
+    }
+    .lib-topic-list{ flex-direction:row; overflow-x:auto; padding:0 12px; gap:4px; }
+    .lib-topic-btn{ flex:0 0 auto; white-space:nowrap; border-left:none; border-bottom:3px solid transparent; }
+    .lib-topic-btn.is-active{ border-left-color:transparent; border-bottom-color:var(--accent); }
+    .lib-preview{ padding:24px 16px 40px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <a class="back" href="cabinet.html">← В кабинет</a>
+  <span class="doc-title" id="libDocTitle"></span>
+  <span class="spacer"></span>
+</header>
+<div id="root"><div class="missing">Загрузка…</div></div>
+
+<script src="script.js"></script>
+<script>
+  const root = document.getElementById('root');
+  const libDocTitleEl = document.getElementById('libDocTitle');
+
+  function showMissing(html) {
+    root.innerHTML = `<div class="missing">${html}</div>`;
+  }
+
+  // Диапазон страниц темы: от её page до (page следующей темы − 1), для последней — до конца документа.
+  function topicRange(lib, idx) {
+    const from = lib.topics[idx].page;
+    const to = idx + 1 < lib.topics.length ? lib.topics[idx + 1].page - 1 : lib.pages;
+    const pages = [];
+    for (let p = from; p <= to; p++) pages.push(p);
+    return pages;
+  }
+
+  function renderLibrary(code, lib, topicIdx) {
+    libDocTitleEl.textContent = lib.title;
+    document.title = 'JetisHub — Конспекты · ' + lib.title;
+
+    root.innerHTML = `
+      <div class="lib-layout">
+        <nav class="lib-sidebar">
+          <h2>${esc(lib.title)}</h2>
+          <div class="lib-topic-list" id="libTopicList">
+            ${lib.topics.map((t, i) => `<button class="lib-topic-btn ${i === topicIdx ? 'is-active' : ''}" data-idx="${i}">${esc(t.title)}</button>`).join('')}
+          </div>
+        </nav>
+        <div class="lib-preview" id="libPreview"></div>
+      </div>
+    `;
+
+    document.querySelectorAll('.lib-topic-btn').forEach(btn => {
+      btn.addEventListener('click', () => selectTopic(code, lib, Number(btn.dataset.idx)));
+    });
+    renderPreview(lib, topicIdx);
+  }
+
+  function renderPreview(lib, topicIdx) {
+    const preview = document.getElementById('libPreview');
+    const topic = lib.topics[topicIdx];
+    const pages = topicRange(lib, topicIdx);
+    preview.innerHTML = `
+      <h3 class="lib-preview-title">${esc(topic.title)}</h3>
+      <div class="page-wrap">
+        ${pages.map(p => `<img src="assets/konspekty/img/${lib.file}/page-${p}.jpg" alt="${esc(topic.title)}, страница ${p}" oncontextmenu="return false" ondragstart="return false">`).join('')}
+      </div>
+      <p class="hint">Материал доступен только для просмотра. Копирование и сохранение файла отключены.</p>
+    `;
+    preview.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0 });
+  }
+
+  function selectTopic(code, lib, topicIdx) {
+    const url = new URL(location.href);
+    url.searchParams.set('code', code);
+    url.searchParams.set('topic', topicIdx);
+    history.replaceState(null, '', url);
+
+    document.querySelectorAll('.lib-topic-btn').forEach(btn => {
+      btn.classList.toggle('is-active', Number(btn.dataset.idx) === topicIdx);
+    });
+    const active = document.querySelector('.lib-topic-btn.is-active');
+    if (active) active.scrollIntoView({ block: 'nearest', inline: 'center' });
+    renderPreview(lib, topicIdx);
+  }
+
+  async function init() {
+    if (!getToken()) { location.href = 'cabinet.html'; return; }
+    await API.fetchMe();
+    const user = API.getCurrentUser();
+    if (!user) { location.href = 'cabinet.html'; return; }
+
+    const access = user.access || [];
+    const params = new URLSearchParams(location.search);
+    let code = params.get('code');
+    if (!code || !access.includes(code) || !LIBRARY_CONSPECTS[code]) {
+      code = access.find(c => LIBRARY_CONSPECTS[c]);
+    }
+
+    if (!code) {
+      showMissing('Раздел «Конспекты» пока недоступен — доступ выдаётся вместе с курсом. <a href="cabinet.html">Вернуться в кабинет</a>');
+      return;
+    }
+
+    const lib = LIBRARY_CONSPECTS[code];
+    let topicIdx = parseInt(params.get('topic'), 10);
+    if (!(topicIdx >= 0 && topicIdx < lib.topics.length)) topicIdx = 0;
+
+    renderLibrary(code, lib, topicIdx);
+  }
+
+  init();
+
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && ['s', 'p', 'u', 'c'].includes(e.key.toLowerCase())) e.preventDefault();
+  });
+</script>
+</body>
+</html>

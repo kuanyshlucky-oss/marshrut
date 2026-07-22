@@ -578,14 +578,17 @@ h3{ font-size:22px; }
 .dash-fav-name{ flex:1; font-size:14px; }
 
 .konspekty-section .dash-card{ width:100%; }
-.konspekty-list{ display:flex; flex-direction:column; gap:8px; margin-top:14px; }
-.konspekty-list li{ list-style:none; }
-.konspekty-list a{
-  display:block; background:transparent; border:1px solid var(--line); border-radius:var(--radius-m);
-  padding:12px 14px; color:var(--ink); font-size:14px; text-decoration:none;
+.konspekty-card{
+  position:relative; display:block; text-decoration:none; color:inherit;
   transition:border-color .25s ease, transform .15s ease;
 }
-.konspekty-list a:hover{ border-color:var(--accent); transform:translateX(2px); color:var(--accent); }
+.konspekty-card:hover{ border-color:var(--accent); transform:translateY(-2px); }
+.konspekty-card p{ color:var(--ink-soft); font-size:14px; margin:6px 0 0; padding-right:30px; }
+.konspekty-card-arrow{
+  position:absolute; right:20px; top:50%; transform:translateY(-50%);
+  font-size:20px; color:var(--accent); transition:transform .2s ease;
+}
+.konspekty-card:hover .konspekty-card-arrow{ transform:translateY(-50%) translateX(4px); }
 
 /* =========================== CONTACT BAND =========================== */
 .contact-band{

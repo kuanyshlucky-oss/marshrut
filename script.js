@@ -186,6 +186,7 @@ const LIBRARY_CONSPECTS = {
   '7M01': {
     title: 'Педагогика и психология',
     file: 'pedagogika-course',
+    pages: 29,
     topics: [
       { title: 'Тема 1. Приоритетная роль образования в современных условиях', page: 1 },
       { title: 'Тема 2. Общая характеристика педагогической профессии и деятельности', page: 3 },
@@ -217,18 +218,15 @@ function renderConspectsLibrary() {
   if (!section) return; // раздел есть только на cabinet.html
   const user = API.getCurrentUser();
   const access = (user && user.access) || [];
-  const available = access.map(code => LIBRARY_CONSPECTS[code]).filter(Boolean);
+  const available = access.map(code => ({ code, lib: LIBRARY_CONSPECTS[code] })).filter(x => x.lib);
   if (!available.length) { section.classList.add('hidden'); return; }
   section.classList.remove('hidden');
-  section.innerHTML = available.map(lib => `
-    <div class="dash-card">
+  section.innerHTML = available.map(({ code, lib }) => `
+    <a class="dash-card konspekty-card" href="konspekty.html?code=${encodeURIComponent(code)}">
       <h3>Конспекты · ${esc(lib.title)}</h3>
-      <ul class="konspekty-list">
-        ${lib.topics.map(t => `
-          <li><a href="konspekt.html?file=${lib.file}&page=${t.page}" target="_blank" rel="noopener">${esc(t.title)}</a></li>
-        `).join('')}
-      </ul>
-    </div>
+      <p>${lib.topics.length} тем — откройте список слева и переключайтесь между темами, не теряя место.</p>
+      <span class="konspekty-card-arrow" aria-hidden="true">→</span>
+    </a>
   `).join('');
 }
 
