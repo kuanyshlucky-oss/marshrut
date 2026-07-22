@@ -179,6 +179,59 @@ function conspectLink(topic) {
   return `<a class="rev-konspekt-btn" href="konspekt.html?file=${doc}&page=${c.page}" target="_blank" rel="noopener">Открыть конспект: ${esc(c.title)}</a>`;
 }
 
+// Раздел «Конспекты» в личном кабинете — доступен только тем, кому выдан доступ
+// к соответствующему направлению (та же test_access, что и у самих тестов).
+// Ключ — код направления (как в test_access/INTERACTIVE_TEST_CODES).
+const LIBRARY_CONSPECTS = {
+  '7M01': {
+    title: 'Педагогика и психология',
+    file: 'pedagogika-course',
+    topics: [
+      { title: 'Тема 1. Приоритетная роль образования в современных условиях', page: 1 },
+      { title: 'Тема 2. Общая характеристика педагогической профессии и деятельности', page: 3 },
+      { title: 'Тема 3. Личность педагога и его профессиональная компетентность', page: 5 },
+      { title: 'Тема 4. Факторы непрерывного профессионального роста педагога', page: 7 },
+      { title: 'Тема 5. Педагогика в системе наук о человеке', page: 9 },
+      { title: 'Тема 6. Методологические основы и методы педагогического исследования', page: 11 },
+      { title: 'Тема 7. Личность как объект, субъект воспитания и факторы её развития и формирования', page: 13 },
+      { title: 'Тема 8. Сущность и структура целостного педагогического процесса (ЦПП)', page: 15 },
+      { title: 'Тема 9. Цель воспитания, её социальная обусловленность', page: 17 },
+      { title: 'Тема 10. Научное мировоззрение как основа интеллектуального развития личности школьника', page: 18 },
+      { title: 'Тема 11. Сущность и содержание воспитания в целостном педагогическом процессе', page: 19 },
+      { title: 'Тема 12. Средства и формы воспитания', page: 21 },
+      { title: 'Тема 13. Основы семейного воспитания', page: 22 },
+      { title: 'Тема 14. Сущность обучения', page: 23 },
+      { title: 'Тема 15. Научные основы содержания образования в современной школе', page: 25 },
+      { title: 'Тема 16. Средства, формы обучения как двигательный механизм ЦПП', page: 27 },
+      { title: 'Тема 17. Методы обучения', page: 28 },
+      { title: 'Тема 18. Диагностика и контроль в обучении', page: 29 },
+      { title: 'Тема 19. Активизация познавательной деятельности учащихся в целостном педагогическом процессе', page: 31 },
+      { title: 'Тема 20. Технологии обучения в профессиональной деятельности учителя', page: 33 },
+    ],
+  },
+};
+
+// Рендерит раздел «Конспекты» в кабинете — только для кодов, к которым выдан доступ.
+function renderConspectsLibrary() {
+  const section = document.getElementById('konspektySection');
+  if (!section) return; // раздел есть только на cabinet.html
+  const user = API.getCurrentUser();
+  const access = (user && user.access) || [];
+  const available = access.map(code => LIBRARY_CONSPECTS[code]).filter(Boolean);
+  if (!available.length) { section.classList.add('hidden'); return; }
+  section.classList.remove('hidden');
+  section.innerHTML = available.map(lib => `
+    <div class="dash-card">
+      <h3>Конспекты · ${esc(lib.title)}</h3>
+      <ul class="konspekty-list">
+        ${lib.topics.map(t => `
+          <li><a href="konspekt.html?file=${lib.file}&page=${t.page}" target="_blank" rel="noopener">${esc(t.title)}</a></li>
+        `).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
 const INTERACTIVE_TEST_CODES = ["7M01","7M02","7M03","7M04","7M05","7M06","7M07","7M08","7M11","7M12"]; // какие направления имеют интерактивный тест (не секрет — просто UI-подсказка, доступ проверяется на бэкенде)
 
 /* Статистика КТ-2025 по 147 группам образовательных программ (официальная сводка НЦТ).
@@ -1072,6 +1125,7 @@ function renderDashboard() {
     const grantedCode = user.access && user.access[0];
     ctaCard.href = grantedCode ? `index.html?openDir=${encodeURIComponent(grantedCode)}` : 'index.html#catalog';
   }
+  renderConspectsLibrary();
 
   // --- Личные данные: просмотр или редактирование ---
   const p = user.profile;

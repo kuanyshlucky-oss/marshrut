@@ -577,6 +577,16 @@ h3{ font-size:22px; }
 }
 .dash-fav-name{ flex:1; font-size:14px; }
 
+.konspekty-section .dash-card{ width:100%; }
+.konspekty-list{ display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+.konspekty-list li{ list-style:none; }
+.konspekty-list a{
+  display:block; background:transparent; border:1px solid var(--line); border-radius:var(--radius-m);
+  padding:12px 14px; color:var(--ink); font-size:14px; text-decoration:none;
+  transition:border-color .25s ease, transform .15s ease;
+}
+.konspekty-list a:hover{ border-color:var(--accent); transform:translateX(2px); color:var(--accent); }
+
 /* =========================== CONTACT BAND =========================== */
 .contact-band{
   background:var(--accent);
