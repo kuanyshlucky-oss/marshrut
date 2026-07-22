@@ -14,9 +14,9 @@ import (
 
 // Конфиг из переменных окружения (со значениями по умолчанию для локального запуска).
 var (
-	allowedOrigin = env("ALLOWED_ORIGIN", "*")                       // домен фронта, напр. https://kuanyshlucky-oss.github.io
+	allowedOrigin = env("ALLOWED_ORIGIN", "*")                        // домен фронта, напр. https://kuanyshlucky-oss.github.io
 	jwtSecret     = []byte(env("JWT_SECRET", "dev-secret-change-me")) // секрет для подписи токенов
-	adminKey      = env("ADMIN_KEY", "")                             // ключ для /api/admin/users (пусто = выключено)
+	adminKey      = env("ADMIN_KEY", "")                              // ключ для /api/admin/users (пусто = выключено)
 )
 
 func env(key, def string) string {
@@ -64,7 +64,6 @@ func main() {
 	// МагистрТрек
 	mux.HandleFunc("GET /api/universities", handleUniversities)
 	mux.HandleFunc("GET /api/specialities", handleSpecialities)
-	mux.HandleFunc("GET /api/heatmap", handleHeatmap)
 	mux.HandleFunc("GET /api/calculate-chances", auth(handleCalculate))
 	mux.HandleFunc("GET /api/roadmap", auth(handleRoadmap))
 	mux.HandleFunc("POST /api/roadmap/toggle", auth(handleRoadmapToggle))

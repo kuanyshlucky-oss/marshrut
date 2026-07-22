@@ -287,14 +287,9 @@ document.querySelectorAll('[data-demo]').forEach(o => o.addEventListener('click'
   o.parentElement.querySelector('[data-good]').classList.add('good');
 }));
 
-/* Экран 6: ползунок + вердикт (проходной с сервера, fallback 131) */
-let avgScore = 131, uniName = 'КазНУ';
-fetch(API_BASE + '/api/heatmap?speciality_id=1').then(r=>r.json()).then(d=>{
-  const kaznu = d.find(x=>x.university_id===1) || d[0];
-  if (kaznu) { avgScore = kaznu.avg_score; uniName = 'КазНУ'; }
-  document.getElementById('avgMark').textContent = 'проходной ~' + avgScore;
-  verdict();
-}).catch(()=>{});
+/* Экран 6: ползунок + вердикт (усреднённый проходной по прошлым годам) */
+const avgScore = 131, uniName = 'КазНУ';
+document.getElementById('avgMark').textContent = 'проходной ~' + avgScore;
 
 const range = document.getElementById('scoreRange');
 function verdict(){
@@ -303,7 +298,7 @@ function verdict(){
   if (v < 50) { chance = 'к конкурсу не допустят'; text = 'ниже минимальных порогов (25+25)'; }
   else if (v >= avgScore + 5) chance = 'высокий шанс на грант в ' + uniName;
   else if (v >= avgScore - 5) chance = 'средний шанс на грант в ' + uniName;
-  else chance = 'низкий шанс — смотрите другие вузы на карте';
+  else chance = 'низкий шанс — рассмотрите другие направления/вузы';
   document.getElementById('verdict').innerHTML = 'Ваш балл — <b>' + v + '</b> → ' + chance + (text ? ' (' + text + ')' : '');
 }
 range.addEventListener('input', verdict);

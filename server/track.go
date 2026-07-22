@@ -1,7 +1,7 @@
 package main
 
 // МагистрТрек: справочники (вузы, специальности, статистика приёма),
-// дорожная карта, калькулятор шансов, тепловая карта.
+// дорожная карта, калькулятор шансов.
 
 import (
 	"fmt"
@@ -334,47 +334,6 @@ func handleSpecialities(w http.ResponseWriter, r *http.Request) {
 		var s S
 		rows.Scan(&s.ID, &s.Name, &s.Code, &s.ProfileSubject, &s.KTApplications, &s.KTParticipants, &s.KTPassed, &s.KTPassedPct)
 		out = append(out, s)
-	}
-	writeJSON(w, http.StatusOK, out)
-}
-
-/* ---------------- Тепловая карта (публичная) ---------------- */
-
-func handleHeatmap(w http.ResponseWriter, r *http.Request) {
-	spec := r.URL.Query().Get("speciality_id")
-	if spec == "" {
-		writeError(w, http.StatusBadRequest, "Не указана speciality_id")
-		return
-	}
-	rows, err := db.Query(`
-		SELECT u.id, u.name, u.city, u.lat, u.lng, ar.grant_count, ar.avg_passing_score, ar.applicants_count
-		FROM admission_rules ar JOIN universities u ON u.id = ar.university_id
-		WHERE ar.speciality_id = $1 AND ar.year = (SELECT MAX(year) FROM admission_rules WHERE speciality_id = $1)
-		ORDER BY u.id`, spec)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, "Ошибка сервера")
-		return
-	}
-	defer rows.Close()
-	type H struct {
-		UniversityID     int     `json:"university_id"`
-		Name             string  `json:"name"`
-		City             string  `json:"city"`
-		Lat              float64 `json:"lat"`
-		Lng              float64 `json:"lng"`
-		CompetitionRatio float64 `json:"competition_ratio"`
-		AvgScore         float64 `json:"avg_score"`
-		GrantCount       int     `json:"grant_count"`
-	}
-	out := []H{}
-	for rows.Next() {
-		var h H
-		var applicants int
-		rows.Scan(&h.UniversityID, &h.Name, &h.City, &h.Lat, &h.Lng, &h.GrantCount, &h.AvgScore, &applicants)
-		if h.GrantCount > 0 {
-			h.CompetitionRatio = float64(applicants) / float64(h.GrantCount)
-		}
-		out = append(out, h)
 	}
 	writeJSON(w, http.StatusOK, out)
 }
