@@ -229,6 +229,21 @@ h3{ font-size:22px; }
 .hero-sub{ color:rgba(245,240,230,.8); font-size:18px; max-width:640px; margin:18px auto 0; }
 .hero-sub-light{ color:rgba(245,240,230,.8); }
 
+.hero-consult-btn{
+  display:inline-flex; align-items:center; gap:12px; margin:30px auto 0;
+  background:#25D366; color:#FFFFFF; text-decoration:none;
+  padding:18px 34px; border-radius:999px;
+  font-family:var(--font-mono); font-size:15px; font-weight:600; text-transform:uppercase; letter-spacing:.06em;
+  box-shadow:0 10px 30px rgba(37,211,102,.4);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.hero-consult-btn:hover{ transform:translateY(-2px); box-shadow:0 14px 38px rgba(37,211,102,.5); }
+.hero-consult-btn svg{ width:26px; height:26px; fill:currentColor; flex:0 0 auto; }
+@media (max-width:640px){
+  .hero-consult-btn{ padding:15px 26px; font-size:13px; }
+  .hero-consult-btn svg{ width:22px; height:22px; }
+}
+
 .hero-search{ margin-top:auto; padding-bottom:64px; width:100%; max-width:760px; margin-left:auto; margin-right:auto; }
 .filter-bar{
   position:relative; z-index:1;
