@@ -15,6 +15,7 @@ type User struct {
 	Profile   Profile  `json:"profile"`
 	Favorites []string `json:"favorites"`
 	Results   []Result `json:"results"`
+	Access    []string `json:"access"` // коды направлений, к которым выдан доступ (см. access.go)
 }
 
 type Profile struct {
@@ -107,7 +108,7 @@ func getUserAuth(email string) (int64, string, error) {
 
 // loadUser собирает полного пользователя: профиль + избранное + результаты.
 func loadUser(id int64) (*User, error) {
-	u := &User{Favorites: []string{}, Results: []Result{}}
+	u := &User{Favorites: []string{}, Results: []Result{}, Access: []string{}}
 	err := db.QueryRow(
 		`SELECT name, email, full_name, phone, education, city,
 		        speciality_id, language, target_type, foreign_score, profile_score, bonus_points
@@ -146,6 +147,21 @@ func loadUser(id int64) (*User, error) {
 		u.Results = append(u.Results, r)
 	}
 	resRows.Close()
+
+	accRows, err := db.Query(`SELECT code FROM test_access WHERE user_id = $1 ORDER BY code`, id)
+	if err != nil {
+		return nil, err
+	}
+	for accRows.Next() {
+		var c string
+		if err := accRows.Scan(&c); err != nil {
+			accRows.Close()
+			return nil, err
+		}
+		u.Access = append(u.Access, c)
+	}
+	accRows.Close()
+
 	return u, nil
 }
 

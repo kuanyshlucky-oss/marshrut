@@ -1065,6 +1065,14 @@ function renderDashboard() {
   const user = API.getCurrentUser();
   if (!user || !document.getElementById('dashboard')) return; // дашборд только на cabinet.html
 
+  // «Пройти тест»: если доступ уже выдан — сразу открываем модалку направления
+  // (без похода в каталог); если доступа ещё нет — как раньше, ведём в каталог.
+  const ctaCard = document.getElementById('testCtaCard');
+  if (ctaCard) {
+    const grantedCode = user.access && user.access[0];
+    ctaCard.href = grantedCode ? `index.html?openDir=${encodeURIComponent(grantedCode)}` : 'index.html#catalog';
+  }
+
   // --- Личные данные: просмотр или редактирование ---
   const p = user.profile;
   fillProfileForm(user);
@@ -1556,6 +1564,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (requireAuth(rDir && rDir.code, rDir && rDir.name)) {
       openResultDetail(resultCode, Number(qs.get('score')), Number(qs.get('total')), qs.get('date') || '');
     }
+  }
+
+  // открыть модалку направления сразу по ссылке из кабинета: index.html?openDir=7M01
+  const openDirCode = qs.get('openDir');
+  if (openDirCode && document.getElementById('dirModal') && findDirection(openDirCode)) {
+    openDirection(openDirCode);
   }
 });
 
