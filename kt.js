@@ -20,7 +20,7 @@ const KT_TYPES = {
   },
   profile: {
     id: 'profile',
-    label: 'Профильное',
+    label: 'Английский язык + ТГО',
     perBlock: 10,
     total: 40,
     thresholdTotal: 30,
