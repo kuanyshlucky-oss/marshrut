@@ -307,6 +307,36 @@ function ringSvg(pct, { size = 64, stroke = 6, color, numFontSize } = {}) {
   `;
 }
 
+// Считает число от 0 до target за duration мс (ease-out), опционально с суффиксом (напр. "%").
+function countUp(el, target, { duration = 1200, suffix = '' } = {}) {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    el.textContent = target + suffix;
+    return;
+  }
+  const start = performance.now();
+  function tick(now) {
+    const p = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(target * eased) + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+// Кольцо «заполняется» от 0 до целевого % при появлении (вместо мгновенной отрисовки).
+function animateRingIn(ringWrap, targetPct, duration = 1200) {
+  const circle = ringWrap.querySelector('.ring-fill');
+  if (!circle || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  const c = parseFloat(circle.getAttribute('stroke-dasharray'));
+  circle.style.transition = 'none';
+  circle.style.strokeDashoffset = c;
+  void circle.getBoundingClientRect(); // форсируем reflow перед стартом перехода
+  requestAnimationFrame(() => {
+    circle.style.transition = `stroke-dashoffset ${duration}ms cubic-bezier(.4,0,.2,1)`;
+    circle.style.strokeDashoffset = c * (1 - Math.max(0, Math.min(100, targetPct)) / 100);
+  });
+}
+
 // Hero: кольцо со средним % прохождения порога по всем 147 группам + 3 числовых стата.
 function renderHeroSignature() {
   const el = document.getElementById('heroSignature');
@@ -315,11 +345,15 @@ function renderHeroSignature() {
   el.innerHTML = `
     ${ringSvg(avg, { size: 96, stroke: 6, color: 'var(--beige)', numFontSize: 20 })}
     <div class="sig-stats">
-      <div class="sig-stat"><div class="num">${KT_STATS_GROUPS.length}</div><div class="label">групп программ</div></div>
-      <div class="sig-stat"><div class="num">2025</div><div class="label">официальные итоги КТ</div></div>
-      <div class="sig-stat"><div class="num">4</div><div class="label">блока симуляции теста</div></div>
+      <div class="sig-stat"><div class="num" data-target="${KT_STATS_GROUPS.length}">0</div><div class="label">групп программ</div></div>
+      <div class="sig-stat"><div class="num" data-target="2025">0</div><div class="label">официальные итоги КТ</div></div>
+      <div class="sig-stat"><div class="num" data-target="4">0</div><div class="label">блока симуляции теста</div></div>
     </div>
   `;
+  const ringWrap = el.querySelector('.ring-wrap');
+  animateRingIn(ringWrap, avg);
+  countUp(ringWrap.querySelector('.ring-num'), Math.round(avg), { suffix: '%' });
+  el.querySelectorAll('.sig-stat .num').forEach(numEl => countUp(numEl, Number(numEl.dataset.target)));
 }
 
 function renderCategoryTiles() {
@@ -1470,6 +1504,22 @@ function wireMobileNav() {
   });
 }
 
+// Плавное появление статичных блоков при скролле (feature-карточки, шаги «Как поступить»,
+// стат «О нас») — 147 карточек каталога сюда намеренно не включены: список часто
+// перерисовывается при поиске/фильтрах, и переанимация на каждый ререндер только мешала бы.
+function initScrollReveal() {
+  const els = document.querySelectorAll('.feat-card, .path-step, .about-us-stat');
+  if (!els.length) return;
+  els.forEach(el => el.classList.add('reveal'));
+  if (!('IntersectionObserver' in window)) { els.forEach(el => el.classList.add('on')); return; }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('on'); io.unobserve(entry.target); }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(el => io.observe(el));
+}
+
 /* ---------------------------------------------------------
    МагистрТрек: справочники, дорожная карта, калькулятор
    --------------------------------------------------------- */
@@ -1615,6 +1665,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireQuiz();
   wireAntiCopy();
   wireMobileNav();
+  initScrollReveal();
   document.getElementById('pathPrepBtn')?.addEventListener('click', () => {
     document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
   });
