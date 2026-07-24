@@ -10,7 +10,7 @@
   :root{
     --bg:#FBFBFA; --surface:#FFFFFF; --surface-2:#F1F1EF;
     --ink:#1D1D1F; --ink-soft:#86868B; --line:rgba(29,29,31,.12);
-    --accent:#0A6CC9; --accent-on:#FFFFFF; --beige:#B08D46;
+    --accent:#0A6CC9; --accent-on:#FFFFFF; --accent-soft:rgba(10,108,201,.08); --beige:#B08D46;
     --green:#3F8A68; --yellow:#B08D46; --red:#B3261E;
     --serif:'Space Grotesk','Manrope', system-ui, sans-serif; --mono:'Manrope', system-ui, sans-serif;
   }
@@ -77,7 +77,7 @@
     padding:26px; text-align:left; margin:26px 0; backdrop-filter:blur(14px);
     box-shadow:0 20px 50px -20px rgba(29,29,31,.18);
   }
-  .qcard .tag{ font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); background:rgba(74,52,43,.1); padding:4px 10px; border-radius:999px; }
+  .qcard .tag{ font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); background:var(--accent-soft,rgba(10,108,201,.08)); padding:4px 10px; border-radius:999px; }
   .qcard .q{ font-size:17px; font-weight:500; color:var(--ink); margin:14px 0; }
   .qopt{
     display:flex; align-items:center; gap:12px; padding:11px 14px; margin-bottom:8px;
