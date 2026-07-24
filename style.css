@@ -244,9 +244,9 @@ h3{ font-size:22px; }
   text-shadow:0 10px 40px rgba(0,0,0,.5);
 }
 .hero-inner h1 .accent-word{ color:#5AA9E6; }
-.hero-inner .eyebrow{ display:inline-flex; align-items:center; gap:8px; color:var(--beige); }
+.hero-inner .eyebrow{ display:inline-flex; align-items:center; gap:8px; color:var(--accent); }
 .eyebrow .dot-sm{ width:6px; height:6px; border-radius:50%; background:var(--accent); display:inline-block; flex:0 0 auto; }
-.hero-inner .eyebrow .dot-sm{ background:var(--beige); }
+.hero-inner .eyebrow .dot-sm{ background:var(--accent); }
 .hero-sub{ color:rgba(255,255,255,.82); font-size:18px; max-width:640px; margin:18px auto 0; }
 .hero-sub-light{ color:rgba(255,255,255,.82); }
 
