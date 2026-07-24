@@ -4,16 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JetisHub — Админка</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root{ --bg:#F6F2E9; --ink:#232A3B; --soft:#5B6275; --line:#DCD3BD; --accent:#D9692C; --accent-ink:#7A3414; --surface:#fff; --ok:#2F6F5E; --ok-soft:#DCEAE3; --danger:#B14545; --danger-soft:#F4DADA; }
+  :root{ --bg:#FBFBFA; --ink:#1D1D1F; --soft:#86868B; --line:#EAEAE7; --accent:#0A6CC9; --accent-ink:#0857A0; --accent-soft:rgba(10,108,201,.08); --surface:#fff; --ok:#2F6F5E; --ok-soft:#DCEAE3; --danger:#B14545; --danger-soft:#F4DADA; }
   *{ box-sizing:border-box; }
-  body{ margin:0; font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--ink); }
+  body{ margin:0; font-family:'Manrope',system-ui,sans-serif; background:var(--bg); color:var(--ink); }
   .wrap{ max-width:900px; margin:0 auto; padding:32px 20px 60px; }
   h1{ font-size:24px; margin:0 0 4px; }
   .sub{ color:var(--soft); font-size:14px; margin:0 0 24px; }
   .card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:22px; margin-bottom:20px; box-shadow:0 8px 24px -14px rgba(35,42,59,.2); }
   .card h2{ font-size:17px; margin:0 0 14px; }
-  label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--soft); margin:0 0 6px; font-family:'JetBrains Mono',monospace; }
+  label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--soft); margin:0 0 6px; font-family:'Manrope',sans-serif; }
   input{ width:100%; padding:11px 13px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:inherit; margin-bottom:14px; }
   input:focus{ outline:2px solid var(--accent); outline-offset:1px; }
   .row{ display:flex; gap:12px; flex-wrap:wrap; }
@@ -27,16 +28,16 @@
   .btn-del:hover{ background:var(--danger); color:#fff; }
   .btn-reset{ background:var(--accent-soft,#F4DCC8); color:var(--accent-ink); padding:5px 12px; font-size:12px; border-radius:8px; white-space:nowrap; }
   .btn-reset:hover{ background:var(--accent); color:#fff; }
-  .pw-cell{ font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .pw-cell{ font-family:'Manrope',sans-serif; font-size:12px; }
   .pw-cell .v{ color:var(--ok); font-weight:600; }
-  .cred{ background:#1B2030; color:#EDECE6; border-radius:12px; padding:16px 18px; margin-top:14px; font-family:'JetBrains Mono',monospace; }
+  .cred{ background:#1B2030; color:#EDECE6; border-radius:12px; padding:16px 18px; margin-top:14px; font-family:'Manrope',sans-serif; }
   .cred .line{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:6px 0; }
   .cred .k{ color:#9AA0B4; font-size:12px; }
   .cred .v{ font-size:15px; }
   .cred button{ background:rgba(255,255,255,.1); color:#fff; padding:5px 12px; font-size:12px; border-radius:8px; }
   .cred .note{ color:#E0A060; font-size:12px; margin-top:8px; }
   table{ width:100%; border-collapse:collapse; font-size:13px; }
-  th{ text-align:left; font-family:'JetBrains Mono',monospace; text-transform:uppercase; font-size:10px; color:var(--soft); padding:8px 6px; border-bottom:1px solid var(--line); }
+  th{ text-align:left; font-family:'Manrope',sans-serif; text-transform:uppercase; font-size:10px; color:var(--soft); padding:8px 6px; border-bottom:1px solid var(--line); }
   td{ padding:9px 6px; border-bottom:1px solid var(--line); }
   .msg{ font-size:13px; margin-top:10px; }
   .msg.err{ color:var(--danger); }
@@ -49,7 +50,7 @@
   .access-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px; }
   .access-chip{
     display:inline-flex; align-items:center; gap:6px; background:var(--ok-soft); color:var(--ok);
-    border-radius:999px; padding:3px 6px 3px 10px; font-family:'JetBrains Mono',monospace; font-size:11px;
+    border-radius:999px; padding:3px 6px 3px 10px; font-family:'Manrope',sans-serif; font-size:11px;
   }
   .access-chip button{
     background:transparent; border:none; color:inherit; font-size:13px; line-height:1; padding:2px 4px;

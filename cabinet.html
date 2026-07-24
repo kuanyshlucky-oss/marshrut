@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JetisHub — Личный кабинет</title>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Geist:wght@300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/brand/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 <script>
@@ -194,10 +194,9 @@
 
             <!-- 1. Дорожная карта -->
             <div class="dash-card">
-              <h3>Дорожная карта поступления <span class="rm-year" id="rmYear"></span></h3>
-              <div class="rm-progress-row">
-                <div class="rm-progress"><div class="rm-progress-bar" id="rmProgressBar" style="width:0%"></div></div>
-                <span class="rm-progress-label" id="rmProgressLabel">0%</span>
+              <div class="rm-head">
+                <h3>Дорожная карта поступления <span class="rm-year" id="rmYear"></span></h3>
+                <div id="rmProgressRing"></div>
               </div>
               <ul class="rm-list" id="rmList"></ul>
               <p class="empty-state-sm hidden" id="rmEmpty">Не удалось загрузить дорожную карту.</p>

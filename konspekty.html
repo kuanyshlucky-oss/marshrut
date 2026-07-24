@@ -4,28 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JetisHub — Конспекты</title>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/brand/logo.svg" type="image/svg+xml">
 <style>
   :root{
-    --bg:#F5F0E6; --surface:#FFFFFF; --ink:#2D2D2D; --ink-soft:#746B60;
-    --line:rgba(45,34,26,.12); --accent:#4A342B; --accent-on:#F5F0E6; --beige:#C9A35C;
-    --serif:'Libre Caslon Text',Georgia,serif; --mono:'JetBrains Mono',monospace;
+    --bg:#FBFBFA; --surface:#FFFFFF; --ink:#1D1D1F; --ink-soft:#86868B;
+    --line:rgba(29,29,31,.12); --accent:#0A6CC9; --accent-on:#FFFFFF; --beige:#B08D46;
+    --serif:'Manrope', system-ui, sans-serif; --mono:'Manrope', system-ui, sans-serif;
   }
   *{ box-sizing:border-box; }
   body{
-    margin:0; background:var(--bg); color:var(--ink); font-family:'Geist',system-ui,sans-serif;
+    margin:0; background:var(--bg); color:var(--ink); font-family:'Manrope',system-ui,sans-serif;
     -webkit-user-select:none; user-select:none;
   }
   header{
     position:fixed; top:0; left:0; right:0; z-index:50;
     display:flex; align-items:center; justify-content:space-between;
     padding:0 20px; height:60px;
-    background:var(--accent); border-bottom:1px solid rgba(245,240,230,.12);
+    background:rgba(251,251,250,.86); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--line);
   }
-  .back{ color:rgba(245,240,230,.8); font-size:14px; text-decoration:none; font-family:var(--mono); }
-  .back:hover{ color:var(--accent-on); }
-  .doc-title{ color:var(--accent-on); font-family:var(--serif); font-size:17px; }
+  .back{ color:var(--ink-soft); font-size:14px; text-decoration:none; font-family:var(--mono); }
+  .back:hover{ color:var(--ink); }
+  .doc-title{ color:var(--ink); font-weight:700; font-family:var(--serif); font-size:17px; }
   .spacer{ width:70px; }
 
   .lib-layout{ display:flex; padding-top:60px; min-height:100vh; align-items:stretch; }
@@ -43,14 +44,14 @@
     border-left:3px solid transparent; padding:12px 22px; font-size:13.5px; line-height:1.4;
     color:var(--ink-soft); cursor:pointer; transition:background .2s ease, color .2s ease, border-color .2s ease;
   }
-  .lib-topic-btn:hover{ background:rgba(45,34,26,.04); color:var(--ink); }
-  .lib-topic-btn.is-active{ border-left-color:var(--accent); background:rgba(139,94,60,.06); color:var(--ink); font-weight:600; }
+  .lib-topic-btn:hover{ background:rgba(29,29,31,.04); color:var(--ink); }
+  .lib-topic-btn.is-active{ border-left-color:var(--accent); background:rgba(10,108,201,.06); color:var(--ink); font-weight:600; }
 
   .lib-preview{ flex:1 1 auto; padding:32px 28px 60px; display:flex; flex-direction:column; align-items:center; }
   .lib-preview-title{ font-family:var(--serif); font-weight:400; font-size:22px; max-width:760px; width:100%; margin:0 0 18px; }
   .page-wrap{
     max-width:760px; width:100%; background:var(--surface); border:1px solid var(--line);
-    border-radius:14px; box-shadow:0 12px 32px -12px rgba(45,34,26,.2); overflow:hidden;
+    border-radius:14px; box-shadow:0 12px 32px -12px rgba(29,29,31,.2); overflow:hidden;
     display:flex; flex-direction:column; gap:1px; background-color:var(--line);
   }
   .page-wrap img{

@@ -4,32 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JetisHub — Как устроен экзамен</title>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Geist:wght@300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/brand/logo.svg" type="image/svg+xml">
 <style>
   :root{
-    --bg:#F5F0E6; --surface:#FFFFFF; --surface-2:#ECE4D6;
-    --ink:#2D2D2D; --ink-soft:#746B60; --line:rgba(45,34,26,.12);
-    --accent:#4A342B; --accent-on:#F5F0E6; --beige:#C9A35C;
-    --green:#3F8A68; --yellow:#C9A35C; --red:#B3261E;
-    --serif:'Libre Caslon Text',Georgia,serif; --mono:'JetBrains Mono',monospace;
+    --bg:#FBFBFA; --surface:#FFFFFF; --surface-2:#F1F1EF;
+    --ink:#1D1D1F; --ink-soft:#86868B; --line:rgba(29,29,31,.12);
+    --accent:#0A6CC9; --accent-on:#FFFFFF; --beige:#B08D46;
+    --green:#3F8A68; --yellow:#B08D46; --red:#B3261E;
+    --serif:'Manrope', system-ui, sans-serif; --mono:'Manrope', system-ui, sans-serif;
   }
   *{ box-sizing:border-box; }
   html{ scroll-behavior:smooth; }
-  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Geist',system-ui,sans-serif; line-height:1.6; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Manrope',system-ui,sans-serif; line-height:1.6; }
 
   header{
     position:fixed; top:0; left:0; right:0; z-index:50;
     display:flex; align-items:center; justify-content:space-between;
     padding:0 28px; height:64px;
-    background:var(--accent); border-bottom:1px solid rgba(245,240,230,.12);
+    background:rgba(251,251,250,.86); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--line);
   }
-  .logo{ display:inline-flex; align-items:center; gap:8px; font-family:var(--serif); font-size:20px; color:var(--accent-on); text-decoration:none; }
-  .logo-mark{ width:22px; height:22px; display:block; border-radius:22%; box-shadow:0 0 0 1px rgba(245,240,230,.4); }
+  .logo{ display:inline-flex; align-items:center; gap:8px; font-family:var(--serif); font-weight:700; font-size:18px; color:var(--ink); text-decoration:none; }
+  .logo-mark{ width:22px; height:22px; display:block; border-radius:22%; box-shadow:0 0 0 1px var(--line); }
   .logo-text{ display:flex; flex-direction:column; line-height:1; }
-  .logo-tag{ font-family:var(--mono); font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:var(--beige); margin-top:3px; }
-  .back{ color:rgba(245,240,230,.75); font-size:14px; text-decoration:none; }
-  .back:hover{ color:var(--accent-on); }
+  .logo-tag{ font-family:var(--mono); font-weight:600; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin-top:3px; }
+  .back{ color:var(--ink-soft); font-size:14px; text-decoration:none; }
+  .back:hover{ color:var(--ink); }
 
   .screen{
     min-height:100vh; display:flex; flex-direction:column;
@@ -49,13 +50,13 @@
 
   .btn{
     display:inline-block; padding:13px 30px; border-radius:999px; text-decoration:none;
-    font-family:var(--mono); font-size:13px; text-transform:uppercase; letter-spacing:.08em;
-    border:1px solid var(--beige); color:var(--ink); background:transparent;
+    font-family:var(--mono); font-size:14px; font-weight:600; letter-spacing:0;
+    border:1px solid var(--line); color:var(--ink); background:transparent;
     transition:border-color .2s, color .2s, transform .2s; cursor:pointer;
   }
   .btn:hover{ border-color:var(--accent); color:var(--accent); transform:translateY(-2px); }
   .btn.solid{ background:var(--accent); border-color:var(--accent); color:var(--accent-on); font-weight:600; }
-  .btn.solid:hover{ background:#e0bd7f; color:var(--accent-on); }
+  .btn.solid:hover{ background:var(--accent-ink,#0857A0); color:var(--accent-on); }
 
   /* Экран 2: таймлайн */
   .timeline{ margin:34px 0 10px; }
@@ -74,7 +75,7 @@
   .qcard{
     background:rgba(255,255,255,.85); border:1px solid var(--line); border-radius:16px;
     padding:26px; text-align:left; margin:26px 0; backdrop-filter:blur(14px);
-    box-shadow:0 20px 50px -20px rgba(45,34,26,.18);
+    box-shadow:0 20px 50px -20px rgba(29,29,31,.18);
   }
   .qcard .tag{ font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--accent); background:rgba(74,52,43,.1); padding:4px 10px; border-radius:999px; }
   .qcard .q{ font-size:17px; font-weight:500; color:var(--ink); margin:14px 0; }

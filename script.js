@@ -287,6 +287,41 @@ function pluralizeGroups(n) {
   return 'групп';
 }
 
+// SVG-кольцо-индикатор (замена прогресс-барам) — pct 0-100, size/stroke в px,
+// цвет по умолчанию — семантика сдал/не сдал (>=50 — teal, иначе danger).
+function ringSvg(pct, { size = 64, stroke = 6, color, numFontSize } = {}) {
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const offset = c * (1 - Math.max(0, Math.min(100, pct)) / 100);
+  const ringColor = color || (pct >= 50 ? 'var(--teal)' : 'var(--danger)');
+  const fs = numFontSize || Math.round(size * 0.22);
+  return `
+    <div class="ring-wrap" style="width:${size}px;height:${size}px;">
+      <svg viewBox="0 0 ${size} ${size}">
+        <circle class="ring-track" cx="${size / 2}" cy="${size / 2}" r="${r}" stroke-width="${stroke}"></circle>
+        <circle class="ring-fill" cx="${size / 2}" cy="${size / 2}" r="${r}" stroke-width="${stroke}"
+                stroke-dasharray="${c}" stroke-dashoffset="${offset}" style="stroke:${ringColor}"></circle>
+      </svg>
+      <div class="ring-num" style="font-size:${fs}px;">${Math.round(pct)}%</div>
+    </div>
+  `;
+}
+
+// Hero: кольцо со средним % прохождения порога по всем 147 группам + 3 числовых стата.
+function renderHeroSignature() {
+  const el = document.getElementById('heroSignature');
+  if (!el) return; // блок только на index.html
+  const avg = KT_STATS_GROUPS.reduce((sum, g) => sum + g.passed_pct, 0) / KT_STATS_GROUPS.length;
+  el.innerHTML = `
+    ${ringSvg(avg, { size: 96, stroke: 6, color: 'var(--beige)', numFontSize: 20 })}
+    <div class="sig-stats">
+      <div class="sig-stat"><div class="num">${KT_STATS_GROUPS.length}</div><div class="label">групп программ</div></div>
+      <div class="sig-stat"><div class="num">2025</div><div class="label">официальные итоги КТ</div></div>
+      <div class="sig-stat"><div class="num">4</div><div class="label">блока симуляции теста</div></div>
+    </div>
+  `;
+}
+
 function renderCategoryTiles() {
   const wrap = document.getElementById('catTiles');
   if (!wrap) return;
@@ -324,10 +359,13 @@ function renderStatsCatalog() {
   matched = sortStatsGroups(matched);
 
   listEl.innerHTML = matched.map(g => `
-    <button class="kcat-row" data-code="${g.code}">
-      <span class="kcat-row-code">${g.code}</span>
-      <span class="kcat-row-name">${esc(g.name)}</span>
-      <span class="kcat-row-pct" style="color:${g.passed_pct >= 50 ? 'var(--teal)' : 'var(--danger)'}">${g.passed_pct.toFixed(1)}%</span>
+    <button class="card" data-code="${g.code}">
+      ${ringSvg(g.passed_pct)}
+      <div class="card-body">
+        <div class="code">${g.code}</div>
+        <h3>${esc(g.name)}</h3>
+        <div class="card-foot">Заявлений <b>${g.applications}</b></div>
+      </div>
     </button>
   `).join('');
   empty.classList.toggle('hidden', matched.length > 0);
@@ -1469,8 +1507,7 @@ async function loadRoadmap() {
 
 function renderRoadmap(data) {
   document.getElementById('rmYear').textContent = data.year;
-  document.getElementById('rmProgressBar').style.width = data.progress + '%';
-  document.getElementById('rmProgressLabel').textContent = data.progress + '%';
+  document.getElementById('rmProgressRing').innerHTML = ringSvg(data.progress, { size: 56, stroke: 5, color: 'var(--accent)', numFontSize: 12 });
   document.getElementById('rmEmpty').classList.add('hidden');
 
   const fmt = (d) => { const [y, m, day] = d.split('-'); return `до ${Number(day)}.${m}.${y}`; };
@@ -1561,6 +1598,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // сразу рисуем то, что не зависит от пользователя, и вешаем обработчики
   renderCatalog();
   renderStatsCatalog();
+  renderHeroSignature();
   // Если токен уже есть в localStorage, пользователь почти наверняка залогинен —
   // скрываем гостевой экран («Войдите, чтобы продолжить») сразу, не дожидаясь
   // fetchMe(), иначе на долю секунды мелькает неверное состояние. Дашборд по
