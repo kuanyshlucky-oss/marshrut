@@ -634,19 +634,19 @@ h3{ font-size:22px; }
 .contact-band h2{ color:var(--accent-on); margin-top:6px; }
 .contact-inner{ display:flex; align-items:center; justify-content:space-between; gap:30px; flex-wrap:wrap; }
 
-/* =========================== FOOTER (коричневый бренд-блок) =========================== */
-.site-footer{ background:var(--accent); border-top:1px solid rgba(245,240,230,.12); color:rgba(245,240,230,.7); padding:60px 0 24px; }
-.footer-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr; gap:30px; margin-bottom:40px; }
-.footer-brand p{ color:rgba(245,240,230,.7); font-size:13px; margin-top:12px; max-width:260px; }
-.logo-footer{ color:var(--accent-on); }
-.logo-full-link{ display:inline-block; color:var(--accent-on); }
+/* =========================== FOOTER (светлый минималистичный) =========================== */
+.site-footer{ background:var(--surface-2); border-top:1px solid var(--line); color:var(--ink-soft); padding:60px 0 24px; }
+.footer-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr; gap:30px; margin-bottom:40px; }
+.footer-brand p{ color:var(--ink-soft); font-size:13px; margin-top:12px; max-width:260px; }
+.logo-footer{ color:var(--ink); }
+.logo-full-link{ display:inline-block; color:var(--ink); }
 .logo-full{ width:250px; max-width:100%; height:auto; display:block; }
-.footer-col h4{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.1em; color:rgba(245,240,230,.55); margin-bottom:14px; }
-.footer-col a{ display:block; font-size:14px; padding:5px 0; color:rgba(245,240,230,.7); transition:color .25s ease; }
-.footer-col a:hover{ color:var(--beige); }
+.footer-col h4{ font-family:var(--font-mono); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-soft); margin-bottom:14px; }
+.footer-col a{ display:block; font-size:14px; padding:5px 0; color:var(--ink-soft); transition:color .25s ease; }
+.footer-col a:hover{ color:var(--accent); }
 .footer-bottom{
   display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
-  border-top:1px solid rgba(245,240,230,.12); padding-top:20px; font-size:12px; color:rgba(245,240,230,.55);
+  border-top:1px solid var(--line); padding-top:20px; font-size:12px; color:var(--ink-soft);
 }
 
 /* =========================== MODAL (направление → предметы) =========================== */
@@ -1117,9 +1117,9 @@ body.test-open #reviewPage input{ user-select:text; }
   .main-nav{
     position:absolute; top:100%; left:0; right:0;
     flex-direction:column; gap:0;
-    background:rgba(74,52,43,.97);
+    background:rgba(251,251,250,.98);
     backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
-    border-bottom:1px solid rgba(245,240,230,.12);
+    border-bottom:1px solid var(--line);
     box-shadow:var(--shadow-card);
     padding:8px 28px 16px;
     transform:translateY(-8px);
@@ -1129,7 +1129,7 @@ body.test-open #reviewPage input{ user-select:text; }
   .main-nav.is-open{
     transform:translateY(0); opacity:1; visibility:visible; pointer-events:auto;
   }
-  .main-nav a{ padding:12px 0; border-bottom:1px solid rgba(245,240,230,.12); font-size:15px; }
+  .main-nav a{ padding:12px 0; border-bottom:1px solid var(--line); font-size:15px; }
   .main-nav a:last-child{ border-bottom:none; }
 
   .filter-bar{ flex-direction:column; align-items:stretch; margin-bottom:24px; }
