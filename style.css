@@ -217,15 +217,15 @@ h3{ font-size:var(--fs-h3); }
   height:76px;
 }
 .logo{
-  display:flex; align-items:center; gap:8px;
+  display:flex; align-items:center; gap:10px;
   font-family:var(--font-display);
   font-weight:700;
-  font-size:20px;
+  font-size:21px;
   letter-spacing:-.02em;
   margin-right:auto;
   color:var(--ink);
 }
-.logo-mark{ width:22px; height:22px; display:block; border-radius:22%; box-shadow:0 0 0 1px var(--line); }
+.logo-mark{ width:34px; height:34px; display:block; border-radius:22%; box-shadow:0 0 0 1px var(--line); }
 .logo-text{ display:flex; flex-direction:column; line-height:1; }
 .logo-tag{
   font-family:var(--font-mono); font-weight:600;
