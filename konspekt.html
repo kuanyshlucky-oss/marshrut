@@ -18,9 +18,9 @@
     -webkit-user-select:none; user-select:none;
   }
   header{
-    position:fixed; top:0; left:0; right:0; z-index:50;
+    position:sticky; top:0; z-index:50;
     display:flex; align-items:center; justify-content:space-between;
-    padding:0 20px; height:60px;
+    padding:0 20px; height:64px;
     background:rgba(251,251,250,.86); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
     border-bottom:1px solid var(--line);
   }
@@ -29,7 +29,15 @@
   .doc-title{ color:var(--ink); font-weight:700; font-family:var(--serif); font-size:17px; }
   .spacer{ width:70px; }
 
-  main{ padding:84px 16px 40px; display:flex; flex-direction:column; align-items:center; min-height:100vh; }
+  main{ padding:32px 16px 40px; display:flex; flex-direction:column; align-items:center; min-height:calc(100vh - 64px); }
+  .site-footer{ background:var(--surface); border-top:1px solid var(--line); }
+  .footer-bottom{
+    max-width:760px; margin:0 auto; padding:16px 16px 20px;
+    display:flex; justify-content:center; gap:8px;
+    font-size:12px; color:var(--ink-soft); user-select:text;
+  }
+  .footer-bottom a{ color:var(--ink-soft); text-decoration:none; }
+  .footer-bottom a:hover{ color:var(--accent); }
   .page-wrap{
     max-width:760px; width:100%; background:var(--surface); border:1px solid var(--line);
     border-radius:14px; box-shadow:0 12px 32px -12px rgba(29,29,31,.2); overflow:hidden;
@@ -60,6 +68,11 @@
   <span class="spacer"></span>
 </header>
 <main id="main"></main>
+<footer class="site-footer">
+  <div class="footer-bottom">
+    <a href="cabinet.html">В кабинет</a> · <a href="index.html">На главную</a>
+  </div>
+</footer>
 <script>
   const DOCS = {
     pedagogika:   { title: 'Педагогика', pages: 5 },

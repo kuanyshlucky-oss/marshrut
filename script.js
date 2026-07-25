@@ -1508,7 +1508,11 @@ function wireMobileNav() {
 // стат «О нас») — 147 карточек каталога сюда намеренно не включены: список часто
 // перерисовывается при поиске/фильтрах, и переанимация на каждый ререндер только мешала бы.
 function initScrollReveal() {
-  const els = document.querySelectorAll('.feat-card, .path-step, .about-us-stat');
+  // .card/.kcat-list элементы намеренно исключены — список из 147 групп
+  // перерисовывается при поиске/фильтрации, повторный reveal на каждый ре-рендер даст дёрганье.
+  const els = document.querySelectorAll(
+    '.feat-card, .path-step, .about-us-stat, .section-head, .contact-inner, .dir-card'
+  );
   if (!els.length) return;
   els.forEach(el => el.classList.add('reveal'));
   if (!('IntersectionObserver' in window)) { els.forEach(el => el.classList.add('on')); return; }
@@ -1518,6 +1522,28 @@ function initScrollReveal() {
     });
   }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
   els.forEach(el => io.observe(el));
+}
+
+function initHeaderContrast() {
+  const header = document.getElementById('siteHeader');
+  const darkSections = document.querySelectorAll('.section-dark, .contact-band');
+  if (!header || !darkSections.length) return;
+  let ticking = false;
+  function check() {
+    ticking = false;
+    const probeY = header.offsetHeight / 2;
+    const onDark = Array.from(darkSections).some(s => {
+      const r = s.getBoundingClientRect();
+      return r.top <= probeY && r.bottom >= probeY;
+    });
+    header.classList.toggle('is-on-dark', onDark);
+  }
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(check);
+  }, { passive: true });
+  check();
 }
 
 /* ---------------------------------------------------------
@@ -1666,6 +1692,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireAntiCopy();
   wireMobileNav();
   initScrollReveal();
+  initHeaderContrast();
   document.getElementById('pathPrepBtn')?.addEventListener('click', () => {
     document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
   });
