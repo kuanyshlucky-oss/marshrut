@@ -38,6 +38,16 @@
   .lib-sidebar h2{
     font-family:var(--serif); font-weight:400; font-size:19px; margin:0 22px 14px;
   }
+  .lib-section-switch{ display:flex; gap:6px; padding:0 22px 16px; }
+  .lib-section-btn{
+    flex:1 1 auto; background:transparent; border:1px solid var(--line); border-radius:999px;
+    padding:8px 12px; font-size:12.5px; font-family:var(--mono); color:var(--ink-soft);
+    cursor:pointer; transition:border-color .2s ease, color .2s ease, background .2s ease;
+  }
+  .lib-section-btn:hover{ border-color:var(--accent); color:var(--ink); }
+  .lib-section-btn.is-active{ background:var(--accent); border-color:var(--accent); color:var(--accent-on); font-weight:600; }
+  .lib-layout-empty{ flex-direction:column; }
+  .lib-layout-empty .lib-section-switch{ max-width:420px; margin:24px auto 0; padding:0 16px; }
   .lib-topic-list{ display:flex; flex-direction:column; }
   .lib-topic-btn{
     display:block; width:100%; text-align:left; background:transparent; border:none;
@@ -108,24 +118,60 @@
   }
 
   // Диапазон страниц темы: от её page до (page следующей темы − 1), для последней — до конца документа.
-  function topicRange(lib, idx) {
-    const from = lib.topics[idx].page;
-    const to = idx + 1 < lib.topics.length ? lib.topics[idx + 1].page - 1 : lib.pages;
+  function topicRange(sec, idx) {
+    const from = sec.topics[idx].page;
+    const to = idx + 1 < sec.topics.length ? sec.topics[idx + 1].page - 1 : sec.pages;
     const pages = [];
     for (let p = from; p <= to; p++) pages.push(p);
     return pages;
   }
 
-  function renderLibrary(code, lib, topicIdx) {
-    libDocTitleEl.textContent = lib.title;
-    document.title = 'JetisHub — Конспекты · ' + lib.title;
+  function sectionSwitchHTML(lib, sec) {
+    if (lib.sections.length < 2) return '';
+    return `
+      <div class="lib-section-switch">
+        ${lib.sections.map(s => `<button class="lib-section-btn ${s.key === sec.key ? 'is-active' : ''}" data-key="${esc(s.key)}">${esc(s.title)}</button>`).join('')}
+      </div>
+    `;
+  }
+
+  function wireSectionSwitch(code, lib) {
+    document.querySelectorAll('.lib-section-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sec = lib.sections.find(s => s.key === btn.dataset.key);
+        if (!sec) return;
+        const url = new URL(location.href);
+        url.searchParams.set('code', code);
+        url.searchParams.set('section', sec.key);
+        url.searchParams.delete('topic');
+        history.replaceState(null, '', url);
+        renderLibrary(code, lib, sec, 0);
+      });
+    });
+  }
+
+  function renderLibrary(code, lib, sec, topicIdx) {
+    libDocTitleEl.textContent = sec.title;
+    document.title = 'JetisHub — Конспекты · ' + sec.title;
+
+    if (!sec.topics.length) {
+      root.innerHTML = `
+        <div class="lib-layout lib-layout-empty">
+          ${sectionSwitchHTML(lib, sec)}
+          <div class="missing">Конспекты по разделу «${esc(sec.title)}» готовятся и скоро появятся здесь.</div>
+        </div>
+      `;
+      wireSectionSwitch(code, lib);
+      return;
+    }
 
     root.innerHTML = `
       <div class="lib-layout">
         <nav class="lib-sidebar">
-          <h2>${esc(lib.title)}</h2>
+          ${sectionSwitchHTML(lib, sec)}
+          <h2>${esc(sec.title)}</h2>
           <div class="lib-topic-list" id="libTopicList">
-            ${lib.topics.map((t, i) => `<button class="lib-topic-btn ${i === topicIdx ? 'is-active' : ''}" data-idx="${i}">${esc(t.title)}</button>`).join('')}
+            ${sec.topics.map((t, i) => `<button class="lib-topic-btn ${i === topicIdx ? 'is-active' : ''}" data-idx="${i}">${esc(t.title)}</button>`).join('')}
           </div>
         </nav>
         <div class="lib-preview" id="libPreview"></div>
@@ -133,19 +179,20 @@
     `;
 
     document.querySelectorAll('.lib-topic-btn').forEach(btn => {
-      btn.addEventListener('click', () => selectTopic(code, lib, Number(btn.dataset.idx)));
+      btn.addEventListener('click', () => selectTopic(code, lib, sec, Number(btn.dataset.idx)));
     });
-    renderPreview(lib, topicIdx);
+    wireSectionSwitch(code, lib);
+    renderPreview(sec, topicIdx);
   }
 
-  function renderPreview(lib, topicIdx) {
+  function renderPreview(sec, topicIdx) {
     const preview = document.getElementById('libPreview');
-    const topic = lib.topics[topicIdx];
-    const pages = topicRange(lib, topicIdx);
+    const topic = sec.topics[topicIdx];
+    const pages = topicRange(sec, topicIdx);
     preview.innerHTML = `
       <h3 class="lib-preview-title">${esc(topic.title)}</h3>
       <div class="page-wrap">
-        ${pages.map(p => `<img src="assets/konspekty/img/${lib.file}/page-${p}.jpg" alt="${esc(topic.title)}, страница ${p}" oncontextmenu="return false" ondragstart="return false">`).join('')}
+        ${pages.map(p => `<img src="assets/konspekty/img/${sec.file}/page-${p}.jpg" alt="${esc(topic.title)}, страница ${p}" oncontextmenu="return false" ondragstart="return false">`).join('')}
       </div>
       <p class="hint">Материал доступен только для просмотра. Копирование и сохранение файла отключены.</p>
     `;
@@ -153,9 +200,10 @@
     window.scrollTo({ top: 0 });
   }
 
-  function selectTopic(code, lib, topicIdx) {
+  function selectTopic(code, lib, sec, topicIdx) {
     const url = new URL(location.href);
     url.searchParams.set('code', code);
+    url.searchParams.set('section', sec.key);
     url.searchParams.set('topic', topicIdx);
     history.replaceState(null, '', url);
 
@@ -164,7 +212,7 @@
     });
     const active = document.querySelector('.lib-topic-btn.is-active');
     if (active) active.scrollIntoView({ block: 'nearest', inline: 'center' });
-    renderPreview(lib, topicIdx);
+    renderPreview(sec, topicIdx);
   }
 
   async function init() {
@@ -186,10 +234,14 @@
     }
 
     const lib = LIBRARY_CONSPECTS[code];
-    let topicIdx = parseInt(params.get('topic'), 10);
-    if (!(topicIdx >= 0 && topicIdx < lib.topics.length)) topicIdx = 0;
+    const sectionKey = params.get('section');
+    let sec = lib.sections.find(s => s.key === sectionKey);
+    if (!sec) sec = lib.sections.find(s => s.topics.length > 0) || lib.sections[0];
 
-    renderLibrary(code, lib, topicIdx);
+    let topicIdx = parseInt(params.get('topic'), 10);
+    if (!(topicIdx >= 0 && topicIdx < sec.topics.length)) topicIdx = 0;
+
+    renderLibrary(code, lib, sec, topicIdx);
   }
 
   init();

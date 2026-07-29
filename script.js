@@ -185,49 +185,71 @@ function conspectLink(topic) {
 const LIBRARY_CONSPECTS = {
   '7M01': {
     title: 'Педагогика и психология',
-    file: 'pedagogika-course',
-    pages: 29,
-    topics: [
-      { title: 'Тема 1. Приоритетная роль образования в современных условиях', page: 1 },
-      { title: 'Тема 2. Общая характеристика педагогической профессии и деятельности', page: 3 },
-      { title: 'Тема 3. Личность педагога и его профессиональная компетентность', page: 5 },
-      { title: 'Тема 4. Факторы непрерывного профессионального роста педагога', page: 7 },
-      { title: 'Тема 5. Педагогика в системе наук о человеке', page: 9 },
-      { title: 'Тема 6. Методологические основы и методы педагогического исследования', page: 11 },
-      { title: 'Тема 7. Личность как объект, субъект воспитания и факторы её развития и формирования', page: 12 },
-      { title: 'Тема 8. Сущность и структура целостного педагогического процесса (ЦПП)', page: 14 },
-      { title: 'Тема 9. Цель воспитания, её социальная обусловленность', page: 16 },
-      { title: 'Тема 10. Научное мировоззрение как основа интеллектуального развития личности школьника', page: 17 },
-      { title: 'Тема 11. Сущность и содержание воспитания в целостном педагогическом процессе', page: 18 },
-      { title: 'Тема 12. Средства и формы воспитания', page: 19 },
-      { title: 'Тема 13. Основы семейного воспитания', page: 20 },
-      { title: 'Тема 14. Сущность обучения', page: 21 },
-      { title: 'Тема 15. Научные основы содержания образования в современной школе', page: 22 },
-      { title: 'Тема 16. Средства, формы обучения как двигательный механизм ЦПП', page: 23 },
-      { title: 'Тема 17. Методы обучения', page: 24 },
-      { title: 'Тема 18. Диагностика и контроль в обучении', page: 25 },
-      { title: 'Тема 19. Активизация познавательной деятельности учащихся в целостном педагогическом процессе', page: 27 },
-      { title: 'Тема 20. Технологии обучения в профессиональной деятельности учителя', page: 29 },
+    sections: [
+      {
+        key: 'pedagogika',
+        title: 'Педагогика',
+        file: 'pedagogika-course',
+        pages: 29,
+        topics: [
+          { title: 'Тема 1. Приоритетная роль образования в современных условиях', page: 1 },
+          { title: 'Тема 2. Общая характеристика педагогической профессии и деятельности', page: 3 },
+          { title: 'Тема 3. Личность педагога и его профессиональная компетентность', page: 5 },
+          { title: 'Тема 4. Факторы непрерывного профессионального роста педагога', page: 7 },
+          { title: 'Тема 5. Педагогика в системе наук о человеке', page: 9 },
+          { title: 'Тема 6. Методологические основы и методы педагогического исследования', page: 11 },
+          { title: 'Тема 7. Личность как объект, субъект воспитания и факторы её развития и формирования', page: 12 },
+          { title: 'Тема 8. Сущность и структура целостного педагогического процесса (ЦПП)', page: 14 },
+          { title: 'Тема 9. Цель воспитания, её социальная обусловленность', page: 16 },
+          { title: 'Тема 10. Научное мировоззрение как основа интеллектуального развития личности школьника', page: 17 },
+          { title: 'Тема 11. Сущность и содержание воспитания в целостном педагогическом процессе', page: 18 },
+          { title: 'Тема 12. Средства и формы воспитания', page: 19 },
+          { title: 'Тема 13. Основы семейного воспитания', page: 20 },
+          { title: 'Тема 14. Сущность обучения', page: 21 },
+          { title: 'Тема 15. Научные основы содержания образования в современной школе', page: 22 },
+          { title: 'Тема 16. Средства, формы обучения как двигательный механизм ЦПП', page: 23 },
+          { title: 'Тема 17. Методы обучения', page: 24 },
+          { title: 'Тема 18. Диагностика и контроль в обучении', page: 25 },
+          { title: 'Тема 19. Активизация познавательной деятельности учащихся в целостном педагогическом процессе', page: 27 },
+          { title: 'Тема 20. Технологии обучения в профессиональной деятельности учителя', page: 29 },
+        ],
+      },
+      {
+        key: 'psihologiya',
+        title: 'Психология',
+        file: null,
+        pages: 0,
+        topics: [], // материал готовится
+      },
     ],
   },
 };
 
-// Рендерит раздел «Конспекты» в кабинете — только для кодов, к которым выдан доступ.
+// Рендерит раздел «Конспекты» в кабинете — по одной карточке на каждый раздел
+// (Педагогика / Психология и т.д.), только для кодов, к которым выдан доступ.
 function renderConspectsLibrary() {
-  const section = document.getElementById('konspektySection');
-  if (!section) return; // раздел есть только на cabinet.html
+  const wrap = document.getElementById('konspektySection');
+  if (!wrap) return; // раздел есть только на cabinet.html
   const user = API.getCurrentUser();
   const access = (user && user.access) || [];
-  const available = access.map(code => ({ code, lib: LIBRARY_CONSPECTS[code] })).filter(x => x.lib);
-  if (!available.length) { section.classList.add('hidden'); return; }
-  section.classList.remove('hidden');
-  section.innerHTML = available.map(({ code, lib }) => `
-    <a class="dash-card konspekty-card" href="konspekty.html?code=${encodeURIComponent(code)}">
-      <h3>Конспекты · ${esc(lib.title)}</h3>
-      <p>${lib.topics.length} тем — откройте список слева и переключайтесь между темами, не теряя место.</p>
-      <span class="konspekty-card-arrow" aria-hidden="true">→</span>
-    </a>
-  `).join('');
+  const cards = [];
+  access.forEach(code => {
+    const lib = LIBRARY_CONSPECTS[code];
+    if (!lib) return;
+    lib.sections.forEach(sec => {
+      const ready = sec.topics.length > 0;
+      cards.push(`
+        <a class="dash-card konspekty-card ${ready ? '' : 'konspekty-card-soon'}" href="${ready ? `konspekty.html?code=${encodeURIComponent(code)}&section=${encodeURIComponent(sec.key)}` : '#'}" ${ready ? '' : 'onclick="return false;" aria-disabled="true"'}>
+          <h3>Конспекты · ${esc(sec.title)}</h3>
+          <p>${ready ? `${sec.topics.length} тем — откройте список слева и переключайтесь между темами, не теряя место.` : 'Материал готовится, скоро появится здесь.'}</p>
+          <span class="konspekty-card-arrow" aria-hidden="true">${ready ? '→' : '·'}</span>
+        </a>
+      `);
+    });
+  });
+  if (!cards.length) { wrap.classList.add('hidden'); return; }
+  wrap.classList.remove('hidden');
+  wrap.innerHTML = cards.join('');
 }
 
 const INTERACTIVE_TEST_CODES = ["7M01","7M02","7M03","7M04","7M05","7M06","7M07","7M08","7M11","7M12"]; // какие направления имеют интерактивный тест (не секрет — просто UI-подсказка, доступ проверяется на бэкенде)
