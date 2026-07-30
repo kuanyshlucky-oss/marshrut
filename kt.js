@@ -527,8 +527,8 @@ function renderKTQuestion() {
   const item = s.flat[s.idx];
   const blockTag = item.stage ? `${ktBlockLabel(s.code, item.block)} · ${KT_LANG_STAGE_LABELS[item.stage]}` : ktBlockLabel(s.code, item.block);
 
-  const media = item.stage === 'listening'
-    ? (item.audio ? `
+  const media = item.stage === 'listening' && item.audio
+    ? `
       <div class="kt-audio-player" id="ktAudioPlayer">
         <button class="kt-audio-play" id="ktAudioPlay" aria-label="Воспроизвести">
           <svg class="ico-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
@@ -540,8 +540,10 @@ function renderKTQuestion() {
         </div>
         <span class="kt-audio-time" id="ktAudioTime">0:00 / 0:00</span>
         <audio id="ktAudioEl" src="${item.audio}" preload="auto"></audio>
-      </div>` : '')
-    : item.stage === 'reading' && item.passage
+      </div>`
+    // passage показываем всегда, когда есть в данных — не только для англ. reading-стадии
+    // (пассажи по чтению/логике КТ используют то же поле без stage==='reading').
+    : item.passage
       ? `<div class="kt-reading-passage">${esc(item.passage)}</div>`
       : '';
 
@@ -790,6 +792,7 @@ function openKTReview() {
         <span class="rev-block">${blockTag}</span>
         <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${esc(item.q)}</p>
         ${item.image ? `<div class="kt-question-image"><img src="${item.image}" alt="Условие вопроса"></div>` : ''}
+        ${item.passage ? `<div class="kt-reading-passage">${esc(item.passage)}</div>` : ''}
         <div class="rev-opts">${opts}</div>
         ${why}
         ${konspekt}

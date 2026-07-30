@@ -169,6 +169,32 @@ const CONSPECTS = {
   '9. Возрастная психология': { file: 'assets/konspekty/psikhologiya.pdf', page: 3, title: 'Психология · Возрастная психология' },
   '10. Деятельность': { file: 'assets/konspekty/psikhologiya.pdf', page: 3, title: 'Психология · Деятельность' },
   '11. Виды психологического знания': { file: 'assets/konspekty/psikhologiya.pdf', page: 4, title: 'Психология · Виды психологического знания' },
+
+  // Темы вопросов 3-го варианта (Педагогика) — ведут в большой конспект pedagogika-course (29 стр., 20 тем).
+  'Сущность педагогической деятельности': { file: 'assets/konspekty/pedagogika-course.pdf', page: 3, title: 'Педагогика · Общая характеристика педагогической деятельности' },
+  'Методы педагогического исследования': { file: 'assets/konspekty/pedagogika-course.pdf', page: 11, title: 'Педагогика · Методы педагогического исследования' },
+  'Личность и деятельность педагога': { file: 'assets/konspekty/pedagogika-course.pdf', page: 5, title: 'Педагогика · Личность педагога' },
+  'Содержание образования': { file: 'assets/konspekty/pedagogika-course.pdf', page: 22, title: 'Педагогика · Содержание образования' },
+  'Образование как многоаспектное понятие': { file: 'assets/konspekty/pedagogika-course.pdf', page: 1, title: 'Педагогика · Роль образования' },
+  'Методы воспитания': { file: 'assets/konspekty/pedagogika-course.pdf', page: 19, title: 'Педагогика · Средства и формы воспитания' },
+  'Принципы воспитания': { file: 'assets/konspekty/pedagogika-course.pdf', page: 18, title: 'Педагогика · Сущность и содержание воспитания' },
+  'Факторы формирования личности': { file: 'assets/konspekty/pedagogika-course.pdf', page: 12, title: 'Педагогика · Личность как объект и субъект воспитания' },
+  'Виды воспитания': { file: 'assets/konspekty/pedagogika-course.pdf', page: 18, title: 'Педагогика · Сущность и содержание воспитания' },
+  'Взаимодействие школы и семьи': { file: 'assets/konspekty/pedagogika-course.pdf', page: 20, title: 'Педагогика · Основы семейного воспитания' },
+  'Самовоспитание': { file: 'assets/konspekty/pedagogika-course.pdf', page: 18, title: 'Педагогика · Сущность и содержание воспитания' },
+  'Педагогическое общение': { file: 'assets/konspekty/pedagogika-course.pdf', page: 3, title: 'Педагогика · Общая характеристика педагогической деятельности' },
+  'Методы обучения': { file: 'assets/konspekty/pedagogika-course.pdf', page: 24, title: 'Педагогика · Методы обучения' },
+  'Контроль в обучении': { file: 'assets/konspekty/pedagogika-course.pdf', page: 25, title: 'Педагогика · Диагностика и контроль в обучении' },
+  'Виды обучения': { file: 'assets/konspekty/pedagogika-course.pdf', page: 21, title: 'Педагогика · Сущность обучения' },
+  'Подходы в обучении': { file: 'assets/konspekty/pedagogika-course.pdf', page: 27, title: 'Педагогика · Активизация познавательной деятельности' },
+  'Закономерности педагогического процесса': { file: 'assets/konspekty/pedagogika-course.pdf', page: 14, title: 'Педагогика · Целостный педагогический процесс' },
+  'Отрасли педагогики': { file: 'assets/konspekty/pedagogika-course.pdf', page: 9, title: 'Педагогика · Педагогика в системе наук о человеке' },
+  'Мировоззрение личности': { file: 'assets/konspekty/pedagogika-course.pdf', page: 17, title: 'Педагогика · Научное мировоззрение' },
+  'Основные категории педагогики': { file: 'assets/konspekty/pedagogika-course.pdf', page: 19, title: 'Педагогика · Средства и формы воспитания' },
+  'Педагогический процесс': { file: 'assets/konspekty/pedagogika-course.pdf', page: 16, title: 'Педагогика · Цель воспитания' },
+  'Средства обучения': { file: 'assets/konspekty/pedagogika-course.pdf', page: 23, title: 'Педагогика · Средства и формы обучения' },
+  'Педагогические технологии': { file: 'assets/konspekty/pedagogika-course.pdf', page: 29, title: 'Педагогика · Технологии обучения' },
+  'Психолого-педагогические категории деятельности': { file: 'assets/konspekty/pedagogika-course.pdf', page: 12, title: 'Педагогика · Личность как объект и субъект воспитания' },
 };
 function conspectLink(topic) {
   const c = topic && CONSPECTS[topic];
@@ -225,31 +251,28 @@ const LIBRARY_CONSPECTS = {
   },
 };
 
-// Рендерит раздел «Конспекты» в кабинете — по одной карточке на каждый раздел
-// (Педагогика / Психология и т.д.), только для кодов, к которым выдан доступ.
+// Рендерит раздел «Конспекты» в кабинете — одна карточка на код направления;
+// деление на подразделы (Педагогика / Психология и т.д.) происходит уже
+// внутри konspekty.html через переключатель.
 function renderConspectsLibrary() {
   const wrap = document.getElementById('konspektySection');
   if (!wrap) return; // раздел есть только на cabinet.html
   const user = API.getCurrentUser();
   const access = (user && user.access) || [];
-  const cards = [];
-  access.forEach(code => {
-    const lib = LIBRARY_CONSPECTS[code];
-    if (!lib) return;
-    lib.sections.forEach(sec => {
-      const ready = sec.topics.length > 0;
-      cards.push(`
-        <a class="dash-card konspekty-card ${ready ? '' : 'konspekty-card-soon'}" href="${ready ? `konspekty.html?code=${encodeURIComponent(code)}&section=${encodeURIComponent(sec.key)}` : '#'}" ${ready ? '' : 'onclick="return false;" aria-disabled="true"'}>
-          <h3>Конспекты · ${esc(sec.title)}</h3>
-          <p>${ready ? `${sec.topics.length} тем — откройте список слева и переключайтесь между темами, не теряя место.` : 'Материал готовится, скоро появится здесь.'}</p>
-          <span class="konspekty-card-arrow" aria-hidden="true">${ready ? '→' : '·'}</span>
-        </a>
-      `);
-    });
-  });
-  if (!cards.length) { wrap.classList.add('hidden'); return; }
+  const available = access.map(code => ({ code, lib: LIBRARY_CONSPECTS[code] })).filter(x => x.lib);
+  if (!available.length) { wrap.classList.add('hidden'); return; }
   wrap.classList.remove('hidden');
-  wrap.innerHTML = cards.join('');
+  wrap.innerHTML = available.map(({ code, lib }) => {
+    const totalTopics = lib.sections.reduce((n, s) => n + s.topics.length, 0);
+    const sectionNames = lib.sections.map(s => s.title).join(' · ');
+    return `
+      <a class="dash-card konspekty-card" href="konspekty.html?code=${encodeURIComponent(code)}">
+        <h3>Конспекты · ${esc(lib.title)}</h3>
+        <p>${sectionNames} — ${totalTopics} тем. Откройте список слева и переключайтесь между разделами и темами, не теряя место.</p>
+        <span class="konspekty-card-arrow" aria-hidden="true">→</span>
+      </a>
+    `;
+  }).join('');
 }
 
 const INTERACTIVE_TEST_CODES = ["7M01","7M02","7M03","7M04","7M05","7M06","7M07","7M08","7M11","7M12"]; // какие направления имеют интерактивный тест (не секрет — просто UI-подсказка, доступ проверяется на бэкенде)

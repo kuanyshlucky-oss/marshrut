@@ -706,7 +706,6 @@ h3{ font-size:var(--fs-h3); }
 }
 .dash-fav-name{ flex:1; font-size:14px; }
 
-.konspekty-section{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
 .konspekty-section .dash-card{ width:100%; }
 .konspekty-card{
   position:relative; display:block; text-decoration:none; color:inherit;
@@ -719,10 +718,6 @@ h3{ font-size:var(--fs-h3); }
   font-size:20px; color:var(--accent); transition:transform .2s ease;
 }
 .konspekty-card:hover .konspekty-card-arrow{ transform:translateY(-50%) translateX(4px); }
-.konspekty-card-soon{ cursor:default; opacity:.55; }
-.konspekty-card-soon:hover{ border-color:var(--line); transform:none; }
-.konspekty-card-soon .konspekty-card-arrow{ color:var(--ink-soft); }
-@media (max-width:640px){ .konspekty-section{ grid-template-columns:1fr; } }
 
 /* =========================== CONTACT BAND =========================== */
 .contact-band{
