@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/subtle"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -33,7 +34,7 @@ func adminGuard(w http.ResponseWriter, r *http.Request) bool {
 		writeError(w, http.StatusForbidden, "Админ-доступ отключён: не задан ADMIN_KEY")
 		return false
 	}
-	if r.Header.Get("X-Admin-Key") != adminKey {
+	if subtle.ConstantTimeCompare([]byte(r.Header.Get("X-Admin-Key")), []byte(adminKey)) != 1 {
 		writeError(w, http.StatusUnauthorized, "Неверный ключ")
 		return false
 	}
