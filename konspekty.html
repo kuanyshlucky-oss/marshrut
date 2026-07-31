@@ -6,28 +6,52 @@
 <title>JetisHub — Конспекты</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/brand/logo-mark.png" type="image/png">
+<script src="theme.js"></script>
 <style>
   :root{
     --bg:#FBFBFA; --surface:#FFFFFF; --ink:#1D1D1F; --ink-soft:#86868B;
     --line:rgba(29,29,31,.12); --accent:#0A6CC9; --accent-on:#FFFFFF; --beige:#B08D46;
     --serif:'Space Grotesk','Manrope', system-ui, sans-serif; --mono:'Manrope', system-ui, sans-serif;
+    --header-bg: rgba(251,251,250,.86);
+  }
+  html[data-theme="dark"]{
+    --bg:#0A0A0B; --surface:#17171A; --ink:#F5F5F7; --ink-soft:rgba(245,245,247,.62);
+    --line:rgba(255,255,255,.12); --accent:#4DA3FF; --accent-on:#08131F; --beige:#D9B676;
+    --header-bg: rgba(10,10,11,.86);
   }
   *{ box-sizing:border-box; }
   body{
     margin:0; background:var(--bg); color:var(--ink); font-family:'Manrope',system-ui,sans-serif;
-    -webkit-user-select:none; user-select:none;
+    -webkit-user-select:none; user-select:none; transition:background .2s ease, color .2s ease;
   }
   header{
     position:sticky; top:0; z-index:50;
     display:flex; align-items:center; justify-content:space-between;
     padding:0 20px; height:64px;
-    background:rgba(251,251,250,.86); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    background:var(--header-bg); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
     border-bottom:1px solid var(--line);
   }
   .back{ color:var(--ink-soft); font-size:14px; text-decoration:none; font-family:var(--mono); }
   .back:hover{ color:var(--ink); }
   .doc-title{ color:var(--ink); font-weight:700; font-family:var(--serif); font-size:17px; }
-  .spacer{ width:70px; }
+  .theme-toggle{
+    --w: 50px; --h: 27px;
+    position:relative; flex:0 0 auto; margin-left:12px;
+    width:var(--w); height:var(--h); padding:0;
+    background:var(--bg); border:1px solid var(--line); border-radius:999px;
+  }
+  .theme-toggle-thumb{
+    position:absolute; top:2px; left:2px;
+    width:calc(var(--h) - 6px); height:calc(var(--h) - 6px);
+    border-radius:50%; background:var(--surface); box-shadow:0 1px 2px rgba(0,0,0,.2);
+    display:flex; align-items:center; justify-content:center; color:var(--beige);
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  .theme-toggle-thumb svg{ width:13px; height:13px; }
+  .theme-toggle .icon-moon{ display:none; }
+  html[data-theme="dark"] .theme-toggle-thumb{ transform:translateX(calc(var(--w) - var(--h))); color:var(--accent); }
+  html[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
+  html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 
   .lib-layout{ display:flex; min-height:calc(100vh - 64px); align-items:stretch; }
 
@@ -54,18 +78,19 @@
     border-left:3px solid transparent; padding:12px 22px; font-size:13.5px; line-height:1.4;
     color:var(--ink-soft); cursor:pointer; transition:background .2s ease, color .2s ease, border-color .2s ease;
   }
-  .lib-topic-btn:hover{ background:rgba(29,29,31,.04); color:var(--ink); }
-  .lib-topic-btn.is-active{ border-left-color:var(--accent); background:rgba(10,108,201,.06); color:var(--ink); font-weight:600; }
+  .lib-topic-btn:hover{ background:color-mix(in srgb, var(--ink) 4%, transparent); color:var(--ink); }
+  .lib-topic-btn.is-active{ border-left-color:var(--accent); background:color-mix(in srgb, var(--accent) 8%, transparent); color:var(--ink); font-weight:600; }
 
   .lib-preview{ flex:1 1 auto; padding:32px 28px 60px; display:flex; flex-direction:column; align-items:center; }
   .lib-preview-title{ font-family:var(--serif); font-weight:400; font-size:22px; max-width:760px; width:100%; margin:0 0 18px; }
   .page-wrap{
-    max-width:760px; width:100%; background:var(--surface); border:1px solid var(--line);
+    /* фон-разделитель между сканами страниц — сами сканы всегда белые, не подстраиваем под тему */
+    max-width:760px; width:100%; border:1px solid var(--line);
     border-radius:14px; box-shadow:0 12px 32px -12px rgba(29,29,31,.2); overflow:hidden;
     display:flex; flex-direction:column; gap:1px; background-color:var(--line);
   }
   .page-wrap img{
-    width:100%; display:block; pointer-events:none; background:var(--surface);
+    width:100%; display:block; pointer-events:none; background:#FFFFFF;
     -webkit-user-drag:none; -webkit-touch-callout:none;
   }
   .hint{ margin-top:16px; font-size:12px; color:var(--ink-soft); text-align:center; max-width:500px; }
@@ -99,7 +124,12 @@
 <header>
   <a class="back" href="cabinet.html">← В кабинет</a>
   <span class="doc-title" id="libDocTitle"></span>
-  <span class="spacer"></span>
+  <button id="themeToggle" class="theme-toggle" type="button" aria-label="Переключить тему" aria-pressed="false">
+    <span class="theme-toggle-thumb">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </span>
+  </button>
 </header>
 <div id="root"><div class="missing">Загрузка…</div></div>
 <footer class="site-footer">

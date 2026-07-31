@@ -71,6 +71,44 @@
   --glass-dark:        rgba(255,255,255,.06);
 }
 
+/* =========================================================
+   Тёмная тема — переключается атрибутом data-theme на <html>
+   (см. theme.js). Чёрный фон, белый текст, тот же масштаб/сетка.
+   ========================================================= */
+html[data-theme="dark"]{
+  --bg:            #0A0A0B;
+  --surface:       #17171A;
+  --surface-2:     #1E1E22;
+  --glass:         rgba(255,255,255,.05);
+  --ink:           #F5F5F7;
+  --ink-soft:      rgba(245,245,247,.62);
+  --line:          rgba(255,255,255,.12);
+  --accent:        #4DA3FF;
+  --accent-ink:    #7CBBFF;
+  --accent-soft:   rgba(77,163,255,.16);
+  --accent-on:     #08131F;
+  --beige:         #D9B676;
+  --beige-soft:    rgba(217,182,118,.14);
+  --teal:          #5FC79A;
+  --teal-soft:     rgba(95,199,154,.16);
+  --danger:        #FF7A70;
+  --danger-soft:   rgba(255,122,112,.14);
+
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.4);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.35), 0 12px 32px -12px rgba(0,0,0,.55);
+  --shadow-md: 0 16px 40px -14px rgba(0,0,0,.55);
+  --shadow-lg: 0 30px 70px -20px rgba(0,0,0,.6);
+  --shadow-xl: 0 40px 100px -24px rgba(0,0,0,.65);
+  --shadow-card: var(--shadow-sm);
+
+  --surface-dark:     #000000;
+  --surface-dark-2:   #000000;
+  --ink-on-dark:      #FFFFFF;
+  --ink-on-dark-soft: rgba(255,255,255,.7);
+  --line-dark:        rgba(255,255,255,.18);
+  --glass-dark:        rgba(255,255,255,.08);
+}
+
 *{ box-sizing:border-box; }
 html{ scroll-behavior:smooth; }
 body{
@@ -240,6 +278,27 @@ h3{ font-size:var(--fs-h3); }
 }
 .main-nav a:hover{ color:var(--ink); border-bottom-color:var(--accent); }
 .header-actions{ display:flex; align-items:center; gap:10px; }
+
+/* Переключатель светлой/тёмной темы */
+.theme-toggle{
+  --w: 50px; --h: 27px;
+  position:relative; flex:0 0 auto;
+  width:var(--w); height:var(--h); padding:0;
+  background:var(--surface-2); border:1px solid var(--line); border-radius:999px;
+  transition:background .25s ease, border-color .25s ease;
+}
+.theme-toggle-thumb{
+  position:absolute; top:2px; left:2px;
+  width:calc(var(--h) - 6px); height:calc(var(--h) - 6px);
+  border-radius:50%; background:var(--surface); box-shadow:var(--shadow-xs);
+  display:flex; align-items:center; justify-content:center; color:var(--beige);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.theme-toggle-thumb svg{ width:13px; height:13px; }
+.theme-toggle .icon-moon{ display:none; }
+html[data-theme="dark"] .theme-toggle-thumb{ transform:translateX(calc(var(--w) - var(--h))); color:var(--accent); }
+html[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
+html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 
 .nav-toggle{
   display:none;
@@ -1124,6 +1183,8 @@ body.test-open #reviewPage input{ user-select:text; }
   padding:16px 18px; margin:0 0 18px; font-size:14px; line-height:1.6; color:var(--ink-soft);
 }
 .kt-question-image{
+  /* всегда светлый фон: диаграммы/сканы часто с прозрачностью и тёмными линиями,
+     рассчитанными на белую подложку — не зависит от темы */
   background:#FFFFFF; border:1px solid var(--line); border-radius:var(--radius-m);
   padding:14px 16px; margin:0 0 18px; overflow-x:auto;
 }
@@ -1226,7 +1287,7 @@ body.test-open #reviewPage input{ user-select:text; }
   .main-nav{
     position:absolute; top:100%; left:0; right:0;
     flex-direction:column; gap:0;
-    background:rgba(251,251,250,.98);
+    background:color-mix(in srgb, var(--bg) 98%, transparent);
     backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
     border-bottom:1px solid var(--line);
     box-shadow:var(--shadow-card);
@@ -1257,8 +1318,12 @@ body.test-open #reviewPage input{ user-select:text; }
   .calc-form{ grid-template-columns:1fr; }
 }
 @media (max-width: 560px){
-  .header-row{ height:64px; }
+  .header-row{ height:64px; padding-left:16px; padding-right:16px; }
+  .header-actions{ gap:6px; }
   .header-actions .btn-ghost{ display:none; }
+  .header-actions .btn-primary{ padding:10px 16px; font-size:13px; }
+  .logo-tag{ display:none; }
+  .theme-toggle{ --w:42px; --h:24px; }
   .footer-grid{ grid-template-columns:1fr; }
 }
 

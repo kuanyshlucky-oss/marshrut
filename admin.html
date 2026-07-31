@@ -5,12 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>JetisHub — Админка</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="theme.js"></script>
 <style>
   :root{ --bg:#FBFBFA; --ink:#1D1D1F; --soft:#86868B; --line:#EAEAE7; --accent:#0A6CC9; --accent-ink:#0857A0; --accent-soft:rgba(10,108,201,.08); --surface:#fff; --ok:#2F6F5E; --ok-soft:#DCEAE3; --danger:#B14545; --danger-soft:#F4DADA; }
+  html[data-theme="dark"]{ --bg:#0A0A0B; --ink:#F5F5F7; --soft:rgba(245,245,247,.62); --line:rgba(255,255,255,.12); --accent:#4DA3FF; --accent-ink:#7CBBFF; --accent-soft:rgba(77,163,255,.16); --surface:#17171A; --ok:#5FC79A; --ok-soft:rgba(95,199,154,.16); --danger:#FF7A70; --danger-soft:rgba(255,122,112,.14); }
   *{ box-sizing:border-box; }
-  body{ margin:0; font-family:'Manrope',system-ui,sans-serif; background:var(--bg); color:var(--ink); }
+  body{ margin:0; font-family:'Manrope',system-ui,sans-serif; background:var(--bg); color:var(--ink); transition:background .2s ease, color .2s ease; }
   .wrap{ max-width:900px; margin:0 auto; padding:48px 20px 72px; }
+  .top-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
   h1{ font-family:'Space Grotesk','Manrope',sans-serif; font-weight:700; letter-spacing:-.02em; font-size:clamp(26px,3vw,34px); margin:0 0 6px; }
+  .theme-toggle{
+    --w: 50px; --h: 27px;
+    position:relative; flex:0 0 auto; margin-top:4px;
+    width:var(--w); height:var(--h); padding:0;
+    background:var(--bg); border:1px solid var(--line); border-radius:999px;
+  }
+  .theme-toggle-thumb{
+    position:absolute; top:2px; left:2px;
+    width:calc(var(--h) - 6px); height:calc(var(--h) - 6px);
+    border-radius:50%; background:var(--surface); box-shadow:0 1px 2px rgba(0,0,0,.2);
+    display:flex; align-items:center; justify-content:center; color:var(--soft);
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  .theme-toggle-thumb svg{ width:13px; height:13px; }
+  .theme-toggle .icon-moon{ display:none; }
+  html[data-theme="dark"] .theme-toggle-thumb{ transform:translateX(calc(var(--w) - var(--h))); color:var(--accent); }
+  html[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
+  html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
   .sub{ color:var(--soft); font-size:14px; margin:0 0 28px; }
   .card{ background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:24px; margin-bottom:20px; box-shadow:0 1px 2px rgba(0,0,0,.02), 0 12px 32px -12px rgba(0,0,0,.06); }
   .card h2{ font-family:'Space Grotesk','Manrope',sans-serif; font-weight:700; font-size:17px; margin:0 0 14px; }
@@ -64,8 +85,18 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>JetisHub — Админка</h1>
-  <p class="sub">Создание аккаунтов и управление пользователями. Публичная регистрация отключена.</p>
+  <div class="top-row">
+    <div>
+      <h1>JetisHub — Админка</h1>
+      <p class="sub">Создание аккаунтов и управление пользователями. Публичная регистрация отключена.</p>
+    </div>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Переключить тему" aria-pressed="false">
+      <span class="theme-toggle-thumb">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </span>
+    </button>
+  </div>
 
   <!-- Ключ -->
   <div class="card">

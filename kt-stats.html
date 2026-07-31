@@ -6,6 +6,7 @@
 <title>JetisHub — Статистика КТ 2025</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/brand/logo-mark.png" type="image/png">
+<script src="theme.js"></script>
 <style>
   :root{
     --bg:#FBFBFA; --surface:#FFFFFF; --ink:#1D1D1F; --ink-soft:#86868B;
@@ -16,16 +17,46 @@
     --shadow-sm: 0 1px 2px rgba(0,0,0,.02), 0 12px 32px -12px rgba(0,0,0,.06);
     --shadow-md: 0 16px 40px -14px rgba(0,0,0,.14);
     --radius-l: 20px;
+    --header-bg: rgba(251,251,250,.86);
+    --footer-bg: #F1F1EF;
+  }
+  html[data-theme="dark"]{
+    --bg:#0A0A0B; --surface:#17171A; --ink:#F5F5F7; --ink-soft:rgba(245,245,247,.62);
+    --line:rgba(255,255,255,.12); --accent:#4DA3FF; --accent-on:#08131F; --beige:#D9B676;
+    --good:#5FC79A; --bad:#FF7A70;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.35), 0 12px 32px -12px rgba(0,0,0,.55);
+    --shadow-md: 0 16px 40px -14px rgba(0,0,0,.55);
+    --header-bg: rgba(10,10,11,.86);
+    --footer-bg: #000000;
   }
   *{ box-sizing:border-box; }
-  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Manrope',system-ui,sans-serif; min-height:100vh; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Manrope',system-ui,sans-serif; min-height:100vh; transition:background .2s ease, color .2s ease; }
   header{
     position:sticky; top:0; z-index:1100;
     display:flex; align-items:center; justify-content:space-between; gap:16px;
     padding:0 28px; height:76px;
-    background:rgba(251,251,250,.86); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+    background:var(--header-bg); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
     border-bottom:1px solid var(--line);
   }
+  .header-actions{ display:flex; align-items:center; gap:16px; }
+  .theme-toggle{
+    --w: 50px; --h: 27px;
+    position:relative; flex:0 0 auto;
+    width:var(--w); height:var(--h); padding:0;
+    background:var(--bg); border:1px solid var(--line); border-radius:999px;
+  }
+  .theme-toggle-thumb{
+    position:absolute; top:2px; left:2px;
+    width:calc(var(--h) - 6px); height:calc(var(--h) - 6px);
+    border-radius:50%; background:var(--surface); box-shadow:var(--shadow-sm);
+    display:flex; align-items:center; justify-content:center; color:var(--beige);
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+  }
+  .theme-toggle-thumb svg{ width:13px; height:13px; }
+  .theme-toggle .icon-moon{ display:none; }
+  html[data-theme="dark"] .theme-toggle-thumb{ transform:translateX(calc(var(--w) - var(--h))); color:var(--accent); }
+  html[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
+  html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
   .logo{ display:inline-flex; align-items:center; gap:10px; font-family:'Space Grotesk','Manrope',sans-serif; font-weight:700; font-size:19px; color:var(--ink); text-decoration:none; }
   .logo-mark{ width:34px; height:34px; display:block; border-radius:22%; box-shadow:0 0 0 1px var(--line); }
   .logo-text{ display:flex; flex-direction:column; line-height:1; }
@@ -103,7 +134,7 @@
     .card{ padding:20px; }
   }
 
-  .site-footer{ background:#F1F1EF; border-top:1px solid var(--line); }
+  .site-footer{ background:var(--footer-bg); border-top:1px solid var(--line); }
   .footer-bottom{
     max-width:960px; margin:0 auto; padding:20px 24px;
     display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
@@ -116,7 +147,15 @@
 <body>
 <header>
   <a class="logo" href="index.html"><img class="logo-mark" src="assets/brand/logo-mark.png" alt="" aria-hidden="true"> <span class="logo-text">JetisHub<span class="logo-tag">Магистратураға жолыңыз</span></span></a>
-  <a class="back" href="index.html">← На главную</a>
+  <div class="header-actions">
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Переключить тему" aria-pressed="false">
+      <span class="theme-toggle-thumb">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </span>
+    </button>
+    <a class="back" href="index.html">← На главную</a>
+  </div>
 </header>
 
 <main>
