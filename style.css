@@ -238,7 +238,7 @@ h3{ font-size:var(--fs-h3); }
 /* =========================== HEADER (светлый минималистичный) =========================== */
 .site-header{
   position:sticky; top:0; z-index:50;
-  background:rgba(251,251,250,.86);
+  background:color-mix(in srgb, var(--bg) 86%, transparent);
   backdrop-filter:blur(var(--blur-sm)); -webkit-backdrop-filter:blur(var(--blur-sm));
   border-bottom:1px solid var(--line);
   transition:background .3s ease, border-color .3s ease;
