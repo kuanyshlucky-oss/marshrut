@@ -90,7 +90,7 @@ button{ font-family:inherit; cursor:pointer; }
 html.has-token #authZone{ display:none !important; }
 
 /* стеклянная панель (ключевой приём макета) */
-.glass, .auth-card, .dash-card, .dir-card, .path-step, .modal, .filter-bar{
+.glass, .auth-card, .dash-card, .dir-card, .path-card, .modal, .filter-bar{
   background:var(--glass);
   backdrop-filter:blur(var(--blur-md));
   -webkit-backdrop-filter:blur(var(--blur-md));
@@ -385,10 +385,11 @@ h3{ font-size:var(--fs-h3); }
 .section-dark .eyebrow{ color:var(--accent); }
 .section-dark .glass,
 .section-dark .feat-card,
-.section-dark .path-step,
+.section-dark .path-card,
 .section-dark .dir-card,
 .section-dark .about-us-stat{ background:var(--glass-dark); border-color:var(--line-dark); }
-.section-dark .path-step p,
+.section-dark .path-card h3{ color:var(--ink-on-dark); }
+.section-dark .path-card p,
 .section-dark .feat-card p,
 .section-dark .about-us-stat-label{ color:var(--ink-on-dark-soft); }
 .section-dark .about-us-mini-stats .num{ color:var(--ink-on-dark); }
@@ -564,30 +565,57 @@ h3{ font-size:var(--fs-h3); }
   .about-us-mini-stats{ justify-content:center; }
 }
 
-/* =========================== HOW / STEPS =========================== */
-/* =========================== ПУТЬ АБИТУРИЕНТА =========================== */
-.path-chain{ display:flex; align-items:stretch; gap:14px; }
-.path-step{
-  flex:1 1 0; min-width:0; border-radius:var(--radius-l);
-  padding:24px 18px; text-align:left; font-family:inherit; color:var(--ink);
-  cursor:default; transition:border-color .2s ease, transform .2s ease, background .2s ease;
+/* =========================== ПУТЬ АБИТУРИЕНТА (анимированная вертикальная тропа) =========================== */
+.path-timeline{ position:relative; max-width:640px; margin:0 auto; padding:12px 0; }
+.path-timeline-line{
+  position:absolute; left:50%; top:0; bottom:0; width:2px; margin-left:-1px;
+  background:linear-gradient(180deg, var(--accent), var(--beige), var(--teal));
+  transform-origin:top; transform:scaleY(0);
+  transition:transform 1.4s cubic-bezier(.22,.61,.36,1);
 }
-.path-step:hover{ border-color:rgba(10,108,201,.4); transform:translateY(-3px); }
-.path-step-active{ cursor:pointer; border-color:rgba(10,108,201,.35); }
-.path-step-active:hover{ background:rgba(10,108,201,.08); border-color:var(--accent); }
-.path-num{
-  display:inline-flex; align-items:center; justify-content:center;
-  width:40px; height:40px; border-radius:50%;
-  font-family:var(--font-mono); font-size:13px; font-weight:500;
-  color:var(--accent); background:transparent; border:1px solid rgba(10,108,201,.4);
-}
-.path-step h3{ font-size:16px; margin:14px 0 8px; }
-.path-step p{ color:var(--ink-soft); font-size:13px; margin:0; line-height:1.5; }
-.path-arrow{ flex:0 0 auto; display:flex; align-items:center; color:var(--accent); font-size:20px; opacity:.7; }
+.path-timeline.is-drawn .path-timeline-line{ transform:scaleY(1); }
 
-@media (max-width:960px){
-  .path-chain{ flex-direction:column; }
-  .path-arrow{ justify-content:center; transform:rotate(90deg); padding:2px 0; }
+.path-node{
+  position:relative; display:flex; width:50%; margin-bottom:52px;
+  opacity:0; transition:opacity .6s ease, transform .6s ease;
+}
+.path-node:last-child{ margin-bottom:0; }
+.path-node-left{ justify-content:flex-end; padding-right:36px; transform:translateX(-18px); }
+.path-node-right{ margin-left:50%; justify-content:flex-start; padding-left:36px; transform:translateX(18px); }
+.path-node.on{ opacity:1; transform:translateX(0); }
+
+.path-dot{
+  position:absolute; top:22px; width:12px; height:12px; border-radius:50%; background:var(--dot);
+  box-shadow:0 0 0 4px color-mix(in srgb, var(--dot) 22%, transparent), 0 0 16px 2px var(--dot);
+}
+.path-node-left .path-dot{ right:-6px; }
+.path-node-right .path-dot{ left:-6px; }
+
+.path-card{
+  display:block; width:100%; max-width:280px; text-align:left; border-radius:var(--radius-l);
+  padding:20px 22px; font-family:inherit; cursor:default;
+  transition:border-color .2s ease, transform .2s ease, background .2s ease;
+}
+.path-card-active{ cursor:pointer; }
+.path-card-active:hover{ border-color:var(--accent); transform:translateY(-2px); }
+.path-meta{
+  font-family:var(--font-mono); font-size:11px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--accent);
+}
+.path-card h3{ font-size:17px; margin:10px 0 6px; }
+.path-card p{ color:var(--ink-soft); font-size:13px; margin:0; line-height:1.5; }
+
+.section-dark .path-meta{ color:var(--accent); }
+
+@media (max-width:680px){
+  .path-timeline-line{ left:16px; margin-left:0; }
+  .path-node, .path-node-left, .path-node-right{
+    width:100%; margin-left:0; justify-content:flex-start;
+    padding-left:44px; padding-right:0; transform:translateX(0) translateY(14px);
+  }
+  .path-node.on{ transform:none; }
+  .path-node-left .path-dot, .path-node-right .path-dot{ left:10px; right:auto; }
+  .path-card{ max-width:none; }
 }
 
 /* =========================== AUTH / DASHBOARD =========================== */

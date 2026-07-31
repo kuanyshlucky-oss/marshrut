@@ -1569,6 +1569,35 @@ function initScrollReveal() {
   els.forEach(el => io.observe(el));
 }
 
+// Анимация «тропы абитуриента»: линия «дорисовывается» и узлы проявляются
+// по очереди при попадании секции в область видимости (однократно).
+function initPathTimeline() {
+  const timeline = document.getElementById('pathTimeline');
+  if (!timeline) return;
+  const nodes = timeline.querySelectorAll('.path-node');
+  if (!('IntersectionObserver' in window)) {
+    timeline.classList.add('is-drawn');
+    nodes.forEach(n => n.classList.add('on'));
+    return;
+  }
+  const lineIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { timeline.classList.add('is-drawn'); lineIO.unobserve(timeline); }
+    });
+  }, { threshold: 0.15 });
+  lineIO.observe(timeline);
+
+  const nodeIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('on'); nodeIO.unobserve(e.target); }
+    });
+  }, { threshold: 0.3, rootMargin: '0px 0px -60px 0px' });
+  nodes.forEach((n, i) => {
+    n.style.transitionDelay = (i * 0.12) + 's';
+    nodeIO.observe(n);
+  });
+}
+
 function initHeaderContrast() {
   const header = document.getElementById('siteHeader');
   const darkSections = document.querySelectorAll('.section-dark, .contact-band');
@@ -1737,6 +1766,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireAntiCopy();
   wireMobileNav();
   initScrollReveal();
+  initPathTimeline();
   initHeaderContrast();
   document.getElementById('pathPrepBtn')?.addEventListener('click', () => {
     document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });

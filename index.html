@@ -120,35 +120,52 @@
         <p class="eyebrow">Как поступить</p>
         <h2>Путь абитуриента</h2>
       </div>
-      <div class="path-chain">
-        <div class="path-step">
-          <span class="path-num">01</span>
-          <h3>Выбор программы</h3>
-          <p>Изучение списка специальностей и выбор направления.</p>
+      <div class="path-timeline" id="pathTimeline">
+        <div class="path-timeline-line" aria-hidden="true"></div>
+
+        <div class="path-node path-node-left">
+          <span class="path-dot" style="--dot:var(--accent)" aria-hidden="true"></span>
+          <div class="path-card">
+            <span class="path-meta">01 · Направление</span>
+            <h3>Выбор программы</h3>
+            <p>Изучение списка специальностей и выбор направления.</p>
+          </div>
         </div>
-        <div class="path-arrow" aria-hidden="true">→</div>
-        <div class="path-step">
-          <span class="path-num">02</span>
-          <h3>Регистрация на КТ</h3>
-          <p>Подача заявки через портал НЦТ (Национального центра тестирования).</p>
+
+        <div class="path-node path-node-right">
+          <span class="path-dot" style="--dot:var(--beige)" aria-hidden="true"></span>
+          <div class="path-card">
+            <span class="path-meta">02 · НЦТ</span>
+            <h3>Регистрация на КТ</h3>
+            <p>Подача заявки через портал НЦТ (Национального центра тестирования).</p>
+          </div>
         </div>
-        <div class="path-arrow" aria-hidden="true">→</div>
-        <button class="path-step path-step-active" id="pathPrepBtn" type="button">
-          <span class="path-num">03</span>
-          <h3>Подготовка</h3>
-          <p>Использование нашей платформы для симуляции тестирования.</p>
-        </button>
-        <div class="path-arrow" aria-hidden="true">→</div>
-        <div class="path-step">
-          <span class="path-num">04</span>
-          <h3>Сдача КТ</h3>
-          <p>Прохождение Комплексного Тестирования.</p>
+
+        <div class="path-node path-node-left">
+          <span class="path-dot" style="--dot:var(--teal)" aria-hidden="true"></span>
+          <button class="path-card path-card-active" id="pathPrepBtn" type="button">
+            <span class="path-meta">03 · JetisHub</span>
+            <h3>Подготовка</h3>
+            <p>Использование нашей платформы для симуляции тестирования.</p>
+          </button>
         </div>
-        <div class="path-arrow" aria-hidden="true">→</div>
-        <div class="path-step">
-          <span class="path-num">05</span>
-          <h3>Подача документов</h3>
-          <p>Зачисление в выбранный вуз при получении проходного балла.</p>
+
+        <div class="path-node path-node-right">
+          <span class="path-dot" style="--dot:var(--accent)" aria-hidden="true"></span>
+          <div class="path-card">
+            <span class="path-meta">04 · Экзамен</span>
+            <h3>Сдача КТ</h3>
+            <p>Прохождение Комплексного Тестирования.</p>
+          </div>
+        </div>
+
+        <div class="path-node path-node-left">
+          <span class="path-dot" style="--dot:var(--beige)" aria-hidden="true"></span>
+          <div class="path-card">
+            <span class="path-meta">05 · Финал</span>
+            <h3>Подача документов</h3>
+            <p>Зачисление в выбранный вуз при получении проходного балла.</p>
+          </div>
         </div>
       </div>
     </div>
