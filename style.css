@@ -386,12 +386,10 @@ h3{ font-size:var(--fs-h3); }
 .section-dark .glass,
 .section-dark .feat-card,
 .section-dark .path-card,
-.section-dark .dir-card,
-.section-dark .about-us-stat{ background:var(--glass-dark); border-color:var(--line-dark); }
+.section-dark .dir-card{ background:var(--glass-dark); border-color:var(--line-dark); }
 .section-dark .path-card h3{ color:var(--ink-on-dark); }
 .section-dark .path-card p,
-.section-dark .feat-card p,
-.section-dark .about-us-stat-label{ color:var(--ink-on-dark-soft); }
+.section-dark .feat-card p{ color:var(--ink-on-dark-soft); }
 .section-dark .about-us-mini-stats .num{ color:var(--ink-on-dark); }
 .section-dark .about-us-mini-stats .label{ color:var(--ink-on-dark-soft); }
 
@@ -541,22 +539,11 @@ h3{ font-size:var(--fs-h3); }
 
 /* =========================== О НАС =========================== */
 .about-us-inner{
-  display:flex; align-items:center; justify-content:space-between; gap:48px; flex-wrap:wrap;
+  display:flex; align-items:center; gap:48px; flex-wrap:wrap;
 }
 .about-us-text{ flex:1 1 420px; max-width:620px; }
 .about-us-text h2{ margin-top:6px; }
 .about-us-text .section-note{ margin-top:14px; }
-.about-us-stat{
-  flex:0 0 auto; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  width:180px; height:180px; border-radius:50%;
-  background:var(--glass); border:1px solid var(--line);
-  backdrop-filter:blur(var(--blur-md)); -webkit-backdrop-filter:blur(var(--blur-md));
-}
-.about-us-stat-value{ font-family:var(--font-display); font-size:52px; color:var(--accent); line-height:1; }
-.about-us-stat-label{
-  font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em;
-  color:var(--ink-soft); margin-top:8px; text-align:center; max-width:120px;
-}
 .about-us-mini-stats{ display:flex; gap:36px; flex-wrap:wrap; margin-top:28px; }
 .about-us-mini-stats .num{ font-family:var(--font-display); font-weight:700; font-size:24px; letter-spacing:-.02em; color:var(--ink); }
 .about-us-mini-stats .label{ font-size:13px; color:var(--ink-soft); margin-top:2px; }
