@@ -1301,30 +1301,6 @@ function renderDashboard() {
   });
   empty.classList.toggle('hidden', rows.length > 0);
   table.classList.toggle('hidden', rows.length === 0);
-
-  // --- Избранные направления ---
-  const list = document.getElementById('dashFavorites');
-  const favEmpty = document.getElementById('dashFavEmpty');
-  const favs = DIRECTIONS.filter(d => user.favorites.includes(d.code));
-  list.innerHTML = favs.map(d => `
-    <li>
-      <button class="dash-fav-row" data-open-dir="${d.code}">
-        <span class="dash-fav-code">${d.code}</span>
-        <span class="dash-fav-name">${d.name}</span>
-        <span class="subject-arrow" aria-hidden="true">→</span>
-      </button>
-    </li>
-  `).join('');
-  favEmpty.classList.toggle('hidden', favs.length > 0);
-  // клик по избранному → переход на тест направления (страница теста живёт на index.html)
-  list.querySelectorAll('[data-open-dir]').forEach(btn => btn.addEventListener('click', () => {
-    const code = btn.dataset.openDir;
-    if (INTERACTIVE_TEST_CODES.includes(code)) {
-      location.href = 'index.html?test=' + encodeURIComponent(code);
-    } else {
-      showToast('Тест для этого направления временно недоступен');
-    }
-  }));
 }
 
 /* --- Личные данные: режимы просмотра / редактирования --- */

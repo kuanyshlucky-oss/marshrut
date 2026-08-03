@@ -766,20 +766,6 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .test-status-badge.passed{ background:var(--teal-soft); color:var(--teal); border-color:rgba(63,138,104,.4); }
 .test-status-badge.failed{ background:var(--danger-soft); color:var(--danger); border-color:rgba(179,38,30,.4); }
 
-.dash-favorites{ display:flex; flex-direction:column; gap:8px; }
-.dash-fav-row{
-  width:100%; display:flex; align-items:center; gap:12px; text-align:left;
-  background:transparent; border:1px solid var(--line); border-radius:var(--radius-m);
-  padding:12px 14px; color:var(--ink);
-  transition:border-color .25s ease, transform .15s ease;
-}
-.dash-fav-row:hover{ border-color:var(--accent); transform:translateX(2px); }
-.dash-fav-code{
-  flex:0 0 auto; font-family:var(--font-mono); font-size:12px; font-weight:600;
-  color:var(--accent); border:1px solid rgba(10,108,201,.3); padding:3px 9px; border-radius:var(--radius-s);
-}
-.dash-fav-name{ flex:1; font-size:14px; }
-
 .konspekty-section .dash-card{ width:100%; }
 .konspekty-card{
   position:relative; display:block; text-decoration:none; color:inherit;
