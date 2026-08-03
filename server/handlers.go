@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func writeJSON(w http.ResponseWriter, status int, v any) {
@@ -143,11 +144,25 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	in.Email = strings.ToLower(strings.TrimSpace(in.Email))
-	id, hash, err := getUserAuth(in.Email)
-	if err != nil || !checkPassword(hash, in.Password) {
+	id, hash, failedAttempts, lockedUntil, err := getUserAuth(in.Email)
+	if err != nil {
 		writeError(w, http.StatusUnauthorized, "Неверный email или пароль.")
 		return
 	}
+	// Аккаунт временно заблокирован после серии неверных попыток —
+	// даже с верным паролем вход не пускаем, пока не истечёт срок.
+	if lockedUntil != "" {
+		if until, perr := time.Parse(time.RFC3339, lockedUntil); perr == nil && time.Now().Before(until) {
+			writeError(w, http.StatusTooManyRequests, "Аккаунт временно заблокирован из-за нескольких неверных попыток входа. Попробуйте позже.")
+			return
+		}
+	}
+	if !checkPassword(hash, in.Password) {
+		_ = recordFailedLogin(id, failedAttempts)
+		writeError(w, http.StatusUnauthorized, "Неверный email или пароль.")
+		return
+	}
+	_ = resetFailedLogin(id)
 	respondAuth(w, id)
 }
 

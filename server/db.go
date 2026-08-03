@@ -65,6 +65,11 @@ func initDB(dsn string) error {
 		city          TEXT NOT NULL DEFAULT '',
 		created_at    TEXT NOT NULL
 	);
+	-- Блокировка аккаунта после серии неверных паролей (в дополнение к
+	-- IP-based rate-limit на /api/auth/login — тот не спасает от подбора
+	-- пароля к ОДНОМУ аккаунту с разных IP).
+	ALTER TABLE users ADD COLUMN IF NOT EXISTS failed_attempts INT NOT NULL DEFAULT 0;
+	ALTER TABLE users ADD COLUMN IF NOT EXISTS locked_until    TEXT NOT NULL DEFAULT '';
 	CREATE TABLE IF NOT EXISTS favorites (
 		user_id BIGINT NOT NULL,
 		code    TEXT NOT NULL,
@@ -98,12 +103,36 @@ func createUser(name, email, passwordHash string) (int64, error) {
 	return id, err
 }
 
-// getUserAuth возвращает id и хэш пароля по email (для входа).
-func getUserAuth(email string) (int64, string, error) {
-	var id int64
-	var hash string
-	err := db.QueryRow(`SELECT id, password_hash FROM users WHERE email = $1`, email).Scan(&id, &hash)
-	return id, hash, err
+// getUserAuth возвращает данные, нужные для входа и проверки блокировки по email.
+func getUserAuth(email string) (id int64, hash string, failedAttempts int, lockedUntil string, err error) {
+	err = db.QueryRow(
+		`SELECT id, password_hash, failed_attempts, locked_until FROM users WHERE email = $1`, email,
+	).Scan(&id, &hash, &failedAttempts, &lockedUntil)
+	return
+}
+
+const (
+	maxLoginAttempts = 5
+	lockoutDuration  = 15 * time.Minute
+)
+
+// recordFailedLogin увеличивает счётчик неверных попыток и блокирует аккаунт
+// на lockoutDuration, если счётчик достиг maxLoginAttempts.
+func recordFailedLogin(id int64, currentFailed int) error {
+	next := currentFailed + 1
+	if next >= maxLoginAttempts {
+		until := time.Now().Add(lockoutDuration).UTC().Format(time.RFC3339)
+		_, err := db.Exec(`UPDATE users SET failed_attempts = $1, locked_until = $2 WHERE id = $3`, next, until, id)
+		return err
+	}
+	_, err := db.Exec(`UPDATE users SET failed_attempts = $1 WHERE id = $2`, next, id)
+	return err
+}
+
+// resetFailedLogin сбрасывает счётчик/блокировку — вызывается при успешном входе.
+func resetFailedLogin(id int64) error {
+	_, err := db.Exec(`UPDATE users SET failed_attempts = 0, locked_until = '' WHERE id = $1`, id)
+	return err
 }
 
 // loadUser собирает полного пользователя: профиль + избранное + результаты.
