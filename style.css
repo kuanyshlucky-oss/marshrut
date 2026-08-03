@@ -160,6 +160,7 @@ h1,h2,h3{
   margin:0;
   letter-spacing:-0.02em;
   color:var(--ink);
+  overflow-wrap:break-word;
 }
 h1{ font-size:var(--fs-h1); line-height:var(--lh-tight); letter-spacing:-0.03em; }
 h2{ font-size:var(--fs-h2); }
