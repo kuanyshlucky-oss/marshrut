@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -80,6 +81,7 @@ func handleAdminCreate(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, "Не удалось создать аккаунт")
 		return
 	}
+	logAdminAction(r, "create_user", email, "name="+name)
 	// пароль отдаётся ОДИН раз — сохранить/передать клиенту
 	writeJSON(w, http.StatusOK, map[string]any{"id": id, "name": name, "login": email, "password": pw})
 }
@@ -100,6 +102,7 @@ func handleAdminDelete(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, "Не удалось удалить")
 		return
 	}
+	logAdminAction(r, "delete_user", strconv.FormatInt(in.ID, 10), "")
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 }
 
@@ -125,6 +128,7 @@ func handleAdminResetPassword(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, "Не удалось сбросить пароль")
 		return
 	}
+	logAdminAction(r, "reset_password", strconv.FormatInt(in.ID, 10), "")
 	writeJSON(w, http.StatusOK, map[string]any{"id": in.ID, "password": pw})
 }
 

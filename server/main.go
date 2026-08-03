@@ -42,6 +42,9 @@ func main() {
 	if err := initAccess(); err != nil {
 		log.Fatalf("ошибка инициализации доступа к тестам: %v", err)
 	}
+	if err := initAudit(); err != nil {
+		log.Fatalf("ошибка инициализации audit-лога: %v", err)
+	}
 	log.Print("БД готова (Postgres)")
 
 	mux := http.NewServeMux()
@@ -53,13 +56,14 @@ func main() {
 	mux.HandleFunc("PUT /api/profile", auth(handleUpdateProfile))
 	mux.HandleFunc("POST /api/favorites/toggle", auth(handleToggleFavorite))
 	mux.HandleFunc("POST /api/results", auth(handleSaveResult))
-	mux.HandleFunc("GET /api/admin/users", rateLimit(adminLimiter, handleAdminUsers))
-	mux.HandleFunc("POST /api/admin/create-user", rateLimit(adminLimiter, handleAdminCreate))
-	mux.HandleFunc("POST /api/admin/delete-user", rateLimit(adminLimiter, handleAdminDelete))
-	mux.HandleFunc("POST /api/admin/reset-password", rateLimit(adminLimiter, handleAdminResetPassword))
-	mux.HandleFunc("GET /api/admin/test-codes", rateLimit(adminLimiter, handleAdminTestCodes))
-	mux.HandleFunc("POST /api/admin/grant-access", rateLimit(adminLimiter, handleAdminGrantAccess))
-	mux.HandleFunc("POST /api/admin/revoke-access", rateLimit(adminLimiter, handleAdminRevokeAccess))
+	mux.HandleFunc("GET /api/admin/users", adminIPGuard(rateLimit(adminLimiter, handleAdminUsers)))
+	mux.HandleFunc("POST /api/admin/create-user", adminIPGuard(rateLimit(adminLimiter, handleAdminCreate)))
+	mux.HandleFunc("POST /api/admin/delete-user", adminIPGuard(rateLimit(adminLimiter, handleAdminDelete)))
+	mux.HandleFunc("POST /api/admin/reset-password", adminIPGuard(rateLimit(adminLimiter, handleAdminResetPassword)))
+	mux.HandleFunc("GET /api/admin/test-codes", adminIPGuard(rateLimit(adminLimiter, handleAdminTestCodes)))
+	mux.HandleFunc("POST /api/admin/grant-access", adminIPGuard(rateLimit(adminLimiter, handleAdminGrantAccess)))
+	mux.HandleFunc("POST /api/admin/revoke-access", adminIPGuard(rateLimit(adminLimiter, handleAdminRevokeAccess)))
+	mux.HandleFunc("GET /api/admin/audit-log", adminIPGuard(rateLimit(adminLimiter, handleAdminAuditLog)))
 	mux.HandleFunc("GET /api/tests/{code}", auth(handleGetTestContent))
 	// МагистрТрек
 	mux.HandleFunc("GET /api/universities", handleUniversities)
@@ -81,6 +85,13 @@ func withSecurityHeaders(next http.Handler) http.Handler {
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("Referrer-Policy", "strict-origin-when-cross-origin")
+		// Чистый JSON API — не отдаёт HTML/скрипты/стили, поэтому можно запретить всё разом.
+		w.Header().Set("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
+		// HSTS: заходят только по HTTPS (Render терминирует TLS) — просим браузер
+		// и дальше ходить только так, даже если кто-то подсунет http:// ссылку.
+		w.Header().Set("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+		// API не использует ни одну из этих возможностей браузера — явно отключаем.
+		w.Header().Set("Permissions-Policy", "geolocation=(), camera=(), microphone=()")
 		next.ServeHTTP(w, r)
 	})
 }

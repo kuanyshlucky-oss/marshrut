@@ -138,6 +138,16 @@
     </table>
     <p id="listMsg" class="msg"></p>
   </div>
+
+  <!-- Журнал -->
+  <div class="card">
+    <h2>Журнал действий (<span id="auditCount">0</span>) <button class="btn-ghost" id="auditReloadBtn" style="float:right;padding:5px 14px;font-size:12px">Обновить</button></h2>
+    <table>
+      <thead><tr><th>Когда</th><th>Действие</th><th>Объект</th><th>Детали</th><th>IP</th></tr></thead>
+      <tbody id="auditRows"></tbody>
+    </table>
+    <p id="auditMsg" class="msg"></p>
+  </div>
 </div>
 
 <script>
@@ -147,7 +157,7 @@ const $ = id => document.getElementById(id);
 
 function getKey(){ return localStorage.getItem(KEY) || ''; }
 $('key').value = getKey();
-$('saveKey').onclick = () => { localStorage.setItem(KEY, $('key').value.trim()); load(); };
+$('saveKey').onclick = () => { localStorage.setItem(KEY, $('key').value.trim()); load(); loadAuditLog(); };
 
 async function api(path, opts={}){
   // ключ передаём заголовком, не query-строкой — так он не оседает в логах сервера/прокси
@@ -176,7 +186,7 @@ $('createBtn').onclick = async () => {
       <p class="note">⚠ Пароль показан один раз — сохраните и передайте клиенту.</p>`;
     cred.querySelectorAll('button').forEach(b=>b.onclick=()=>copy(b.dataset.c,b));
     $('cName').value=''; $('cEmail').value='';
-    load();
+    load(); loadAuditLog();
   }catch(e){ msg.textContent=e.message; msg.className='msg err'; }
   btn.disabled=false; btn.textContent='Сгенерировать аккаунт';
 };
@@ -189,12 +199,13 @@ async function resetPw(id, login){
     cell.innerHTML = `<span class="v">${r.password}</span> <button class="btn-reset" data-c="${r.password}">Копир.</button>`;
     const b = cell.querySelector('button');
     b.onclick = () => copy(r.password, b);
+    loadAuditLog();
   }catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
 }
 
 async function del(id, login){
   if(!confirm('Удалить аккаунт '+login+'? Данные (результаты, избранное) тоже удалятся.')) return;
-  try{ await api('/api/admin/delete-user', { method:'POST', body:{ id } }); load(); }
+  try{ await api('/api/admin/delete-user', { method:'POST', body:{ id } }); load(); loadAuditLog(); }
   catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
 }
 
@@ -229,13 +240,13 @@ function accessCellHtml(u){
 }
 
 async function grantAccess(userId, code){
-  try{ await api('/api/admin/grant-access', { method:'POST', body:{ user_id:userId, code } }); load(); }
+  try{ await api('/api/admin/grant-access', { method:'POST', body:{ user_id:userId, code } }); load(); loadAuditLog(); }
   catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
 }
 
 async function revokeAccess(userId, code){
   if(!confirm('Отозвать доступ к тесту '+code+'?')) return;
-  try{ await api('/api/admin/revoke-access', { method:'POST', body:{ user_id:userId, code } }); load(); }
+  try{ await api('/api/admin/revoke-access', { method:'POST', body:{ user_id:userId, code } }); load(); loadAuditLog(); }
   catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
 }
 
@@ -265,8 +276,35 @@ async function load(){
   }catch(e){ lm.textContent=e.message; lm.className='msg err'; }
 }
 
+const ACTION_LABELS = {
+  create_user: 'Создан аккаунт',
+  delete_user: 'Удалён аккаунт',
+  reset_password: 'Сброшен пароль',
+  grant_access: 'Выдан доступ',
+  revoke_access: 'Отозван доступ',
+};
+
+async function loadAuditLog(){
+  const am = $('auditMsg'); am.textContent=''; am.className='msg';
+  if(!getKey()){ am.textContent='Введите ADMIN_KEY.'; am.className='msg err'; return; }
+  try{
+    const d = await api('/api/admin/audit-log');
+    const entries = d.entries || [];
+    $('auditCount').textContent = entries.length;
+    $('auditRows').innerHTML = entries.map(e => `
+      <tr>
+        <td>${(e.created_at||'').replace('T',' ').slice(0,19)}</td>
+        <td>${ACTION_LABELS[e.action]||e.action}</td>
+        <td>${e.target||''}</td>
+        <td class="muted">${e.detail||''}</td>
+        <td class="muted">${e.actor_ip||''}</td>
+      </tr>`).join('');
+  }catch(e){ am.textContent=e.message; am.className='msg err'; }
+}
+
 $('reloadBtn').onclick = load;
-if(getKey()) load();
+$('auditReloadBtn').onclick = loadAuditLog;
+if(getKey()){ load(); loadAuditLog(); }
 </script>
 </body>
 </html>

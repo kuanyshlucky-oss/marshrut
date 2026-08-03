@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -99,6 +100,7 @@ func handleAdminGrantAccess(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, "Не удалось выдать доступ")
 		return
 	}
+	logAdminAction(r, "grant_access", body.Code, "user_id="+strconv.FormatInt(body.UserID, 10))
 	writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
 }
 
@@ -119,5 +121,6 @@ func handleAdminRevokeAccess(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusInternalServerError, "Не удалось отозвать доступ")
 		return
 	}
+	logAdminAction(r, "revoke_access", body.Code, "user_id="+strconv.FormatInt(body.UserID, 10))
 	writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
 }

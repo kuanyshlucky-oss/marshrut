@@ -3,6 +3,7 @@ package main
 import (
 	"net"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -99,5 +100,29 @@ func rateLimit(rl *rateLimiter, next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		next(w, r)
+	}
+}
+
+// ADMIN_ALLOWED_IPS — необязательный список IP через запятую, с которых разрешён
+// доступ к /api/admin/*. Пусто (по умолчанию) = ограничение выключено, работает
+// как раньше — только по ADMIN_KEY. Задавать имеет смысл, если у админа
+// статический IP/VPN — тогда даже утечка ключа не даст зайти с чужого адреса.
+var adminAllowedIPs = env("ADMIN_ALLOWED_IPS", "")
+
+// adminIPGuard — мидлвар: 403, если IP клиента не в ADMIN_ALLOWED_IPS (когда задан).
+func adminIPGuard(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if adminAllowedIPs == "" {
+			next(w, r)
+			return
+		}
+		ip := clientIP(r)
+		for _, allowed := range strings.Split(adminAllowedIPs, ",") {
+			if strings.TrimSpace(allowed) == ip {
+				next(w, r)
+				return
+			}
+		}
+		writeError(w, http.StatusForbidden, "Доступ к админке с этого IP запрещён")
 	}
 }
