@@ -14,9 +14,9 @@ import (
 
 // Конфиг из переменных окружения (со значениями по умолчанию для локального запуска).
 var (
-	allowedOrigin = env("ALLOWED_ORIGIN", "*")                        // домен фронта, напр. https://kuanyshlucky-oss.github.io
-	jwtSecret     = []byte(env("JWT_SECRET", "dev-secret-change-me")) // секрет для подписи токенов
-	adminKey      = env("ADMIN_KEY", "")                              // ключ для /api/admin/users (пусто = выключено)
+	allowedOrigin = env("ALLOWED_ORIGIN", "*")      // домен фронта, напр. https://kuanyshlucky-oss.github.io
+	jwtSecret     = []byte(os.Getenv("JWT_SECRET")) // секрет для подписи токенов — обязателен, см. проверку в main()
+	adminKey      = env("ADMIN_KEY", "")            // ключ для /api/admin/users (пусто = выключено)
 )
 
 func env(key, def string) string {
@@ -31,6 +31,9 @@ func main() {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
 		log.Fatal("не задан DATABASE_URL (строка подключения к Postgres, напр. от Neon)")
+	}
+	if len(jwtSecret) == 0 {
+		log.Fatal("не задан JWT_SECRET — сгенерируйте длинный случайный секрет и задайте в окружении (см. .env.example). Без него сервер не запустится: раньше при отсутствующей переменной он тихо использовал общеизвестное значение по умолчанию, что позволило бы подделать токен авторизации")
 	}
 
 	if err := initDB(dsn); err != nil {
