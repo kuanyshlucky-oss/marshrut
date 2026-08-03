@@ -1532,7 +1532,7 @@ function initScrollReveal() {
   // .card/.kcat-list элементы намеренно исключены — список из 147 групп
   // перерисовывается при поиске/фильтрации, повторный reveal на каждый ре-рендер даст дёрганье.
   const els = document.querySelectorAll(
-    '.feat-card, .path-step, .about-us-stat, .section-head, .contact-inner, .dir-card'
+    '.feat-card, .path-step, .about-us-visual, .section-head, .contact-inner, .dir-card'
   );
   if (!els.length) return;
   els.forEach(el => el.classList.add('reveal'));
