@@ -13,6 +13,12 @@
    1) ДАННЫЕ
    --------------------------------------------------------- */
 
+/* Иконки для отдельных предметов (пока только Педагогика/Психология) */
+const SUBJECT_ICONS = {
+  'Педагогика': 'assets/subjects/pedagogika.png',
+  'Психология': 'assets/subjects/psihologiya.png',
+};
+
 /* Два общих предмета — одинаковы для всех направлений */
 const COMMON_SUBJECTS = [
   {
@@ -535,6 +541,7 @@ function renderGopModalView(code) {
         ${subjects.map(s => `
           <li>
             <button class="subject-row" data-open-gop-subject="${s.id}">
+              ${SUBJECT_ICONS[s.title] ? `<img class="subject-icon" src="${SUBJECT_ICONS[s.title]}" alt="" aria-hidden="true">` : ''}
               <span class="subject-kind ${s.kind === 'common' ? 'is-common' : 'is-profile'}">${s.kind === 'common' ? 'Общий' : 'Профильный'}</span>
               <span class="subject-text">
                 <span class="subject-title">${s.title}</span>
@@ -794,6 +801,7 @@ function renderDirectionView(code) {
       ${subjects.map(s => `
         <li>
           <button class="subject-row" data-open-subject="${s.id}">
+            ${SUBJECT_ICONS[s.title] ? `<img class="subject-icon" src="${SUBJECT_ICONS[s.title]}" alt="" aria-hidden="true">` : ''}
             <span class="subject-kind ${s.kind === 'common' ? 'is-common' : 'is-profile'}">${s.kind === 'common' ? 'Общий' : 'Профильный'}</span>
             <span class="subject-text">
               <span class="subject-title">${s.title}</span>
@@ -1153,6 +1161,8 @@ function openReview() {
     const why = q.explanations ? '' : (q.why
       ? `<div class="rev-why"><b>Почему:</b> ${esc(q.why)}</div>`
       : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(q.options[correctSet[0]])}</div>`);
+    // Короткий индивидуальный конспект по самому вопросу — только при неверном ответе.
+    const conspectNote = wrong && q.conspect ? `<div class="rev-conspect"><b>Конспект:</b> ${esc(q.conspect)}</div>` : '';
     // Ссылка на конспект по теме вопроса — только при неверном ответе.
     const konspekt = wrong ? conspectLink(q.topic) : '';
     return `
@@ -1161,6 +1171,7 @@ function openReview() {
         ${q.image ? `<div class="kt-question-image"><img src="${q.image}" alt="Условие вопроса"></div>` : ''}
         <div class="rev-opts">${opts}</div>
         ${why}
+        ${conspectNote}
         ${konspekt}
       </div>`;
   }).join('');

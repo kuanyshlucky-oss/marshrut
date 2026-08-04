@@ -1055,6 +1055,8 @@ body.test-open #reviewPage input{ user-select:text; }
 .rev-opt.wrong .rev-opt-expl{ color:var(--danger); }
 .rev-why{ margin-top:14px; font-size:14px; line-height:1.55; color:var(--ink-soft); border-left:2px solid var(--accent); padding-left:12px; }
 .rev-why b{ color:var(--ink); }
+.rev-conspect{ margin-top:14px; font-size:14px; line-height:1.55; color:var(--ink-soft); border-left:2px solid var(--beige); padding-left:12px; }
+.rev-conspect b{ color:var(--ink); }
 .rev-konspekt-btn{
   display:inline-flex; align-items:center; gap:8px; margin-top:14px;
   font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:.05em;
