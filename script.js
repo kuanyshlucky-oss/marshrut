@@ -195,6 +195,21 @@ const CONSPECTS = {
   'Средства обучения': { file: 'assets/konspekty/pedagogika-course.pdf', page: 23, title: 'Педагогика · Средства и формы обучения' },
   'Педагогические технологии': { file: 'assets/konspekty/pedagogika-course.pdf', page: 29, title: 'Педагогика · Технологии обучения' },
   'Психолого-педагогические категории деятельности': { file: 'assets/konspekty/pedagogika-course.pdf', page: 12, title: 'Педагогика · Личность как объект и субъект воспитания' },
+
+  // Темы вопросов 3-го варианта (Психология) — ведут в конспект psihologiya-course (18 стр., 9 тем).
+  'Методы психологии': { file: 'assets/konspekty/psihologiya-course.pdf', page: 1, title: 'Психология · Предмет, задачи и методы психологии' },
+  'История психологии': { file: 'assets/konspekty/psihologiya-course.pdf', page: 1, title: 'Психология · Предмет, задачи и методы психологии' },
+  'Развитие психики': { file: 'assets/konspekty/psihologiya-course.pdf', page: 3, title: 'Психология · Развитие психики в филогенезе. Сознание' },
+  'Психология общения': { file: 'assets/konspekty/psihologiya-course.pdf', page: 5, title: 'Психология · Личность и общение' },
+  'Психология ощущений': { file: 'assets/konspekty/psihologiya-course.pdf', page: 7, title: 'Психология · Познавательные процессы. Ощущение' },
+  'Теория деятельности': { file: 'assets/konspekty/psihologiya-course.pdf', page: 9, title: 'Психология · Психологическая характеристика деятельности' },
+  'Психология мотивации': { file: 'assets/konspekty/psihologiya-course.pdf', page: 9, title: 'Психология · Психологическая характеристика деятельности' },
+  'Психология навыков': { file: 'assets/konspekty/psihologiya-course.pdf', page: 9, title: 'Психология · Психологическая характеристика деятельности' },
+  'Психология внимания': { file: 'assets/konspekty/psihologiya-course.pdf', page: 11, title: 'Психология · Внимание и память' },
+  'Психология мышления': { file: 'assets/konspekty/psihologiya-course.pdf', page: 13, title: 'Психология · Мышление и воображение. Речь' },
+  'Психология речи и мышления': { file: 'assets/konspekty/psihologiya-course.pdf', page: 13, title: 'Психология · Мышление и воображение. Речь' },
+  'Психология эмоций и чувств': { file: 'assets/konspekty/psihologiya-course.pdf', page: 15, title: 'Психология · Эмоции, чувства и воля' },
+  'Психология темперамента': { file: 'assets/konspekty/psihologiya-course.pdf', page: 17, title: 'Психология · Темперамент, характер и способности' },
 };
 function conspectLink(topic) {
   const c = topic && CONSPECTS[topic];
@@ -243,9 +258,19 @@ const LIBRARY_CONSPECTS = {
       {
         key: 'psihologiya',
         title: 'Психология',
-        file: null,
-        pages: 0,
-        topics: [], // материал готовится
+        file: 'psihologiya-course',
+        pages: 18,
+        topics: [
+          { title: 'Тема 1. Предмет, задачи и методы психологии', page: 1 },
+          { title: 'Тема 2. Основные этапы развития психики в филогенезе. Сознание', page: 3 },
+          { title: 'Тема 3. Проблема личности в психологии. Общение', page: 5 },
+          { title: 'Тема 4. Познавательные процессы. Ощущение', page: 7 },
+          { title: 'Тема 5. Психологическая характеристика деятельности', page: 9 },
+          { title: 'Тема 6. Внимание и память', page: 11 },
+          { title: 'Тема 7. Мышление и воображение. Речь', page: 13 },
+          { title: 'Тема 8. Эмоции, чувства и воля', page: 15 },
+          { title: 'Тема 9. Темперамент, характер и способности', page: 17 },
+        ],
       },
     ],
   },
