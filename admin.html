@@ -57,7 +57,8 @@
   .cred .v{ font-size:15px; }
   .cred button{ background:rgba(255,255,255,.1); color:#fff; padding:5px 12px; font-size:12px; border-radius:8px; }
   .cred .note{ color:#E0A060; font-size:12px; margin-top:8px; }
-  table{ width:100%; border-collapse:collapse; font-size:13px; }
+  .table-scroll{ overflow-x:auto; }
+  table{ width:100%; min-width:640px; border-collapse:collapse; font-size:13px; }
   th{ text-align:left; font-family:'Manrope',sans-serif; text-transform:uppercase; font-size:10px; color:var(--soft); padding:8px 6px; border-bottom:1px solid var(--line); }
   td{ padding:9px 6px; border-bottom:1px solid var(--line); }
   .msg{ font-size:13px; margin-top:10px; }
@@ -132,20 +133,20 @@
   <!-- Список -->
   <div class="card">
     <h2>Пользователи (<span id="count">0</span>) <button class="btn-ghost" id="reloadBtn" style="float:right;padding:5px 14px;font-size:12px">Обновить</button></h2>
-    <table>
+    <div class="table-scroll"><table>
       <thead><tr><th>ID</th><th>Логин (email)</th><th>Имя</th><th>Город</th><th>Тестов</th><th>Доступ к тестам</th><th>Создан</th><th>Пароль</th><th></th></tr></thead>
       <tbody id="rows"></tbody>
-    </table>
+    </table></div>
     <p id="listMsg" class="msg"></p>
   </div>
 
   <!-- Журнал -->
   <div class="card">
     <h2>Журнал действий (<span id="auditCount">0</span>) <button class="btn-ghost" id="auditReloadBtn" style="float:right;padding:5px 14px;font-size:12px">Обновить</button></h2>
-    <table>
+    <div class="table-scroll"><table>
       <thead><tr><th>Когда</th><th>Действие</th><th>Объект</th><th>Детали</th><th>IP</th></tr></thead>
       <tbody id="auditRows"></tbody>
-    </table>
+    </table></div>
     <p id="auditMsg" class="msg"></p>
   </div>
 </div>
