@@ -6,23 +6,25 @@
 
 /* Типы тестирования.
    Блоки: lang (иностранный), logic (ТГО), subj1, subj2 (профильные).
-   nauchped: 4×30 = 120, общий порог 75, минимумы по блокам.
+   nauchped: 50+30+30+20 = 130, общий порог 81, минимумы по блокам.
    profile:  4×10 = 40, общий порог 30, минимумов по блокам нет. */
 const KT_TYPES = {
   nauchped: {
     id: 'nauchped',
     label: 'Научно-педагогическое',
-    perBlock: 30,                 // logic/subj1/subj2
-    langMax: 50,                  // lang (англ.): 16 Listening + 18 Grammar + 16 Reading, фиксированно
-    total: 140,                   // 50 + 30×3
-    thresholdTotal: 88,           // те же ~62.5% от суммы, что и раньше (75 из 120)
+    blockSize: { lang: 50, logic: 30, subj1: 30, subj2: 20 }, // англ./ТГО/Педагогика/Психология
+    langFixed: true,              // англ.: фиксированно 16 Listening + 18 Grammar + 16 Reading
+    total: 130,                   // 50 + 30 + 30 + 20
+    thresholdTotal: 81,           // те же ~62.5% от суммы, что и раньше (75 из 120)
     timeMin: 210,                 // ~3.5 часа как на реальном КТ (условно)
-    blockMin: { lang: 42, logic: 7, subj1: 7, subj2: 7 }, // lang: та же ~83% от максимума блока (25 из 30)
+    // lang/logic/subj1: те же ~83%/~23% от максимума блока, что и раньше; subj2 пересчитан под новый максимум 20.
+    blockMin: { lang: 42, logic: 7, subj1: 7, subj2: 5 },
   },
   profile: {
     id: 'profile',
     label: 'Английский язык + ТГО',
-    perBlock: 10,
+    blockSize: { lang: 10, logic: 10, subj1: 10, subj2: 10 },
+    langFixed: false,
     total: 40,
     thresholdTotal: 30,
     timeMin: 90,
@@ -417,12 +419,12 @@ function pickListeningTracks(pool, tracksCount) {
 // content — уже загруженный с бэкенда банк вопросов направления (см. beginKT).
 function assembleKT(typeId, code, content, lang) {
   const type = KT_TYPES[typeId];
-  const n = type.perBlock;
-  // Для типов с langMax (сейчас — только полная КТ) английский блок фиксирован:
+  const bs = type.blockSize;
+  // langFixed (сейчас — только полная КТ): английский блок фиксирован —
   // 16 Listening (2 целые аудиодорожки) + 18 Grammar + 16 Reading = 50, а не
-  // пропорциональная выборка от perBlock.
+  // пропорциональная выборка от bs.lang.
   const langPool = lang === 'en'
-    ? (type.langMax
+    ? (type.langFixed
         ? [
             ...pickListeningTracks(KT_LANG_EN_STAGES.listening, 2),
             ...ktCycle(KT_LANG_EN_STAGES.grammar, 18).map(item => ({ ...item, stage: 'grammar' })),
@@ -432,15 +434,15 @@ function assembleKT(typeId, code, content, lang) {
             { key: 'listening', pool: KT_LANG_EN_STAGES.listening },
             { key: 'grammar', pool: KT_LANG_EN_STAGES.grammar },
             { key: 'reading', pool: KT_LANG_EN_STAGES.reading },
-          ], n))
-    : ktCycle(KT_LANG_POOL[lang], n);
+          ], bs.lang))
+    : ktCycle(KT_LANG_POOL[lang], bs.lang);
   return {
     typeId, code, lang,
     blocks: [
       { id: 'lang',  label: KT_BLOCK_LABELS.lang + ' · ' + KT_LANGUAGES[lang], questions: langPool },
-      { id: 'logic', label: KT_BLOCK_LABELS.logic, questions: ktCycle(KT_LOGIC_POOL, n) },
-      { id: 'subj1', label: KT_BLOCK_LABELS.subj1, questions: ktCycle(ktSubjectPool(content, 'subj1'), n) },
-      { id: 'subj2', label: KT_BLOCK_LABELS.subj2, questions: ktCycle(ktSubjectPool(content, 'subj2'), n) },
+      { id: 'logic', label: KT_BLOCK_LABELS.logic, questions: ktCycle(KT_LOGIC_POOL, bs.logic) },
+      { id: 'subj1', label: KT_BLOCK_LABELS.subj1, questions: ktCycle(ktSubjectPool(content, 'subj1'), bs.subj1) },
+      { id: 'subj2', label: KT_BLOCK_LABELS.subj2, questions: ktCycle(ktSubjectPool(content, 'subj2'), bs.subj2) },
     ],
   };
 }
@@ -464,7 +466,7 @@ function gradeKT(typeId, blockScores) {
   const blocks = ids.map(id => {
     const score = blockScores[id] || 0;
     total += score;
-    const max = id === 'lang' && type.langMax ? type.langMax : type.perBlock;
+    const max = type.blockSize[id];
     const min = type.blockMin ? type.blockMin[id] : null;
     const ok = min == null ? true : score >= min;
     return { id, label: KT_BLOCK_LABELS[id], score, max, min, ok };
