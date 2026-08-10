@@ -12,11 +12,12 @@ const KT_TYPES = {
   nauchped: {
     id: 'nauchped',
     label: 'Научно-педагогическое',
-    perBlock: 30,
-    total: 120,
-    thresholdTotal: 75,
+    perBlock: 30,                 // logic/subj1/subj2
+    langMax: 50,                  // lang (англ.): 16 Listening + 18 Grammar + 16 Reading, фиксированно
+    total: 140,                   // 50 + 30×3
+    thresholdTotal: 88,           // те же ~62.5% от суммы, что и раньше (75 из 120)
     timeMin: 210,                 // ~3.5 часа как на реальном КТ (условно)
-    blockMin: { lang: 25, logic: 7, subj1: 7, subj2: 7 },
+    blockMin: { lang: 42, logic: 7, subj1: 7, subj2: 7 }, // lang: та же ~83% от максимума блока (25 из 30)
   },
   profile: {
     id: 'profile',
@@ -375,6 +376,13 @@ function ktSubjectPool(content, subjectKey) {
   return content.questions || [];
 }
 
+// Listening-вопросы группируем по аудиодорожке (в банке несколько 8-вопросных
+// записей), чтобы студент проходил один трек целиком, а не прыгал между ними
+// каждый вопрос. Используется и здесь, и в pickListeningTracks ниже.
+function groupListeningByTrack(items) {
+  return items.slice().sort((a, b) => (a.audio || '').localeCompare(b.audio || ''));
+}
+
 // Английский распределяется пропорционально по трём разделам (Listening/Grammar/Reading),
 // чтобы при любом размере блока (10 или 30) студент видел все три раздела, а не только первый.
 function ktCycleStaged(stageDefs, n) {
@@ -385,14 +393,24 @@ function ktCycleStaged(stageDefs, n) {
   stageDefs.forEach((s, i) => {
     const take = base + (i < rem ? 1 : 0);
     let items = ktCycle(s.pool, take).map(item => ({ ...item, stage: s.key }));
-    // Listening: группируем выбранные вопросы по аудиодорожке (в банке их всего 2),
-    // чтобы студент проходил один трек целиком, а не прыгал между ними каждый вопрос.
-    if (s.key === 'listening') {
-      items = items.slice().sort((a, b) => (a.audio || '').localeCompare(b.audio || ''));
-    }
+    if (s.key === 'listening') items = groupListeningByTrack(items);
     items.forEach(item => out.push(item));
   });
   return out;
+}
+
+// Listening для полной КТ: не вразнобой по вопросу, а целиком N случайных
+// аудиодорожек (по 8 вопросов каждая) — так студент слышит трек целиком.
+function pickListeningTracks(pool, tracksCount) {
+  const byAudio = new Map();
+  pool.forEach(item => {
+    if (!byAudio.has(item.audio)) byAudio.set(item.audio, []);
+    byAudio.get(item.audio).push(item);
+  });
+  const chosenTracks = ktShuffle(Array.from(byAudio.keys())).slice(0, tracksCount);
+  const out = [];
+  chosenTracks.forEach(audio => byAudio.get(audio).forEach(item => out.push({ ...item, stage: 'listening' })));
+  return groupListeningByTrack(out);
 }
 
 // Собирает КТ: массив блоков [{id,label,questions:[{q,options,correct}]}].
@@ -400,12 +418,21 @@ function ktCycleStaged(stageDefs, n) {
 function assembleKT(typeId, code, content, lang) {
   const type = KT_TYPES[typeId];
   const n = type.perBlock;
+  // Для типов с langMax (сейчас — только полная КТ) английский блок фиксирован:
+  // 16 Listening (2 целые аудиодорожки) + 18 Grammar + 16 Reading = 50, а не
+  // пропорциональная выборка от perBlock.
   const langPool = lang === 'en'
-    ? ktCycleStaged([
-        { key: 'listening', pool: KT_LANG_EN_STAGES.listening },
-        { key: 'grammar', pool: KT_LANG_EN_STAGES.grammar },
-        { key: 'reading', pool: KT_LANG_EN_STAGES.reading },
-      ], n)
+    ? (type.langMax
+        ? [
+            ...pickListeningTracks(KT_LANG_EN_STAGES.listening, 2),
+            ...ktCycle(KT_LANG_EN_STAGES.grammar, 18).map(item => ({ ...item, stage: 'grammar' })),
+            ...ktCycle(KT_LANG_EN_STAGES.reading, 16).map(item => ({ ...item, stage: 'reading' })),
+          ]
+        : ktCycleStaged([
+            { key: 'listening', pool: KT_LANG_EN_STAGES.listening },
+            { key: 'grammar', pool: KT_LANG_EN_STAGES.grammar },
+            { key: 'reading', pool: KT_LANG_EN_STAGES.reading },
+          ], n))
     : ktCycle(KT_LANG_POOL[lang], n);
   return {
     typeId, code, lang,
@@ -437,9 +464,10 @@ function gradeKT(typeId, blockScores) {
   const blocks = ids.map(id => {
     const score = blockScores[id] || 0;
     total += score;
+    const max = id === 'lang' && type.langMax ? type.langMax : type.perBlock;
     const min = type.blockMin ? type.blockMin[id] : null;
     const ok = min == null ? true : score >= min;
-    return { id, label: KT_BLOCK_LABELS[id], score, max: type.perBlock, min, ok };
+    return { id, label: KT_BLOCK_LABELS[id], score, max, min, ok };
   });
 
   const failedBlock = blocks.find(b => !b.ok);
