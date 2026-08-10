@@ -1111,11 +1111,23 @@ function quizIsCorrect(q, ua) {
   return ua === q.correct;
 }
 
+// Тёплое сообщение по итогам теста — хвалит за хороший результат, подбадривает при неудаче.
+// Используется и на экране обычного теста по предмету, и на экране полной симуляции КТ.
+function quizPraiseMessage(score, total, passed) {
+  const pct = total > 0 ? Math.round((score / total) * 100) : 0;
+  if (passed && pct >= 90) return 'Отлично! Вы прошли тест — почти без ошибок, так держать.';
+  if (passed && pct >= 75) return 'Прекрасный результат! Тест пройден уверенно, молодец.';
+  if (passed) return 'Тест пройден. Ещё немного практики — и результат станет ещё увереннее.';
+  if (pct >= 40) return 'Пока не хватило до проходного балла, но прогресс виден. Разберите ошибки в «Работе над ошибками» и попробуйте снова.';
+  return 'Тест не сдан — но это нормальная часть подготовки. Изучите конспекты по ошибкам и повторите тест, всё получится.';
+}
+
 function finishQuiz() {
   let score = 0;
   activeQuiz.pool.forEach((q, i) => { if (quizIsCorrect(q, activeQuiz.answers[i])) score++; });
   const total = activeQuiz.pool.length;
   const passed = Math.round((score / total) * 100) >= 60;
+  const praise = quizPraiseMessage(score, total, passed);
 
   const user = API.getCurrentUser();
   if (user) {
@@ -1127,8 +1139,8 @@ function finishQuiz() {
   document.getElementById('stampScore').textContent = `${score}/${total}`;
   document.getElementById('resultHeadline').textContent = passed ? 'Тест пройден' : 'Пока не получилось';
   document.getElementById('resultText').textContent = user
-    ? `Правильно ${score} из ${total}. Результат сохранён в кабинете.`
-    : `Правильно ${score} из ${total}. Войдите в аккаунт, чтобы сохранять результаты.`;
+    ? `${praise} Результат сохранён в кабинете.`
+    : `${praise} Войдите в аккаунт, чтобы сохранять результаты.`;
 
   document.getElementById('testRun').classList.add('hidden');
   document.getElementById('testResult').classList.remove('hidden');

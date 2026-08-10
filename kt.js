@@ -384,7 +384,13 @@ function ktCycleStaged(stageDefs, n) {
   const out = [];
   stageDefs.forEach((s, i) => {
     const take = base + (i < rem ? 1 : 0);
-    ktCycle(s.pool, take).forEach(item => out.push({ ...item, stage: s.key }));
+    let items = ktCycle(s.pool, take).map(item => ({ ...item, stage: s.key }));
+    // Listening: группируем выбранные вопросы по аудиодорожке (в банке их всего 2),
+    // чтобы студент проходил один трек целиком, а не прыгал между ними каждый вопрос.
+    if (s.key === 'listening') {
+      items = items.slice().sort((a, b) => (a.audio || '').localeCompare(b.audio || ''));
+    }
+    items.forEach(item => out.push(item));
   });
   return out;
 }
@@ -686,6 +692,7 @@ function finishKT() {
   const scores = { lang: 0, logic: 0, subj1: 0, subj2: 0 };
   s.flat.forEach((item, i) => { if (ktIsCorrect(item, s.answers[i])) scores[item.block]++; });
   const res = gradeKT(s.typeId, scores);
+  const praise = typeof quizPraiseMessage === 'function' ? quizPraiseMessage(res.total, res.maxTotal, res.passed) : '';
 
   // сохранить результат в кабинет (если вошёл): code + сумма/макс
   if (typeof API !== 'undefined' && API.getCurrentUser()) {
@@ -701,6 +708,7 @@ function finishKT() {
     </div>
     <h2 class="test-title">${res.passed ? 'КТ сдано' : 'КТ не сдано'}</h2>
     <p class="test-sub">${d.code} · ${KT_TYPES[s.typeId].label} · ${KT_LANGUAGES[s.lang]}</p>
+    ${praise ? `<p class="kt-praise">${esc(praise)}</p>` : ''}
 
     <table class="kt-result-table">
       <thead><tr><th>Блок</th><th>Балл</th><th>Мин.</th><th></th></tr></thead>

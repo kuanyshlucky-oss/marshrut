@@ -1201,6 +1201,14 @@ body.test-open #reviewPage input{ user-select:text; }
   border:1px solid rgba(179,38,30,.3);
   border-radius:var(--radius-s); padding:10px 12px; margin:10px 0 14px;
 }
+.kt-praise{
+  font-size:14px; line-height:1.5; color:var(--ink); text-align:center;
+  background:var(--teal-soft); border:1px solid rgba(63,138,104,.3);
+  border-radius:var(--radius-s); padding:10px 14px; margin:0 0 18px;
+}
+.kt-result-wrap:has(.kt-stamp.is-fail) .kt-praise{
+  background:var(--surface-2); border-color:var(--line);
+}
 
 /* =========================== AUTH GATE =========================== */
 .gate-modal{ max-width:420px; text-align:center; padding:40px 32px; }
