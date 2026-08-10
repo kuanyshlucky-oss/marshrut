@@ -399,6 +399,27 @@ function countUp(el, target, { duration = 1200, suffix = '' } = {}) {
   requestAnimationFrame(tick);
 }
 
+// Лёгкая вспышка конфетти из центра контейнера (для успешного результата теста) —
+// без внешних библиотек, цвета берутся из палитры сайта. Уважает prefers-reduced-motion.
+const CONFETTI_COLORS = ['var(--accent)', 'var(--beige)', 'var(--teal)'];
+function burstConfetti(container, count = 18) {
+  if (!container) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  for (let i = 0; i < count; i++) {
+    const piece = document.createElement('span');
+    piece.className = 'confetti-piece';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = 70 + Math.random() * 60;
+    piece.style.setProperty('--cx', Math.cos(angle) * dist + 'px');
+    piece.style.setProperty('--cy', Math.sin(angle) * dist + 'px');
+    piece.style.setProperty('--cr', (Math.random() * 360 - 180) + 'deg');
+    piece.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+    piece.style.animationDelay = Math.round(Math.random() * 120) + 'ms';
+    piece.addEventListener('animationend', () => piece.remove());
+    container.appendChild(piece);
+  }
+}
+
 // Кольцо «заполняется» от 0 до целевого % при появлении (вместо мгновенной отрисовки).
 function animateRingIn(ringWrap, targetPct, duration = 1200) {
   const circle = ringWrap.querySelector('.ring-fill');
@@ -1134,9 +1155,12 @@ function finishQuiz() {
     API.saveResult(activeQuiz.code, score, total).then(() => renderDashboard()).catch((e) => showToast(e.message));
   }
 
-  document.getElementById('quizStamp').classList.toggle('is-fail', !passed);
+  const stamp = document.getElementById('quizStamp');
+  stamp.classList.toggle('is-fail', !passed);
   document.getElementById('stampStatus').textContent = passed ? 'Сдано' : 'Не сдано';
-  document.getElementById('stampScore').textContent = `${score}/${total}`;
+  const stampScoreEl = document.getElementById('stampScore');
+  stampScoreEl.textContent = `0/${total}`;
+  countUp(stampScoreEl, score, { duration: 900, suffix: `/${total}` });
   document.getElementById('resultHeadline').textContent = passed ? 'Тест пройден' : 'Пока не получилось';
   document.getElementById('resultText').textContent = user
     ? `${praise} Результат сохранён в кабинете.`
@@ -1144,6 +1168,7 @@ function finishQuiz() {
 
   document.getElementById('testRun').classList.add('hidden');
   document.getElementById('testResult').classList.remove('hidden');
+  if (passed) burstConfetti(stamp);
 }
 
 // Работа над ошибками: разбор всех вопросов с правильными/неправильными ответами.

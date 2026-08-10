@@ -1003,6 +1003,19 @@ body.test-open #reviewPage input{ user-select:text; }
 .stamp.is-fail{ border-color:var(--danger); color:var(--danger); }
 .stamp-status{ font-size:12px; text-transform:uppercase; letter-spacing:.1em; }
 .stamp-score{ font-size:28px; font-weight:700; margin-top:4px; }
+
+.stamp, .kt-stamp{ position:relative; overflow:visible; }
+.confetti-piece{
+  position:absolute; top:50%; left:50%; width:7px; height:7px; border-radius:2px;
+  pointer-events:none; opacity:0; animation:confetti-burst 900ms ease-out forwards;
+}
+@keyframes confetti-burst{
+  0%   { opacity:1; transform:translate(-50%,-50%) rotate(0deg) scale(1); }
+  100% { opacity:0; transform:translate(calc(-50% + var(--cx)), calc(-50% + var(--cy))) rotate(var(--cr)) scale(.6); }
+}
+@media (prefers-reduced-motion: reduce){
+  .confetti-piece{ display:none; }
+}
 .test-result h3{ color:var(--ink); font-size:26px; }
 .test-result p{ color:var(--ink-soft); max-width:420px; margin:10px auto 0; }
 .test-result-nav{ display:flex; gap:12px; justify-content:center; margin-top:28px; flex-wrap:wrap; }
