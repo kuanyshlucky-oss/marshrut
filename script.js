@@ -1297,12 +1297,6 @@ function renderDashboard() {
   // пустой профиль → сразу форма (без «Отмены»); есть данные → просмотр
   setProfileMode(profileIsEmpty(p) ? 'first' : 'view');
 
-  // калькулятор: префилл из профиля
-  if (p.specialityId) document.getElementById('calcSpec').value = String(p.specialityId);
-  if (p.foreignScore) document.getElementById('calcForeign').value = p.foreignScore;
-  if (p.profileScore) document.getElementById('calcProfile').value = p.profileScore;
-  if (p.bonusPoints) document.getElementById('calcBonus').value = p.bonusPoints;
-
   loadRoadmap();
 
   // --- Результаты тестов ---
@@ -1660,12 +1654,8 @@ async function loadRefs() {
   } catch (_) { /* сервер спит — селекты останутся пустыми, не критично */ }
 
   const pfSel = document.getElementById('pfSpeciality');
-  const calcSpec = document.getElementById('calcSpec');
-  const calcUni = document.getElementById('calcUni');
   const specOpts = REF.specialities.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
   if (pfSel) pfSel.innerHTML = '<option value="0">Не выбрана</option>' + specOpts;
-  if (calcSpec) calcSpec.innerHTML = specOpts;
-  if (calcUni) calcUni.innerHTML = REF.universities.map(u => `<option value="${u.id}">${esc(u.name)}</option>`).join('');
 }
 
 /* --- Дорожная карта --- */
@@ -1704,67 +1694,6 @@ function renderRoadmap(data) {
   });
 }
 
-/* --- Калькулятор шансов --- */
-const CALC_LEVELS = {
-  high:    { label: 'Высокий шанс',    cls: 'high' },
-  medium:  { label: 'Средний шанс',    cls: 'medium' },
-  low:     { label: 'Низкий шанс',     cls: 'low' },
-  none:    { label: 'Ниже порога',     cls: 'low' },
-  no_data: { label: 'Нет данных по вузу', cls: 'medium' },
-};
-
-function wireCalc() {
-  const btn = document.getElementById('calcBtn');
-  if (!btn) return;
-  btn.addEventListener('click', async () => {
-    const box = document.getElementById('calcResult');
-    const q = new URLSearchParams({
-      university_id: document.getElementById('calcUni').value,
-      speciality_id: document.getElementById('calcSpec').value,
-      foreign: document.getElementById('calcForeign').value || '0',
-      profile: document.getElementById('calcProfile').value || '0',
-      bonus: document.getElementById('calcBonus').value || '0',
-    });
-    setBtnLoading(btn, true, 'Считаем…');
-    try {
-      const r = await apiFetch('/api/calculate-chances?' + q.toString(), { auth: true });
-      const lv = CALC_LEVELS[r.level] || CALC_LEVELS.low;
-      const kt = r.kt_stats ? `<p class="calc-kt">По стране на КТ-2025 порог набрали <b>${r.kt_stats.passed_pct.toFixed(1)}%</b> из ${r.kt_stats.participants} участников этой группы.</p>` : '';
-
-      if (r.level === 'no_data') {
-        box.innerHTML = `
-          <div class="calc-verdict ${lv.cls}">
-            <span class="calc-level">${lv.label}</span>
-            <span class="calc-score">Балл: ${r.total}</span>
-          </div>
-          <p class="calc-msg">${esc(r.message)}</p>
-        `;
-        box.classList.remove('hidden');
-        return;
-      }
-
-      const recs = (r.recommendations || []).map(rec => `
-        <li><b>${esc(rec.name)}</b> (${esc(rec.city)}) — проходной ${rec.avg_score}, конкурс ${rec.competition_ratio.toFixed(1)}</li>
-      `).join('');
-      box.innerHTML = `
-        <div class="calc-verdict ${lv.cls}">
-          <span class="calc-level">${lv.label}</span>
-          <span class="calc-score">${r.total} / проходной ${r.avg_passing_score}</span>
-        </div>
-        <p class="calc-msg">${esc(r.message)} Грантов: ${r.grant_count}, заявлений в прошлом году: ${r.applicants_count}.</p>
-        ${kt}
-        ${recs ? `<p class="calc-rec-head">Куда шансы выше:</p><ul class="calc-recs">${recs}</ul>` : ''}
-      `;
-      box.classList.remove('hidden');
-    } catch (e) {
-      box.innerHTML = `<p class="calc-msg">${esc(e.message)}</p>`;
-      box.classList.remove('hidden');
-    } finally {
-      setBtnLoading(btn, false);
-    }
-  });
-}
-
 /* ---------------------------------------------------------
    INIT
    --------------------------------------------------------- */
@@ -1795,7 +1724,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('pathPrepBtn')?.addEventListener('click', () => {
     document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
   });
-  wireCalc();
 
   // справочники нужны ДО renderDashboard (иначе селекты пустые и value не встанет)
   await loadRefs();
