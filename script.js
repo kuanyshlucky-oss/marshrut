@@ -420,36 +420,17 @@ function burstConfetti(container, count = 18) {
   }
 }
 
-// Кольцо «заполняется» от 0 до целевого % при появлении (вместо мгновенной отрисовки).
-function animateRingIn(ringWrap, targetPct, duration = 1200) {
-  const circle = ringWrap.querySelector('.ring-fill');
-  if (!circle || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
-  const c = parseFloat(circle.getAttribute('stroke-dasharray'));
-  circle.style.transition = 'none';
-  circle.style.strokeDashoffset = c;
-  void circle.getBoundingClientRect(); // форсируем reflow перед стартом перехода
-  requestAnimationFrame(() => {
-    circle.style.transition = `stroke-dashoffset ${duration}ms cubic-bezier(.4,0,.2,1)`;
-    circle.style.strokeDashoffset = c * (1 - Math.max(0, Math.min(100, targetPct)) / 100);
-  });
-}
-
-// Hero: кольцо со средним % прохождения порога по всем 147 группам + 3 числовых стата.
+// Hero: 3 числовых стата (кольцо со средним % убрано по запросу).
 function renderHeroSignature() {
   const el = document.getElementById('heroSignature');
   if (!el) return; // блок только на index.html
-  const avg = KT_STATS_GROUPS.reduce((sum, g) => sum + g.passed_pct, 0) / KT_STATS_GROUPS.length;
   el.innerHTML = `
-    ${ringSvg(avg, { size: 96, stroke: 6, color: 'var(--beige)', numFontSize: 20 })}
     <div class="sig-stats">
       <div class="sig-stat"><div class="num" data-target="${KT_STATS_GROUPS.length}">0</div><div class="label">групп программ</div></div>
       <div class="sig-stat"><div class="num" data-target="2025">0</div><div class="label">официальные итоги КТ</div></div>
       <div class="sig-stat"><div class="num" data-target="4">0</div><div class="label">блока симуляции теста</div></div>
     </div>
   `;
-  const ringWrap = el.querySelector('.ring-wrap');
-  animateRingIn(ringWrap, avg);
-  countUp(ringWrap.querySelector('.ring-num'), Math.round(avg), { suffix: '%' });
   el.querySelectorAll('.sig-stat .num').forEach(numEl => countUp(numEl, Number(numEl.dataset.target)));
 }
 
