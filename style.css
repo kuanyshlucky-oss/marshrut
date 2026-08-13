@@ -604,6 +604,14 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .about-us-text{ flex:1 1 420px; max-width:620px; }
 .about-us-text h2{ margin-top:6px; }
 .about-us-text .section-note{ margin-top:14px; }
+.about-us-achievement{
+  display:flex; align-items:baseline; flex-wrap:wrap; gap:10px 14px;
+  margin-top:22px; font-size:17px; line-height:1.5; color:var(--ink-on-dark-soft); max-width:520px;
+}
+.about-us-achievement-num{
+  font-family:var(--font-display); font-weight:800; font-size:52px; line-height:1;
+  color:var(--accent); letter-spacing:-.02em;
+}
 .about-us-mini-stats{ display:flex; gap:36px; flex-wrap:wrap; margin-top:28px; }
 .about-us-mini-stats .num{ font-family:var(--font-display); font-weight:700; font-size:24px; letter-spacing:-.02em; color:var(--ink); }
 .about-us-mini-stats .label{ font-size:13px; color:var(--ink-soft); margin-top:2px; }
