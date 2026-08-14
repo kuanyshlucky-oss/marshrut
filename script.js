@@ -299,7 +299,7 @@ function renderConspectsLibrary() {
     return `
       <a class="dash-card konspekty-card" href="konspekty.html?code=${encodeURIComponent(code)}">
         <h3>Конспекты · ${esc(lib.title)}</h3>
-        <p>${sectionNames} — ${totalTopics} тем. Откройте список слева и переключайтесь между разделами и темами, не теряя место.</p>
+        <p>${sectionNames} — ${totalTopics} тем.</p>
         <span class="konspekty-card-arrow" aria-hidden="true">→</span>
       </a>
     `;
