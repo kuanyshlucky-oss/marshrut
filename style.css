@@ -316,6 +316,11 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .nav-toggle.is-open span:nth-child(2){ opacity:0; }
 .nav-toggle.is-open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
 
+.header-social{ display:flex; align-items:center; gap:14px; color:var(--ink-soft); }
+.header-social a{ display:flex; color:inherit; transition:color .25s ease; }
+.header-social a:hover{ color:var(--accent); }
+.site-header.is-on-dark .header-social{ color:var(--ink-on-dark-soft); }
+
 .user-chip{ display:flex; align-items:center; gap:8px; }
 .user-chip-link{ display:flex; align-items:center; gap:8px; text-decoration:none; }
 .user-chip-link:hover .user-name{ color:var(--accent); }
@@ -724,6 +729,16 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .auth-disclaimer{ font-size:12px; color:var(--ink-soft); max-width:440px; margin-top:14px; opacity:.7; }
 
 .dash-stack{ display:flex; flex-direction:column; gap:24px; }
+.dash-logout-row{ display:flex; justify-content:center; margin-top:8px; }
+.dash-logout-btn{
+  display:inline-flex; align-items:center; gap:9px;
+  background:transparent; border:1px solid var(--line); color:var(--ink-soft);
+  padding:11px 22px; border-radius:999px; font-family:var(--font-body);
+  font-size:13px; font-weight:600; cursor:pointer;
+  transition:border-color .25s ease, color .25s ease, background .25s ease;
+}
+.dash-logout-btn:hover{ border-color:var(--danger); color:var(--danger); background:var(--danger-soft); }
+.dash-logout-btn svg{ flex:0 0 auto; opacity:.8; }
 .test-cta-card{
   position:relative; overflow:hidden;
   display:flex; align-items:center; justify-content:space-between; gap:20px;
@@ -814,6 +829,11 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .site-footer{ background:var(--surface-2); border-top:1px solid var(--line); color:var(--ink-soft); padding:60px 0 24px; }
 .footer-grid{ display:grid; grid-template-columns:1.6fr 1fr 1fr; gap:30px; margin-bottom:40px; }
 .footer-brand p{ color:var(--ink-soft); font-size:13px; margin-top:12px; max-width:260px; }
+.footer-social{
+  display:inline-flex; align-items:center; gap:7px; margin-top:14px;
+  font-size:13px; font-weight:600; color:var(--ink-soft); text-decoration:none; transition:color .25s ease;
+}
+.footer-social:hover{ color:var(--accent); }
 .logo-footer{ color:var(--ink); }
 .logo-full-link{ display:inline-block; color:var(--ink); }
 .logo-full{ width:250px; max-width:100%; height:auto; display:block; }
