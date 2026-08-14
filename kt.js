@@ -621,17 +621,27 @@ function renderKTQuestion() {
       </button>
     </div>
   `;
+  // Выбор варианта обновляет только сами кнопки (не весь renderKTQuestion) —
+  // иначе на Listening пересоздавался бы <audio>, и трек обрывался при каждом ответе.
   ktEl().querySelectorAll('[data-opt]').forEach(b => b.addEventListener('click', () => {
     const i = Number(b.dataset.opt);
-    if (Array.isArray(item.correct)) {
+    const isMulti = Array.isArray(item.correct);
+    if (isMulti) {
       const cur = Array.isArray(s.answers[s.idx]) ? s.answers[s.idx].slice() : [];
       const pos = cur.indexOf(i);
       if (pos === -1) cur.push(i); else cur.splice(pos, 1);
       s.answers[s.idx] = cur;
+      b.classList.toggle('is-selected', cur.includes(i));
     } else {
       s.answers[s.idx] = i;
+      ktEl().querySelectorAll('[data-opt]').forEach(ob => ob.classList.remove('is-selected'));
+      b.classList.add('is-selected');
     }
-    renderKTQuestion();
+    const qnavBtn = ktEl().querySelector(`.kt-qnav-btn[data-idx="${s.idx}"]`);
+    if (qnavBtn) {
+      const answered = isMulti ? (Array.isArray(s.answers[s.idx]) && s.answers[s.idx].length > 0) : s.answers[s.idx] != null;
+      qnavBtn.classList.toggle('is-answered', !!answered);
+    }
   }));
   document.getElementById('ktPrev').addEventListener('click', ktPrev);
   document.getElementById('ktNext').addEventListener('click', ktNext);
