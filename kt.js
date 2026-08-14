@@ -15,10 +15,10 @@ const KT_TYPES = {
     blockSize: { lang: 50, logic: 30, subj1: 30, subj2: 20 }, // англ./ТГО/Педагогика/Психология
     langFixed: true,              // англ.: фиксированно 16 Listening + 18 Grammar + 16 Reading
     total: 130,                   // 50 + 30 + 30 + 20
-    thresholdTotal: 81,           // те же ~62.5% от суммы, что и раньше (75 из 120)
+    thresholdTotal: 75,           // задано пользователем
     timeMin: 210,                 // ~3.5 часа как на реальном КТ (условно)
-    // lang/logic/subj1: те же ~83%/~23% от максимума блока, что и раньше; subj2 пересчитан под новый максимум 20.
-    blockMin: { lang: 42, logic: 7, subj1: 7, subj2: 5 },
+    // минимумы по блокам (заданы пользователем): англ. 25, ТГО 14, каждый профильный предмет 7.
+    blockMin: { lang: 25, logic: 14, subj1: 7, subj2: 7 },
   },
   profile: {
     id: 'profile',
