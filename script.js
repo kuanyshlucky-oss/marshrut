@@ -1520,7 +1520,7 @@ function afterAuthChange() {
    TOAST
    --------------------------------------------------------- */
 let toastTimeout = null;
-function showToast(message) {
+function showToast(message, duration = 2200) {
   const overlay = document.getElementById('toastOverlay');
   const toast = document.getElementById('toast');
   toast.textContent = message;
@@ -1531,7 +1531,31 @@ function showToast(message) {
   overlay.style.paddingTop = '24px';
   overlay.style.pointerEvents = 'none';
   clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => overlay.classList.add('hidden'), 2200);
+  toastTimeout = setTimeout(() => overlay.classList.add('hidden'), duration);
+}
+
+// «С возвращением»: если последний тест был не сегодня — напоминаем результат
+// при следующем заходе на сайт (один раз на результат, дальше не повторяем).
+function checkWelcomeBackMessage() {
+  const user = API.getCurrentUser();
+  if (!user || !Array.isArray(user.results) || !user.results.length) return;
+  const last = user.results[user.results.length - 1];
+  const todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD — тот же формат, что и в дате результата
+  if (last.date === todayStr) return; // тест сдавали сегодня — рано напоминать
+
+  const seenKey = 'jetishub-welcomeback-seen';
+  const seenValue = `${last.date}|${last.code}|${last.score}|${last.total}`;
+  if (localStorage.getItem(seenKey) === seenValue) return; // это уже показывали
+  localStorage.setItem(seenKey, seenValue);
+
+  const pct = Math.round((last.score / last.total) * 100);
+  const passed = pct >= 60;
+  const d = findDirection(last.code);
+  const dirName = d ? d.name : last.code;
+  const msg = passed
+    ? `🎉 С возвращением! В прошлый раз вы хорошо прошли тест по направлению «${dirName}» — ${last.score} из ${last.total} (${pct}%). Так держать!`
+    : `С возвращением! Результат прошлого теста по направлению «${dirName}» — ${last.score} из ${last.total} (${pct}%), порог пока не взят. Не останавливайтесь — ещё одна попытка, и всё получится!`;
+  showToast(msg, 6000);
 }
 
 /* ---------------------------------------------------------
@@ -1743,6 +1767,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   refreshAuthUI();
   renderDashboard();
   renderCatalog(); // чтобы подсветить избранное на карточках
+  checkWelcomeBackMessage();
 
   // автозапуск теста по ссылке из кабинета: index.html?test=7M06
   const testCode = new URLSearchParams(location.search).get('test');
