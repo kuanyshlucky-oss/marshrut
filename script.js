@@ -397,6 +397,9 @@ function countUp(el, target, { duration = 1200, suffix = '' } = {}) {
     if (p < 1) requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+  // Страховка: если вкладка в это время была свёрнута/неактивна, requestAnimationFrame
+  // не тикает и счётчик застревает на 0 — принудительно выставляем верное значение.
+  setTimeout(() => { el.textContent = target + suffix; }, duration + 150);
 }
 
 // Лёгкая вспышка конфетти из центра контейнера (для успешного результата теста) —
