@@ -317,6 +317,7 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .nav-toggle.is-open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
 
 .header-social{ display:flex; align-items:center; gap:14px; color:var(--ink-soft); }
+.footer-social-row{ margin-top:14px; }
 .header-social a{ display:flex; color:inherit; transition:color .25s ease; }
 .header-social a:hover{ color:var(--accent); }
 .site-header.is-on-dark .header-social{ color:var(--ink-on-dark-soft); }
