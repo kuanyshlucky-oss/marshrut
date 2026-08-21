@@ -694,9 +694,15 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 }
 
 /* =========================== AUTH / DASHBOARD =========================== */
+.auth-zone{ display:flex; align-items:center; justify-content:space-between; gap:48px; flex-wrap:wrap; }
+.auth-zone-form{ flex:1 1 420px; }
 .auth-illustration{
-  display:block; width:110px; height:110px; object-fit:cover;
-  border-radius:50%; margin-bottom:20px; box-shadow:var(--shadow-card);
+  display:block; width:340px; height:340px; object-fit:cover; flex:0 0 auto;
+  border-radius:50%; box-shadow:var(--shadow-card);
+}
+@media (max-width:860px){
+  .auth-zone{ flex-direction:column-reverse; justify-content:center; text-align:center; }
+  .auth-illustration{ width:200px; height:200px; }
 }
 .auth-card{
   max-width:440px;

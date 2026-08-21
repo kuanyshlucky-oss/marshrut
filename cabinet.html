@@ -67,29 +67,31 @@
 
       <!-- Guest state: auth card -->
       <div class="auth-zone" id="authZone">
+        <div class="auth-zone-form">
+          <div class="section-head">
+            <p class="eyebrow">Личный кабинет</p>
+            <h2>Войдите, чтобы продолжить</h2>
+          </div>
+
+          <div class="auth-card">
+            <form class="auth-form" id="loginForm" data-form="login">
+              <div class="form-row">
+                <label for="loginEmail">Логин</label>
+                <input id="loginEmail" type="text" required placeholder="логин от администратора" autocomplete="username">
+              </div>
+              <div class="form-row">
+                <label for="loginPassword">Пароль</label>
+                <input id="loginPassword" type="password" required placeholder="••••••••">
+              </div>
+              <p class="form-error" id="loginError"></p>
+              <button type="submit" class="btn btn-primary btn-block">Войти в кабинет</button>
+              <p class="form-hint">Аккаунт выдаёт администратор — обратитесь к нему за логином и паролем.</p>
+            </form>
+
+            <p class="auth-disclaimer">Данные хранятся на сервере. Аккаунт, профиль и результаты доступны с любого устройства.</p>
+          </div>
+        </div>
         <img class="auth-illustration" src="assets/illustrations/login-girl.png" alt="" aria-hidden="true">
-        <div class="section-head">
-          <p class="eyebrow">Личный кабинет</p>
-          <h2>Войдите, чтобы продолжить</h2>
-        </div>
-
-        <div class="auth-card">
-          <form class="auth-form" id="loginForm" data-form="login">
-            <div class="form-row">
-              <label for="loginEmail">Логин</label>
-              <input id="loginEmail" type="text" required placeholder="логин от администратора" autocomplete="username">
-            </div>
-            <div class="form-row">
-              <label for="loginPassword">Пароль</label>
-              <input id="loginPassword" type="password" required placeholder="••••••••">
-            </div>
-            <p class="form-error" id="loginError"></p>
-            <button type="submit" class="btn btn-primary btn-block">Войти в кабинет</button>
-            <p class="form-hint">Аккаунт выдаёт администратор — обратитесь к нему за логином и паролем.</p>
-          </form>
-
-          <p class="auth-disclaimer">Данные хранятся на сервере. Аккаунт, профиль и результаты доступны с любого устройства.</p>
-        </div>
       </div>
 
       <!-- Logged-in state: dashboard -->
