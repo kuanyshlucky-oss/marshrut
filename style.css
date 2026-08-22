@@ -897,6 +897,12 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .subject-sub{ font-size:12px; color:var(--ink-soft); }
 .subject-arrow{ color:var(--ink-soft); font-size:16px; flex:0 0 auto; transition:color .25s ease; }
 .subject-row:hover .subject-arrow{ color:var(--accent); }
+@media (max-width:560px){
+  .subject-row{ flex-wrap:wrap; gap:10px 12px; padding:14px 40px 14px 14px; position:relative; }
+  .subject-icon{ width:28px; height:28px; }
+  .subject-text{ flex:1 1 100%; }
+  .subject-arrow{ position:absolute; top:50%; right:14px; transform:translateY(-50%); }
+}
 
 .back-link{
   background:transparent; border:none; color:var(--ink-soft);
