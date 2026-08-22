@@ -635,9 +635,9 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
   border-radius:var(--radius-m); border:1px solid var(--line-dark);
 }
 @media (max-width:640px){
-  .about-us-inner{ flex-direction:column; text-align:center; }
+  .about-us-inner{ flex-direction:column; align-items:stretch; text-align:center; }
   .about-us-mini-stats{ justify-content:center; }
-  .about-us-gallery{ max-width:420px; margin:0 auto; }
+  .about-us-gallery{ width:100%; max-width:420px; margin:0 auto; }
 }
 
 /* =========================== ПУТЬ АБИТУРИЕНТА (анимированная вертикальная тропа) =========================== */
@@ -701,7 +701,7 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
   border-radius:50%; box-shadow:var(--shadow-card);
 }
 @media (max-width:860px){
-  .auth-zone{ flex-direction:column-reverse; justify-content:center; text-align:center; }
+  .auth-zone{ flex-direction:column-reverse; align-items:stretch; justify-content:center; text-align:center; }
   .auth-illustration{ width:200px; height:200px; }
 }
 .auth-card{
