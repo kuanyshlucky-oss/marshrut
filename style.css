@@ -256,7 +256,7 @@ h3{ font-size:var(--fs-h3); }
   height:76px;
 }
 .logo{
-  display:flex; align-items:center; gap:10px;
+  display:flex; align-items:center; gap:10px; flex-shrink:0;
   font-family:var(--font-display);
   font-weight:700;
   font-size:21px;
@@ -1362,12 +1362,16 @@ body.test-open #reviewPage input{ user-select:text; }
   .kt-type-cards{ grid-template-columns:1fr; }
 }
 @media (max-width: 560px){
-  .header-row{ height:64px; padding-left:16px; padding-right:16px; }
-  .header-actions{ gap:6px; }
+  .header-row{ height:64px; padding-left:16px; padding-right:16px; gap:10px; }
+  .header-actions{ gap:8px; }
   .header-actions .btn-ghost{ display:none; }
-  .header-actions .btn-primary{ padding:10px 16px; font-size:13px; }
+  .header-actions .btn-primary{ padding:10px 14px; font-size:13px; }
+  .btn-text-long{ display:none; }
   .logo-tag{ display:none; }
+  .logo{ gap:8px; font-size:18px; }
   .theme-toggle{ --w:42px; --h:24px; }
+  .header-social{ gap:8px; }
+  .header-social svg{ width:18px; height:18px; }
   .footer-grid{ grid-template-columns:1fr; }
 }
 
