@@ -702,7 +702,7 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 }
 @media (max-width:860px){
   .auth-zone{ flex-direction:column-reverse; align-items:stretch; justify-content:center; text-align:center; }
-  .auth-illustration{ width:200px; height:200px; }
+  .auth-illustration{ width:200px; height:200px; align-self:center; }
 }
 .auth-card{
   max-width:440px;
