@@ -810,9 +810,15 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .test-status-badge{
   font-family:var(--font-mono); font-size:11px; padding:4px 10px; border-radius:var(--radius-s);
   background:var(--surface-2); color:var(--ink-soft); border:1px solid var(--line);
+  white-space:nowrap; display:inline-block;
 }
 .test-status-badge.passed{ background:var(--teal-soft); color:var(--teal); border-color:rgba(63,138,104,.4); }
 .test-status-badge.failed{ background:var(--danger-soft); color:var(--danger); border-color:rgba(179,38,30,.4); }
+@media (max-width:480px){
+  .results-table{ font-size:12px; }
+  .results-table th, .results-table td{ padding:8px 4px; }
+  .test-status-badge{ font-size:10px; padding:3px 7px; }
+}
 
 .konspekty-section .dash-card{ width:100%; }
 .konspekty-card{
