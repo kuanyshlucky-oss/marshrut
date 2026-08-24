@@ -69,6 +69,11 @@
   --ink-on-dark-soft: rgba(245,245,247,.68);
   --line-dark:        rgba(255,255,255,.14);
   --glass-dark:        rgba(255,255,255,.06);
+
+  /* фон хедера/моб. меню — явный rgba вместо color-mix(var(--bg)), т.к. на части
+     мобильных браузеров color-mix() с backdrop-filter не пересчитывается при смене темы */
+  --header-bg:       rgba(251,251,250,.86);
+  --header-bg-solid: rgba(251,251,250,.98);
 }
 
 /* =========================================================
@@ -107,6 +112,9 @@ html[data-theme="dark"]{
   --ink-on-dark-soft: rgba(255,255,255,.7);
   --line-dark:        rgba(255,255,255,.18);
   --glass-dark:        rgba(255,255,255,.08);
+
+  --header-bg:       rgba(10,10,11,.86);
+  --header-bg-solid: rgba(10,10,11,.98);
 }
 
 *{ box-sizing:border-box; }
@@ -239,7 +247,7 @@ h3{ font-size:var(--fs-h3); }
 /* =========================== HEADER (светлый минималистичный) =========================== */
 .site-header{
   position:sticky; top:0; z-index:50;
-  background:color-mix(in srgb, var(--bg) 86%, transparent);
+  background:var(--header-bg);
   backdrop-filter:blur(var(--blur-sm)); -webkit-backdrop-filter:blur(var(--blur-sm));
   border-bottom:1px solid var(--line);
   transition:background .3s ease, border-color .3s ease;
@@ -1351,7 +1359,7 @@ body.test-open #reviewPage input{ user-select:text; }
   .main-nav{
     position:absolute; top:100%; left:0; right:0;
     flex-direction:column; gap:0;
-    background:color-mix(in srgb, var(--bg) 98%, transparent);
+    background:var(--header-bg-solid);
     backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
     border-bottom:1px solid var(--line);
     box-shadow:var(--shadow-card);
