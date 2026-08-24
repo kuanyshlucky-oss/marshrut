@@ -1358,7 +1358,7 @@ body.test-open #reviewPage input{ user-select:text; }
     padding:8px 28px 16px;
     transform:translateY(-8px);
     opacity:0; visibility:hidden; pointer-events:none;
-    transition:transform .2s ease, opacity .2s ease, visibility .2s ease;
+    transition:transform .2s ease, opacity .2s ease;
   }
   .main-nav.is-open{
     transform:translateY(0); opacity:1; visibility:visible; pointer-events:auto;
