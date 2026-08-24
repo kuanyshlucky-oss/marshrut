@@ -704,6 +704,13 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
   .auth-zone{ flex-direction:column-reverse; align-items:stretch; justify-content:center; text-align:center; }
   .auth-illustration{ width:200px; height:200px; align-self:center; }
 }
+@media (max-width:640px){
+  #account.section{ padding:24px 0 48px; }
+  .auth-zone{ gap:16px; }
+  .auth-illustration{ width:120px; height:120px; }
+  #account .section-head{ margin-bottom:18px; }
+  .auth-card{ padding:22px; }
+}
 .auth-card{
   max-width:440px;
   border-radius:var(--radius-l);
