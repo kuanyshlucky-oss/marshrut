@@ -10,12 +10,13 @@ import (
 
 // User — то, что отдаётся фронтенду (без пароля).
 type User struct {
-	Name      string   `json:"name"`
-	Email     string   `json:"email"`
-	Profile   Profile  `json:"profile"`
-	Favorites []string `json:"favorites"`
-	Results   []Result `json:"results"`
-	Access    []string `json:"access"` // коды направлений, к которым выдан доступ (см. access.go)
+	Name       string      `json:"name"`
+	Email      string      `json:"email"`
+	Profile    Profile     `json:"profile"`
+	Favorites  []string    `json:"favorites"`
+	Results    []Result    `json:"results"`
+	Access     []string    `json:"access"` // коды направлений, к которым выдан доступ (см. access.go)
+	TopicStats []TopicStat `json:"topicStats"`
 }
 
 type Profile struct {
@@ -37,6 +38,22 @@ type Result struct {
 	Score int    `json:"score"`
 	Total int    `json:"total"`
 	Date  string `json:"date"`
+}
+
+// TopicStat — накопленная статистика по одной теме предмета (сколько раз
+// студент отвечал верно/неверно на вопросы этой темы за все попытки).
+type TopicStat struct {
+	Code    string `json:"code"`
+	Section string `json:"section"`
+	Topic   string `json:"topic"`
+	Correct int    `json:"correct"`
+	Wrong   int    `json:"wrong"`
+}
+
+// TopicHit — один вопрос из завершённой попытки: тема + правильность ответа.
+type TopicHit struct {
+	Topic   string
+	Correct bool
 }
 
 var db *sql.DB
@@ -82,6 +99,16 @@ func initDB(dsn string) error {
 		score   INTEGER NOT NULL,
 		total   INTEGER NOT NULL,
 		date    TEXT NOT NULL
+	);
+	CREATE TABLE IF NOT EXISTS topic_stats (
+		id      BIGSERIAL PRIMARY KEY,
+		user_id BIGINT NOT NULL,
+		code    TEXT NOT NULL,
+		section TEXT NOT NULL,
+		topic   TEXT NOT NULL,
+		correct INTEGER NOT NULL DEFAULT 0,
+		wrong   INTEGER NOT NULL DEFAULT 0,
+		UNIQUE(user_id, code, section, topic)
 	);`
 	_, err = db.Exec(schema)
 	return err
@@ -137,7 +164,7 @@ func resetFailedLogin(id int64) error {
 
 // loadUser собирает полного пользователя: профиль + избранное + результаты.
 func loadUser(id int64) (*User, error) {
-	u := &User{Favorites: []string{}, Results: []Result{}, Access: []string{}}
+	u := &User{Favorites: []string{}, Results: []Result{}, Access: []string{}, TopicStats: []TopicStat{}}
 	err := db.QueryRow(
 		`SELECT name, email, full_name, phone, education, city,
 		        speciality_id, language, target_type, foreign_score, profile_score, bonus_points
@@ -176,6 +203,20 @@ func loadUser(id int64) (*User, error) {
 		u.Results = append(u.Results, r)
 	}
 	resRows.Close()
+
+	topicRows, err := db.Query(`SELECT code, section, topic, correct, wrong FROM topic_stats WHERE user_id = $1 ORDER BY id`, id)
+	if err != nil {
+		return nil, err
+	}
+	for topicRows.Next() {
+		var t TopicStat
+		if err := topicRows.Scan(&t.Code, &t.Section, &t.Topic, &t.Correct, &t.Wrong); err != nil {
+			topicRows.Close()
+			return nil, err
+		}
+		u.TopicStats = append(u.TopicStats, t)
+	}
+	topicRows.Close()
 
 	accRows, err := db.Query(`SELECT code FROM test_access WHERE user_id = $1 ORDER BY code`, id)
 	if err != nil {
@@ -318,4 +359,43 @@ func addResult(id int64, code string, score, total int) error {
 		id, code, score, total, time.Now().UTC().Format("2006-01-02"),
 	)
 	return err
+}
+
+// addTopicStats агрегирует верные/неверные ответы завершённой попытки по темам
+// (в hits может быть несколько вопросов одной темы — сначала суммируем в Go,
+// потом один upsert на тему, а не по одному INSERT на вопрос).
+func addTopicStats(id int64, code, section string, hits []TopicHit) error {
+	if code == "" || section == "" || len(hits) == 0 {
+		return nil
+	}
+	type acc struct{ correct, wrong int }
+	byTopic := map[string]*acc{}
+	for _, h := range hits {
+		if h.Topic == "" {
+			continue
+		}
+		a := byTopic[h.Topic]
+		if a == nil {
+			a = &acc{}
+			byTopic[h.Topic] = a
+		}
+		if h.Correct {
+			a.correct++
+		} else {
+			a.wrong++
+		}
+	}
+	for topic, a := range byTopic {
+		if _, err := db.Exec(
+			`INSERT INTO topic_stats(user_id, code, section, topic, correct, wrong)
+			 VALUES($1, $2, $3, $4, $5, $6)
+			 ON CONFLICT (user_id, code, section, topic)
+			 DO UPDATE SET correct = topic_stats.correct + EXCLUDED.correct,
+			               wrong   = topic_stats.wrong   + EXCLUDED.wrong`,
+			id, code, section, topic, a.correct, a.wrong,
+		); err != nil {
+			return err
+		}
+	}
+	return nil
 }

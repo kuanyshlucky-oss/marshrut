@@ -237,9 +237,14 @@ func handleAdminUsers(w http.ResponseWriter, r *http.Request) {
 // POST /api/results
 func handleSaveResult(w http.ResponseWriter, r *http.Request) {
 	var in struct {
-		Code  string `json:"code"`
-		Score int    `json:"score"`
-		Total int    `json:"total"`
+		Code    string `json:"code"`
+		Score   int    `json:"score"`
+		Total   int    `json:"total"`
+		Section string `json:"section"`
+		Topics  []struct {
+			Topic   string `json:"topic"`
+			Correct bool   `json:"correct"`
+		} `json:"topics"`
 	}
 	if err := decode(r, &in); err != nil || strings.TrimSpace(in.Code) == "" || in.Total <= 0 {
 		writeError(w, http.StatusBadRequest, "Неверные данные результата")
@@ -251,9 +256,19 @@ func handleSaveResult(w http.ResponseWriter, r *http.Request) {
 	if in.Score > in.Total {
 		in.Score = in.Total
 	}
-	if err := addResult(currentUID(r), strings.TrimSpace(in.Code), in.Score, in.Total); err != nil {
+	uid := currentUID(r)
+	if err := addResult(uid, strings.TrimSpace(in.Code), in.Score, in.Total); err != nil {
 		writeError(w, http.StatusInternalServerError, "Не удалось сохранить результат")
 		return
+	}
+	// Разбор по темам — best-effort: пустой список (общие предметы без тем)
+	// или ошибка агрегации не должны ронять уже сохранённый результат.
+	if len(in.Topics) > 0 {
+		hits := make([]TopicHit, 0, len(in.Topics))
+		for _, t := range in.Topics {
+			hits = append(hits, TopicHit{Topic: strings.TrimSpace(t.Topic), Correct: t.Correct})
+		}
+		_ = addTopicStats(uid, strings.TrimSpace(in.Code), strings.TrimSpace(in.Section), hits)
 	}
 	handleMe(w, r)
 }

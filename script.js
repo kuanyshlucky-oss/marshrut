@@ -697,8 +697,8 @@ const API = {
     return currentUser;
   },
 
-  async saveResult(code, score, total) {
-    currentUser = await apiFetch('/api/results', { method: 'POST', auth: true, body: { code, score, total } });
+  async saveResult(code, score, total, section, topics) {
+    currentUser = await apiFetch('/api/results', { method: 'POST', auth: true, body: { code, score, total, section, topics } });
     return currentUser;
   },
 
@@ -1136,7 +1136,13 @@ function finishQuiz() {
 
   const user = API.getCurrentUser();
   if (user) {
-    API.saveResult(activeQuiz.code, score, total).then(() => renderDashboard()).catch((e) => showToast(e.message));
+    // Разбор по темам — только у вопросов с тегом topic (профильные предметы
+    // из бэкенд-контента); у общих предметов (язык/ТГО) topic нет, и это ок.
+    const topics = activeQuiz.pool
+      .map((q, i) => (q.topic ? { topic: q.topic, correct: quizIsCorrect(q, activeQuiz.answers[i]) } : null))
+      .filter(Boolean);
+    API.saveResult(activeQuiz.code, score, total, activeQuiz.section, topics)
+      .then(() => renderDashboard()).catch((e) => showToast(e.message));
   }
 
   const stamp = document.getElementById('quizStamp');
@@ -1352,6 +1358,68 @@ function renderDashboard() {
   });
   empty.classList.toggle('hidden', rows.length > 0);
   table.classList.toggle('hidden', rows.length === 0);
+
+  renderProgressPanel(user);
+}
+
+// Человекочитаемые названия профильных предметов по коду направления и ключу
+// секции (subj1/subj2 — как в bySubject контента с бэкенда). Небольшое
+// намеренное дублирование KT_SUBJECT_NAMES из kt.js: kt.js не подключён на
+// cabinet.html (там только вопросы для симуляции КТ на index.html), тянуть
+// его целиком сюда ради одной подписи — лишний вес страницы.
+const PROFILE_SUBJECT_NAMES = {
+  '7M01': { subj1: 'Педагогика', subj2: 'Психология' },
+};
+
+// «Прогресс подготовки»: по накопленной статистике topicStats (сохраняется
+// в finishQuiz на каждую сдачу теста с тегом темы) находим темы, где студент
+// чаще всего ошибается, и показываем их в личном кабинете.
+function renderProgressPanel(user) {
+  const list = document.getElementById('progressList');
+  const empty = document.getElementById('progressEmpty');
+  if (!list || !empty) return;
+
+  const stats = user.topicStats || [];
+  if (!stats.length) {
+    list.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+
+  const byCodeSection = {};
+  stats.forEach(s => {
+    const key = s.code + '|' + s.section;
+    (byCodeSection[key] = byCodeSection[key] || []).push(s);
+  });
+
+  list.innerHTML = Object.keys(byCodeSection).map(key => {
+    const [code, section] = key.split('|');
+    const d = findDirection(code);
+    const subjName = (PROFILE_SUBJECT_NAMES[code] && PROFILE_SUBJECT_NAMES[code][section]) || section;
+    const label = d ? `${d.code} · ${subjName}` : subjName;
+
+    // Проблемная тема: минимум 2 ответа по ней и доля неверных ≥50%.
+    const weak = byCodeSection[key]
+      .map(t => ({ ...t, total: t.correct + t.wrong, wrongRate: t.wrong / (t.correct + t.wrong) }))
+      .filter(t => t.total >= 2 && t.wrongRate >= 0.5)
+      .sort((a, b) => b.wrongRate - a.wrongRate || b.total - a.total)
+      .slice(0, 5);
+
+    const itemsHtml = weak.length
+      ? weak.map(t => `
+        <li class="progress-topic">
+          <span class="progress-topic-name">${esc(t.topic)}</span>
+          <span class="progress-topic-score">${t.correct}/${t.total} верно</span>
+        </li>`).join('')
+      : `<li class="progress-topic-ok">Слабых тем не выявлено — так держать!</li>`;
+
+    return `
+      <div class="progress-block">
+        <h4>${esc(label)}</h4>
+        <ul class="progress-topic-list">${itemsHtml}</ul>
+      </div>`;
+  }).join('');
 }
 
 /* --- Личные данные: режимы просмотра / редактирования --- */
