@@ -76,6 +76,19 @@
   --header-bg-solid: rgba(251,251,250,.98);
 }
 
+/* На мобильном десктопный ритм секций (110–192px паддингов) съедает пол-экрана
+   пустотой между блоками — сжимаем масштаб, сохраняя ту же прогрессию. */
+@media (max-width:640px){
+  :root{
+    --space-section-2xs: 28px;
+    --space-section-xs:  40px;
+    --space-section-sm:  56px;
+    --space-section-md:  64px;
+    --space-section-lg:  80px;
+    --space-section-xl:  96px;
+  }
+}
+
 /* =========================================================
    Тёмная тема — переключается атрибутом data-theme на <html>
    (см. theme.js). Чёрный фон, белый текст, тот же масштаб/сетка.
@@ -430,7 +443,7 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .filter-field input::placeholder{ color:var(--ink-soft); opacity:.6; }
 .filter-submit{ flex:0 0 auto; }
 
-.hero-signature-band{ padding:var(--space-section-xs) 0 var(--space-section-2xs); }
+section.hero-signature-band{ padding:var(--space-section-xs) 0 var(--space-section-2xs); }
 .hero-signature{
   display:flex; align-items:center; gap:48px; flex-wrap:wrap;
   padding-top:36px; border-top:1px solid var(--line);
