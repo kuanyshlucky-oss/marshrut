@@ -744,7 +744,7 @@ function finishKT() {
    <div class="kt-result-wrap">
     <div class="kt-stamp ${res.passed ? '' : 'is-fail'}">
       <span class="kt-stamp-status">${res.passed ? 'Пройдено' : 'Не пройдено'}</span>
-      <span class="kt-stamp-score">0/${res.maxTotal}</span>
+      <span class="kt-stamp-score">${res.total}/${res.maxTotal}</span>
     </div>
     <h2 class="test-title">${res.passed ? 'КТ сдано' : 'КТ не сдано'}</h2>
     <p class="test-sub">${d.code} · ${KT_TYPES[s.typeId].label} · ${KT_LANGUAGES[s.lang]}</p>
@@ -778,7 +778,7 @@ function finishKT() {
   document.getElementById('ktRetry').addEventListener('click', () => openKT(s.code));
   document.getElementById('ktClose2').addEventListener('click', closeKT);
 
-  const ktStamp = document.querySelector('.kt-stamp');
+  const ktStamp = ktEl().querySelector('.kt-stamp');
   if (typeof countUp === 'function') {
     countUp(ktStamp.querySelector('.kt-stamp-score'), res.total, { duration: 900, suffix: `/${res.maxTotal}` });
   }
