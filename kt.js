@@ -779,9 +779,6 @@ function finishKT() {
   document.getElementById('ktClose2').addEventListener('click', closeKT);
 
   const ktStamp = ktEl().querySelector('.kt-stamp');
-  if (typeof countUp === 'function') {
-    countUp(ktStamp.querySelector('.kt-stamp-score'), res.total, { duration: 900, suffix: `/${res.maxTotal}` });
-  }
   if (res.passed && typeof burstConfetti === 'function') burstConfetti(ktStamp);
 }
 
