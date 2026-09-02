@@ -826,8 +826,13 @@ section.hero-signature-band{ padding:var(--space-section-xs) 0 var(--space-secti
 .rs-value{ font-family:var(--font-mono); font-size:20px; font-weight:600; color:var(--accent); }
 .rs-dir{ flex-basis:100%; font-size:12px; color:var(--ink-soft); }
 
+/* ~12 строк видно без скролла; при большем числе результатов появляется
+   прокрутка внутри карточки, а не растягивание всей страницы. */
+.results-table-wrap{ max-height:520px; overflow-y:auto; }
 .results-table{ width:100%; border-collapse:collapse; font-size:13px; }
 .results-table th{
+  position:sticky; top:0; z-index:1;
+  background:var(--glass); backdrop-filter:blur(var(--blur-md)); -webkit-backdrop-filter:blur(var(--blur-md));
   text-align:left; font-family:var(--font-mono); text-transform:uppercase; font-size:10px; letter-spacing:.08em;
   color:var(--ink-soft); padding:8px 6px; border-bottom:1px solid var(--line);
 }
@@ -848,23 +853,6 @@ section.hero-signature-band{ padding:var(--space-section-xs) 0 var(--space-secti
   .test-status-badge{ font-size:10px; padding:3px 7px; }
 }
 
-/* Прогресс подготовки — слабые темы по накопленной статистике попыток */
-.progress-block + .progress-block{ margin-top:20px; }
-.progress-block h4{
-  font-family:var(--font-body); font-weight:600; font-size:13px; color:var(--ink-soft);
-  margin:0 0 10px; text-transform:uppercase; letter-spacing:.04em;
-}
-.progress-topic-list{ display:flex; flex-direction:column; gap:8px; }
-.progress-topic{
-  display:flex; align-items:center; justify-content:space-between; gap:12px;
-  padding:10px 14px; background:var(--danger-soft); border:1px solid rgba(179,38,30,.25); border-radius:var(--radius-s);
-}
-.progress-topic-name{ font-size:14px; color:var(--ink); }
-.progress-topic-score{ font-family:var(--font-mono); font-size:12px; color:var(--danger); flex:0 0 auto; white-space:nowrap; }
-.progress-topic-ok{
-  font-size:14px; color:var(--teal); background:var(--teal-soft);
-  border:1px solid rgba(63,138,104,.3); border-radius:var(--radius-s); padding:10px 14px;
-}
 
 .konspekty-section .dash-card{ width:100%; }
 .konspekty-card{
