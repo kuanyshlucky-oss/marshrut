@@ -1337,13 +1337,14 @@ function renderDashboard() {
     summary.classList.add('hidden');
   }
 
-  body.innerHTML = rows.map(r => {
+  body.innerHTML = rows.map((r, i) => {
     const pct = Math.round((r.score / r.total) * 100);
     const passed = pct >= 60;
     const d = findDirection(r.code);
     const q = new URLSearchParams({ result: r.code, score: r.score, total: r.total, date: r.date });
     return `
       <tr class="results-row" data-href="index.html?${q.toString()}" tabindex="0">
+        <td class="results-num">${i + 1}</td>
         <td>${d ? `${d.code} · ${d.name}` : r.code}</td>
         <td>${r.score}/${r.total}</td>
         <td><span class="test-status-badge ${passed ? 'passed' : 'failed'}">${passed ? 'Сдан' : 'Не сдан'}</span></td>

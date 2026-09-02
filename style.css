@@ -837,6 +837,7 @@ section.hero-signature-band{ padding:var(--space-section-xs) 0 var(--space-secti
   color:var(--ink-soft); padding:8px 6px; border-bottom:1px solid var(--line);
 }
 .results-table td{ padding:10px 6px; border-bottom:1px solid var(--line); color:var(--ink); }
+.results-table th:first-child, .results-table .results-num{ width:1%; white-space:nowrap; text-align:center; color:var(--ink-soft); }
 .results-row{ cursor:pointer; transition:background .15s ease; }
 .results-row:hover, .results-row:focus-visible{ background:var(--surface-2); outline:none; }
 
