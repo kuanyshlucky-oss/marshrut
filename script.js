@@ -829,7 +829,7 @@ function renderDirectionView(code) {
 /* Гейт: тест/КТ доступны только вошедшим И только с выданным доступом. Возвращает
    true, если можно продолжать. courseCode/courseName — для текста сообщения в WhatsApp.
    reason: 'auth' — не вошёл в аккаунт; 'access' — вошёл, но доступ к этому тесту не выдан. */
-const WHATSAPP_PHONE = '77473334123';
+const WHATSAPP_PHONE = '77785564853';
 function showAccessGate(courseCode, courseName, reason) {
   const buyBtn = document.getElementById('gateBuyBtn');
   if (buyBtn) {
