@@ -503,17 +503,16 @@ const GOP_SUBJECTS = {
       'Общая психология: процессы и свойства', 'Возрастная и педагогическая психология',
       'Психология личности', 'Социальная психология' ]},
   ],
-  // Геодезия — узкая специальность внутри «Инженерные, обрабатывающие и строительные
-  // отрасли» (7M07): профильные предметы те же, что и у направления 7M07 целиком —
-  // на КТ профильный экзамен сдаётся по всей группе, а не по конкретной специальности.
   M123: [
     ...COMMON_SUBJECTS,
-    { id: 'p1', title: 'Техническая механика', sub: 'механика и прочность', kind: 'profile', topics: [
-      'Теоретическая механика: статика, кинематика, динамика', 'Сопротивление материалов',
-      'Детали машин', 'Механика жидкости и газа' ]},
-    { id: 'p2', title: 'Инженерная графика и материаловедение', sub: 'черчение и материалы', kind: 'profile', topics: [
-      'Начертательная геометрия', 'Машиностроительное и строительное черчение',
-      'Материаловедение', 'Стандартизация и метрология' ]},
+    { id: 'p1', title: 'Геодезия', sub: 'измерения, съёмка и геодезические сети', kind: 'profile', topics: [
+      'Теодолитные и тахеометрические съёмки', 'Триангуляция, трилатерация и полигонометрия',
+      'Нивелирование и определение превышений', 'Дирекционные углы, азимуты и румбы',
+      'Точность геодезических измерений' ]},
+    { id: 'p2', title: 'Картография', sub: 'проекции, генерализация и оформление карт', kind: 'profile', topics: [
+      'Картографические проекции и искажения', 'Разграфка и номенклатура карт',
+      'Генерализация содержания карты', 'Условные знаки и способы картографического изображения',
+      'Этапы создания и издания карт' ]},
   ],
 };
 
@@ -605,7 +604,17 @@ function renderGopSubjectView(code, subjectId) {
 }
 
 function subjectsFor(direction) { return [...COMMON_SUBJECTS, ...direction.profile]; }
-function findDirection(code) { return DIRECTIONS.find(d => d.code === code); }
+// Для направлений 7M01–7M12 — из DIRECTIONS. Для GOP-групп, у которых
+// GOP_DIRECTION_MAP смотрит сама на себя (например M123), в DIRECTIONS записи
+// нет — собираем минимальный объект из каталога статистики KT_STATS_GROUPS,
+// чтобы код={code,name} ниже по цепочке (обзор ошибок, история попыток и т.д.)
+// не падал на несуществующем направлении.
+function findDirection(code) {
+  const d = DIRECTIONS.find(d => d.code === code);
+  if (d) return d;
+  const g = KT_STATS_GROUPS.find(x => x.code === code);
+  return g ? { code: g.code, name: g.name, desc: '', profile: [] } : undefined;
+}
 function findSubject(direction, subjectId) { return subjectsFor(direction).find(s => s.id === subjectId); }
 
 /* ---------------------------------------------------------
@@ -1128,6 +1137,22 @@ function quizIsCorrect(q, ua) {
   return ua === q.correct;
 }
 
+// Картография (M123, subj2) — единственный предмет с частичным начислением баллов:
+// 2 балла за каждый верно выбранный вариант (до 3 верных из 8), а не «всё или ничего»,
+// как у остальных предметов (включая другие вопросы с несколькими ответами, напр. Психологию).
+function isPartialCreditSubject(code, section) { return code === 'M123' && section === 'subj2'; }
+function quizMaxPoints(q, code, section) {
+  return (Array.isArray(q.correct) && isPartialCreditSubject(code, section)) ? q.correct.length * 2 : 1;
+}
+function quizEarnedPoints(q, ua, code, section) {
+  if (Array.isArray(q.correct) && isPartialCreditSubject(code, section)) {
+    if (!Array.isArray(ua)) return 0;
+    const correctSet = new Set(q.correct);
+    return ua.reduce((n, oi) => n + (correctSet.has(oi) ? 2 : 0), 0);
+  }
+  return quizIsCorrect(q, ua) ? 1 : 0;
+}
+
 // Тёплое сообщение по итогам теста — хвалит за хороший результат, подбадривает при неудаче.
 // Используется и на экране обычного теста по предмету, и на экране полной симуляции КТ.
 function quizPraiseMessage(score, total, passed) {
@@ -1140,9 +1165,11 @@ function quizPraiseMessage(score, total, passed) {
 }
 
 function finishQuiz() {
-  let score = 0;
-  activeQuiz.pool.forEach((q, i) => { if (quizIsCorrect(q, activeQuiz.answers[i])) score++; });
-  const total = activeQuiz.pool.length;
+  let score = 0, total = 0;
+  activeQuiz.pool.forEach((q, i) => {
+    score += quizEarnedPoints(q, activeQuiz.answers[i], activeQuiz.code, activeQuiz.section);
+    total += quizMaxPoints(q, activeQuiz.code, activeQuiz.section);
+  });
   const passed = Math.round((score / total) * 100) >= 60;
   const praise = quizPraiseMessage(score, total, passed);
 
@@ -1176,9 +1203,12 @@ function finishQuiz() {
 // Работа над ошибками: разбор всех вопросов с правильными/неправильными ответами.
 function openReview() {
   const d = findDirection(activeQuiz.code);
-  let score = 0;
-  activeQuiz.pool.forEach((q, i) => { if (quizIsCorrect(q, activeQuiz.answers[i])) score++; });
-  document.getElementById('reviewSub').textContent = `${d.code} · ${d.name} — ${score} из ${activeQuiz.pool.length}`;
+  let score = 0, total = 0;
+  activeQuiz.pool.forEach((q, i) => {
+    score += quizEarnedPoints(q, activeQuiz.answers[i], activeQuiz.code, activeQuiz.section);
+    total += quizMaxPoints(q, activeQuiz.code, activeQuiz.section);
+  });
+  document.getElementById('reviewSub').textContent = `${d.code} · ${d.name} — ${score} из ${total}`;
 
   document.getElementById('reviewList').innerHTML = activeQuiz.pool.map((q, i) => {
     const ua = activeQuiz.answers[i]; // ответ пользователя (или null)
