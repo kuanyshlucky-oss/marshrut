@@ -393,6 +393,54 @@ const COMMON_CONSPECTS = {
   },
 };
 
+// «Пройти тест» в кабинете — по карточке на каждый код в test_access пользователя,
+// ведущей прямо в ту же модалку направления, что открывается из каталога на главной
+// (предметы + «Пройти тест по направлению» / «Симуляция КТ»), без похода в каталог
+// вручную. Код доступа может быть кодом ГОП-группы напрямую (M123) или кодом
+// контента, отображаемым на ГОП через CONTENT_TO_GOP (7M01 → M001), либо кодом
+// направления из старого каталога DIRECTIONS. Без выданного доступа — одна
+// карточка-приглашение в общий каталог, как раньше.
+function renderTestAccessCards() {
+  const wrap = document.getElementById('testCtaSection');
+  if (!wrap) return; // раздел есть только на cabinet.html
+  const user = API.getCurrentUser();
+  const access = (user && user.access) || [];
+
+  const cards = access.map(code => {
+    const gopCode = CONTENT_TO_GOP[code] || code;
+    const g = KT_STATS_GROUPS.find(x => x.code === gopCode);
+    if (g) return { href: `index.html?openGop=${encodeURIComponent(gopCode)}`, code: g.code, name: g.name };
+    const d = DIRECTIONS.find(x => x.code === code);
+    if (d) return { href: `index.html?openDir=${encodeURIComponent(code)}`, code: d.code, name: d.name };
+    return null;
+  }).filter(Boolean);
+
+  if (!cards.length) {
+    wrap.innerHTML = `
+      <a class="test-cta-card" href="index.html#catalog">
+        <div class="test-cta-text">
+          <p class="test-cta-eyebrow">Симуляция КТ и тесты по предметам</p>
+          <h3>Пройти тест</h3>
+          <p>Выберите направление в каталоге и начните подготовку прямо сейчас.</p>
+        </div>
+        <span class="test-cta-arrow" aria-hidden="true">→</span>
+      </a>
+    `;
+    return;
+  }
+
+  wrap.innerHTML = cards.map(c => `
+    <a class="test-cta-card" href="${c.href}">
+      <div class="test-cta-text">
+        <p class="test-cta-eyebrow">${esc(c.code)} · Симуляция КТ и тесты по предметам</p>
+        <h3>Пройти тест — ${esc(c.name)}</h3>
+        <p>Предметы для подготовки, тест по направлению и полная симуляция КТ.</p>
+      </div>
+      <span class="test-cta-arrow" aria-hidden="true">→</span>
+    </a>
+  `).join('');
+}
+
 // Рендерит раздел «Конспекты» в кабинете. Карточки двух видов:
 // — общие предметы (COMMON_CONSPECTS) — видны любому вошедшему пользователю;
 // — профильные предметы направления (LIBRARY_CONSPECTS) — по коду в test_access.
@@ -424,7 +472,7 @@ function renderConspectsLibrary() {
   }).join('');
 }
 
-const INTERACTIVE_TEST_CODES = ["7M01","7M02","7M03","7M04","7M05","7M06","7M07","7M08","7M11","7M12"]; // какие направления имеют интерактивный тест (не секрет — просто UI-подсказка, доступ проверяется на бэкенде)
+const INTERACTIVE_TEST_CODES = ["7M01","7M02","7M03","7M04","7M05","7M06","7M07","7M08","7M11","7M12","M123"]; // какие направления имеют интерактивный тест (не секрет — просто UI-подсказка, доступ проверяется на бэкенде)
 
 /* Статистика КТ-2025 по 147 группам образовательных программ (официальная сводка НЦТ).
    Используется новым каталогом на главной (поиск + категории + карточка статистики). */
@@ -655,6 +703,11 @@ function openGopGroup(code) {
    науки) — тот же профиль (педагогика+психология), пока под каждую из 147 групп
    отдельный банк вопросов не подготовлен. */
 const GOP_DIRECTION_MAP = { M001: '7M01', M123: 'M123' };
+
+// Обратная карта: код контента (как в test_access/server/content) → код ГОП-карточки
+// (как в KT_STATS_GROUPS/openGopGroup). Нужна, чтобы по выданному доступу открыть ту
+// же модалку группы, что и в каталоге на главной, а не заглушку с пустыми предметами.
+const CONTENT_TO_GOP = Object.fromEntries(Object.entries(GOP_DIRECTION_MAP).map(([gop, content]) => [content, gop]));
 
 function renderGopModalView(code) {
   const g = KT_STATS_GROUPS.find(x => x.code === code);
@@ -1468,13 +1521,11 @@ function renderDashboard() {
   const user = API.getCurrentUser();
   if (!user || !document.getElementById('dashboard')) return; // дашборд только на cabinet.html
 
-  // «Пройти тест»: если доступ уже выдан — сразу открываем модалку направления
-  // (без похода в каталог); если доступа ещё нет — как раньше, ведём в каталог.
-  const ctaCard = document.getElementById('testCtaCard');
-  if (ctaCard) {
-    const grantedCode = user.access && user.access[0];
-    ctaCard.href = grantedCode ? `index.html?openDir=${encodeURIComponent(grantedCode)}` : 'index.html#catalog';
-  }
+  // «Пройти тест»: по карточке на каждое направление с выданным доступом — ведёт
+  // прямо в ту же модалку (предметы + «Пройти тест»/«Симуляция КТ»), что открывается
+  // из каталога на главной, без похода туда вручную. Если доступа ещё нет — как
+  // раньше, одна карточка-приглашение в общий каталог.
+  renderTestAccessCards();
   renderConspectsLibrary();
 
   // --- Личные данные: просмотр или редактирование ---
@@ -1984,6 +2035,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const openDirCode = qs.get('openDir');
   if (openDirCode && document.getElementById('dirModal') && findDirection(openDirCode)) {
     openDirection(openDirCode);
+  }
+
+  // то же самое, но для карточки ГОП (147 групп, напр. M123): index.html?openGop=M123
+  const openGopCode = qs.get('openGop');
+  if (openGopCode && document.getElementById('dirModal') && KT_STATS_GROUPS.find(g => g.code === openGopCode)) {
+    openGopGroup(openGopCode);
   }
 });
 
