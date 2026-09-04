@@ -37,7 +37,7 @@
   });
 })();
 </script>
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 <script>
   // Если токен уже есть — скрываем гостевой экран ещё до первой отрисовки страницы,
   // чтобы при переходе на кабинет с сохранённой сессией не мелькало «Войдите, чтобы продолжить».
@@ -131,14 +131,7 @@
         </div>
 
         <div class="dash-stack">
-          <a class="test-cta-card" href="index.html#catalog" id="testCtaCard">
-            <div class="test-cta-text">
-              <p class="test-cta-eyebrow">Симуляция КТ и тесты по предметам</p>
-              <h3>Пройти тест</h3>
-              <p>Выберите направление в каталоге и начните подготовку прямо сейчас.</p>
-            </div>
-            <span class="test-cta-arrow" aria-hidden="true">→</span>
-          </a>
+          <div id="testCtaSection"><!-- injected by script.js: карточка(и) «Пройти тест» — по одной на каждое направление с выданным доступом, либо ссылка на общий каталог, если доступ ещё не выдан --></div>
 
           <div class="konspekty-section hidden" id="konspektySection"><!-- injected by script.js: раздел «Конспекты», виден только при выданном доступе --></div>
 
@@ -298,6 +291,6 @@
   <div class="toast" id="toast"></div>
 </div>
 
-<script src="script.js?v=5"></script>
+<script src="script.js?v=6"></script>
 </body>
 </html>
