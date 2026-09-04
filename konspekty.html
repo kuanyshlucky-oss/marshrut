@@ -168,7 +168,7 @@
   </div>
 </footer>
 
-<script src="script.js?v=4"></script>
+<script src="script.js?v=5"></script>
 <script>
   const root = document.getElementById('root');
   const libDocTitleEl = document.getElementById('libDocTitle');
@@ -283,17 +283,22 @@
 
     const access = user.access || [];
     const params = new URLSearchParams(location.search);
+    // Общие предметы (ТГО, английский) открыты любому вошедшему — не проверяем access.
+    // Профильные предметы направления — только если код есть в test_access пользователя.
     let code = params.get('code');
-    if (!code || !access.includes(code) || !LIBRARY_CONSPECTS[code]) {
-      code = access.find(c => LIBRARY_CONSPECTS[c]);
+    let lib = (code && COMMON_CONSPECTS[code])
+      || (code && access.includes(code) && LIBRARY_CONSPECTS[code])
+      || null;
+    if (!lib) {
+      code = Object.keys(COMMON_CONSPECTS)[0] || access.find(c => LIBRARY_CONSPECTS[c]);
+      lib = COMMON_CONSPECTS[code] || LIBRARY_CONSPECTS[code];
     }
 
-    if (!code) {
+    if (!lib) {
       showMissing('Раздел «Конспекты» пока недоступен — доступ выдаётся вместе с курсом. <a href="cabinet.html">Вернуться в кабинет</a>');
       return;
     }
 
-    const lib = LIBRARY_CONSPECTS[code];
     const sectionKey = params.get('section');
     let sec = lib.sections.find(s => s.key === sectionKey);
     if (!sec) sec = lib.sections.find(s => s.topics.length > 0) || lib.sections[0];
