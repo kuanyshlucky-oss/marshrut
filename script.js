@@ -323,15 +323,92 @@ const LIBRARY_CONSPECTS = {
   },
 };
 
-// Рендерит раздел «Конспекты» в кабинете — одна карточка на код направления;
-// деление на подразделы (Педагогика / Психология и т.д.) происходит уже
-// внутри konspekty.html через переключатель.
+// Конспекты по общим предметам (ТГО, Иностранный язык) — сдают все направления,
+// поэтому НЕ привязаны к test_access конкретного направления: видны любому
+// вошедшему пользователю, в отличие от LIBRARY_CONSPECTS (там доступ по коду
+// направления). Каждый предмет — отдельная карточка в кабинете.
+// Темы — из официальных спецификаций тестов ТГО и «Английский язык» КТ.
+const COMMON_CONSPECTS = {
+  tgo: {
+    title: 'Тест готовности к обучению (ТГО)',
+    sections: [
+      {
+        key: 'kriticheskoe',
+        title: 'Критическое мышление',
+        file: 'tgo-kriticheskoe-course',
+        pages: 3,
+        topics: [
+          { title: 'Тема 1. Сравнение величин', page: 1 },
+          { title: 'Тема 2. Уравнения, неравенства, геометрические и текстовые задачи', page: 2 },
+          { title: 'Тема 3. Анализ и интерпретация информации (таблицы, диаграммы, схемы)', page: 3 },
+        ],
+      },
+      {
+        key: 'analiticheskoe',
+        title: 'Аналитическое мышление',
+        file: 'tgo-analiticheskoe-course',
+        pages: 3,
+        topics: [
+          { title: 'Тема 4. Заполнение пропусков в тексте', page: 1 },
+          { title: 'Тема 5. Понимание и анализ текста', page: 2 },
+          { title: 'Тема 6. Анализ информации на основе нескольких источников', page: 3 },
+        ],
+      },
+    ],
+  },
+  english: {
+    title: 'Иностранный язык (английский)',
+    sections: [
+      {
+        key: 'themes',
+        title: 'Темы и лексика',
+        file: 'english-themes-course',
+        pages: 3,
+        topics: [
+          { title: 'Тема 1. Человек, общество и духовные ценности', page: 1 },
+          { title: 'Тема 2. Образование и наука', page: 2 },
+          { title: 'Тема 3. Казахстан и англоязычные страны', page: 3 },
+        ],
+      },
+      {
+        key: 'grammar',
+        title: 'Грамматика',
+        file: 'english-grammar-course',
+        pages: 11,
+        topics: [
+          { title: 'Тема 1. Noun — существительное', page: 1 },
+          { title: 'Тема 2. Article — артикль', page: 2 },
+          { title: 'Тема 3. Adjective — прилагательное', page: 3 },
+          { title: 'Тема 4. Pronoun — местоимение', page: 4 },
+          { title: 'Тема 5. Numeral — числительное', page: 5 },
+          { title: 'Тема 6. Verb — времена глагола', page: 6 },
+          { title: 'Тема 7. Non-finite verb forms — неличные формы глагола', page: 7 },
+          { title: 'Тема 8. Adverb — наречие', page: 8 },
+          { title: 'Тема 9. Preposition — предлог', page: 9 },
+          { title: 'Тема 10. Mood — наклонение', page: 10 },
+          { title: 'Тема 11. Lexicology — синонимы и антонимы', page: 11 },
+        ],
+      },
+    ],
+  },
+};
+
+// Рендерит раздел «Конспекты» в кабинете. Карточки двух видов:
+// — общие предметы (COMMON_CONSPECTS) — видны любому вошедшему пользователю;
+// — профильные предметы направления (LIBRARY_CONSPECTS) — по коду в test_access.
+// Каждый предмет — своя отдельная карточка (ТГО и английский не объединяются
+// друг с другом и не зависят от доступа к конкретному направлению).
+// Деление на подразделы (Педагогика / Психология, Критическое / Аналитическое
+// мышление и т.д.) происходит уже внутри konspekty.html через переключатель.
 function renderConspectsLibrary() {
   const wrap = document.getElementById('konspektySection');
   if (!wrap) return; // раздел есть только на cabinet.html
   const user = API.getCurrentUser();
-  const access = (user && user.access) || [];
-  const available = access.map(code => ({ code, lib: LIBRARY_CONSPECTS[code] })).filter(x => x.lib);
+  if (!user) { wrap.classList.add('hidden'); return; }
+  const access = user.access || [];
+  const common = Object.entries(COMMON_CONSPECTS).map(([code, lib]) => ({ code, lib }));
+  const gated = access.map(code => ({ code, lib: LIBRARY_CONSPECTS[code] })).filter(x => x.lib);
+  const available = [...common, ...gated];
   if (!available.length) { wrap.classList.add('hidden'); return; }
   wrap.classList.remove('hidden');
   wrap.innerHTML = available.map(({ code, lib }) => {
