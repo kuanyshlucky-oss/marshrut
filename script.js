@@ -711,7 +711,11 @@ const CONTENT_TO_GOP = Object.fromEntries(Object.entries(GOP_DIRECTION_MAP).map(
 
 function renderGopModalView(code) {
   const g = KT_STATS_GROUPS.find(x => x.code === code);
-  const subjects = GOP_SUBJECTS[code];
+  // Общие предметы (иностранный язык, ТГО) сдают все 147 групп — их банк вопросов
+  // общий и не привязан к направлению, поэтому показываем их всегда, даже если
+  // профильных предметов для этой конкретной группы ещё нет (GOP_SUBJECTS[code]).
+  const hasProfile = !!GOP_SUBJECTS[code];
+  const subjects = GOP_SUBJECTS[code] || COMMON_SUBJECTS;
   const body = document.getElementById('dirModalBody');
   body.innerHTML = `
     <p class="eyebrow">${g.code} · Магистратура</p>
@@ -734,44 +738,39 @@ function renderGopModalView(code) {
         <div class="kcat-stat-value" style="color:var(--danger)">${g.failed.toLocaleString('ru-RU')} <small>${g.failed_pct.toFixed(1)}%</small></div>
       </div>
     </div>
-    ${subjects ? `
-      <p class="modal-lead">Вступительный экзамен включает предметы для подготовки. Выберите предмет, чтобы увидеть темы.</p>
-      <ul class="subject-list">
-        ${subjects.map(s => `
-          <li>
-            <button class="subject-row" data-open-gop-subject="${s.id}">
-              ${SUBJECT_ICONS[s.title] ? `<img class="subject-icon" src="${SUBJECT_ICONS[s.title]}" alt="" aria-hidden="true">` : ''}
-              <span class="subject-kind ${s.kind === 'common' ? 'is-common' : 'is-profile'}">${s.kind === 'common' ? 'Общий' : 'Профильный'}</span>
-              <span class="subject-text">
-                <span class="subject-title">${s.title}</span>
-                <span class="subject-sub">${s.sub}</span>
-              </span>
-              <span class="subject-arrow" aria-hidden="true">→</span>
-            </button>
-          </li>
-        `).join('')}
-      </ul>
-    ` : `
-      <p class="modal-lead">Материалы по предметам и темам для этой группы пока не добавлены — скоро появятся.</p>
-    `}
-    ${GOP_DIRECTION_MAP[code] ? `
-      <button class="btn btn-primary btn-block" id="gopTestBtn">Пройти тест по направлению</button>
-      <button class="btn btn-ghost btn-block" id="gopKTBtn" style="margin-top:10px">Симуляция КТ (полный формат)</button>
-    ` : ''}
+    <p class="modal-lead">Вступительный экзамен включает предметы для подготовки. Выберите предмет, чтобы увидеть темы.</p>
+    <ul class="subject-list">
+      ${subjects.map(s => `
+        <li>
+          <button class="subject-row" data-open-gop-subject="${s.id}">
+            ${SUBJECT_ICONS[s.title] ? `<img class="subject-icon" src="${SUBJECT_ICONS[s.title]}" alt="" aria-hidden="true">` : ''}
+            <span class="subject-kind ${s.kind === 'common' ? 'is-common' : 'is-profile'}">${s.kind === 'common' ? 'Общий' : 'Профильный'}</span>
+            <span class="subject-text">
+              <span class="subject-title">${s.title}</span>
+              <span class="subject-sub">${s.sub}</span>
+            </span>
+            <span class="subject-arrow" aria-hidden="true">→</span>
+          </button>
+        </li>
+      `).join('')}
+    </ul>
+    ${!hasProfile ? `<p class="modal-lead">Профильные предметы для этой группы пока готовятся — сюда добавится, как только появится банк вопросов. Общие предметы (язык, ТГО) уже доступны выше.</p>` : ''}
+    <button class="btn btn-primary btn-block" id="gopTestBtn">Пройти тест по направлению</button>
+    ${GOP_DIRECTION_MAP[code] ? `<button class="btn btn-ghost btn-block" id="gopKTBtn" style="margin-top:10px">Симуляция КТ (полный формат)</button>` : ''}
   `;
-  if (subjects) {
-    body.querySelectorAll('[data-open-gop-subject]').forEach(btn => btn.addEventListener('click', () => renderGopSubjectView(code, btn.dataset.openGopSubject)));
-  }
-  const dirCode = GOP_DIRECTION_MAP[code];
-  if (dirCode) {
-    document.getElementById('gopTestBtn').addEventListener('click', () => { if (requireAuth(g.code, g.name)) startQuiz(dirCode); });
-    document.getElementById('gopKTBtn').addEventListener('click', () => { if (requireAuth(g.code, g.name)) { closeDirModal(); window.openKT(dirCode); } });
-  }
+  body.querySelectorAll('[data-open-gop-subject]').forEach(btn => btn.addEventListener('click', () => renderGopSubjectView(code, btn.dataset.openGopSubject)));
+  // Без готового банка по направлению «Пройти тест» всё равно открывает пикер
+  // предметов — общие (язык, ТГО) в нём полностью рабочие; профильные там же
+  // корректно покажут тост «недоступно», если для группы ещё нет контента.
+  const dirCode = GOP_DIRECTION_MAP[code] || code;
+  document.getElementById('gopTestBtn').addEventListener('click', () => { if (requireAuth(g.code, g.name)) startQuiz(dirCode); });
+  const ktBtn = document.getElementById('gopKTBtn');
+  if (ktBtn) ktBtn.addEventListener('click', () => { if (requireAuth(g.code, g.name)) { closeDirModal(); window.openKT(dirCode); } });
 }
 
 function renderGopSubjectView(code, subjectId) {
   const g = KT_STATS_GROUPS.find(x => x.code === code);
-  const s = GOP_SUBJECTS[code].find(x => x.id === subjectId);
+  const s = (GOP_SUBJECTS[code] || COMMON_SUBJECTS).find(x => x.id === subjectId);
   const body = document.getElementById('dirModalBody');
   body.innerHTML = `
     <button class="back-link" id="gopSubjectBack">← ${g.code} · ${esc(g.name)}</button>
