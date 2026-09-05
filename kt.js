@@ -1085,6 +1085,11 @@ function openKTReview() {
       ? `<div class="rev-why"><b>Почему:</b> ${esc(item.why)}</div>`
       : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(item.options[correctSet[0]])}</div>`);
     const blockTag = item.stage ? `${ktBlockLabel(s.code, item.block)} · ${KT_LANG_STAGE_LABELS[item.stage]}` : ktBlockLabel(s.code, item.block);
+    // Кнопка «Конспекты» — отдельный подробный разбор вопроса (не привязан к тому,
+    // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
+    const conspectBlock = item.conspect
+      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">Конспекты</summary><div class="rev-conspect-body">${esc(item.conspect)}</div></details>`
+      : '';
     // Ссылка на конспект по теме вопроса — только при неверном ответе (только для Педагогики/Психологии).
     const konspekt = wrong && typeof conspectLink === 'function' ? conspectLink(item.topic) : '';
     return `
@@ -1095,6 +1100,7 @@ function openKTReview() {
         ${item.passage ? `<div class="kt-reading-passage">${esc(item.passage)}</div>` : ''}
         <div class="rev-opts">${opts}</div>
         ${why}
+        ${conspectBlock}
         ${konspekt}
       </div>`;
   }).join('');

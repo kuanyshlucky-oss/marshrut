@@ -1422,17 +1422,21 @@ function openReview() {
     const why = q.explanations ? '' : (q.why
       ? `<div class="rev-why"><b>Почему:</b> ${esc(q.why)}</div>`
       : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(q.options[correctSet[0]])}</div>`);
-    // Короткий индивидуальный конспект по самому вопросу — только при неверном ответе.
-    const conspectNote = wrong && q.conspect ? `<div class="rev-conspect"><b>Конспект:</b> ${esc(q.conspect)}</div>` : '';
+    // Кнопка «Конспекты» — отдельный подробный разбор вопроса (не привязан к тому,
+    // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
+    const conspectBlock = q.conspect
+      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">Конспекты</summary><div class="rev-conspect-body">${esc(q.conspect)}</div></details>`
+      : '';
     // Ссылка на конспект по теме вопроса — только при неверном ответе.
     const konspekt = wrong ? conspectLink(q.topic) : '';
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${esc(q.q)}</p>
         ${q.image ? `<div class="kt-question-image"><img src="${q.image}" alt="Условие вопроса"></div>` : ''}
+        ${q.passage ? `<div class="kt-reading-passage">${esc(q.passage)}</div>` : ''}
         <div class="rev-opts">${opts}</div>
         ${why}
-        ${conspectNote}
+        ${conspectBlock}
         ${konspekt}
       </div>`;
   }).join('');
