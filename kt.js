@@ -27,7 +27,7 @@ const KT_TYPES = {
     langFixed: false,
     total: 40,
     thresholdTotal: 30,
-    timeMin: 90,
+    timeMin: 210,                 // 3.5 часа как на реальном КТ
     blockMin: null,               // минимумов по блокам нет — только общий порог
   },
 };
