@@ -674,20 +674,30 @@ function ktIsCorrect(item, ua) {
   return ua === item.correct;
 }
 
-// Картография (M123, subj2) — единственный предмет с частичным начислением баллов:
-// 2 балла за каждый верно выбранный вариант (до 3 верных из 8), а не «всё или ничего»,
-// как у остальных предметов (включая другие вопросы с несколькими ответами, напр. Психологию).
+// Картография (M123, subj2) — единственный предмет с частичным начислением баллов,
+// по официальной схеме КТ для вопросов с множественным выбором (до 3 верных ответов):
+// 2 балла — все верные выбраны и ни одного лишнего; 1 балл — ровно одна ошибка (не
+// выбран один верный, ИЛИ выбраны все верные плюс один лишний); 0 баллов — две и
+// более ошибки, включая пустой ответ. Остальные предметы (включая другие вопросы
+// с несколькими ответами, напр. Психологию) считаются «всё или ничего» за 1 балл.
 // Те же правила, что и в script.js (стандартный тест по предмету) — здесь для блока
 // полной симуляции КТ.
 function isPartialCreditSubject(code, block) { return code === 'M123' && block === 'subj2'; }
 function ktMaxPoints(item, code, block) {
-  return (Array.isArray(item.correct) && isPartialCreditSubject(code, block)) ? item.correct.length * 2 : 1;
+  return (Array.isArray(item.correct) && isPartialCreditSubject(code, block)) ? 2 : 1;
 }
 function ktEarnedPoints(item, ua, code, block) {
   if (Array.isArray(item.correct) && isPartialCreditSubject(code, block)) {
-    if (!Array.isArray(ua)) return 0;
+    const selected = Array.isArray(ua) ? ua : [];
+    if (selected.length === 0) return 0;
     const correctSet = new Set(item.correct);
-    return ua.reduce((n, oi) => n + (correctSet.has(oi) ? 2 : 0), 0);
+    const selectedSet = new Set(selected);
+    let mistakes = 0;
+    correctSet.forEach(c => { if (!selectedSet.has(c)) mistakes++; });
+    selectedSet.forEach(o => { if (!correctSet.has(o)) mistakes++; });
+    if (mistakes === 0) return 2;
+    if (mistakes === 1) return 1;
+    return 0;
   }
   return ktIsCorrect(item, ua) ? 1 : 0;
 }
