@@ -1050,7 +1050,7 @@ body.test-open #reviewPage input{ user-select:text; }
 
 .test-question{ font-size:20px; font-weight:500; line-height:1.45; margin:0 0 24px; color:var(--ink); }
 .test-qnum{ color:var(--accent); font-family:var(--font-mono); margin-right:4px; }
-.test-options{ display:flex; flex-direction:column; gap:12px; }
+.test-options{ display:flex; flex-direction:column; gap:16px; }
 .test-opt{
   display:flex; align-items:center; gap:14px; text-align:left; width:100%;
   padding:15px 18px; border-radius:var(--radius-m);
