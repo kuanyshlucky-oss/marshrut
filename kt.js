@@ -829,7 +829,7 @@ function renderKTQuestion() {
     <div class="kt-qnav" id="ktQnav">${qnav}</div>
     <div class="kt-run-head">
       <span class="kt-block-tag">${blockTag}</span>
-      <span class="kt-run-timer" id="ktTimer">${fmtTime(s.secondsLeft)}</span>
+      <span class="kt-timer-group"><span class="kt-timer-label">Оставшееся время:</span><span class="kt-run-timer" id="ktTimer">${fmtTime(s.secondsLeft)}</span></span>
     </div>
     <div class="kt-progress"><div class="kt-progress-bar" style="width:${((s.idx + 1) / s.flat.length) * 100}%"></div></div>
     <p class="test-qnum-line">Вопрос ${s.idx + 1} из ${s.flat.length}</p>
