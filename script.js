@@ -1659,8 +1659,7 @@ function computeProgressForCode(code, user) {
   const topics = stats
     .map(t => ({ topic: t.topic, section: t.section, n: t.correct + t.wrong, pct: (t.correct + t.wrong) ? Math.round((t.wrong / (t.correct + t.wrong)) * 100) : 0 }))
     .filter(t => t.n > 0 && t.pct > 0)
-    .sort((a, b) => b.pct - a.pct)
-    .slice(0, 6);
+    .sort((a, b) => b.pct - a.pct);
 
   return { code, kt, sections, topics };
 }
@@ -1669,6 +1668,9 @@ function computeProgressForCode(code, user) {
 // и какие темы чаще всего дают ошибки — по каждому направлению, где есть хоть
 // какие-то данные (попытка КТ или разбор по темам обычного теста).
 let progressActiveCode = null;
+// 'all' — темы по всем разделам вперемешку; иначе — код раздела (lang/logic/subj1/subj2),
+// выбранный кликом по «Английский»/«ТГО»/профильному предмету ниже.
+let progressActiveSection = 'all';
 function renderProgress() {
   const user = API.getCurrentUser();
   const section = document.getElementById('progressSection');
@@ -1693,7 +1695,9 @@ function renderProgress() {
     return `<button class="prog-tab ${code === progressActiveCode ? 'is-active' : ''}" data-code="${code}">${esc(label)}</button>`;
   }).join('');
   document.querySelectorAll('#progTabs .prog-tab').forEach(b => b.addEventListener('click', () => {
+    if (b.dataset.code === progressActiveCode) return;
     progressActiveCode = b.dataset.code;
+    progressActiveSection = 'all'; // разделы другого направления — сбрасываем фильтр
     renderProgress();
   }));
 
@@ -1745,26 +1749,39 @@ function renderProgress() {
     heroHtml = `<p class="prog-empty">Пока нет ни одной полной симуляции КТ по этому направлению — пройдите её, чтобы увидеть разрыв до порога прохождения.</p>`;
   }
 
+  // Раздел другого направления не мог остаться выбранным (например, "subj2" от
+  // предыдущего кода) — иначе фильтр темы молча покажет пустой список.
+  if (progressActiveSection !== 'all' && !data.sections.some(s => s.section === progressActiveSection)) {
+    progressActiveSection = 'all';
+  }
+
   const blocksHtml = data.sections.length ? `
     <div class="prog-section">
       <h4>Точность по разделам</h4>
-      <p class="prog-section-note">Доля верных ответов за все попытки — и обычные тесты, и симуляции КТ.</p>
+      <p class="prog-section-note">Нажмите на предмет — ниже покажутся темы именно по нему.</p>
       ${data.sections.map(s => {
         const tier = s.pct == null ? '' : (s.pct >= 60 ? '' : (s.pct >= 40 ? 'is-mid' : 'is-low'));
+        const active = s.section === progressActiveSection ? 'is-active' : '';
         return `
-        <div class="prog-block-row">
+        <button class="prog-block-row ${active}" data-section="${s.section}" type="button">
           <div class="prog-block-name">${esc(s.label)}</div>
           <div class="prog-block-bar"><div class="prog-block-fill ${tier}" style="width:${s.pct ?? 0}%"></div></div>
           <div class="prog-block-pct">${s.pct == null ? '—' : s.pct + '%'}</div>
-        </div>`;
+        </button>`;
       }).join('')}
     </div>` : '';
 
+  const shownTopics = progressActiveSection === 'all' ? data.topics.slice(0, 6) : data.topics.filter(t => t.section === progressActiveSection);
+  const topicsTitle = progressActiveSection === 'all'
+    ? 'Темы, которые чаще всего подводят'
+    : `Темы по разделу «${esc(progressSectionLabel(progressActiveCode, progressActiveSection))}»`;
+  const resetLink = progressActiveSection === 'all' ? '' : `<button class="prog-topic-reset" type="button" id="progTopicReset">× показать все разделы</button>`;
+
   const topicsHtml = data.topics.length ? `
     <div class="prog-section">
-      <h4>Темы, которые чаще всего подводят</h4>
+      <h4>${topicsTitle}${resetLink}</h4>
       <p class="prog-section-note">По доле неверных ответов за все попытки, от самой слабой темы.</p>
-      ${data.topics.map(t => {
+      ${shownTopics.length ? shownTopics.map(t => {
         const mid = t.pct < 45 ? 'is-mid' : '';
         return `
         <div class="prog-topic-row">
@@ -1775,11 +1792,19 @@ function renderProgress() {
           <div class="prog-topic-bar"><div class="prog-topic-fill ${mid}" style="width:${t.pct}%"></div></div>
           <div class="prog-topic-pct ${mid}">${t.pct}%</div>
         </div>`;
-      }).join('')}
+      }).join('') : `<p class="prog-empty">По этому разделу пока нет ошибок в накопленной статистике.</p>`}
     </div>` : (data.kt || data.sections.length ? '' : '');
 
   body.innerHTML = heroHtml + blocksHtml + topicsHtml
     || `<p class="prog-empty">Пока недостаточно данных для разбора по темам.</p>`;
+
+  document.querySelectorAll('.prog-block-row').forEach(b => b.addEventListener('click', () => {
+    const sec = b.dataset.section;
+    progressActiveSection = progressActiveSection === sec ? 'all' : sec;
+    renderProgress();
+  }));
+  const resetBtn = document.getElementById('progTopicReset');
+  if (resetBtn) resetBtn.addEventListener('click', () => { progressActiveSection = 'all'; renderProgress(); });
 }
 
 function pluralPoints(n) {
