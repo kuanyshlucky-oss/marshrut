@@ -37,7 +37,7 @@
   });
 })();
 </script>
-<link rel="stylesheet" href="style.css?v=13">
+<link rel="stylesheet" href="style.css?v=14">
 <script>
   // Если токен уже есть — скрываем гостевой экран ещё до первой отрисовки страницы,
   // чтобы при переходе на кабинет с сохранённой сессией не мелькало «Войдите, чтобы продолжить».
@@ -134,6 +134,16 @@
           <div id="testCtaSection"><!-- injected by script.js: карточка(и) «Пройти тест» — по одной на каждое направление с выданным доступом, либо ссылка на общий каталог, если доступ ещё не выдан --></div>
 
           <div class="konspekty-section hidden" id="konspektySection"><!-- injected by script.js: раздел «Конспекты», виден только при выданном доступе --></div>
+
+          <!-- Прогресс подготовки: сколько баллов не хватает до порога КТ и какие темы чаще всего подводят.
+               Виден только когда есть хотя бы одна попытка теста/КТ или разбор по темам (injected by script.js). -->
+          <div class="dash-card hidden" id="progressSection">
+            <div class="prog-head">
+              <h3>Прогресс подготовки</h3>
+              <div class="prog-tabs" id="progTabs"></div>
+            </div>
+            <div id="progBody"></div>
+          </div>
 
           <div class="dash-grid">
             <!-- Личные данные -->
@@ -291,6 +301,6 @@
   <div class="toast" id="toast"></div>
 </div>
 
-<script src="script.js?v=11"></script>
+<script src="script.js?v=12"></script>
 </body>
 </html>
