@@ -855,17 +855,30 @@ section.hero-signature-band{ padding:var(--space-section-xs) 0 var(--space-secti
 
 .prog-section{ margin-bottom:24px; }
 .prog-section:last-child{ margin-bottom:0; }
-.prog-section h4{ font-family:var(--font-display); font-weight:600; font-size:14px; margin:0 0 3px; }
+.prog-section h4{ font-family:var(--font-display); font-weight:600; font-size:14px; margin:0 0 3px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 .prog-section-note{ font-size:12px; color:var(--ink-soft); margin:0 0 14px; }
 
-.prog-block-row{ display:grid; grid-template-columns:150px 1fr 56px; align-items:center; gap:12px; padding:9px 0; border-bottom:1px solid var(--line); }
+.prog-block-row{
+  display:grid; grid-template-columns:150px 1fr 56px; align-items:center; gap:12px; padding:9px 4px;
+  width:100%; border-bottom:1px solid var(--line); background:none; border-left:none; border-right:none; border-top:none;
+  font-family:inherit; text-align:left; cursor:pointer; border-radius:var(--radius-s);
+  transition:background .2s ease;
+}
 .prog-block-row:last-child{ border-bottom:none; }
+.prog-block-row:hover{ background:color-mix(in srgb, var(--ink) 4%, transparent); }
+.prog-block-row.is-active{ background:var(--accent-soft); }
+.prog-block-row.is-active .prog-block-name{ color:var(--accent); }
 .prog-block-name{ font-size:13px; font-weight:600; color:var(--ink); }
 .prog-block-bar{ height:8px; border-radius:999px; background:color-mix(in srgb, var(--ink) 6%, transparent); overflow:hidden; }
 .prog-block-fill{ height:100%; border-radius:999px; background:var(--teal); }
 .prog-block-fill.is-low{ background:var(--danger); }
 .prog-block-fill.is-mid{ background:var(--beige); }
 .prog-block-pct{ font-family:var(--font-display); font-size:13px; font-weight:600; text-align:right; color:var(--ink); font-variant-numeric:tabular-nums; }
+.prog-topic-reset{
+  font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--accent);
+  background:none; border:none; padding:0; cursor:pointer;
+}
+.prog-topic-reset:hover{ text-decoration:underline; }
 
 .prog-topic-row{ display:grid; grid-template-columns:1fr 100px 44px; align-items:center; gap:14px; padding:10px 0; border-bottom:1px solid var(--line); }
 .prog-topic-row:last-child{ border-bottom:none; }
