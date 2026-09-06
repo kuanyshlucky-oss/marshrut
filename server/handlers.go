@@ -241,7 +241,12 @@ func handleSaveResult(w http.ResponseWriter, r *http.Request) {
 		Score   int    `json:"score"`
 		Total   int    `json:"total"`
 		Section string `json:"section"`
-		Topics  []struct {
+		// Kind различает обычный тест по предмету ("subject") от полной симуляции
+		// КТ ("kt:nauchped" / "kt:profile"); Passed — официальный вердикт симуляции
+		// (сумма + минимумы по блокам), посчитанный на клиенте при завершении попытки.
+		Kind   string `json:"kind"`
+		Passed bool   `json:"passed"`
+		Topics []struct {
 			Topic   string `json:"topic"`
 			Correct bool   `json:"correct"`
 			// Section — необязательный раздел ЭТОГО вопроса (блок КТ-симуляции —
@@ -261,7 +266,7 @@ func handleSaveResult(w http.ResponseWriter, r *http.Request) {
 		in.Score = in.Total
 	}
 	uid := currentUID(r)
-	if err := addResult(uid, strings.TrimSpace(in.Code), in.Score, in.Total); err != nil {
+	if err := addResult(uid, strings.TrimSpace(in.Code), in.Score, in.Total, strings.TrimSpace(in.Kind), in.Passed); err != nil {
 		writeError(w, http.StatusInternalServerError, "Не удалось сохранить результат")
 		return
 	}

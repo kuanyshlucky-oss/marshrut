@@ -34,10 +34,20 @@ type Profile struct {
 }
 
 type Result struct {
-	Code  string `json:"code"`
-	Score int    `json:"score"`
-	Total int    `json:"total"`
-	Date  string `json:"date"`
+	Code   string `json:"code"`
+	Score  int    `json:"score"`
+	Total  int    `json:"total"`
+	Date   string `json:"date"`
+	// Kind различает обычный тест по предмету ("subject") от полной симуляции
+	// КТ ("kt:nauchped" / "kt:profile" — по typeId из KT_TYPES в kt.js), чтобы
+	// кабинет мог найти именно попытки симуляции для сравнения с порогом
+	// прохождения. Пустая строка — старые результаты до этого поля.
+	Kind string `json:"kind"`
+	// Passed — вердикт по официальным правилам симуляции КТ (сумма выше порога
+	// И ни один блок не ниже своего минимума), посчитанный один раз на клиенте
+	// в момент завершения попытки (gradeKT) — восстановить его позже из одной
+	// только суммы нельзя, поэтому сохраняем сразу.
+	Passed bool `json:"passed"`
 }
 
 // TopicStat — накопленная статистика по одной теме предмета (сколько раз
@@ -103,6 +113,11 @@ func initDB(dsn string) error {
 		total   INTEGER NOT NULL,
 		date    TEXT NOT NULL
 	);
+	-- kind различает обычный тест по предмету от полной симуляции КТ (см. Result
+	-- в этом файле); passed — официальный вердикт симуляции (сумма + минимумы
+	-- по блокам), посчитанный один раз на клиенте в момент завершения попытки.
+	ALTER TABLE results ADD COLUMN IF NOT EXISTS kind   TEXT NOT NULL DEFAULT '';
+	ALTER TABLE results ADD COLUMN IF NOT EXISTS passed BOOLEAN NOT NULL DEFAULT false;
 	CREATE TABLE IF NOT EXISTS topic_stats (
 		id      BIGSERIAL PRIMARY KEY,
 		user_id BIGINT NOT NULL,
@@ -193,13 +208,13 @@ func loadUser(id int64) (*User, error) {
 	}
 	favRows.Close()
 
-	resRows, err := db.Query(`SELECT code, score, total, date FROM results WHERE user_id = $1 ORDER BY id`, id)
+	resRows, err := db.Query(`SELECT code, score, total, date, kind, passed FROM results WHERE user_id = $1 ORDER BY id`, id)
 	if err != nil {
 		return nil, err
 	}
 	for resRows.Next() {
 		var r Result
-		if err := resRows.Scan(&r.Code, &r.Score, &r.Total, &r.Date); err != nil {
+		if err := resRows.Scan(&r.Code, &r.Score, &r.Total, &r.Date, &r.Kind, &r.Passed); err != nil {
 			resRows.Close()
 			return nil, err
 		}
@@ -356,10 +371,10 @@ func deleteUser(id int64) error {
 	return err
 }
 
-func addResult(id int64, code string, score, total int) error {
+func addResult(id int64, code string, score, total int, kind string, passed bool) error {
 	_, err := db.Exec(
-		`INSERT INTO results(user_id, code, score, total, date) VALUES($1, $2, $3, $4, $5)`,
-		id, code, score, total, time.Now().UTC().Format("2006-01-02"),
+		`INSERT INTO results(user_id, code, score, total, date, kind, passed) VALUES($1, $2, $3, $4, $5, $6, $7)`,
+		id, code, score, total, time.Now().UTC().Format("2006-01-02"), kind, passed,
 	)
 	return err
 }

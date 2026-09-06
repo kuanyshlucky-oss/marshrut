@@ -968,8 +968,8 @@ const API = {
     return currentUser;
   },
 
-  async saveResult(code, score, total, section, topics) {
-    currentUser = await apiFetch('/api/results', { method: 'POST', auth: true, body: { code, score, total, section, topics } });
+  async saveResult(code, score, total, section, topics, kind, passed) {
+    currentUser = await apiFetch('/api/results', { method: 'POST', auth: true, body: { code, score, total, section, topics, kind, passed } });
     return currentUser;
   },
 
@@ -1441,7 +1441,7 @@ function finishQuiz() {
     const topics = activeQuiz.pool
       .map((q, i) => (q.topic ? { topic: q.topic, correct: quizIsCorrect(q, activeQuiz.answers[i]) } : null))
       .filter(Boolean);
-    API.saveResult(activeQuiz.code, score, total, activeQuiz.section, topics)
+    API.saveResult(activeQuiz.code, score, total, activeQuiz.section, topics, 'subject', passed)
       .then(() => renderDashboard()).catch((e) => showToast(e.message));
   }
 
@@ -1599,6 +1599,196 @@ function refreshAuthUI() {
   }
 }
 
+// Пороги прохождения полной симуляции КТ — дублирует минимально нужные числа из
+// KT_TYPES (kt.js): тянуть весь kt.js в кабинет ради двух порогов не стоит (см.
+// комментарий ниже про дублирование названий предметов — та же причина).
+const KT_PASS_RULES = {
+  nauchped: { total: 130, thresholdTotal: 75 },
+  profile: { total: 40, thresholdTotal: 30 },
+};
+
+// Человекочитаемое название блока КТ/раздела темы (lang/logic/subj1/subj2) для
+// направления code. lang/logic — общие для всех направлений; subj1/subj2 — через
+// реальные названия профильных предметов в GOP_SUBJECTS (p1/p2).
+function progressSectionLabel(code, section) {
+  if (section === 'lang') return 'Иностранный язык';
+  if (section === 'logic') return 'Тест готовности к обучению (ТГО)';
+  const gopId = section === 'subj1' ? 'p1' : 'p2';
+  const gopCode = (typeof CONTENT_TO_GOP !== 'undefined' && CONTENT_TO_GOP[code]) || code;
+  const list = GOP_SUBJECTS[gopCode];
+  const item = list && list.find(x => x.id === gopId);
+  return item ? item.title : section;
+}
+
+// Считает всё нужное для карточки «Прогресс подготовки» по одному направлению:
+// лучшую попытку полной симуляции КТ (для разрыва до порога) + разбор по темам
+// (накопленный по всем попыткам — и обычным тестам, и симуляциям КТ) для слабых
+// тем и точности по блокам/предметам.
+function computeProgressForCode(code, user) {
+  const ktAttempts = (user.results || []).filter(r => r.code === code && typeof r.kind === 'string' && r.kind.indexOf('kt:') === 0);
+  let best = null;
+  ktAttempts.forEach(r => { if (!best || r.score > best.score) best = r; });
+  let kt = null;
+  if (best) {
+    const typeId = best.kind.slice(3);
+    const rule = KT_PASS_RULES[typeId];
+    if (rule) {
+      kt = {
+        score: best.score, total: best.total, date: best.date, passed: !!best.passed,
+        thresholdTotal: rule.thresholdTotal,
+        gap: Math.max(0, rule.thresholdTotal - best.score),
+      };
+    }
+  }
+
+  const stats = (user.topicStats || []).filter(t => t.code === code);
+  const bySection = {};
+  stats.forEach(t => {
+    const a = bySection[t.section] || (bySection[t.section] = { correct: 0, wrong: 0 });
+    a.correct += t.correct; a.wrong += t.wrong;
+  });
+  const sectionOrder = ['lang', 'logic', 'subj1', 'subj2'];
+  const sections = sectionOrder
+    .filter(s => bySection[s])
+    .map(s => {
+      const a = bySection[s];
+      const n = a.correct + a.wrong;
+      return { section: s, label: progressSectionLabel(code, s), pct: n ? Math.round((a.correct / n) * 100) : null, n };
+    });
+
+  const topics = stats
+    .map(t => ({ topic: t.topic, section: t.section, n: t.correct + t.wrong, pct: (t.correct + t.wrong) ? Math.round((t.wrong / (t.correct + t.wrong)) * 100) : 0 }))
+    .filter(t => t.n > 0 && t.pct > 0)
+    .sort((a, b) => b.pct - a.pct)
+    .slice(0, 6);
+
+  return { code, kt, sections, topics };
+}
+
+// Раздел «Прогресс подготовки»: сколько баллов не хватает до порога симуляции КТ
+// и какие темы чаще всего дают ошибки — по каждому направлению, где есть хоть
+// какие-то данные (попытка КТ или разбор по темам обычного теста).
+let progressActiveCode = null;
+function renderProgress() {
+  const user = API.getCurrentUser();
+  const section = document.getElementById('progressSection');
+  if (!user || !section) return;
+
+  const codes = new Set();
+  (user.results || []).forEach(r => { if (typeof r.kind === 'string' && r.kind.indexOf('kt:') === 0) codes.add(r.code); });
+  (user.topicStats || []).forEach(t => codes.add(t.code));
+
+  if (codes.size === 0) {
+    section.classList.add('hidden');
+    return;
+  }
+  section.classList.remove('hidden');
+
+  const codeList = [...codes];
+  if (!progressActiveCode || !codeList.includes(progressActiveCode)) progressActiveCode = codeList[0];
+
+  document.getElementById('progTabs').innerHTML = codeList.map(code => {
+    const d = findDirection(code);
+    const label = d ? `${d.code} · ${d.name}` : code;
+    return `<button class="prog-tab ${code === progressActiveCode ? 'is-active' : ''}" data-code="${code}">${esc(label)}</button>`;
+  }).join('');
+  document.querySelectorAll('#progTabs .prog-tab').forEach(b => b.addEventListener('click', () => {
+    progressActiveCode = b.dataset.code;
+    renderProgress();
+  }));
+
+  const data = computeProgressForCode(progressActiveCode, user);
+  const body = document.getElementById('progBody');
+
+  let heroHtml = '';
+  if (data.kt) {
+    const circumference = 2 * Math.PI * 50;
+    const frac = Math.max(0, Math.min(1, data.kt.score / data.kt.total));
+    const gapLabel = data.kt.gap > 0
+      ? `<span class="prog-stat-num danger">+${data.kt.gap} ${pluralPoints(data.kt.gap)}</span>`
+      : `<span class="prog-stat-num ok">Порог пройден</span>`;
+    heroHtml = `
+      <div class="prog-hero">
+        <div class="prog-gauge-card">
+          <div class="prog-gauge-wrap">
+            <svg viewBox="0 0 116 116">
+              <circle class="prog-gauge-track" cx="58" cy="58" r="50"></circle>
+              <circle class="prog-gauge-fill ${data.kt.passed ? 'is-pass' : ''}" cx="58" cy="58" r="50"
+                stroke-dasharray="${(frac * circumference).toFixed(1)} ${circumference.toFixed(1)}"></circle>
+            </svg>
+            <div class="prog-gauge-center">
+              <span class="prog-gauge-num">${data.kt.score}</span>
+              <span class="prog-gauge-den">из ${data.kt.total}</span>
+            </div>
+          </div>
+          <p class="prog-gauge-caption">Лучшая симуляция КТ · порог — <b>${data.kt.thresholdTotal}</b></p>
+        </div>
+        <div class="prog-stat-col">
+          <div class="prog-stat">
+            <span class="prog-stat-label">Не хватает до порога</span>
+            ${gapLabel}
+            <span class="prog-stat-note">по сумме — ${data.kt.score} из нужных ${data.kt.thresholdTotal}</span>
+          </div>
+          <div class="prog-stat">
+            <span class="prog-stat-label">Итог симуляции</span>
+            <span class="prog-stat-num ${data.kt.passed ? 'ok' : 'danger'}">${data.kt.passed ? 'Сдано' : 'Не сдано'}</span>
+            <span class="prog-stat-note">от ${data.kt.date}</span>
+          </div>
+          <div class="prog-stat">
+            <span class="prog-stat-label">Попыток учтено</span>
+            <span class="prog-stat-num">${(user.results || []).filter(r => r.code === progressActiveCode).length}</span>
+            <span class="prog-stat-note">тесты по предметам + симуляции КТ</span>
+          </div>
+        </div>
+      </div>`;
+  } else {
+    heroHtml = `<p class="prog-empty">Пока нет ни одной полной симуляции КТ по этому направлению — пройдите её, чтобы увидеть разрыв до порога прохождения.</p>`;
+  }
+
+  const blocksHtml = data.sections.length ? `
+    <div class="prog-section">
+      <h4>Точность по разделам</h4>
+      <p class="prog-section-note">Доля верных ответов за все попытки — и обычные тесты, и симуляции КТ.</p>
+      ${data.sections.map(s => {
+        const tier = s.pct == null ? '' : (s.pct >= 60 ? '' : (s.pct >= 40 ? 'is-mid' : 'is-low'));
+        return `
+        <div class="prog-block-row">
+          <div class="prog-block-name">${esc(s.label)}</div>
+          <div class="prog-block-bar"><div class="prog-block-fill ${tier}" style="width:${s.pct ?? 0}%"></div></div>
+          <div class="prog-block-pct">${s.pct == null ? '—' : s.pct + '%'}</div>
+        </div>`;
+      }).join('')}
+    </div>` : '';
+
+  const topicsHtml = data.topics.length ? `
+    <div class="prog-section">
+      <h4>Темы, которые чаще всего подводят</h4>
+      <p class="prog-section-note">По доле неверных ответов за все попытки, от самой слабой темы.</p>
+      ${data.topics.map(t => {
+        const mid = t.pct < 45 ? 'is-mid' : '';
+        return `
+        <div class="prog-topic-row">
+          <div class="prog-topic-main">
+            <span class="prog-topic-name">${esc(t.topic)}</span>
+            <span class="prog-topic-subj">${esc(progressSectionLabel(progressActiveCode, t.section))}</span>
+          </div>
+          <div class="prog-topic-bar"><div class="prog-topic-fill ${mid}" style="width:${t.pct}%"></div></div>
+          <div class="prog-topic-pct ${mid}">${t.pct}%</div>
+        </div>`;
+      }).join('')}
+    </div>` : (data.kt || data.sections.length ? '' : '');
+
+  body.innerHTML = heroHtml + blocksHtml + topicsHtml
+    || `<p class="prog-empty">Пока недостаточно данных для разбора по темам.</p>`;
+}
+
+function pluralPoints(n) {
+  const n10 = n % 10, n100 = n % 100;
+  if (n10 === 1 && n100 !== 11) return 'балл';
+  if ([2, 3, 4].includes(n10) && ![12, 13, 14].includes(n100)) return 'балла';
+  return 'баллов';
+}
+
 function renderDashboard() {
   const user = API.getCurrentUser();
   if (!user || !document.getElementById('dashboard')) return; // дашборд только на cabinet.html
@@ -1609,6 +1799,7 @@ function renderDashboard() {
   // раньше, одна карточка-приглашение в общий каталог.
   renderTestAccessCards();
   renderConspectsLibrary();
+  renderProgress();
 
   // --- Личные данные: просмотр или редактирование ---
   const p = user.profile;

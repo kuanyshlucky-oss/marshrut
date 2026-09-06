@@ -1012,7 +1012,7 @@ function finishKT() {
     const topics = s.flat
       .map((item, i) => (item.topic ? { topic: item.topic, correct: ktIsCorrect(item, s.answers[i]), section: item.block } : null))
       .filter(Boolean);
-    API.saveResult(s.code, res.total, res.maxTotal, undefined, topics)
+    API.saveResult(s.code, res.total, res.maxTotal, undefined, topics, 'kt:' + s.typeId, res.passed)
       .then(() => { if (typeof renderDashboard === 'function') renderDashboard(); }).catch(() => {});
   }
 
