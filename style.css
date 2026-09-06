@@ -1090,7 +1090,7 @@ body.test-open #reviewPage input{ user-select:text; }
 .test-opt.is-selected .test-radio.is-checkbox::after{ border-radius:2px; }
 .test-opt-label{ flex:1; }
 .kt-multi-hint{
-  font-size:13px; color:var(--accent); font-style:italic; margin:-10px 0 16px;
+  font-size:13px; color:var(--accent); font-style:italic; margin:6px 0 20px;
 }
 
 .test-foot{ display:flex; align-items:center; justify-content:space-between; gap:18px; margin-top:30px; }
