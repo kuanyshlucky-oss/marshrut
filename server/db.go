@@ -50,10 +50,13 @@ type TopicStat struct {
 	Wrong   int    `json:"wrong"`
 }
 
-// TopicHit — один вопрос из завершённой попытки: тема + правильность ответа.
+// TopicHit — один вопрос из завершённой попытки: тема + правильность ответа +
+// раздел, к которому относится вопрос (например, блок КТ-симуляции — lang/logic/
+// subj1/subj2 — или секция обычного теста по предмету).
 type TopicHit struct {
 	Topic   string
 	Correct bool
+	Section string
 }
 
 var db *sql.DB
@@ -361,23 +364,29 @@ func addResult(id int64, code string, score, total int) error {
 	return err
 }
 
-// addTopicStats агрегирует верные/неверные ответы завершённой попытки по темам
-// (в hits может быть несколько вопросов одной темы — сначала суммируем в Go,
-// потом один upsert на тему, а не по одному INSERT на вопрос).
-func addTopicStats(id int64, code, section string, hits []TopicHit) error {
-	if code == "" || section == "" || len(hits) == 0 {
+// addTopicStats агрегирует верные/неверные ответы завершённой попытки по темам.
+// Раздел берётся из каждого hit отдельно (не один общий на весь вызов), поскольку
+// одна попытка (симуляция КТ) может смешивать вопросы разных блоков — lang/logic/
+// subj1/subj2 — и тема из профильного блока не должна попасть в статистику другого.
+// В hits может быть несколько вопросов одной темы одного раздела — сначала
+// суммируем в Go, потом один upsert на пару (раздел, тема), а не по одному
+// INSERT на вопрос.
+func addTopicStats(id int64, code string, hits []TopicHit) error {
+	if code == "" || len(hits) == 0 {
 		return nil
 	}
+	type key struct{ section, topic string }
 	type acc struct{ correct, wrong int }
-	byTopic := map[string]*acc{}
+	byKey := map[key]*acc{}
 	for _, h := range hits {
-		if h.Topic == "" {
+		if h.Topic == "" || h.Section == "" {
 			continue
 		}
-		a := byTopic[h.Topic]
+		k := key{h.Section, h.Topic}
+		a := byKey[k]
 		if a == nil {
 			a = &acc{}
-			byTopic[h.Topic] = a
+			byKey[k] = a
 		}
 		if h.Correct {
 			a.correct++
@@ -385,14 +394,14 @@ func addTopicStats(id int64, code, section string, hits []TopicHit) error {
 			a.wrong++
 		}
 	}
-	for topic, a := range byTopic {
+	for k, a := range byKey {
 		if _, err := db.Exec(
 			`INSERT INTO topic_stats(user_id, code, section, topic, correct, wrong)
 			 VALUES($1, $2, $3, $4, $5, $6)
 			 ON CONFLICT (user_id, code, section, topic)
 			 DO UPDATE SET correct = topic_stats.correct + EXCLUDED.correct,
 			               wrong   = topic_stats.wrong   + EXCLUDED.wrong`,
-			id, code, section, topic, a.correct, a.wrong,
+			id, code, k.section, k.topic, a.correct, a.wrong,
 		); err != nil {
 			return err
 		}
