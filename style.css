@@ -1030,9 +1030,23 @@ body.test-open #reviewPage input{ user-select:text; }
   display:flex; flex-direction:column; justify-content:center;
   padding:80px 28px 60px;
 }
-#ktPageBody{ max-width:960px; padding-top:110px; }
+#ktPageBody{ max-width:960px; padding-top:172px; }
+.kt-block-nav{
+  position:fixed; top:0; left:0; right:90px; z-index:3;
+  display:flex; flex-wrap:nowrap; overflow-x:auto; gap:8px;
+  padding:14px 16px 10px 26px; background:var(--bg); border-bottom:1px solid var(--line);
+}
+.kt-block-nav-btn{
+  flex:0 0 auto; white-space:nowrap;
+  background:var(--bg); border:1px solid var(--beige); color:var(--ink-soft);
+  font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.05em; font-size:11px;
+  border-radius:var(--radius-s); padding:8px 14px;
+  transition:border-color .25s ease, color .25s ease, background .25s ease;
+}
+.kt-block-nav-btn:hover{ border-color:var(--accent); color:var(--accent); }
+.kt-block-nav-btn.is-active{ background:var(--accent); color:var(--accent-on); border-color:var(--accent); }
 .kt-qnav{
-  position:fixed; top:0; left:0; right:90px; z-index:2;
+  position:fixed; top:53px; left:0; right:90px; z-index:2;
   display:flex; flex-wrap:nowrap; overflow-x:auto; gap:6px;
   padding:16px 16px 16px 26px; background:var(--bg); border-bottom:1px solid var(--line);
 }

@@ -796,10 +796,30 @@ async function beginKT(code, typeId, lang) {
   startKTTimer();
 }
 
+// Границы каждого блока (lang/logic/subj1/subj2) в плоском массиве s.flat —
+// используется и панелью блоков сверху, и нумерацией вопросов под ней.
+function ktBlockRanges(s) {
+  const order = ['lang', 'logic', 'subj1', 'subj2'];
+  const ranges = [];
+  order.forEach(id => {
+    let start = -1, end = -1;
+    s.flat.forEach((item, i) => { if (item.block === id) { if (start === -1) start = i; end = i; } });
+    if (start !== -1) {
+      const label = id === 'lang' ? `${ktBlockLabel(s.code, id)} · ${KT_LANGUAGES[s.lang]}` : ktBlockLabel(s.code, id);
+      ranges.push({ id, label, start, end });
+    }
+  });
+  return ranges;
+}
+
 function renderKTQuestion() {
   const s = activeKT;
   const item = s.flat[s.idx];
   const blockTag = item.stage ? `${ktBlockLabel(s.code, item.block)} · ${KT_LANG_STAGE_LABELS[item.stage]}` : ktBlockLabel(s.code, item.block);
+
+  const ranges = ktBlockRanges(s);
+  const curRange = ranges.find(r => s.idx >= r.start && s.idx <= r.end) || ranges[0];
+  const blockNav = ranges.map(r => `<button class="kt-block-nav-btn ${r.id === curRange.id ? 'is-active' : ''}" data-block="${r.id}">${esc(r.label)}</button>`).join('');
 
   const media = item.stage === 'listening' && item.audio
     ? `
@@ -822,11 +842,13 @@ function renderKTQuestion() {
       : '';
 
   const qnav = s.flat.map((q, i) => {
+    if (i < curRange.start || i > curRange.end) return '';
     const cls = i === s.idx ? 'is-current' : (s.answers[i] != null && (!Array.isArray(s.answers[i]) || s.answers[i].length) ? 'is-answered' : '');
-    return `<button class="kt-qnav-btn ${cls}" data-idx="${i}">${i + 1}</button>`;
+    return `<button class="kt-qnav-btn ${cls}" data-idx="${i}">${i - curRange.start + 1}</button>`;
   }).join('');
 
   ktEl().innerHTML = `
+    <div class="kt-block-nav" id="ktBlockNav">${blockNav}</div>
     <div class="kt-qnav" id="ktQnav">${qnav}</div>
     <div class="kt-run-head">
       <span class="kt-block-tag">${blockTag}</span>
@@ -884,6 +906,10 @@ function renderKTQuestion() {
   document.getElementById('ktPrev').addEventListener('click', ktPrev);
   document.getElementById('ktNext').addEventListener('click', ktNext);
   ktEl().querySelectorAll('.kt-qnav-btn').forEach(b => b.addEventListener('click', () => ktGoTo(Number(b.dataset.idx))));
+  ktEl().querySelectorAll('.kt-block-nav-btn').forEach(b => b.addEventListener('click', () => {
+    const r = ranges.find(x => x.id === b.dataset.block);
+    if (r) ktGoTo(r.start);
+  }));
   const curBtn = ktEl().querySelector('.kt-qnav-btn.is-current');
   if (curBtn) curBtn.scrollIntoView({ block: 'nearest', inline: 'center' });
   wireKTAudioPlayer();
