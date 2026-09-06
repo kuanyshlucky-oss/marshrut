@@ -790,6 +790,7 @@ async function beginKT(code, typeId, lang) {
   a.blocks.forEach(b => b.questions.forEach(q => flat.push({
     q: q.q, options: q.options, correct: q.correct, why: q.why, explanations: q.explanations, image: q.image, topic: q.topic, block: b.id,
     stage: q.stage, audio: q.audio, passage: q.passage, // только для lang-блока (en)
+    conspect: q.conspect,
   })));
   activeKT = { code, typeId, lang, flat, answers: new Array(flat.length).fill(null), idx: 0, secondsLeft: KT_TYPES[typeId].timeMin * 60, timer: null };
   renderKTQuestion();
