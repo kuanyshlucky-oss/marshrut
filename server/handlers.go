@@ -244,6 +244,10 @@ func handleSaveResult(w http.ResponseWriter, r *http.Request) {
 		Topics  []struct {
 			Topic   string `json:"topic"`
 			Correct bool   `json:"correct"`
+			// Section — необязательный раздел ЭТОГО вопроса (блок КТ-симуляции —
+			// lang/logic/subj1/subj2); если пуст, берём общий in.Section (обычный
+			// тест по предмету, где все вопросы одной секции).
+			Section string `json:"section"`
 		} `json:"topics"`
 	}
 	if err := decode(r, &in); err != nil || strings.TrimSpace(in.Code) == "" || in.Total <= 0 {
@@ -264,11 +268,16 @@ func handleSaveResult(w http.ResponseWriter, r *http.Request) {
 	// Разбор по темам — best-effort: пустой список (общие предметы без тем)
 	// или ошибка агрегации не должны ронять уже сохранённый результат.
 	if len(in.Topics) > 0 {
+		fallbackSection := strings.TrimSpace(in.Section)
 		hits := make([]TopicHit, 0, len(in.Topics))
 		for _, t := range in.Topics {
-			hits = append(hits, TopicHit{Topic: strings.TrimSpace(t.Topic), Correct: t.Correct})
+			section := strings.TrimSpace(t.Section)
+			if section == "" {
+				section = fallbackSection
+			}
+			hits = append(hits, TopicHit{Topic: strings.TrimSpace(t.Topic), Correct: t.Correct, Section: section})
 		}
-		_ = addTopicStats(uid, strings.TrimSpace(in.Code), strings.TrimSpace(in.Section), hits)
+		_ = addTopicStats(uid, strings.TrimSpace(in.Code), hits)
 	}
 	handleMe(w, r)
 }

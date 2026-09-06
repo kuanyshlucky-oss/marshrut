@@ -1005,9 +1005,15 @@ function finishKT() {
   const res = gradeKT(s.typeId, scores, maxScores);
   const praise = typeof quizPraiseMessage === 'function' ? quizPraiseMessage(res.total, res.maxTotal, res.passed) : '';
 
-  // сохранить результат в кабинет (если вошёл): code + сумма/макс
+  // сохранить результат в кабинет (если вошёл): code + сумма/макс + разбор по темам
+  // (каждая тема помечена своим блоком — lang/logic/subj1/subj2 — а не одной общей
+  // секцией на весь прогон, чтобы «Английский» и «ТГО» не путались в топ-темах профиля).
   if (typeof API !== 'undefined' && API.getCurrentUser()) {
-    API.saveResult(s.code, res.total, res.maxTotal).then(() => { if (typeof renderDashboard === 'function') renderDashboard(); }).catch(() => {});
+    const topics = s.flat
+      .map((item, i) => (item.topic ? { topic: item.topic, correct: ktIsCorrect(item, s.answers[i]), section: item.block } : null))
+      .filter(Boolean);
+    API.saveResult(s.code, res.total, res.maxTotal, undefined, topics)
+      .then(() => { if (typeof renderDashboard === 'function') renderDashboard(); }).catch(() => {});
   }
 
   const d = findDirection(s.code);
