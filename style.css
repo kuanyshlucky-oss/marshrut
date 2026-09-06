@@ -1441,6 +1441,14 @@ body.test-open #reviewPage input{ user-select:text; }
 }
 @media (max-width: 640px){
   .kt-type-cards{ grid-template-columns:1fr; }
+
+  #ktPageBody{ padding-top:150px; }
+  .kt-block-nav, .kt-qnav{ right:56px; padding-left:16px; padding-right:10px; }
+  .kt-block-nav{ padding-top:12px; padding-bottom:8px; }
+  .kt-block-nav-btn{ font-size:10px; padding:7px 10px; }
+  .kt-qnav-btn{ width:30px; height:30px; }
+  .kt-run-head{ flex-wrap:wrap; row-gap:8px; }
+  .kt-timer-label, .kt-block-tag{ white-space:nowrap; }
 }
 @media (max-width: 560px){
   .header-row{ height:64px; padding-left:16px; padding-right:16px; gap:10px; }

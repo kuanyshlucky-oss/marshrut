@@ -913,6 +913,8 @@ function renderKTQuestion() {
   }));
   const curBtn = ktEl().querySelector('.kt-qnav-btn.is-current');
   if (curBtn) curBtn.scrollIntoView({ block: 'nearest', inline: 'center' });
+  const curBlockBtn = ktEl().querySelector('.kt-block-nav-btn.is-active');
+  if (curBlockBtn) curBlockBtn.scrollIntoView({ block: 'nearest', inline: 'center' });
   wireKTAudioPlayer();
 }
 
