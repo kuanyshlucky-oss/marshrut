@@ -170,6 +170,27 @@
     <p id="listMsg" class="msg"></p>
   </div>
 
+  <!-- WhatsApp -->
+  <div class="card">
+    <h2>WhatsApp (<span id="waCount">0</span>) <button class="btn-ghost" id="waReloadBtn" style="float:right;padding:5px 14px;font-size:12px">Обновить</button></h2>
+    <div class="row">
+      <div>
+        <label for="waTo">Кому (номер, формат 77001234567)</label>
+        <input id="waTo" type="text" placeholder="77001234567">
+      </div>
+    </div>
+    <label for="waText">Сообщение</label>
+    <input id="waText" type="text" placeholder="Текст ответа">
+    <button class="btn-primary" id="waSendBtn">Отправить</button>
+    <p class="muted">Свободный ответ работает только в течение 24 часов после последнего сообщения от этого номера.</p>
+    <p id="waSendMsg" class="msg"></p>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Когда</th><th>Напр.</th><th>Номер</th><th>Имя</th><th>Текст</th><th></th></tr></thead>
+      <tbody id="waRows"></tbody>
+    </table></div>
+    <p id="waMsg" class="msg"></p>
+  </div>
+
   <!-- Журнал -->
   <div class="card">
     <h2>Журнал действий (<span id="auditCount">0</span>) <button class="btn-ghost" id="auditReloadBtn" style="float:right;padding:5px 14px;font-size:12px">Обновить</button></h2>
@@ -188,7 +209,7 @@ const $ = id => document.getElementById(id);
 
 function getKey(){ return localStorage.getItem(KEY) || ''; }
 $('key').value = getKey();
-$('saveKey').onclick = () => { localStorage.setItem(KEY, $('key').value.trim()); load(); loadAuditLog(); };
+$('saveKey').onclick = () => { localStorage.setItem(KEY, $('key').value.trim()); load(); loadAuditLog(); loadWhatsApp(); };
 
 async function api(path, opts={}){
   // ключ передаём заголовком, не query-строкой — так он не оседает в логах сервера/прокси
@@ -203,6 +224,12 @@ async function api(path, opts={}){
 }
 
 function copy(text, btn){ navigator.clipboard.writeText(text).then(()=>{ const t=btn.textContent; btn.textContent='✓'; setTimeout(()=>btn.textContent=t,1200); }); }
+
+// Текст сообщений WhatsApp пишут посторонние люди, а не мы — экранируем перед
+// вставкой через innerHTML, иначе это готовый stored-XSS в админке.
+function escapeHtml(s){
+  return String(s??'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 $('createBtn').onclick = async () => {
   const msg = $('createMsg'); msg.textContent=''; msg.className='msg';
@@ -307,12 +334,49 @@ async function load(){
   }catch(e){ lm.textContent=e.message; lm.className='msg err'; }
 }
 
+async function loadWhatsApp(){
+  const wm = $('waMsg'); wm.textContent=''; wm.className='msg';
+  if(!getKey()){ wm.textContent='Введите ADMIN_KEY.'; wm.className='msg err'; return; }
+  try{
+    const d = await api('/api/admin/whatsapp/messages');
+    const messages = d.messages || [];
+    $('waCount').textContent = messages.length;
+    $('waRows').innerHTML = messages.map(m => `
+      <tr>
+        <td>${(m.created_at||'').replace('T',' ').slice(0,19)}</td>
+        <td>${m.direction === 'in' ? '← вход' : '→ ответ'}</td>
+        <td>${escapeHtml(m.wa_id)}</td>
+        <td>${escapeHtml(m.name)}</td>
+        <td>${escapeHtml(m.body)}</td>
+        <td>${m.direction === 'in' ? `<button class="btn-ghost" data-reply="${escapeHtml(m.wa_id)}" style="padding:4px 10px;font-size:12px">Ответить</button>` : ''}</td>
+      </tr>`).join('');
+    $('waRows').querySelectorAll('[data-reply]').forEach(b=>b.onclick=()=>{ $('waTo').value = b.dataset.reply; $('waText').focus(); });
+  }catch(e){ wm.textContent=e.message; wm.className='msg err'; }
+}
+
+$('waSendBtn').onclick = async () => {
+  const msg = $('waSendMsg'); msg.textContent=''; msg.className='msg';
+  const to = $('waTo').value.trim(), text = $('waText').value.trim();
+  if(!to || !text){ msg.textContent='Укажите номер и текст.'; msg.className='msg err'; return; }
+  const btn = $('waSendBtn'); btn.disabled=true; btn.textContent='Отправляем…';
+  try{
+    await api('/api/admin/whatsapp/send', { method:'POST', body:{ to, text } });
+    $('waText').value='';
+    msg.textContent='Отправлено.'; msg.className='msg ok';
+    loadWhatsApp(); loadAuditLog();
+  }catch(e){ msg.textContent=e.message; msg.className='msg err'; }
+  btn.disabled=false; btn.textContent='Отправить';
+};
+
+$('waReloadBtn').onclick = loadWhatsApp;
+
 const ACTION_LABELS = {
   create_user: 'Создан аккаунт',
   delete_user: 'Удалён аккаунт',
   reset_password: 'Сброшен пароль',
   grant_access: 'Выдан доступ',
   revoke_access: 'Отозван доступ',
+  whatsapp_send: 'Отправлено сообщение WhatsApp',
 };
 
 async function loadAuditLog(){
@@ -335,7 +399,7 @@ async function loadAuditLog(){
 
 $('reloadBtn').onclick = load;
 $('auditReloadBtn').onclick = loadAuditLog;
-if(getKey()){ load(); loadAuditLog(); }
+if(getKey()){ load(); loadAuditLog(); loadWhatsApp(); }
 </script>
 </body>
 </html>
