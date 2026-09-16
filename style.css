@@ -443,18 +443,8 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .filter-field input::placeholder{ color:var(--ink-soft); opacity:.6; }
 .filter-submit{ flex:0 0 auto; }
 
-section.hero-signature-band{ padding:var(--space-section-xs) 0 var(--space-section-2xs); }
-.hero-signature{
-  display:flex; align-items:center; gap:48px; flex-wrap:wrap;
-  padding-top:36px; border-top:1px solid var(--line);
-}
-.sig-stats{ display:flex; gap:40px; flex-wrap:wrap; }
 .sig-stat .num{ font-family:var(--font-display); font-weight:700; font-size:26px; letter-spacing:-.02em; color:var(--ink); }
 .sig-stat .label{ font-size:13px; color:var(--ink-soft); margin-top:2px; }
-@media (max-width:680px){
-  .hero-signature{ flex-direction:column; align-items:flex-start; gap:24px; }
-  .sig-stats{ gap:28px; }
-}
 
 /* =========================== SECTIONS =========================== */
 .section{ padding:var(--space-section-md) 0; }

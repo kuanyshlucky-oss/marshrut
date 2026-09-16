@@ -633,20 +633,6 @@ function burstConfetti(container, count = 18) {
   }
 }
 
-// Hero: 3 числовых стата (кольцо со средним % убрано по запросу).
-function renderHeroSignature() {
-  const el = document.getElementById('heroSignature');
-  if (!el) return; // блок только на index.html
-  el.innerHTML = `
-    <div class="sig-stats">
-      <div class="sig-stat"><div class="num" data-target="${KT_STATS_GROUPS.length}">0</div><div class="label">групп программ</div></div>
-      <div class="sig-stat"><div class="num" data-target="2025">0</div><div class="label">официальные итоги КТ</div></div>
-      <div class="sig-stat"><div class="num" data-target="4">0</div><div class="label">блока симуляции теста</div></div>
-    </div>
-  `;
-  el.querySelectorAll('.sig-stat .num').forEach(numEl => countUp(numEl, Number(numEl.dataset.target)));
-}
-
 function renderCategoryTiles() {
   const wrap = document.getElementById('catTiles');
   if (!wrap) return;
@@ -2268,7 +2254,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   // сразу рисуем то, что не зависит от пользователя, и вешаем обработчики
   renderCatalog();
   renderStatsCatalog();
-  renderHeroSignature();
   // Если токен уже есть в localStorage, пользователь почти наверняка залогинен —
   // скрываем гостевой экран («Войдите, чтобы продолжить») сразу, не дожидаясь
   // fetchMe(), иначе на долю секунды мелькает неверное состояние. Дашборд по
