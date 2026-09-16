@@ -1144,7 +1144,7 @@ body.test-open #reviewPage input{ user-select:text; }
 .test-title{ font-family:var(--font-display); font-weight:400; font-size:30px; text-align:center; color:var(--ink); margin:0; }
 .test-sub{ font-family:var(--font-mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); text-align:center; margin:10px 0 46px; }
 
-.test-question{ font-size:20px; font-weight:500; line-height:1.45; margin:0 0 24px; color:var(--ink); }
+.test-question{ font-size:20px; font-weight:500; line-height:1.45; margin:0 0 24px; color:var(--ink); white-space:pre-wrap; }
 .test-qnum{ color:var(--accent); font-family:var(--font-mono); margin-right:4px; }
 .test-options{ display:flex; flex-direction:column; gap:16px; }
 .test-opt{
@@ -1170,7 +1170,7 @@ body.test-open #reviewPage input{ user-select:text; }
 }
 .test-radio.is-checkbox{ border-radius:5px; }
 .test-opt.is-selected .test-radio.is-checkbox::after{ border-radius:2px; }
-.test-opt-label{ flex:1; }
+.test-opt-label{ flex:1; white-space:pre-wrap; }
 .kt-multi-hint{
   font-size:13px; color:var(--accent); font-style:italic; margin:6px 0 20px;
 }
@@ -1243,7 +1243,7 @@ body.test-open #reviewPage input{ user-select:text; }
   letter-spacing:.08em; color:var(--accent); border:1px solid rgba(10,108,201,.3);
   padding:3px 9px; border-radius:var(--radius-s); margin-bottom:10px;
 }
-.rev-q{ font-size:16px; font-weight:500; color:var(--ink); margin:0 0 14px; line-height:1.45; }
+.rev-q{ font-size:16px; font-weight:500; color:var(--ink); margin:0 0 14px; line-height:1.45; white-space:pre-wrap; }
 .rev-opts{ display:flex; flex-direction:column; gap:8px; }
 .rev-opt{
   padding:11px 14px; border-radius:var(--radius-m); font-size:14px;
@@ -1252,6 +1252,7 @@ body.test-open #reviewPage input{ user-select:text; }
 .rev-opt.correct{ background:var(--teal-soft); border-color:rgba(63,138,104,.5); color:var(--teal); }
 .rev-opt.wrong{ background:var(--danger-soft); border-color:rgba(179,38,30,.5); color:var(--danger); }
 .rev-opt-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.rev-opt-row > span{ white-space:pre-wrap; }
 .rev-tag{ flex:0 0 auto; font-family:var(--font-mono); font-size:10px; text-transform:uppercase; letter-spacing:.05em; padding:3px 8px; border-radius:var(--radius-s); }
 .rev-tag.ok{ background:var(--teal); color:var(--accent-on); }
 .rev-tag.bad{ background:var(--danger); color:var(--accent-on); }
