@@ -1160,14 +1160,17 @@ function showAccessGate(courseCode, courseName, reason) {
   const title = document.getElementById('gateTitle');
   const lead = document.getElementById('gateLead');
   const loginBtn = document.getElementById('gateLoginBtn');
+  const buyHint = document.getElementById('gateBuyHint');
   if (reason === 'access') {
     if (title) title.textContent = 'Доступ к этому тесту пока не выдан';
     if (lead) lead.textContent = 'Материал открывается индивидуально после оплаты. Напишите нам, чтобы получить доступ.';
     loginBtn?.classList.add('hidden');
+    buyHint?.classList.add('hidden'); // уже вошли — вопрос "нет аккаунта?" тут неуместен
   } else {
     if (title) title.textContent = 'Доступ к тестированию открывается после входа';
     if (lead) lead.textContent = 'Для прохождения теста и симуляции КТ необходим личный аккаунт. Войдите в систему или обратитесь к администратору для получения доступа.';
     loginBtn?.classList.remove('hidden');
+    buyHint?.classList.remove('hidden');
   }
   document.getElementById('gateModal').classList.remove('hidden');
 }
@@ -1619,6 +1622,15 @@ function wireQuiz() {
 /* ---------------------------------------------------------
    6) АВТОРИЗАЦИЯ / ЛИЧНЫЙ КАБИНЕТ
    --------------------------------------------------------- */
+// Имя показывается в шапке (аватар-буква + подпись) сразу после входа — до того,
+// как человек успел заполнить ФИО в профиле, user.name приходит с бэкенда равным
+// логину (телефон/цифры), из-за чего в шапке был некрасивый "1" / "123". Показываем
+// реальное имя, только если в нём есть хотя бы одна буква.
+function displayUserName(user) {
+  const raw = (user && user.name || '').trim();
+  return /\p{L}/u.test(raw) ? raw : 'Пользователь';
+}
+
 function refreshAuthUI() {
   // элементы различаются на index.html и cabinet.html — всё null-safe
   const user = API.getCurrentUser();
@@ -1634,8 +1646,9 @@ function refreshAuthUI() {
     chip?.classList.remove('hidden');
     guestLogin?.classList.add('hidden');
     guestRegister?.classList.add('hidden');
-    if (avatar) avatar.textContent = (user.name || '?').trim()[0].toUpperCase();
-    if (nameLabel) nameLabel.textContent = user.name;
+    const displayName = displayUserName(user);
+    if (avatar) avatar.textContent = displayName[0].toUpperCase();
+    if (nameLabel) nameLabel.textContent = displayName;
     authZone?.classList.add('hidden');
     dashboard?.classList.remove('hidden');
   } else {
