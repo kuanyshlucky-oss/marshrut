@@ -107,6 +107,27 @@ func handleAdminDelete(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
 }
 
+// POST /api/admin/reset-progress?key=... {id} — очищает результаты тестов и
+// статистику по темам, не трогая сам аккаунт (логин/пароль/профиль остаются).
+func handleAdminResetProgress(w http.ResponseWriter, r *http.Request) {
+	if !adminGuard(w, r) {
+		return
+	}
+	var in struct {
+		ID int64 `json:"id"`
+	}
+	if err := decode(r, &in); err != nil || in.ID <= 0 {
+		writeError(w, http.StatusBadRequest, "Не указан id")
+		return
+	}
+	if err := resetUserProgress(in.ID); err != nil {
+		writeError(w, http.StatusInternalServerError, "Не удалось сбросить прогресс")
+		return
+	}
+	logAdminAction(r, "reset_progress", strconv.FormatInt(in.ID, 10), "")
+	writeJSON(w, http.StatusOK, map[string]any{"ok": true})
+}
+
 // POST /api/admin/reset-password?key=... {id} — генерит новый пароль, возвращает его один раз.
 func handleAdminResetPassword(w http.ResponseWriter, r *http.Request) {
 	if !adminGuard(w, r) {

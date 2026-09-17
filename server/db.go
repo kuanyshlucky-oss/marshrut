@@ -367,7 +367,21 @@ func deleteUser(id int64) error {
 	if _, err := db.Exec(`DELETE FROM results WHERE user_id = $1`, id); err != nil {
 		return err
 	}
+	if _, err := db.Exec(`DELETE FROM topic_stats WHERE user_id = $1`, id); err != nil {
+		return err
+	}
 	_, err := db.Exec(`DELETE FROM users WHERE id = $1`, id)
+	return err
+}
+
+// resetUserProgress очищает результаты тестов и статистику по темам, оставляя
+// сам аккаунт (логин/пароль/профиль) нетронутым — для очистки тестовых прогонов
+// на реальном аккаунте без пересоздания логина.
+func resetUserProgress(id int64) error {
+	if _, err := db.Exec(`DELETE FROM results WHERE user_id = $1`, id); err != nil {
+		return err
+	}
+	_, err := db.Exec(`DELETE FROM topic_stats WHERE user_id = $1`, id)
 	return err
 }
 

@@ -66,6 +66,7 @@ func main() {
 	mux.HandleFunc("POST /api/admin/create-user", adminIPGuard(rateLimit(adminLimiter, handleAdminCreate)))
 	mux.HandleFunc("POST /api/admin/delete-user", adminIPGuard(rateLimit(adminLimiter, handleAdminDelete)))
 	mux.HandleFunc("POST /api/admin/reset-password", adminIPGuard(rateLimit(adminLimiter, handleAdminResetPassword)))
+	mux.HandleFunc("POST /api/admin/reset-progress", adminIPGuard(rateLimit(adminLimiter, handleAdminResetProgress)))
 	mux.HandleFunc("GET /api/admin/test-codes", adminIPGuard(rateLimit(adminLimiter, handleAdminTestCodes)))
 	mux.HandleFunc("POST /api/admin/grant-access", adminIPGuard(rateLimit(adminLimiter, handleAdminGrantAccess)))
 	mux.HandleFunc("POST /api/admin/revoke-access", adminIPGuard(rateLimit(adminLimiter, handleAdminRevokeAccess)))
