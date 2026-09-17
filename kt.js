@@ -792,7 +792,7 @@ async function beginKT(code, typeId, lang) {
   const a = assembleKT(typeId, code, content, lang);
   const flat = [];
   a.blocks.forEach(b => b.questions.forEach(q => flat.push({
-    q: q.q, options: q.options, correct: q.correct, why: q.why, explanations: q.explanations, image: q.image, topic: q.topic, block: b.id,
+    q: q.q, options: q.options, optionImages: q.optionImages, correct: q.correct, why: q.why, explanations: q.explanations, image: q.image, topic: q.topic, block: b.id,
     stage: q.stage, audio: q.audio, passage: q.passage, // только для lang-блока (en)
     conspect: q.conspect,
   })));
@@ -871,7 +871,7 @@ function renderKTQuestion() {
         const isSel = isMulti ? (Array.isArray(s.answers[s.idx]) && s.answers[s.idx].includes(i)) : s.answers[s.idx] === i;
         return `
         <button class="test-opt ${isSel ? 'is-selected' : ''}" data-opt="${i}">
-          <span class="test-radio ${isMulti ? 'is-checkbox' : ''}" aria-hidden="true"></span><span class="test-opt-label">${esc(o)}</span>
+          <span class="test-radio ${isMulti ? 'is-checkbox' : ''}" aria-hidden="true"></span>${item.optionImages && item.optionImages[i] ? `<span class="test-opt-image"><img src="${item.optionImages[i]}" alt="Вариант ответа"></span>` : `<span class="test-opt-label">${esc(o)}</span>`}
         </button>`;
       }).join('')}
     </div>
@@ -1107,7 +1107,9 @@ function openKTReview() {
       // Объяснение для студентов по каждому варианту (requirement #4) — если есть в данных.
       const expl = item.explanations && item.explanations[oi]
         ? `<div class="rev-opt-expl">${esc(item.explanations[oi])}</div>` : '';
-      return `<div class="${cls}"><div class="rev-opt-row"><span>${esc(o)}</span>${tag}</div>${expl}</div>`;
+      const optContent = item.optionImages && item.optionImages[oi]
+        ? `<span class="rev-opt-image"><img src="${item.optionImages[oi]}" alt="Вариант ответа"></span>` : `<span>${esc(o)}</span>`;
+      return `<div class="${cls}"><div class="rev-opt-row">${optContent}${tag}</div>${expl}</div>`;
     }).join('');
     const why = item.explanations ? '' : (item.why
       ? `<div class="rev-why"><b>Почему:</b> ${esc(item.why)}</div>`

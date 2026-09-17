@@ -1388,7 +1388,7 @@ function renderQuizQuestion() {
     const isSel = isMulti ? (Array.isArray(curAns) && curAns.includes(i)) : curAns === i;
     return `
     <button class="test-opt ${isSel ? 'is-selected' : ''}" data-option="${i}">
-      <span class="test-radio ${isMulti ? 'is-checkbox' : ''}" aria-hidden="true"></span><span class="test-opt-label">${esc(opt)}</span>
+      <span class="test-radio ${isMulti ? 'is-checkbox' : ''}" aria-hidden="true"></span>${q.optionImages && q.optionImages[i] ? `<span class="test-opt-image"><img src="${q.optionImages[i]}" alt="Вариант ответа"></span>` : `<span class="test-opt-label">${esc(opt)}</span>`}
     </button>`;
   }).join('');
   optionsEl.querySelectorAll('[data-option]').forEach(btn => {
@@ -1530,7 +1530,9 @@ function openReview() {
       // Объяснение для студентов по каждому варианту, если есть в данных.
       const expl = q.explanations && q.explanations[oi]
         ? `<div class="rev-opt-expl">${esc(q.explanations[oi])}</div>` : '';
-      return `<div class="${cls}"><div class="rev-opt-row"><span>${esc(o)}</span>${tag}</div>${expl}</div>`;
+      const optContent = q.optionImages && q.optionImages[oi]
+        ? `<span class="rev-opt-image"><img src="${q.optionImages[oi]}" alt="Вариант ответа"></span>` : `<span>${esc(o)}</span>`;
+      return `<div class="${cls}"><div class="rev-opt-row">${optContent}${tag}</div>${expl}</div>`;
     }).join('');
     const why = q.explanations ? '' : (q.why
       ? `<div class="rev-why"><b>Почему:</b> ${esc(q.why)}</div>`
