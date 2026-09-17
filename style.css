@@ -957,7 +957,17 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .footer-social:hover{ color:var(--accent); }
 .logo-footer{ color:var(--ink); }
 .logo-full-link{ display:inline-block; color:var(--ink); }
-.logo-full{ width:250px; max-width:100%; height:auto; display:block; }
+.footer-logo{ display:flex; align-items:center; gap:14px; }
+.footer-logo-mark{ width:52px; height:52px; display:block; border-radius:22%; box-shadow:0 0 0 1px var(--line); }
+.footer-logo-text{
+  display:flex; flex-direction:column; line-height:1;
+  font-family:var(--font-display); font-weight:700; font-size:26px; letter-spacing:-.02em; color:var(--ink);
+}
+.footer-logo-tag{
+  font-family:var(--font-mono); font-weight:600;
+  font-size:10px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-soft); margin-top:6px;
+}
 .footer-col h3{ font-family:var(--font-mono); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-soft); margin-bottom:14px; }
 .footer-col a{ display:block; font-size:14px; padding:5px 0; color:var(--ink-soft); transition:color .25s ease; }
 .footer-col a:hover{ color:var(--accent); }
