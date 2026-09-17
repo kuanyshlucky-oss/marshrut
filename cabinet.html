@@ -37,7 +37,7 @@
   });
 })();
 </script>
-<link rel="stylesheet" href="style.css?v=25">
+<link rel="stylesheet" href="style.css?v=26">
 <script>
   // Если токен уже есть — скрываем гостевой экран ещё до первой отрисовки страницы,
   // чтобы при переходе на кабинет с сохранённой сессией не мелькало «Войдите, чтобы продолжить».
@@ -181,74 +181,6 @@
                   <label for="pfPhone">Телефон</label>
                   <input id="pfPhone" type="tel" placeholder="+7 ___ ___ __ __" autocomplete="tel">
                 </div>
-                <div class="form-row">
-                  <label for="pfEducation">Образование</label>
-                  <input id="pfEducation" type="text" placeholder="Вуз, специальность, степень">
-                </div>
-                <div class="form-row">
-                  <label for="pfCity">Город</label>
-                  <select id="pfCity">
-                    <option value="">Не указан</option>
-                    <option value="Астана">Астана</option>
-                    <option value="Алматы">Алматы</option>
-                    <option value="Шымкент">Шымкент</option>
-                    <option value="Караганда">Караганда</option>
-                    <option value="Актобе">Актобе</option>
-                    <option value="Тараз">Тараз</option>
-                    <option value="Павлодар">Павлодар</option>
-                    <option value="Усть-Каменогорск">Усть-Каменогорск</option>
-                    <option value="Семей">Семей</option>
-                    <option value="Атырау">Атырау</option>
-                    <option value="Костанай">Костанай</option>
-                    <option value="Кызылорда">Кызылорда</option>
-                    <option value="Уральск">Уральск</option>
-                    <option value="Петропавловск">Петропавловск</option>
-                    <option value="Актау">Актау</option>
-                    <option value="Темиртау">Темиртау</option>
-                    <option value="Туркестан">Туркестан</option>
-                    <option value="Кокшетау">Кокшетау</option>
-                    <option value="Талдыкорган">Талдыкорган</option>
-                    <option value="Экибастуз">Экибастуз</option>
-                    <option value="Другой город">Другой город</option>
-                  </select>
-                </div>
-                <h3 class="pf-subhead">Цель поступления</h3>
-                <div class="form-row">
-                  <label for="pfSpeciality">Специальность</label>
-                  <select id="pfSpeciality"><option value="0">Не выбрана</option></select>
-                </div>
-                <div class="form-row">
-                  <label for="pfLanguage">Язык обучения</label>
-                  <select id="pfLanguage">
-                    <option value="">Не указан</option>
-                    <option value="rus">Русский</option>
-                    <option value="kaz">Казахский</option>
-                    <option value="eng">Английский</option>
-                  </select>
-                </div>
-                <div class="form-row">
-                  <label for="pfTarget">Цель</label>
-                  <select id="pfTarget">
-                    <option value="">Не указана</option>
-                    <option value="grant">Грант</option>
-                    <option value="paid">Платное</option>
-                    <option value="any">Неважно</option>
-                  </select>
-                </div>
-                <div class="pf-scores">
-                  <div class="form-row">
-                    <label for="pfForeign">Ин. язык</label>
-                    <input id="pfForeign" type="number" min="0" max="100" placeholder="0">
-                  </div>
-                  <div class="form-row">
-                    <label for="pfProfileScore">Профильный</label>
-                    <input id="pfProfileScore" type="number" min="0" max="100" placeholder="0">
-                  </div>
-                  <div class="form-row">
-                    <label for="pfBonus">Бонусы</label>
-                    <input id="pfBonus" type="number" min="0" max="50" placeholder="0">
-                  </div>
-                </div>
                 <div class="profile-actions">
                   <button type="submit" class="btn btn-primary">Сохранить</button>
                   <button type="button" class="btn btn-ghost hidden" id="pfCancelBtn">Отмена</button>
@@ -312,6 +244,6 @@
   <div class="toast" id="toast"></div>
 </div>
 
-<script src="script.js?v=23"></script>
+<script src="script.js?v=24"></script>
 </body>
 </html>

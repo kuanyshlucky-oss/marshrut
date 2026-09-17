@@ -1990,32 +1990,15 @@ function fillProfileForm(user) {
   document.getElementById('pfFullName').value = p.fullName || '';
   document.getElementById('pfEmail').value = user.email || '';
   document.getElementById('pfPhone').value = p.phone || '';
-  document.getElementById('pfEducation').value = p.education || '';
-  document.getElementById('pfCity').value = p.city || '';
-  document.getElementById('pfSpeciality').value = String(p.specialityId || 0);
-  document.getElementById('pfLanguage').value = p.language || '';
-  document.getElementById('pfTarget').value = p.targetType || '';
-  document.getElementById('pfForeign').value = p.foreignScore || '';
-  document.getElementById('pfProfileScore').value = p.profileScore || '';
-  document.getElementById('pfBonus').value = p.bonusPoints || '';
 }
 
 function renderProfileView(user) {
   const view = document.getElementById('profileView');
   if (!view) return;
   const p = user.profile;
-  const spec = REF.specialities.find(s => s.id === p.specialityId);
-  const langNames = { rus: 'Русский', kaz: 'Казахский', eng: 'Английский' };
-  const targetNames = { grant: 'Грант', paid: 'Платное', any: 'Неважно' };
   const dash = '—';
   const rows = [
     ['ФИО', p.fullName], ['Email', user.email], ['Телефон', p.phone],
-    ['Образование', p.education], ['Город', p.city],
-    ['Специальность', spec ? spec.name : ''],
-    ['Язык обучения', langNames[p.language] || ''],
-    ['Цель', targetNames[p.targetType] || ''],
-    ['Баллы КТ', (p.foreignScore || p.profileScore)
-      ? `ин. язык ${p.foreignScore || 0} · профильный ${p.profileScore || 0} · бонусы ${p.bonusPoints || 0}` : ''],
   ];
   view.innerHTML = rows.map(([k, v]) => `
     <div class="pv-row"><span class="pv-key">${k}</span><span class="pv-val">${v ? esc(String(v)) : dash}</span></div>
@@ -2123,17 +2106,22 @@ function wireProfileForm() {
     const btn = form.querySelector('button[type="submit"]');
     setBtnLoading(btn, true, 'Сохранение…');
     try {
+      // Образование/город/специальность/язык/цель/баллы КТ убраны из формы —
+      // но бэкенд сохраняет профиль целиком, поэтому шлём их значения как были
+      // (из уже загруженного user.profile), чтобы не затереть то, что там уже
+      // могло быть сохранено раньше.
+      const p = (API.getCurrentUser() || {}).profile || {};
       await API.updateProfile({
         fullName: document.getElementById('pfFullName').value.trim(),
         phone: document.getElementById('pfPhone').value.trim(),
-        education: document.getElementById('pfEducation').value.trim(),
-        city: document.getElementById('pfCity').value.trim(),
-        specialityId: Number(document.getElementById('pfSpeciality').value) || 0,
-        language: document.getElementById('pfLanguage').value,
-        targetType: document.getElementById('pfTarget').value,
-        foreignScore: Number(document.getElementById('pfForeign').value) || 0,
-        profileScore: Number(document.getElementById('pfProfileScore').value) || 0,
-        bonusPoints: Number(document.getElementById('pfBonus').value) || 0,
+        education: p.education || '',
+        city: p.city || '',
+        specialityId: p.specialityId || 0,
+        language: p.language || '',
+        targetType: p.targetType || '',
+        foreignScore: p.foreignScore || 0,
+        profileScore: p.profileScore || 0,
+        bonusPoints: p.bonusPoints || 0,
       });
       const saved = document.getElementById('profileSaved');
       saved.classList.remove('hidden');
@@ -2378,11 +2366,7 @@ async function loadRefs() {
     ]);
     REF.specialities = specs || [];
     REF.universities = unis || [];
-  } catch (_) { /* сервер спит — селекты останутся пустыми, не критично */ }
-
-  const pfSel = document.getElementById('pfSpeciality');
-  const specOpts = REF.specialities.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join('');
-  if (pfSel) pfSel.innerHTML = '<option value="0">Не выбрана</option>' + specOpts;
+  } catch (_) { /* сервер спит — справочники останутся пустыми, не критично */ }
 }
 
 /* --- Дорожная карта --- */
