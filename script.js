@@ -1821,15 +1821,23 @@ function renderProgress() {
     </div>` : '';
 
   // Темы показываются отдельным блоком на каждый раздел направления (Физика,
-  // Математика и т.д.) — без общего смешанного списка и без фильтра по клику.
+  // Математика и т.д.) — свёрнуты по умолчанию (компактно), разворачиваются
+  // по клику на <summary>, без общего смешанного списка.
   const topicsBySection = {};
   data.topics.forEach(t => { (topicsBySection[t.section] = topicsBySection[t.section] || []).push(t); });
 
   const topicsHtml = data.sections.length ? data.sections.map(s => {
     const shownTopics = (topicsBySection[s.section] || []).slice(0, 10);
+    const worst = shownTopics[0];
+    const summaryNote = shownTopics.length
+      ? `${shownTopics.length} ${pluralTopics(shownTopics.length)} · слабее всего «${esc(worst.topic)}» — ${worst.pct}%`
+      : 'по этому разделу пока нет ошибок';
     return `
-    <div class="prog-section" id="prog-topics-${esc(s.section)}">
-      <h4>Темы · ${esc(s.label)}</h4>
+    <details class="prog-section prog-topics-details" id="prog-topics-${esc(s.section)}">
+      <summary class="prog-topics-summary">
+        <span class="prog-topics-summary-title">Темы · ${esc(s.label)}</span>
+        <span class="prog-topics-summary-note">${summaryNote}</span>
+      </summary>
       <p class="prog-section-note">По доле неверных ответов за все попытки, от самой слабой темы.</p>
       ${shownTopics.length ? shownTopics.map(t => {
         const mid = t.pct < 45 ? 'is-mid' : '';
@@ -1842,11 +1850,26 @@ function renderProgress() {
           <div class="prog-topic-pct ${mid}">${t.pct}%</div>
         </div>`;
       }).join('') : `<p class="prog-empty">По этому разделу пока нет ошибок в накопленной статистике.</p>`}
-    </div>`;
+    </details>`;
   }).join('') : '';
 
   body.innerHTML = heroHtml + blocksHtml + topicsHtml
     || `<p class="prog-empty">Пока недостаточно данных для разбора по темам.</p>`;
+
+  // Клик по строке раздела выше должен не просто проскроллить, а ещё и
+  // раскрыть свёрнутый блок тем — на случай браузеров без auto-expand
+  // свёрнутых <details> при переходе по #якорю.
+  document.querySelectorAll('.prog-block-row').forEach(a => a.addEventListener('click', () => {
+    const el = document.querySelector(a.getAttribute('href'));
+    if (el && 'open' in el) el.open = true;
+  }));
+}
+
+function pluralTopics(n) {
+  const n10 = n % 10, n100 = n % 100;
+  if (n10 === 1 && n100 !== 11) return 'тема';
+  if ([2, 3, 4].includes(n10) && ![12, 13, 14].includes(n100)) return 'темы';
+  return 'тем';
 }
 
 function pluralPoints(n) {

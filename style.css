@@ -848,6 +848,24 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
 .prog-section h4{ font-family:var(--font-display); font-weight:600; font-size:14px; margin:0 0 3px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 .prog-section-note{ font-size:12px; color:var(--ink-soft); margin:0 0 14px; }
 
+.prog-topics-details{
+  border:1px solid var(--line); border-radius:var(--radius-m); padding:0 14px; overflow:hidden;
+}
+.prog-topics-details > .prog-section-note,
+.prog-topics-details > .prog-topic-row{ padding-left:2px; padding-right:2px; }
+.prog-topics-summary{
+  cursor:pointer; list-style:none; user-select:none;
+  display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+  padding:13px 2px;
+}
+.prog-topics-summary::-webkit-details-marker{ display:none; }
+.prog-topics-summary::after{ content:'+'; font-size:16px; line-height:1; color:var(--accent); flex-shrink:0; }
+.prog-topics-details[open] .prog-topics-summary::after{ content:'−'; }
+.prog-topics-details[open] .prog-topics-summary{ border-bottom:1px solid var(--line); }
+.prog-topics-summary-title{ font-family:var(--font-display); font-weight:600; font-size:14px; color:var(--ink); }
+.prog-topics-summary-note{ font-size:12px; color:var(--ink-soft); }
+.prog-topics-details .prog-section-note{ margin-top:12px; }
+
 .prog-block-row{
   display:grid; grid-template-columns:150px 1fr 56px; align-items:center; gap:12px; padding:9px 4px;
   width:100%; border-bottom:1px solid var(--line); background:none; border-left:none; border-right:none; border-top:none;
