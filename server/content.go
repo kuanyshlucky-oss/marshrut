@@ -59,18 +59,45 @@ type ContentInfo struct {
 	Title   string `json:"title"`
 }
 
+// minQuestionsForAdmin — направления с банком вопросов меньше этого порога
+// считаются заглушками (черновиками) и не показываются в админке при выдаче
+// доступа, чтобы не путать админа неготовыми тестами.
+const minQuestionsForAdmin = 20
+
+// countQuestions читает и "questions" (плоский список), и "bySubject"
+// (вопросы по предметам) — оба формата встречаются в контенте направлений.
+func countQuestions(b []byte) int {
+	var t struct {
+		Questions []json.RawMessage            `json:"questions"`
+		BySubject map[string][]json.RawMessage `json:"bySubject"`
+	}
+	if json.Unmarshal(b, &t) != nil {
+		return 0
+	}
+	if len(t.Questions) > 0 {
+		return len(t.Questions)
+	}
+	n := 0
+	for _, qs := range t.BySubject {
+		n += len(qs)
+	}
+	return n
+}
+
 func listContentInfo() []ContentInfo {
 	codes := listContentCodes()
 	out := make([]ContentInfo, 0, len(codes))
 	for _, code := range codes {
+		b, ok := testContentBytes(code)
+		if !ok || countQuestions(b) < minQuestionsForAdmin {
+			continue
+		}
 		info := ContentInfo{Code: code, GopCode: gopCodeByDirection[code]}
-		if b, ok := testContentBytes(code); ok {
-			var t struct {
-				Title string `json:"title"`
-			}
-			if json.Unmarshal(b, &t) == nil {
-				info.Title = t.Title
-			}
+		var t struct {
+			Title string `json:"title"`
+		}
+		if json.Unmarshal(b, &t) == nil {
+			info.Title = t.Title
 		}
 		out = append(out, info)
 	}

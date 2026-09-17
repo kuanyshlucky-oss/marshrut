@@ -664,8 +664,9 @@ function ktIsCorrect(item, ua) {
   return ua === item.correct;
 }
 
-// Картография (M123, subj2), Психология развития (M066, subj2) и Математика
-// (M107, subj2) — предметы с частичным начислением баллов по официальной схеме
+// Картография (M123, subj2), Психология развития (M066, subj2), Математика
+// (M107, subj2) и Теория и методика физической культуры (M005, subj2) —
+// предметы с частичным начислением баллов по официальной схеме
 // КТ для вопросов с множественным выбором (до 3 верных ответов): 2 балла — все
 // верные выбраны и ни одного лишнего; 1 балл — ровно одна ошибка (не выбран
 // один верный, ИЛИ выбраны все верные плюс один лишний); 0 баллов — две и более
@@ -674,7 +675,7 @@ function ktIsCorrect(item, ua) {
 // что и в script.js (стандартный тест по предмету) — здесь для блока полной
 // симуляции КТ.
 function isPartialCreditSubject(code, block) {
-  return (code === 'M123' || code === 'M066' || code === 'M107') && block === 'subj2';
+  return (code === 'M123' || code === 'M066' || code === 'M107' || code === 'M005') && block === 'subj2';
 }
 function ktMaxPoints(item, code, block) {
   return (Array.isArray(item.correct) && isPartialCreditSubject(code, block)) ? 2 : 1;
