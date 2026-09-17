@@ -792,7 +792,7 @@ async function beginKT(code, typeId, lang) {
   const a = assembleKT(typeId, code, content, lang);
   const flat = [];
   a.blocks.forEach(b => b.questions.forEach(q => flat.push({
-    q: q.q, options: q.options, optionImages: q.optionImages, correct: q.correct, why: q.why, explanations: q.explanations, image: q.image, topic: q.topic, block: b.id,
+    q: q.q, options: q.options, optionImages: q.optionImages, correct: q.correct, why: q.why, explanations: q.explanations, image: q.image, imageReplacesText: q.imageReplacesText, topic: q.topic, block: b.id,
     stage: q.stage, audio: q.audio, passage: q.passage, // только для lang-блока (en)
     conspect: q.conspect, conspectImage: q.conspectImage,
   })));
@@ -862,7 +862,7 @@ function renderKTQuestion() {
     <div class="kt-progress"><div class="kt-progress-bar" style="width:${((s.idx + 1) / s.flat.length) * 100}%"></div></div>
     <p class="test-qnum-line">Вопрос ${s.idx + 1} из ${s.flat.length}</p>
     ${media}
-    <p class="test-question">${esc(item.q)}</p>
+    <p class="test-question">${item.imageReplacesText ? '' : esc(item.q)}</p>
     ${item.image ? `<div class="kt-question-image"><img src="${item.image}" alt="Условие вопроса"></div>` : ''}
     ${Array.isArray(item.correct) ? '<p class="kt-multi-hint">Выберите все подходящие варианты</p>' : ''}
     <div class="test-options" id="ktOptions">
@@ -1128,7 +1128,7 @@ function openKTReview() {
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <span class="rev-block">${blockTag}</span>
-        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${esc(item.q)}</p>
+        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${item.imageReplacesText ? '' : esc(item.q)}</p>
         ${item.image ? `<div class="kt-question-image"><img src="${item.image}" alt="Условие вопроса"></div>` : ''}
         ${item.passage ? `<div class="kt-reading-passage">${esc(item.passage)}</div>` : ''}
         <div class="rev-opts">${opts}</div>

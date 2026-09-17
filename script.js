@@ -1356,7 +1356,7 @@ function renderQuizQuestion() {
   const q = activeQuiz.pool[activeQuiz.qIndex];
   renderQuizQnav();
   document.getElementById('testQNum').textContent = `${activeQuiz.qIndex + 1}.`;
-  document.getElementById('testQuestion').textContent = q.q;
+  document.getElementById('testQuestion').textContent = q.imageReplacesText ? '' : q.q;
 
   // Аудио (Listening) или текст для чтения (Reading) — только у блока «Английский».
   const mediaEl = document.getElementById('testMedia');
@@ -1549,7 +1549,7 @@ function openReview() {
     const konspekt = wrong ? conspectLink(q.topic) : '';
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
-        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${esc(q.q)}</p>
+        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${q.imageReplacesText ? '' : esc(q.q)}</p>
         ${q.image ? `<div class="kt-question-image"><img src="${q.image}" alt="Условие вопроса"></div>` : ''}
         ${q.passage ? `<div class="kt-reading-passage">${esc(q.passage)}</div>` : ''}
         <div class="rev-opts">${opts}</div>
