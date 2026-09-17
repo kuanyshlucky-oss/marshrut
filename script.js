@@ -1725,11 +1725,9 @@ function computeProgressForCode(code, user) {
 
 // Раздел «Прогресс подготовки»: сколько баллов не хватает до порога симуляции КТ
 // и какие темы чаще всего дают ошибки — по каждому направлению, где есть хоть
-// какие-то данные (попытка КТ или разбор по темам обычного теста).
+// какие-то данные (попытка КТ или разбор по темам обычного теста). Темы показаны
+// отдельным блоком на каждый раздел (Физика, Математика и т.д.), не смешаны.
 let progressActiveCode = null;
-// 'all' — темы по всем разделам вперемешку; иначе — код раздела (lang/logic/subj1/subj2),
-// выбранный кликом по «Английский»/«ТГО»/профильному предмету ниже.
-let progressActiveSection = 'all';
 function renderProgress() {
   const user = API.getCurrentUser();
   const section = document.getElementById('progressSection');
@@ -1808,37 +1806,30 @@ function renderProgress() {
     heroHtml = `<p class="prog-empty">Пока нет ни одной полной симуляции КТ по этому направлению — пройдите её, чтобы увидеть разрыв до порога прохождения.</p>`;
   }
 
-  // Раздел другого направления не мог остаться выбранным (например, "subj2" от
-  // предыдущего кода) — иначе фильтр темы молча покажет пустой список.
-  if (progressActiveSection !== 'all' && !data.sections.some(s => s.section === progressActiveSection)) {
-    progressActiveSection = 'all';
-  }
-
   const blocksHtml = data.sections.length ? `
     <div class="prog-section">
       <h4>Точность по разделам</h4>
-      <p class="prog-section-note">Нажмите на предмет — ниже покажутся темы именно по нему.</p>
       ${data.sections.map(s => {
         const tier = s.pct == null ? '' : (s.pct >= 60 ? '' : (s.pct >= 40 ? 'is-mid' : 'is-low'));
-        const active = s.section === progressActiveSection ? 'is-active' : '';
         return `
-        <button class="prog-block-row ${active}" data-section="${s.section}" type="button">
+        <a class="prog-block-row" href="#prog-topics-${esc(s.section)}">
           <div class="prog-block-name">${esc(s.label)}</div>
           <div class="prog-block-bar"><div class="prog-block-fill ${tier}" style="width:${s.pct ?? 0}%"></div></div>
           <div class="prog-block-pct">${s.pct == null ? '—' : s.pct + '%'}</div>
-        </button>`;
+        </a>`;
       }).join('')}
     </div>` : '';
 
-  const shownTopics = progressActiveSection === 'all' ? data.topics.slice(0, 6) : data.topics.filter(t => t.section === progressActiveSection);
-  const topicsTitle = progressActiveSection === 'all'
-    ? 'Темы, которые чаще всего подводят'
-    : `Темы по разделу «${esc(progressSectionLabel(progressActiveCode, progressActiveSection))}»`;
-  const resetLink = progressActiveSection === 'all' ? '' : `<button class="prog-topic-reset" type="button" id="progTopicReset">× показать все разделы</button>`;
+  // Темы показываются отдельным блоком на каждый раздел направления (Физика,
+  // Математика и т.д.) — без общего смешанного списка и без фильтра по клику.
+  const topicsBySection = {};
+  data.topics.forEach(t => { (topicsBySection[t.section] = topicsBySection[t.section] || []).push(t); });
 
-  const topicsHtml = data.topics.length ? `
-    <div class="prog-section">
-      <h4>${topicsTitle}${resetLink}</h4>
+  const topicsHtml = data.sections.length ? data.sections.map(s => {
+    const shownTopics = (topicsBySection[s.section] || []).slice(0, 10);
+    return `
+    <div class="prog-section" id="prog-topics-${esc(s.section)}">
+      <h4>Темы · ${esc(s.label)}</h4>
       <p class="prog-section-note">По доле неверных ответов за все попытки, от самой слабой темы.</p>
       ${shownTopics.length ? shownTopics.map(t => {
         const mid = t.pct < 45 ? 'is-mid' : '';
@@ -1846,24 +1837,16 @@ function renderProgress() {
         <div class="prog-topic-row">
           <div class="prog-topic-main">
             <span class="prog-topic-name">${esc(t.topic)}</span>
-            <span class="prog-topic-subj">${esc(progressSectionLabel(progressActiveCode, t.section))}</span>
           </div>
           <div class="prog-topic-bar"><div class="prog-topic-fill ${mid}" style="width:${t.pct}%"></div></div>
           <div class="prog-topic-pct ${mid}">${t.pct}%</div>
         </div>`;
       }).join('') : `<p class="prog-empty">По этому разделу пока нет ошибок в накопленной статистике.</p>`}
-    </div>` : (data.kt || data.sections.length ? '' : '');
+    </div>`;
+  }).join('') : '';
 
   body.innerHTML = heroHtml + blocksHtml + topicsHtml
     || `<p class="prog-empty">Пока недостаточно данных для разбора по темам.</p>`;
-
-  document.querySelectorAll('.prog-block-row').forEach(b => b.addEventListener('click', () => {
-    const sec = b.dataset.section;
-    progressActiveSection = progressActiveSection === sec ? 'all' : sec;
-    renderProgress();
-  }));
-  const resetBtn = document.getElementById('progTopicReset');
-  if (resetBtn) resetBtn.addEventListener('click', () => { progressActiveSection = 'all'; renderProgress(); });
 }
 
 function pluralPoints(n) {
