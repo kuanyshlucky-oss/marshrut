@@ -88,6 +88,8 @@
   .cred button{ background:rgba(255,255,255,.1); color:#fff; padding:5px 12px; font-size:12px; border-radius:8px; }
   .cred .note{ color:#E0A060; font-size:12px; margin-top:8px; }
   .table-scroll{ overflow-x:auto; }
+  .table-scroll.table-scroll-v{ max-height:480px; overflow-y:auto; }
+  .table-scroll.table-scroll-v thead th{ position:sticky; top:0; background:var(--surface); z-index:1; }
   table{ width:100%; min-width:640px; border-collapse:collapse; font-size:13px; }
   th{ text-align:left; font-family:'Manrope',sans-serif; text-transform:uppercase; font-size:10px; color:var(--soft); padding:8px 6px; border-bottom:1px solid var(--line); }
   td{ padding:9px 6px; border-bottom:1px solid var(--line); }
@@ -194,7 +196,7 @@
   <!-- Журнал -->
   <div class="card">
     <h2>Журнал действий (<span id="auditCount">0</span>) <button class="btn-ghost" id="auditReloadBtn" style="float:right;padding:5px 14px;font-size:12px">Обновить</button></h2>
-    <div class="table-scroll"><table>
+    <div class="table-scroll table-scroll-v"><table>
       <thead><tr><th>Когда</th><th>Действие</th><th>Объект</th><th>Детали</th><th>IP</th></tr></thead>
       <tbody id="auditRows"></tbody>
     </table></div>
