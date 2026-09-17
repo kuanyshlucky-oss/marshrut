@@ -225,6 +225,37 @@ func handleUpdateProfile(w http.ResponseWriter, r *http.Request) {
 	handleMe(w, r)
 }
 
+// Ограничение на размер аватара (data URL целиком, base64 длиннее исходных байт
+// в ~4/3 раза) — клиент уменьшает изображение до небольшого размера перед
+// отправкой (см. cropAndEncodeAvatar в script.js), это просто защита от абьюза.
+const maxAvatarDataURLLen = 500_000
+
+// PUT /api/profile/avatar {avatar: "data:image/jpeg;base64,..." | ""}
+func handleSetAvatar(w http.ResponseWriter, r *http.Request) {
+	var in struct {
+		Avatar string `json:"avatar"`
+	}
+	if err := decode(r, &in); err != nil {
+		writeError(w, http.StatusBadRequest, "Неверный запрос")
+		return
+	}
+	if in.Avatar != "" {
+		if !strings.HasPrefix(in.Avatar, "data:image/") {
+			writeError(w, http.StatusBadRequest, "Ожидается изображение")
+			return
+		}
+		if len(in.Avatar) > maxAvatarDataURLLen {
+			writeError(w, http.StatusBadRequest, "Изображение слишком большое")
+			return
+		}
+	}
+	if err := setAvatar(currentUID(r), in.Avatar); err != nil {
+		writeError(w, http.StatusInternalServerError, "Не удалось сохранить аватар")
+		return
+	}
+	handleMe(w, r)
+}
+
 // POST /api/favorites/toggle
 func handleToggleFavorite(w http.ResponseWriter, r *http.Request) {
 	var in struct {

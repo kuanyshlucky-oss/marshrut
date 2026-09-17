@@ -24,6 +24,10 @@ type Profile struct {
 	Phone     string `json:"phone"`
 	Education string `json:"education"`
 	City      string `json:"city"`
+	// Avatar — data URL картинки профиля (data:image/jpeg;base64,...), пусто = нет
+	// аватара (в шапке показывается буква имени). Клиент сам уменьшает/сжимает
+	// изображение перед загрузкой — см. handleSetAvatar про серверный лимит размера.
+	Avatar string `json:"avatar"`
 	// МагистрТрек: цель поступления и баллы КТ
 	SpecialityID int    `json:"specialityId"`
 	Language     string `json:"language"`   // rus / kaz / eng
@@ -185,11 +189,11 @@ func loadUser(id int64) (*User, error) {
 	u := &User{Favorites: []string{}, Results: []Result{}, Access: []string{}, TopicStats: []TopicStat{}}
 	err := db.QueryRow(
 		`SELECT name, email, full_name, phone, education, city,
-		        speciality_id, language, target_type, foreign_score, profile_score, bonus_points
+		        speciality_id, language, target_type, foreign_score, profile_score, bonus_points, avatar
 		 FROM users WHERE id = $1`, id,
 	).Scan(&u.Name, &u.Email, &u.Profile.FullName, &u.Profile.Phone, &u.Profile.Education, &u.Profile.City,
 		&u.Profile.SpecialityID, &u.Profile.Language, &u.Profile.TargetType,
-		&u.Profile.ForeignScore, &u.Profile.ProfileScore, &u.Profile.BonusPoints)
+		&u.Profile.ForeignScore, &u.Profile.ProfileScore, &u.Profile.BonusPoints, &u.Profile.Avatar)
 	if err != nil {
 		return nil, err
 	}
@@ -266,6 +270,12 @@ func updateProfile(id int64, p Profile) error {
 		p.SpecialityID, p.Language, p.TargetType,
 		p.ForeignScore, p.ProfileScore, p.BonusPoints, id,
 	)
+	return err
+}
+
+// setAvatar сохраняет (или очищает, если dataURL == "") аватар пользователя.
+func setAvatar(id int64, dataURL string) error {
+	_, err := db.Exec(`UPDATE users SET avatar = $1 WHERE id = $2`, dataURL, id)
 	return err
 }
 

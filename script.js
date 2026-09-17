@@ -1002,6 +1002,13 @@ const API = {
     return currentUser;
   },
 
+  // dataUrl — "data:image/jpeg;base64,..." (уже уменьшенный/сжатый на клиенте),
+  // пустая строка удаляет аватар (в шапке снова показывается буква имени).
+  async setAvatar(dataUrl) {
+    currentUser = await apiFetch('/api/profile/avatar', { method: 'PUT', auth: true, body: { avatar: dataUrl } });
+    return currentUser;
+  },
+
   async toggleFavorite(code) {
     currentUser = await apiFetch('/api/favorites/toggle', { method: 'POST', auth: true, body: { code } });
     return currentUser;
@@ -1617,13 +1624,31 @@ function wireQuiz() {
 /* ---------------------------------------------------------
    6) АВТОРИЗАЦИЯ / ЛИЧНЫЙ КАБИНЕТ
    --------------------------------------------------------- */
-// Имя показывается в шапке (аватар-буква + подпись) сразу после входа — до того,
-// как человек успел заполнить ФИО в профиле, user.name приходит с бэкенда равным
-// логину (телефон/цифры), из-за чего в шапке был некрасивый "1" / "123". Показываем
-// реальное имя, только если в нём есть хотя бы одна буква.
+// Имя показывается в шапке (аватар-буква + подпись) сразу после входа. Приоритет:
+// 1) ФИО, которое человек сам вписал в «Личные данные» (user.profile.fullName) —
+//    это и есть настоящее имя клиента; 2) user.name с бэкенда (обычно равен логину —
+//    телефон/цифры, до заполнения профиля); 3) если нигде нет ни одной буквы — общий
+//    fallback «Пользователь», чтобы не показывать голый номер телефона.
 function displayUserName(user) {
+  const fullName = (user && user.profile && user.profile.fullName || '').trim();
+  if (/\p{L}/u.test(fullName)) return fullName;
   const raw = (user && user.name || '').trim();
   return /\p{L}/u.test(raw) ? raw : 'Пользователь';
+}
+
+// Заполняет элемент-аватар (шапка или карточка профиля) — картинкой, если
+// пользователь её загрузил, иначе первой буквой имени (как было раньше).
+function renderAvatarInto(el, user) {
+  if (!el) return;
+  const avatar = user && user.profile && user.profile.avatar;
+  if (avatar) {
+    el.innerHTML = `<img src="${avatar}" alt="">`;
+    el.classList.add('has-image');
+  } else {
+    el.innerHTML = '';
+    el.textContent = displayUserName(user)[0].toUpperCase();
+    el.classList.remove('has-image');
+  }
 }
 
 function refreshAuthUI() {
@@ -1642,7 +1667,7 @@ function refreshAuthUI() {
     guestLogin?.classList.add('hidden');
     guestRegister?.classList.add('hidden');
     const displayName = displayUserName(user);
-    if (avatar) avatar.textContent = displayName[0].toUpperCase();
+    renderAvatarInto(avatar, user);
     if (nameLabel) nameLabel.textContent = displayName;
     authZone?.classList.add('hidden');
     dashboard?.classList.remove('hidden');
@@ -1960,6 +1985,8 @@ function profileIsEmpty(p) {
 
 function fillProfileForm(user) {
   const p = user.profile;
+  renderAvatarInto(document.getElementById('pfAvatarPreview'), user);
+  document.getElementById('pfAvatarRemoveBtn')?.classList.toggle('hidden', !p.avatar);
   document.getElementById('pfFullName').value = p.fullName || '';
   document.getElementById('pfEmail').value = user.email || '';
   document.getElementById('pfPhone').value = p.phone || '';
@@ -2017,6 +2044,74 @@ function wireProfileModes() {
     const u = API.getCurrentUser();
     if (u) fillProfileForm(u); // отбросить несохранённые изменения
     setProfileMode('view');
+  });
+}
+
+const AVATAR_SIZE = 256; // сторона квадрата, до которого уменьшаем фото перед загрузкой
+
+// Уменьшает выбранный файл-картинку до AVATAR_SIZE×AVATAR_SIZE (обрезка по центру
+// до квадрата, как обычно делают аватары), сжимает в JPEG — чтобы не хранить на
+// сервере огромные фото прямо с телефона (там легко 5-10 МБ за кадр).
+function cropAndEncodeAvatar(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const side = Math.min(img.naturalWidth, img.naturalHeight);
+      const sx = (img.naturalWidth - side) / 2;
+      const sy = (img.naturalHeight - side) / 2;
+      const canvas = document.createElement('canvas');
+      canvas.width = AVATAR_SIZE;
+      canvas.height = AVATAR_SIZE;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, sx, sy, side, side, 0, 0, AVATAR_SIZE, AVATAR_SIZE);
+      resolve(canvas.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Не удалось прочитать изображение')); };
+    img.src = url;
+  });
+}
+
+function wireAvatarUpload() {
+  const input = document.getElementById('pfAvatarInput');
+  const removeBtn = document.getElementById('pfAvatarRemoveBtn');
+  const preview = document.getElementById('pfAvatarPreview');
+  if (!input) return;
+
+  const syncRemoveBtn = () => {
+    const u = API.getCurrentUser();
+    removeBtn?.classList.toggle('hidden', !(u && u.profile && u.profile.avatar));
+  };
+  syncRemoveBtn();
+
+  input.addEventListener('change', async () => {
+    const file = input.files && input.files[0];
+    input.value = ''; // чтобы повторный выбор того же файла тоже сработал
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { showToast('Нужен файл изображения'); return; }
+    try {
+      const dataUrl = await cropAndEncodeAvatar(file);
+      await API.setAvatar(dataUrl);
+      refreshAuthUI();
+      renderAvatarInto(preview, API.getCurrentUser());
+      syncRemoveBtn();
+      showToast('Фото профиля обновлено');
+    } catch (err) {
+      showToast(err.message || 'Не удалось загрузить фото');
+    }
+  });
+
+  removeBtn?.addEventListener('click', async () => {
+    try {
+      await API.setAvatar('');
+      refreshAuthUI();
+      renderAvatarInto(preview, API.getCurrentUser());
+      syncRemoveBtn();
+      showToast('Фото профиля удалено');
+    } catch (err) {
+      showToast(err.message || 'Не удалось удалить фото');
+    }
   });
 }
 
@@ -2342,6 +2437,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   wireAuth();
   wireProfileForm();
   wireProfileModes();
+  wireAvatarUpload();
   wireSearch();
   wireDirModal();
   wireGate();

@@ -71,6 +71,9 @@ func initTrack() error {
 	ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_score INT NOT NULL DEFAULT 0;
 	ALTER TABLE users ADD COLUMN IF NOT EXISTS bonus_points  INT NOT NULL DEFAULT 0;
 	ALTER TABLE users ADD COLUMN IF NOT EXISTS session_id    TEXT NOT NULL DEFAULT '';
+	-- аватар — data URL (data:image/jpeg;base64,...), уменьшенный и сжатый на
+	-- клиенте перед отправкой (см. handleSetAvatar про лимит размера)
+	ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar        TEXT NOT NULL DEFAULT '';
 	`
 	if _, err := db.Exec(schema); err != nil {
 		return err

@@ -60,6 +60,7 @@ func main() {
 	mux.HandleFunc("POST /api/auth/logout", auth(handleLogout))
 	mux.HandleFunc("GET /api/me", auth(handleMe))
 	mux.HandleFunc("PUT /api/profile", auth(handleUpdateProfile))
+	mux.HandleFunc("PUT /api/profile/avatar", auth(handleSetAvatar))
 	mux.HandleFunc("POST /api/favorites/toggle", auth(handleToggleFavorite))
 	mux.HandleFunc("POST /api/results", auth(handleSaveResult))
 	mux.HandleFunc("GET /api/admin/users", adminIPGuard(rateLimit(adminLimiter, handleAdminUsers)))

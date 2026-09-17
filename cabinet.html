@@ -37,7 +37,7 @@
   });
 })();
 </script>
-<link rel="stylesheet" href="style.css?v=24">
+<link rel="stylesheet" href="style.css?v=25">
 <script>
   // Если токен уже есть — скрываем гостевой экран ещё до первой отрисовки страницы,
   // чтобы при переходе на кабинет с сохранённой сессией не мелькало «Войдите, чтобы продолжить».
@@ -152,6 +152,16 @@
               <div class="pf-head">
                 <h3>Личные данные</h3>
                 <button type="button" class="btn btn-ghost pf-edit-btn hidden" id="pfEditBtn">✎ Редактировать</button>
+              </div>
+
+              <!-- Фото профиля — сохраняется сразу при выборе файла, отдельно от формы ниже -->
+              <div class="pf-avatar-row" id="pfAvatarRow">
+                <span class="pf-avatar-preview" id="pfAvatarPreview">A</span>
+                <div class="pf-avatar-actions">
+                  <label class="btn btn-ghost pf-avatar-upload-btn" for="pfAvatarInput">Загрузить фото</label>
+                  <input type="file" id="pfAvatarInput" accept="image/*" class="pf-avatar-input-hidden">
+                  <button type="button" class="pf-avatar-remove hidden" id="pfAvatarRemoveBtn">Удалить</button>
+                </div>
               </div>
 
               <!-- Режим просмотра -->
@@ -302,6 +312,6 @@
   <div class="toast" id="toast"></div>
 </div>
 
-<script src="script.js?v=22"></script>
+<script src="script.js?v=23"></script>
 </body>
 </html>
