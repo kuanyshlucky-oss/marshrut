@@ -1368,7 +1368,7 @@ function renderQuizQuestion() {
   // Картинка к вопросу — есть у части вопросов ТГО (математика).
   const imageEl = document.getElementById('testImage');
   if (imageEl) {
-    imageEl.innerHTML = q.image ? `<div class="kt-question-image"><img src="${q.image}" alt="Условие вопроса"></div>` : '';
+    imageEl.innerHTML = q.image ? `<div class="kt-question-image${q.imageReplacesText ? ' math-question-image' : ''}"><img src="${q.image}" alt="Условие вопроса"></div>` : '';
   }
 
   const isMulti = Array.isArray(q.correct);
@@ -1550,7 +1550,7 @@ function openReview() {
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${q.imageReplacesText ? '' : esc(q.q)}</p>
-        ${q.image ? `<div class="kt-question-image"><img src="${q.image}" alt="Условие вопроса"></div>` : ''}
+        ${q.image ? `<div class="kt-question-image${q.imageReplacesText ? ' math-question-image' : ''}"><img src="${q.image}" alt="Условие вопроса"></div>` : ''}
         ${q.passage ? `<div class="kt-reading-passage">${esc(q.passage)}</div>` : ''}
         <div class="rev-opts">${opts}</div>
         ${why}

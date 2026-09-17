@@ -1418,6 +1418,14 @@ body.test-open #reviewPage input{ user-select:text; }
   background:#FFFFFF; border-radius:var(--radius-s, 8px); padding:8px 12px;
 }
 .test-opt-image img, .rev-opt-image img{ display:block; max-width:100%; max-height:70px; height:auto; }
+/* Математические картинки (формулы/матрицы, отрендеренные нами) — чёрный текст
+   на белом, поэтому в тёмной теме просто инвертируем цвета вместо перерисовки. */
+html[data-theme="dark"] .test-opt-image,
+html[data-theme="dark"] .rev-opt-image,
+html[data-theme="dark"] .rev-conspect-image,
+html[data-theme="dark"] .math-question-image{
+  filter:invert(1) hue-rotate(180deg);
+}
 .quiz-audio-player{ width:100%; margin:0 0 18px; }
 
 .kt-result-wrap{ text-align:center; }

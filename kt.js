@@ -863,7 +863,7 @@ function renderKTQuestion() {
     <p class="test-qnum-line">Вопрос ${s.idx + 1} из ${s.flat.length}</p>
     ${media}
     <p class="test-question">${item.imageReplacesText ? '' : esc(item.q)}</p>
-    ${item.image ? `<div class="kt-question-image"><img src="${item.image}" alt="Условие вопроса"></div>` : ''}
+    ${item.image ? `<div class="kt-question-image${item.imageReplacesText ? ' math-question-image' : ''}"><img src="${item.image}" alt="Условие вопроса"></div>` : ''}
     ${Array.isArray(item.correct) ? '<p class="kt-multi-hint">Выберите все подходящие варианты</p>' : ''}
     <div class="test-options" id="ktOptions">
       ${item.options.map((o, i) => {
@@ -1129,7 +1129,7 @@ function openKTReview() {
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <span class="rev-block">${blockTag}</span>
         <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${item.imageReplacesText ? '' : esc(item.q)}</p>
-        ${item.image ? `<div class="kt-question-image"><img src="${item.image}" alt="Условие вопроса"></div>` : ''}
+        ${item.image ? `<div class="kt-question-image${item.imageReplacesText ? ' math-question-image' : ''}"><img src="${item.image}" alt="Условие вопроса"></div>` : ''}
         ${item.passage ? `<div class="kt-reading-passage">${esc(item.passage)}</div>` : ''}
         <div class="rev-opts">${opts}</div>
         ${why}
