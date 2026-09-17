@@ -794,7 +794,7 @@ async function beginKT(code, typeId, lang) {
   a.blocks.forEach(b => b.questions.forEach(q => flat.push({
     q: q.q, options: q.options, optionImages: q.optionImages, correct: q.correct, why: q.why, explanations: q.explanations, image: q.image, topic: q.topic, block: b.id,
     stage: q.stage, audio: q.audio, passage: q.passage, // только для lang-блока (en)
-    conspect: q.conspect,
+    conspect: q.conspect, conspectImage: q.conspectImage,
   })));
   activeKT = { code, typeId, lang, flat, answers: new Array(flat.length).fill(null), idx: 0, secondsLeft: KT_TYPES[typeId].timeMin * 60, timer: null };
   renderKTQuestion();
@@ -1117,8 +1117,11 @@ function openKTReview() {
     const blockTag = item.stage ? `${ktBlockLabel(s.code, item.block)} · ${KT_LANG_STAGE_LABELS[item.stage]}` : ktBlockLabel(s.code, item.block);
     // Кнопка «Конспекты» — отдельный подробный разбор вопроса (не привязан к тому,
     // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
-    const conspectBlock = item.conspect
-      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">Конспекты</summary><div class="rev-conspect-body">${esc(item.conspect)}</div></details>`
+    const conspectBody = item.conspectImage
+      ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${item.conspectImage}" alt="Конспект"></div>`
+      : (item.conspect ? `<div class="rev-conspect-body">${esc(item.conspect)}</div>` : '');
+    const conspectBlock = conspectBody
+      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">Конспекты</summary>${conspectBody}</details>`
       : '';
     // Ссылка на конспект по теме вопроса — только при неверном ответе (только для Педагогики/Психологии).
     const konspekt = wrong && typeof conspectLink === 'function' ? conspectLink(item.topic) : '';

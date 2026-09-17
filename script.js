@@ -1539,8 +1539,11 @@ function openReview() {
       : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(q.options[correctSet[0]])}</div>`);
     // Кнопка «Конспекты» — отдельный подробный разбор вопроса (не привязан к тому,
     // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
-    const conspectBlock = q.conspect
-      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">Конспекты</summary><div class="rev-conspect-body">${esc(q.conspect)}</div></details>`
+    const conspectBody = q.conspectImage
+      ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${q.conspectImage}" alt="Конспект"></div>`
+      : (q.conspect ? `<div class="rev-conspect-body">${esc(q.conspect)}</div>` : '');
+    const conspectBlock = conspectBody
+      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">Конспекты</summary>${conspectBody}</details>`
       : '';
     // Ссылка на конспект по теме вопроса — только при неверном ответе.
     const konspekt = wrong ? conspectLink(q.topic) : '';
