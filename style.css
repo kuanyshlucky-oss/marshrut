@@ -1618,15 +1618,19 @@ html[data-theme="dark"] .math-question-image{
 }
 @media (max-width: 560px){
   .header-row{ height:64px; padding-left:16px; padding-right:16px; gap:10px; }
-  .header-actions{ gap:8px; }
+  .header-actions{ gap:6px; }
   .header-actions .btn-ghost{ display:none; }
   .header-actions .btn-primary{ padding:10px 14px; font-size:13px; }
   .btn-text-long{ display:none; }
   .logo-tag{ display:none; }
   .logo{ gap:8px; font-size:18px; }
   .theme-toggle{ --w:42px; --h:24px; }
-  .header-social{ gap:8px; }
-  .header-social svg{ width:18px; height:18px; }
+  /* Переключатель языка вместе с иконками соцсетей и темой уже не помещается
+     в одну строку на узких экранах — соцсети прячем (они есть в футере),
+     сам переключатель немного сжимаем. */
+  .lang-toggle{ padding:2px; }
+  .lang-toggle-opt{ padding:5px 8px; font-size:11px; }
+  .header-social{ display:none; }
   .footer-grid{ grid-template-columns:1fr; }
 }
 
