@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://marshrut-9c5z.onrender.com">
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Unbounded:wght@400;500;600;700;800&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Unbounded:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Unbounded:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <link rel="icon" href="assets/brand/logo-mark.png" type="image/png">
 <script>
 // theme.js инлайн (раньше отдельный блокирующий запрос, ~460мс по PageSpeed) —
@@ -41,7 +41,7 @@
   :root{
     --bg:#FBFBFA; --surface:#FFFFFF; --ink:#1D1D1F; --ink-soft:#6E6E73;
     --line:rgba(29,29,31,.12); --accent:#0A6CC9; --accent-on:#FFFFFF; --beige:#B08D46;
-    --serif:'Space Grotesk','Manrope', system-ui, sans-serif; --mono:'Manrope', system-ui, sans-serif;
+    --serif:'Space Grotesk','Unbounded','Manrope', system-ui, sans-serif; --mono:'Manrope', system-ui, sans-serif;
     --header-bg: rgba(251,251,250,.86);
   }
   html[data-theme="dark"]{
@@ -50,14 +50,17 @@
     --header-bg: rgba(10,10,11,.86);
   }
   .lang-toggle{
-    display:flex; align-items:center; gap:2px; flex:0 0 auto; margin-left:8px;
-    padding:2px; background:var(--bg); border:1px solid var(--line); border-radius:999px;
+    display:flex; align-items:center; gap:1px; flex:0 0 auto; margin-left:8px;
+    padding:3px; background:var(--bg); border:1px solid var(--line); border-radius:999px;
   }
   .lang-toggle-opt{
-    padding:4px 8px; border-radius:999px; font-size:11.5px; font-weight:600;
-    color:var(--ink-soft); letter-spacing:.02em;
+    padding:6px 12px; border-radius:999px; font-family:var(--mono); font-size:12px; font-weight:700;
+    color:var(--ink-soft); letter-spacing:.02em; line-height:1;
+    transition:background .25s cubic-bezier(.4,0,.2,1), color .25s ease, box-shadow .25s ease;
   }
-  .lang-toggle-opt.is-active{ background:var(--surface); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.2); }
+  .lang-toggle-opt:hover{ color:var(--ink); }
+  .lang-toggle-opt.is-active{ background:var(--accent); color:var(--accent-on); box-shadow:0 1px 2px rgba(0,0,0,.2); }
+  .lang-toggle-opt.is-active:hover{ color:var(--accent-on); }
   *{ box-sizing:border-box; }
   body{
     margin:0; background:var(--bg); color:var(--ink); font-family:'Manrope',system-ui,sans-serif;
@@ -183,7 +186,7 @@
   </div>
 </footer>
 
-<script src="i18n.js?v=1"></script>
+<script src="i18n.js?v=3"></script>
 <script src="script.js?v=25"></script>
 <script>
   const root = document.getElementById('root');
