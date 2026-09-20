@@ -25,7 +25,7 @@
   /* Space Grotesk не содержит кириллицы вовсе — для рус./каз. текста браузер сам
      переключается на Unbounded (полная поддержка казахских букв Ә Ғ Қ Ң Ө Ұ Ү Һ),
      латиница (лого JetisHub, цифры) по-прежнему рисуется Space Grotesk. */
-  --font-display: 'Space Grotesk', 'Unbounded', 'Manrope', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', 'Onest', 'Manrope', system-ui, -apple-system, sans-serif;
   --font-body: 'Manrope', system-ui, -apple-system, sans-serif;
   --font-mono: 'Manrope', system-ui, -apple-system, sans-serif;
 
