@@ -50,32 +50,36 @@
   <div class="wrap header-row">
     <a href="index.html" class="logo">
       <img class="logo-mark" src="assets/brand/logo.svg" alt="" aria-hidden="true">
-      <span class="logo-text">JetisHub<span class="logo-tag">Путь к магистратуре</span></span>
+      <span class="logo-text">JetisHub<span class="logo-tag" data-i18n="logo.tag">Путь к магистратуре</span></span>
     </a>
 
-    <nav class="main-nav" id="mainNav" aria-label="Главная навигация">
-      <a href="index.html#catalog">Направления</a>
-      <a href="kt-stats.html">Экзамен</a>
-      <a href="index.html#how">Как поступить</a>
-      <a href="index.html#about">О платформе</a>
+    <nav class="main-nav" id="mainNav" data-i18n-aria-label="nav.aria" aria-label="Главная навигация">
+      <a href="index.html#catalog" data-i18n="nav.catalog">Направления</a>
+      <a href="kt-stats.html" data-i18n="nav.exam">Экзамен</a>
+      <a href="index.html#how" data-i18n="nav.how">Как поступить</a>
+      <a href="index.html#about" data-i18n="nav.about">О платформе</a>
     </nav>
 
     <div class="header-actions">
-      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Переключить тему" aria-pressed="false">
+      <button id="langToggle" class="lang-toggle" type="button" data-i18n-aria-label="lang.toggle.aria" aria-label="Переключить язык интерфейса" aria-pressed="false">
+        <span class="lang-toggle-opt" data-lang-opt="ru">РУ</span>
+        <span class="lang-toggle-opt" data-lang-opt="kk">ҚАЗ</span>
+      </button>
+      <button id="themeToggle" class="theme-toggle" type="button" data-i18n-aria-label="theme.toggle.aria" aria-label="Переключить тему" aria-pressed="false">
         <span class="theme-toggle-thumb">
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </span>
       </button>
       <div class="header-social">
-        <a href="https://www.instagram.com/jetis.hub/" target="_blank" rel="noopener" aria-label="JetisHub в Instagram">
+        <a href="https://www.instagram.com/jetis.hub/" target="_blank" rel="noopener" data-i18n-aria-label="header.instagram.aria" aria-label="JetisHub в Instagram">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <rect x="3" y="3" width="18" height="18" rx="5"/>
             <circle cx="12" cy="12" r="4"/>
             <circle cx="17.2" cy="6.8" r="1"/>
           </svg>
         </a>
-        <a href="https://wa.me/77785564853" target="_blank" rel="noopener" aria-label="JetisHub в WhatsApp">
+        <a href="https://wa.me/77785564853" target="_blank" rel="noopener" data-i18n-aria-label="header.whatsapp.aria" aria-label="JetisHub в WhatsApp">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3.1 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 2-1.4.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.5 21.5 10.2 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.2.8.9-3.1-.2-.3C4.1 14.5 3.7 13.3 3.7 12 3.7 7.4 7.4 3.7 12 3.7S20.3 7.4 20.3 12 16.6 20 12 20z"/></svg>
         </a>
       </div>
@@ -85,7 +89,7 @@
       </div>
     </div>
 
-    <button class="nav-toggle" id="navToggle" aria-label="Открыть меню" aria-controls="mainNav" aria-expanded="false">
+    <button class="nav-toggle" id="navToggle" data-i18n-aria-label="nav.toggle.aria" aria-label="Открыть меню" aria-controls="mainNav" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -99,27 +103,27 @@
       <div class="auth-zone" id="authZone">
         <div class="auth-zone-form">
           <div class="section-head">
-            <p class="eyebrow">Личный кабинет</p>
-            <h2>Войдите, чтобы продолжить</h2>
+            <p class="eyebrow" data-i18n="auth.eyebrow">Личный кабинет</p>
+            <h2 data-i18n="auth.title">Войдите, чтобы продолжить</h2>
           </div>
 
           <div class="auth-card">
             <form class="auth-form" id="loginForm" data-form="login">
               <div class="form-row">
-                <label for="loginEmail">Логин</label>
-                <input id="loginEmail" type="text" required placeholder="логин от администратора" autocomplete="username">
+                <label for="loginEmail" data-i18n="auth.login">Логин</label>
+                <input id="loginEmail" type="text" required data-i18n-placeholder="auth.loginPlaceholder" placeholder="логин от администратора" autocomplete="username">
               </div>
               <div class="form-row">
-                <label for="loginPassword">Пароль</label>
+                <label for="loginPassword" data-i18n="auth.password">Пароль</label>
                 <input id="loginPassword" type="password" required placeholder="••••••••">
               </div>
               <p class="form-error" id="loginError"></p>
-              <button type="submit" class="btn btn-primary btn-block">Войти в кабинет</button>
-              <p class="form-hint">Ещё нет аккаунта? Логин и пароль выдаёт администратор.</p>
-              <a class="btn btn-ghost btn-block" href="https://wa.me/77785564853?text=Здравствуйте!%20Хочу%20получить%20доступ%20в%20личный%20кабинет%20JetisHub." target="_blank" rel="noopener">Написать в WhatsApp</a>
+              <button type="submit" class="btn btn-primary btn-block" data-i18n="auth.submit">Войти в кабинет</button>
+              <p class="form-hint" data-i18n="auth.hint">Ещё нет аккаунта? Логин и пароль выдаёт администратор.</p>
+              <a class="btn btn-ghost btn-block" href="https://wa.me/77785564853?text=Здравствуйте!%20Хочу%20получить%20доступ%20в%20личный%20кабинет%20JetisHub." target="_blank" rel="noopener" data-i18n="auth.whatsapp">Написать в WhatsApp</a>
             </form>
 
-            <p class="auth-disclaimer">Данные хранятся на сервере. Аккаунт, профиль и результаты доступны с любого устройства.</p>
+            <p class="auth-disclaimer" data-i18n="auth.disclaimer">Данные хранятся на сервере. Аккаунт, профиль и результаты доступны с любого устройства.</p>
           </div>
         </div>
         <img class="auth-illustration" src="assets/illustrations/login-girl.jpg" alt="" aria-hidden="true">
@@ -128,7 +132,7 @@
       <!-- Logged-in state: dashboard -->
       <div class="dashboard hidden" id="dashboard">
         <div class="section-head">
-          <h2>Личный кабинет</h2>
+          <h2 data-i18n="dashboard.title">Личный кабинет</h2>
         </div>
 
         <div class="dash-stack">
@@ -140,7 +144,7 @@
                Виден только когда есть хотя бы одна попытка теста/КТ или разбор по темам (injected by script.js). -->
           <div class="dash-card hidden" id="progressSection">
             <div class="prog-head">
-              <h3>Прогресс подготовки</h3>
+              <h3 data-i18n="progress.title">Прогресс подготовки</h3>
               <div class="prog-tabs" id="progTabs"></div>
             </div>
             <div id="progBody"></div>
@@ -150,17 +154,17 @@
             <!-- Личные данные -->
             <div class="dash-card">
               <div class="pf-head">
-                <h3>Личные данные</h3>
-                <button type="button" class="btn btn-ghost pf-edit-btn hidden" id="pfEditBtn">✎ Редактировать</button>
+                <h3 data-i18n="profile.title">Личные данные</h3>
+                <button type="button" class="btn btn-ghost pf-edit-btn hidden" id="pfEditBtn" data-i18n="profile.edit">✎ Редактировать</button>
               </div>
 
               <!-- Фото профиля — сохраняется сразу при выборе файла, отдельно от формы ниже -->
               <div class="pf-avatar-row" id="pfAvatarRow">
                 <span class="pf-avatar-preview" id="pfAvatarPreview">A</span>
                 <div class="pf-avatar-actions">
-                  <label class="btn btn-ghost pf-avatar-upload-btn" for="pfAvatarInput">Загрузить фото</label>
+                  <label class="btn btn-ghost pf-avatar-upload-btn" for="pfAvatarInput" data-i18n="profile.uploadPhoto">Загрузить фото</label>
                   <input type="file" id="pfAvatarInput" accept="image/*" class="pf-avatar-input-hidden">
-                  <button type="button" class="pf-avatar-remove hidden" id="pfAvatarRemoveBtn">Удалить</button>
+                  <button type="button" class="pf-avatar-remove hidden" id="pfAvatarRemoveBtn" data-i18n="profile.removePhoto">Удалить</button>
                 </div>
               </div>
 
@@ -170,21 +174,21 @@
               <!-- Режим редактирования -->
               <form class="profile-form hidden" id="profileForm">
                 <div class="form-row">
-                  <label for="pfFullName">ФИО</label>
-                  <input id="pfFullName" type="text" placeholder="Фамилия Имя Отчество" autocomplete="name">
+                  <label for="pfFullName" data-i18n="profile.fullName">ФИО</label>
+                  <input id="pfFullName" type="text" data-i18n-placeholder="profile.fullNamePlaceholder" placeholder="Фамилия Имя Отчество" autocomplete="name">
                 </div>
                 <div class="form-row">
-                  <label for="pfEmail">Email</label>
+                  <label for="pfEmail" data-i18n="profile.email">Email</label>
                   <input id="pfEmail" type="email" readonly>
                 </div>
                 <div class="form-row">
-                  <label for="pfPhone">Телефон</label>
-                  <input id="pfPhone" type="tel" placeholder="+7 ___ ___ __ __" autocomplete="tel">
+                  <label for="pfPhone" data-i18n="profile.phone">Телефон</label>
+                  <input id="pfPhone" type="tel" data-i18n-placeholder="profile.phonePlaceholder" placeholder="+7 ___ ___ __ __" autocomplete="tel">
                 </div>
                 <div class="profile-actions">
-                  <button type="submit" class="btn btn-primary">Сохранить</button>
-                  <button type="button" class="btn btn-ghost hidden" id="pfCancelBtn">Отмена</button>
-                  <span class="form-saved hidden" id="profileSaved">Сохранено ✓</span>
+                  <button type="submit" class="btn btn-primary" data-i18n="profile.save">Сохранить</button>
+                  <button type="button" class="btn btn-ghost hidden" id="pfCancelBtn" data-i18n="profile.cancel">Отмена</button>
+                  <span class="form-saved hidden" id="profileSaved" data-i18n="profile.saved">Сохранено ✓</span>
                 </div>
               </form>
             </div>
@@ -192,27 +196,27 @@
             <!-- 1. Дорожная карта -->
             <div class="dash-card">
               <div class="rm-head">
-                <h3>Дорожная карта поступления <span class="rm-year" id="rmYear"></span></h3>
+                <h3><span data-i18n="roadmap.title">Дорожная карта поступления</span> <span class="rm-year" id="rmYear"></span></h3>
                 <div id="rmProgressRing"></div>
               </div>
               <ul class="rm-list" id="rmList"></ul>
-              <p class="empty-state-sm hidden" id="rmEmpty">Не удалось загрузить дорожную карту.</p>
+              <p class="empty-state-sm hidden" id="rmEmpty" data-i18n="roadmap.empty">Не удалось загрузить дорожную карту.</p>
             </div>
           </div>
 
           <!-- Результаты тестов -->
           <div class="dash-card">
-            <h3>Результаты тестов</h3>
+            <h3 data-i18n="results.title">Результаты тестов</h3>
             <div class="result-summary hidden" id="resultSummary"></div>
             <div class="results-table-wrap">
               <table class="results-table" id="resultsTable">
                 <thead>
-                  <tr><th>№</th><th>Направление</th><th>Результат</th><th>Статус</th><th>Дата</th></tr>
+                  <tr><th data-i18n="results.col.num">№</th><th data-i18n="results.col.direction">Направление</th><th data-i18n="results.col.result">Результат</th><th data-i18n="results.col.status">Статус</th><th data-i18n="results.col.date">Дата</th></tr>
                 </thead>
                 <tbody id="resultsBody"></tbody>
               </table>
             </div>
-            <p class="empty-state-sm hidden" id="dashResultsEmpty">Вы ещё не проходили тесты. Откройте направление в <a href="index.html#catalog">каталоге</a> и нажмите «Пройти тест».</p>
+            <p class="empty-state-sm hidden" id="dashResultsEmpty"><span data-i18n="results.empty1">Вы ещё не проходили тесты. Откройте направление в </span><a href="index.html#catalog" data-i18n="results.empty2">каталоге</a><span data-i18n="results.empty3"> и нажмите «Пройти тест».</span></p>
           </div>
         </div>
 
@@ -223,7 +227,7 @@
               <path d="M16 17l5-5-5-5"/>
               <path d="M21 12H9"/>
             </svg>
-            <span>Выйти из аккаунта</span>
+            <span data-i18n="account.logout">Выйти из аккаунта</span>
           </button>
         </div>
       </div>
@@ -234,8 +238,8 @@
 
 <footer class="site-footer">
   <div class="wrap footer-bottom">
-    <span>© 2026 JetisHub. Учебный макет.</span>
-    <span><a href="index.html">На главную</a> · <a href="kt-stats.html">Экзамен</a></span>
+    <span data-i18n="footer.copyright">© 2026 JetisHub. Учебный макет.</span>
+    <span><a href="index.html" data-i18n="footer.home">На главную</a> · <a href="kt-stats.html" data-i18n="nav.exam">Экзамен</a></span>
   </div>
 </footer>
 
@@ -244,6 +248,7 @@
   <div class="toast" id="toast"></div>
 </div>
 
-<script src="script.js?v=24"></script>
+<script src="i18n.js?v=1"></script>
+<script src="script.js?v=25"></script>
 </body>
 </html>

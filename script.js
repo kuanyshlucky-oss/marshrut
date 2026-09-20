@@ -562,9 +562,9 @@ function renderTestAccessCards() {
     wrap.innerHTML = `
       <a class="test-cta-card" href="index.html#catalog">
         <div class="test-cta-text">
-          <p class="test-cta-eyebrow">Симуляция КТ и тесты по предметам</p>
-          <h3>Пройти тест</h3>
-          <p>Выберите направление в каталоге и начните подготовку прямо сейчас.</p>
+          <p class="test-cta-eyebrow">${I18N.t('testCta.eyebrow')}</p>
+          <h3>${I18N.t('testCta.title')}</h3>
+          <p>${I18N.t('testCta.emptyText')}</p>
         </div>
         <span class="test-cta-arrow" aria-hidden="true">→</span>
       </a>
@@ -575,9 +575,9 @@ function renderTestAccessCards() {
   wrap.innerHTML = cards.map(c => `
     <a class="test-cta-card" href="${c.href}">
       <div class="test-cta-text">
-        <p class="test-cta-eyebrow">${esc(c.code)} · Симуляция КТ и тесты по предметам</p>
-        <h3>Пройти тест — ${esc(c.name)}</h3>
-        <p>Предметы для подготовки, тест по направлению и полная симуляция КТ.</p>
+        <p class="test-cta-eyebrow">${esc(c.code)} · ${I18N.t('testCta.eyebrow')}</p>
+        <h3>${I18N.t('testCta.title')} — ${esc(c.name)}</h3>
+        <p>${I18N.t('testCta.text')}</p>
       </div>
       <span class="test-cta-arrow" aria-hidden="true">→</span>
     </a>
@@ -607,8 +607,8 @@ function renderConspectsLibrary() {
     const sectionNames = lib.sections.map(s => s.title).join(' · ');
     return `
       <a class="dash-card konspekty-card" href="konspekty.html?code=${encodeURIComponent(code)}">
-        <h3>Конспекты · ${esc(lib.title)}</h3>
-        <p>${sectionNames} — ${totalTopics} тем.</p>
+        <h3>${I18N.t('konspekty.cardPrefix')} ${esc(lib.title)}</h3>
+        <p>${sectionNames} — ${totalTopics} ${I18N.t('konspekty.topicsWord')}</p>
         <span class="konspekty-card-arrow" aria-hidden="true">→</span>
       </a>
     `;
@@ -666,6 +666,7 @@ function sortStatsGroups(list) {
 }
 
 function pluralizeGroups(n) {
+  if (window.I18N && I18N.getLang() === 'kk') return I18N.t('word.group.kk');
   const mod10 = n % 10, mod100 = n % 100;
   if (mod10 === 1 && mod100 !== 11) return 'группа';
   if ([2, 3, 4].includes(mod10) && ![12, 13, 14].includes(mod100)) return 'группы';
@@ -740,7 +741,7 @@ function renderCategoryTiles() {
   wrap.innerHTML = `
     <button class="kcat-tile ${activeCategory === null ? 'is-active' : ''}" data-cat="">
       <span class="kcat-tile-icon">${CAT_ICONS.all}</span>
-      <span class="kcat-tile-label">Все группы</span>
+      <span class="kcat-tile-label">${I18N.t('catalog.allGroups')}</span>
       <span class="kcat-tile-count">${KT_STATS_GROUPS.length}</span>
     </button>
     ${CATALOG_CATEGORIES.map(c => `
@@ -774,7 +775,7 @@ function renderStatsCatalog() {
       <div class="card-body">
         <div class="code">${g.code}</div>
         <h3>${esc(g.name)}</h3>
-        <div class="card-foot">Заявлений <b>${g.applications}</b></div>
+        <div class="card-foot">${I18N.t('catalog.applications')} <b>${g.applications}</b></div>
       </div>
     </button>
   `).join('');
@@ -1567,7 +1568,7 @@ function finishQuiz() {
 
   const stamp = document.getElementById('quizStamp');
   stamp.classList.toggle('is-fail', !passed);
-  document.getElementById('stampStatus').textContent = passed ? 'Сдано' : 'Не сдано';
+  document.getElementById('stampStatus').textContent = passed ? I18N.t('test.passed') : I18N.t('test.notPassed');
   const stampScoreEl = document.getElementById('stampScore');
   stampScoreEl.textContent = `0/${total}`;
   countUp(stampScoreEl, score, { duration: 900, suffix: `/${total}` });
@@ -1886,7 +1887,7 @@ function renderProgress() {
           </div>
           <div class="prog-stat">
             <span class="prog-stat-label">Итог симуляции</span>
-            <span class="prog-stat-num ${data.kt.passed ? 'ok' : 'danger'}">${data.kt.passed ? 'Сдано' : 'Не сдано'}</span>
+            <span class="prog-stat-num ${data.kt.passed ? 'ok' : 'danger'}">${data.kt.passed ? I18N.t('test.passed') : I18N.t('test.notPassed')}</span>
             <span class="prog-stat-note">от ${data.kt.date}</span>
           </div>
           <div class="prog-stat">
@@ -2564,7 +2565,7 @@ async function openResultDetail(code, score, total, date) {
   const passed = total > 0 && Math.round((score / total) * 100) >= 60;
 
   document.getElementById('resultStamp').classList.toggle('is-fail', !passed);
-  document.getElementById('resultStampStatus').textContent = passed ? 'Сдано' : 'Не сдано';
+  document.getElementById('resultStampStatus').textContent = passed ? I18N.t('test.passed') : I18N.t('test.notPassed');
   document.getElementById('resultStampScore').textContent = `${score}/${total}`;
   document.getElementById('resultTitle').textContent = `${d.code} · ${d.name}`;
   document.getElementById('resultSub').textContent = date ? `Пройден ${date}` : '';

@@ -82,6 +82,15 @@
   html[data-theme="dark"] .theme-toggle-thumb{ transform:translateX(calc(var(--w) - var(--h))); color:var(--accent); }
   html[data-theme="dark"] .theme-toggle .icon-sun{ display:none; }
   html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
+  .lang-toggle{
+    display:flex; align-items:center; gap:2px; flex:0 0 auto; margin-left:8px;
+    padding:2px; background:var(--bg); border:1px solid var(--line); border-radius:999px;
+  }
+  .lang-toggle-opt{
+    padding:4px 8px; border-radius:999px; font-size:11.5px; font-weight:600;
+    color:var(--ink-soft); letter-spacing:.02em;
+  }
+  .lang-toggle-opt.is-active{ background:var(--surface); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.2); }
 
   main{ padding:32px 16px 40px; display:flex; flex-direction:column; align-items:center; min-height:calc(100vh - 64px); }
   .site-footer{ background:var(--surface); border-top:1px solid var(--line); }
@@ -118,21 +127,28 @@
 </head>
 <body>
 <header>
-  <a class="back" href="javascript:history.length>1?history.back():location.assign('cabinet.html')">← Назад</a>
+  <a class="back" href="javascript:history.length>1?history.back():location.assign('cabinet.html')" data-i18n="konspekt.back">← Назад</a>
   <span class="doc-title" id="docTitle"></span>
-  <button id="themeToggle" class="theme-toggle" type="button" aria-label="Переключить тему" aria-pressed="false">
-    <span class="theme-toggle-thumb">
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </span>
-  </button>
+  <div style="display:flex;align-items:center;">
+    <button id="langToggle" class="lang-toggle" type="button" data-i18n-aria-label="lang.toggle.aria" aria-label="Переключить язык интерфейса" aria-pressed="false">
+      <span class="lang-toggle-opt" data-lang-opt="ru">РУ</span>
+      <span class="lang-toggle-opt" data-lang-opt="kk">ҚАЗ</span>
+    </button>
+    <button id="themeToggle" class="theme-toggle" type="button" data-i18n-aria-label="theme.toggle.aria" aria-label="Переключить тему" aria-pressed="false">
+      <span class="theme-toggle-thumb">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </span>
+    </button>
+  </div>
 </header>
 <main id="main"></main>
 <footer class="site-footer">
   <div class="footer-bottom">
-    <a href="cabinet.html">В кабинет</a> · <a href="index.html">На главную</a>
+    <a href="cabinet.html" data-i18n="footer.cabinet">В кабинет</a> · <a href="index.html" data-i18n="footer.home">На главную</a>
   </div>
 </footer>
+<script src="i18n.js?v=1"></script>
 <script>
   const DOCS = {
     pedagogika:   { title: 'Педагогика', pages: 5 },
@@ -150,7 +166,7 @@
   const docTitleEl = document.getElementById('docTitle');
 
   if (!doc) {
-    main.innerHTML = '<div class="missing">Конспект не найден.</div>';
+    main.innerHTML = `<div class="missing">${I18N.t('konspekt.notFound')}</div>`;
   } else {
     if (page > doc.pages) page = doc.pages;
     docTitleEl.textContent = doc.title;
@@ -169,16 +185,17 @@
              oncontextmenu="return false" ondragstart="return false">
       </div>
       <div class="nav">
-        <button id="prevBtn" ${page <= 1 ? 'disabled' : ''}>← Пред.</button>
-        <span>Страница ${page} из ${doc.pages}</span>
-        <button id="nextBtn" ${page >= doc.pages ? 'disabled' : ''}>След. →</button>
+        <button id="prevBtn" ${page <= 1 ? 'disabled' : ''}>${I18N.t('konspekt.prev')}</button>
+        <span>${I18N.t('konspekt.pageOf').replace('{n}', page).replace('{total}', doc.pages)}</span>
+        <button id="nextBtn" ${page >= doc.pages ? 'disabled' : ''}>${I18N.t('konspekt.next')}</button>
       </div>
-      <p class="hint">Материал доступен только для просмотра. Копирование и сохранение файла отключены.</p>
+      <p class="hint">${I18N.t('konspekty.viewOnly')}</p>
     `;
     document.getElementById('prevBtn').addEventListener('click', () => { if (page > 1) { page--; render(); } });
     document.getElementById('nextBtn').addEventListener('click', () => { if (page < doc.pages) { page++; render(); } });
   }
 
+  document.addEventListener('jetishub-lang-change', () => { if (doc) render(); });
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && ['s','p','u','c'].includes(e.key.toLowerCase())) e.preventDefault();

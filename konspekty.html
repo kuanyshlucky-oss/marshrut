@@ -49,6 +49,15 @@
     --line:rgba(255,255,255,.12); --accent:#4DA3FF; --accent-on:#08131F; --beige:#D9B676;
     --header-bg: rgba(10,10,11,.86);
   }
+  .lang-toggle{
+    display:flex; align-items:center; gap:2px; flex:0 0 auto; margin-left:8px;
+    padding:2px; background:var(--bg); border:1px solid var(--line); border-radius:999px;
+  }
+  .lang-toggle-opt{
+    padding:4px 8px; border-radius:999px; font-size:11.5px; font-weight:600;
+    color:var(--ink-soft); letter-spacing:.02em;
+  }
+  .lang-toggle-opt.is-active{ background:var(--surface); color:var(--ink); box-shadow:0 1px 2px rgba(0,0,0,.2); }
   *{ box-sizing:border-box; }
   body{
     margin:0; background:var(--bg); color:var(--ink); font-family:'Manrope',system-ui,sans-serif;
@@ -152,23 +161,30 @@
 </head>
 <body>
 <header>
-  <a class="back" href="cabinet.html">← В кабинет</a>
+  <a class="back" href="cabinet.html" data-i18n="back.cabinet">← В кабинет</a>
   <span class="doc-title" id="libDocTitle"></span>
-  <button id="themeToggle" class="theme-toggle" type="button" aria-label="Переключить тему" aria-pressed="false">
-    <span class="theme-toggle-thumb">
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-    </span>
-  </button>
+  <div style="display:flex;align-items:center;">
+    <button id="langToggle" class="lang-toggle" type="button" data-i18n-aria-label="lang.toggle.aria" aria-label="Переключить язык интерфейса" aria-pressed="false">
+      <span class="lang-toggle-opt" data-lang-opt="ru">РУ</span>
+      <span class="lang-toggle-opt" data-lang-opt="kk">ҚАЗ</span>
+    </button>
+    <button id="themeToggle" class="theme-toggle" type="button" data-i18n-aria-label="theme.toggle.aria" aria-label="Переключить тему" aria-pressed="false">
+      <span class="theme-toggle-thumb">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </span>
+    </button>
+  </div>
 </header>
-<div id="root"><div class="missing">Загрузка…</div></div>
+<div id="root"><div class="missing" data-i18n="konspekty.loading">Загрузка…</div></div>
 <footer class="site-footer">
   <div class="footer-bottom">
-    <a href="cabinet.html">В кабинет</a> · <a href="index.html">На главную</a>
+    <a href="cabinet.html" data-i18n="footer.cabinet">В кабинет</a> · <a href="index.html" data-i18n="footer.home">На главную</a>
   </div>
 </footer>
 
-<script src="script.js?v=24"></script>
+<script src="i18n.js?v=1"></script>
+<script src="script.js?v=25"></script>
 <script>
   const root = document.getElementById('root');
   const libDocTitleEl = document.getElementById('libDocTitle');
@@ -218,7 +234,7 @@
       root.innerHTML = `
         <div class="lib-layout lib-layout-empty">
           ${sectionSwitchHTML(lib, sec)}
-          <div class="missing">Конспекты по разделу «${esc(sec.title)}» готовятся и скоро появятся здесь.</div>
+          <div class="missing">${I18N.t('konspekty.sectionSoon').replace('{title}', esc(sec.title))}</div>
         </div>
       `;
       wireSectionSwitch(code, lib);
@@ -254,7 +270,7 @@
       <div class="page-wrap">
         ${pages.map(p => `<img src="assets/konspekty/img/${sec.file}/page-${p}.jpg" alt="${esc(topic.title)}, страница ${p}" oncontextmenu="return false" ondragstart="return false">`).join('')}
       </div>
-      <p class="hint">Материал доступен только для просмотра. Копирование и сохранение файла отключены.</p>
+      <p class="hint">${I18N.t('konspekty.viewOnly')}</p>
     `;
     preview.scrollTo({ top: 0 });
     window.scrollTo({ top: 0 });
@@ -295,7 +311,7 @@
     }
 
     if (!lib) {
-      showMissing('Раздел «Конспекты» пока недоступен — доступ выдаётся вместе с курсом. <a href="cabinet.html">Вернуться в кабинет</a>');
+      showMissing(`${I18N.t('konspekty.noAccess')} <a href="cabinet.html">${I18N.t('konspekty.backToCabinet')}</a>`);
       return;
     }
 
@@ -311,6 +327,7 @@
 
   init();
 
+  document.addEventListener('jetishub-lang-change', () => init());
   document.addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('keydown', e => {
     if ((e.ctrlKey || e.metaKey) && ['s', 'p', 'u', 'c'].includes(e.key.toLowerCase())) e.preventDefault();

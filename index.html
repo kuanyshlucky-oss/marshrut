@@ -43,7 +43,7 @@
 
 <a class="consult-fab" href="https://wa.me/77785564853?text=Здравствуйте!%20Хочу%20получить%20консультацию%20по%20подготовке%20к%20магистратуре." target="_blank" rel="noopener">
   <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3.1 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 2-1.4.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.5 21.5 10.2 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.2.8.9-3.1-.2-.3C4.1 14.5 3.7 13.3 3.7 12 3.7 7.4 7.4 3.7 12 3.7S20.3 7.4 20.3 12 16.6 20 12 20z"/></svg>
-  <span>Получить консультацию</span>
+  <span data-i18n="header.consult">Получить консультацию</span>
 </a>
 
 <!-- ================= HEADER ================= -->
@@ -51,34 +51,38 @@
   <div class="wrap header-row">
     <a href="#" class="logo">
       <img class="logo-mark" src="assets/brand/logo.svg" alt="" aria-hidden="true">
-      <span class="logo-text">JetisHub<span class="logo-tag">Путь к магистратуре</span></span>
+      <span class="logo-text">JetisHub<span class="logo-tag" data-i18n="logo.tag">Путь к магистратуре</span></span>
     </a>
 
-    <nav class="main-nav" id="mainNav" aria-label="Главная навигация">
-      <a href="#catalog">Направления</a>
-      <a href="kt-stats.html">Экзамен</a>
-      <a href="#how">Как поступить</a>
-      <a href="#about">О платформе</a>
+    <nav class="main-nav" id="mainNav" data-i18n-aria-label="nav.aria" aria-label="Главная навигация">
+      <a href="#catalog" data-i18n="nav.catalog">Направления</a>
+      <a href="kt-stats.html" data-i18n="nav.exam">Экзамен</a>
+      <a href="#how" data-i18n="nav.how">Как поступить</a>
+      <a href="#about" data-i18n="nav.about">О платформе</a>
     </nav>
 
     <div class="header-actions">
-      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Переключить тему" aria-pressed="false">
+      <button id="langToggle" class="lang-toggle" type="button" data-i18n-aria-label="lang.toggle.aria" aria-label="Переключить язык интерфейса" aria-pressed="false">
+        <span class="lang-toggle-opt" data-lang-opt="ru">РУ</span>
+        <span class="lang-toggle-opt" data-lang-opt="kk">ҚАЗ</span>
+      </button>
+      <button id="themeToggle" class="theme-toggle" type="button" data-i18n-aria-label="theme.toggle.aria" aria-label="Переключить тему" aria-pressed="false">
         <span class="theme-toggle-thumb">
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </span>
       </button>
-      <a class="btn btn-primary" id="btnGuestRegister" href="cabinet.html">Войти<span class="btn-text-long"> в кабинет</span></a>
+      <a class="btn btn-primary" id="btnGuestRegister" href="cabinet.html"><span data-i18n="header.login">Войти</span><span class="btn-text-long" data-i18n="header.loginLong"> в кабинет</span></a>
 
       <div class="header-social">
-        <a href="https://www.instagram.com/jetis.hub/" target="_blank" rel="noopener" aria-label="JetisHub в Instagram">
+        <a href="https://www.instagram.com/jetis.hub/" target="_blank" rel="noopener" data-i18n-aria-label="header.instagram.aria" aria-label="JetisHub в Instagram">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <rect x="3" y="3" width="18" height="18" rx="5"/>
             <circle cx="12" cy="12" r="4"/>
             <circle cx="17.2" cy="6.8" r="1"/>
           </svg>
         </a>
-        <a href="https://wa.me/77785564853" target="_blank" rel="noopener" aria-label="JetisHub в WhatsApp">
+        <a href="https://wa.me/77785564853" target="_blank" rel="noopener" data-i18n-aria-label="header.whatsapp.aria" aria-label="JetisHub в WhatsApp">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3.1 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 2-1.4.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.5 21.5 10.2 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.2.8.9-3.1-.2-.3C4.1 14.5 3.7 13.3 3.7 12 3.7 7.4 7.4 3.7 12 3.7S20.3 7.4 20.3 12 16.6 20 12 20z"/></svg>
         </a>
       </div>
@@ -91,7 +95,7 @@
       </div>
     </div>
 
-    <button class="nav-toggle" id="navToggle" aria-label="Открыть меню" aria-controls="mainNav" aria-expanded="false">
+    <button class="nav-toggle" id="navToggle" data-i18n-aria-label="nav.toggle.aria" aria-label="Открыть меню" aria-controls="mainNav" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -103,15 +107,15 @@
   <section class="hero">
     <div class="wrap hero-inner">
       <div class="hero-copy">
-        <p class="eyebrow"><span class="dot-sm" aria-hidden="true"></span>КТ-2025 · 147 групп образовательных программ</p>
-        <h1>Выберите <span class="accent-word">направление</span><br>и&nbsp;готовьтесь к&nbsp;поступлению</h1>
-        <p class="hero-sub">147 групп образовательных программ по официальным итогам КТ-2025. Найдите свою группу по коду или названию — увидите реальную статистику прохождения порога.</p>
+        <p class="eyebrow"><span class="dot-sm" aria-hidden="true"></span><span data-i18n="hero.eyebrow">КТ-2025 · 147 групп образовательных программ</span></p>
+        <h1><span data-i18n="hero.title1">Выберите </span><span class="accent-word" data-i18n="hero.titleAccent">направление</span><br><span data-i18n="hero.title2">и&nbsp;готовьтесь к&nbsp;поступлению</span></h1>
+        <p class="hero-sub" data-i18n="hero.sub">147 групп образовательных программ по официальным итогам КТ-2025. Найдите свою группу по коду или названию — увидите реальную статистику прохождения порога.</p>
         <div class="hero-cta-row">
           <a class="hero-consult-btn" href="https://wa.me/77785564853?text=Здравствуйте!%20Хочу%20получить%20консультацию%20по%20подготовке%20к%20магистратуре." target="_blank" rel="noopener">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3.1 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 2-1.4.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.5 21.5 10.2 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.2.8.9-3.1-.2-.3C4.1 14.5 3.7 13.3 3.7 12 3.7 7.4 7.4 3.7 12 3.7S20.3 7.4 20.3 12 16.6 20 12 20z"/></svg>
-            <span>Получить консультацию</span>
+            <span data-i18n="header.consult">Получить консультацию</span>
           </a>
-          <a class="btn-link" href="#catalog">Смотреть направления</a>
+          <a class="btn-link" href="#catalog" data-i18n="hero.viewDirections">Смотреть направления</a>
         </div>
       </div>
       <div class="hero-visual" aria-hidden="true">
@@ -123,10 +127,10 @@
     <div class="wrap hero-search">
       <form class="filter-bar search-bar" id="searchBar">
         <div class="filter-field filter-field-search">
-          <label for="fSearch">Я ищу программу по…</label>
-          <input id="fSearch" type="text" placeholder="Код (M094) или название — «информационные технологии»…" autocomplete="off">
+          <label for="fSearch" data-i18n="search.label">Я ищу программу по…</label>
+          <input id="fSearch" type="text" data-i18n-placeholder="search.placeholder" placeholder="Код (M094) или название — «информационные технологии»…" autocomplete="off">
         </div>
-        <button type="submit" class="btn btn-primary filter-submit">Найти</button>
+        <button type="submit" class="btn btn-primary filter-submit" data-i18n="search.submit">Найти</button>
       </form>
     </div>
   </section>
@@ -135,24 +139,24 @@
   <section class="section" id="catalog">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow">Каталог</p>
-        <h2>Направления магистратуры</h2>
+        <p class="eyebrow" data-i18n="catalog.eyebrow">Каталог</p>
+        <h2 data-i18n="catalog.title">Направления магистратуры</h2>
         <p class="result-count" id="statsCount">147 групп</p>
       </div>
 
       <div class="kcat-tiles" id="catTiles"><!-- категории injected by script.js --></div>
 
       <div class="kcat-toolbar">
-        <label for="statsSortSelect">Сортировка</label>
+        <label for="statsSortSelect" data-i18n="sort.label">Сортировка</label>
         <select id="statsSortSelect">
-          <option value="alpha">По алфавиту</option>
-          <option value="passed">По % прохождения порога</option>
-          <option value="participants">По числу участников</option>
+          <option value="alpha" data-i18n="sort.alpha">По алфавиту</option>
+          <option value="passed" data-i18n="sort.passed">По % прохождения порога</option>
+          <option value="participants" data-i18n="sort.participants">По числу участников</option>
         </select>
       </div>
 
       <div class="kcat-list" id="statsList"><!-- строки групп injected by script.js --></div>
-      <p class="empty-state hidden" id="statsEmpty">Ничего не нашлось. Попробуйте другой запрос.</p>
+      <p class="empty-state hidden" id="statsEmpty" data-i18n="catalog.empty">Ничего не нашлось. Попробуйте другой запрос.</p>
     </div>
   </section>
 
@@ -160,8 +164,8 @@
   <section class="section section-lg section-dark" id="how">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow">Как поступить</p>
-        <h2>Путь абитуриента</h2>
+        <p class="eyebrow" data-i18n="how.eyebrow">Как поступить</p>
+        <h2 data-i18n="how.title">Путь абитуриента</h2>
       </div>
       <div class="path-timeline" id="pathTimeline">
         <div class="path-timeline-line" aria-hidden="true"></div>
@@ -169,45 +173,45 @@
         <div class="path-node path-node-left">
           <span class="path-dot" style="--dot:var(--accent)" aria-hidden="true"></span>
           <div class="path-card">
-            <span class="path-meta">01 · Направление</span>
-            <h3>Выбор программы</h3>
-            <p>Изучение списка специальностей и выбор направления.</p>
+            <span class="path-meta" data-i18n="how.step1.meta">01 · Направление</span>
+            <h3 data-i18n="how.step1.title">Выбор программы</h3>
+            <p data-i18n="how.step1.text">Изучение списка специальностей и выбор направления.</p>
           </div>
         </div>
 
         <div class="path-node path-node-right">
           <span class="path-dot" style="--dot:var(--beige)" aria-hidden="true"></span>
           <div class="path-card">
-            <span class="path-meta">02 · НЦТ</span>
-            <h3>Регистрация на КТ</h3>
-            <p>Подача заявки через портал НЦТ (Национального центра тестирования).</p>
+            <span class="path-meta" data-i18n="how.step2.meta">02 · НЦТ</span>
+            <h3 data-i18n="how.step2.title">Регистрация на КТ</h3>
+            <p data-i18n="how.step2.text">Подача заявки через портал НЦТ (Национального центра тестирования).</p>
           </div>
         </div>
 
         <div class="path-node path-node-left">
           <span class="path-dot" style="--dot:var(--teal)" aria-hidden="true"></span>
           <button class="path-card path-card-active" id="pathPrepBtn" type="button">
-            <span class="path-meta">03 · JetisHub</span>
-            <h3>Подготовка</h3>
-            <p>Использование нашей платформы для симуляции тестирования.</p>
+            <span class="path-meta" data-i18n="how.step3.meta">03 · JetisHub</span>
+            <h3 data-i18n="how.step3.title">Подготовка</h3>
+            <p data-i18n="how.step3.text">Использование нашей платформы для симуляции тестирования.</p>
           </button>
         </div>
 
         <div class="path-node path-node-right">
           <span class="path-dot" style="--dot:var(--accent)" aria-hidden="true"></span>
           <div class="path-card">
-            <span class="path-meta">04 · Экзамен</span>
-            <h3>Сдача КТ</h3>
-            <p>Прохождение Комплексного Тестирования.</p>
+            <span class="path-meta" data-i18n="how.step4.meta">04 · Экзамен</span>
+            <h3 data-i18n="how.step4.title">Сдача КТ</h3>
+            <p data-i18n="how.step4.text">Прохождение Комплексного Тестирования.</p>
           </div>
         </div>
 
         <div class="path-node path-node-left">
           <span class="path-dot" style="--dot:var(--beige)" aria-hidden="true"></span>
           <div class="path-card">
-            <span class="path-meta">05 · Финал</span>
-            <h3>Подача документов</h3>
-            <p>Зачисление в выбранный вуз при получении проходного балла.</p>
+            <span class="path-meta" data-i18n="how.step5.meta">05 · Финал</span>
+            <h3 data-i18n="how.step5.title">Подача документов</h3>
+            <p data-i18n="how.step5.text">Зачисление в выбранный вуз при получении проходного балла.</p>
           </div>
         </div>
       </div>
@@ -218,25 +222,25 @@
   <section class="section section-muted" id="about">
     <div class="wrap">
       <div class="section-head">
-        <p class="eyebrow">О платформе</p>
-        <h2>Всё для подготовки к КТ — в одном месте</h2>
-        <p class="section-note">JetisHub собирает официальную статистику КТ-2025 и инструменты подготовки в одном личном кабинете.</p>
+        <p class="eyebrow" data-i18n="about.eyebrow">О платформе</p>
+        <h2 data-i18n="about.title">Всё для подготовки к КТ — в одном месте</h2>
+        <p class="section-note" data-i18n="about.note">JetisHub собирает официальную статистику КТ-2025 и инструменты подготовки в одном личном кабинете.</p>
       </div>
       <div class="feat-grid">
         <div class="feat-card">
           <span class="feat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span>
-          <h3>Симуляция КТ</h3>
-          <p>Полный формат: иностранный язык (Listening/Reading/Тесты), ТГО, два профильных предмета — с таймером и порогами по блокам.</p>
+          <h3 data-i18n="about.feat1.title">Симуляция КТ</h3>
+          <p data-i18n="about.feat1.text">Полный формат: иностранный язык (Listening/Reading/Тесты), ТГО, два профильных предмета — с таймером и порогами по блокам.</p>
         </div>
         <div class="feat-card">
           <span class="feat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-          <h3>Личный кабинет</h3>
-          <p>Профиль, история попыток с разбором ошибок, избранные направления — доступны в любое время.</p>
+          <h3 data-i18n="about.feat2.title">Личный кабинет</h3>
+          <p data-i18n="about.feat2.text">Профиль, история попыток с разбором ошибок, избранные направления — доступны в любое время.</p>
         </div>
         <div class="feat-card">
           <span class="feat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 0M9 12l6 0M9 18l6 0"/><circle cx="4.5" cy="6" r="1.5"/><circle cx="4.5" cy="12" r="1.5"/><circle cx="4.5" cy="18" r="1.5"/></svg></span>
-          <h3>Roadmap подготовки</h3>
-          <p>Чеклист шагов от выбора программы до подачи документов — с отметками о выполнении.</p>
+          <h3 data-i18n="about.feat3.title">Roadmap подготовки</h3>
+          <p data-i18n="about.feat3.text">Чеклист шагов от выбора программы до подачи документов — с отметками о выполнении.</p>
         </div>
       </div>
     </div>
@@ -246,10 +250,10 @@
   <section class="section section-lg section-dark" id="about-us">
     <div class="wrap about-us-inner">
       <div class="about-us-text">
-        <p class="eyebrow"><span class="dot-sm" aria-hidden="true"></span>О нас</p>
-        <h2>Сначала практика. Потом платформа.</h2>
-        <p class="section-note">Мы вживую готовили абитуриентов к магистратуре — разбирали реальные экзамены, требования вузов и ошибки, которые стоят баллов. JetisHub — не теория с чистого листа, а тот же опыт, только в цифре: доступный в любое время и без привязки к расписанию очных занятий.</p>
-        <p class="about-us-achievement"><span class="about-us-achievement-num">200+</span> учеников прошли подготовку с нами и сдали экзамен со средним баллом 96</p>
+        <p class="eyebrow"><span class="dot-sm" aria-hidden="true"></span><span data-i18n="aboutUs.eyebrow">О нас</span></p>
+        <h2 data-i18n="aboutUs.title">Сначала практика. Потом платформа.</h2>
+        <p class="section-note" data-i18n="aboutUs.text">Мы вживую готовили абитуриентов к магистратуре — разбирали реальные экзамены, требования вузов и ошибки, которые стоят баллов. JetisHub — не теория с чистого листа, а тот же опыт, только в цифре: доступный в любое время и без привязки к расписанию очных занятий.</p>
+        <p class="about-us-achievement"><span class="about-us-achievement-num">200+</span><span data-i18n="aboutUs.achievement"> учеников прошли подготовку с нами и сдали экзамен со средним баллом 96</span></p>
         <div class="about-us-mini-stats">
           
         </div>
@@ -266,13 +270,13 @@
   <section class="section contact-band" id="contact">
     <div class="wrap contact-inner">
       <div>
-        <p class="eyebrow eyebrow-light">Остались вопросы?</p>
-        <h2>Поможем выбрать направление и&nbsp;предметы</h2>
-        <p class="hero-sub hero-sub-light">Команда кураторов на связи каждый будний день — подскажем по структуре экзамена, профильным предметам и темам подготовки.</p>
+        <p class="eyebrow eyebrow-light" data-i18n="contact.eyebrow">Остались вопросы?</p>
+        <h2 data-i18n="contact.title">Поможем выбрать направление и&nbsp;предметы</h2>
+        <p class="hero-sub hero-sub-light" data-i18n="contact.text">Команда кураторов на связи каждый будний день — подскажем по структуре экзамена, профильным предметам и темам подготовки.</p>
       </div>
       <div class="contact-cta-col">
-        <a href="#catalog" class="btn btn-light">Выбрать направление</a>
-        <a href="#how" class="btn-link btn-link-on-accent">Как поступить</a>
+        <a href="#catalog" class="btn btn-light" data-i18n="contact.chooseDirection">Выбрать направление</a>
+        <a href="#how" class="btn-link btn-link-on-accent" data-i18n="nav.how">Как поступить</a>
       </div>
     </div>
   </section>
@@ -286,49 +290,49 @@
       <a href="#" class="logo-full-link" aria-label="JetisHub — Путь к магистратуре">
         <span class="footer-logo">
           <img class="footer-logo-mark" src="assets/brand/logo-mark.png" alt="" aria-hidden="true">
-          <span class="footer-logo-text">JetisHub<span class="footer-logo-tag">Путь к магистратуре</span></span>
+          <span class="footer-logo-text">JetisHub<span class="footer-logo-tag" data-i18n="logo.tag">Путь к магистратуре</span></span>
         </span>
       </a>
-      <p>Платформа подготовки к вступительным экзаменам в магистратуру по группам образовательных программ.</p>
+      <p data-i18n="footer.about">Платформа подготовки к вступительным экзаменам в магистратуру по группам образовательных программ.</p>
       <div class="header-social footer-social-row">
-        <a href="https://www.instagram.com/jetis.hub/" target="_blank" rel="noopener" aria-label="JetisHub в Instagram">
+        <a href="https://www.instagram.com/jetis.hub/" target="_blank" rel="noopener" data-i18n-aria-label="header.instagram.aria" aria-label="JetisHub в Instagram">
           <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
             <rect x="3" y="3" width="18" height="18" rx="5"/>
             <circle cx="12" cy="12" r="4"/>
             <circle cx="17.2" cy="6.8" r="1"/>
           </svg>
         </a>
-        <a href="https://wa.me/77785564853" target="_blank" rel="noopener" aria-label="JetisHub в WhatsApp">
+        <a href="https://wa.me/77785564853" target="_blank" rel="noopener" data-i18n-aria-label="header.whatsapp.aria" aria-label="JetisHub в WhatsApp">
           <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3.1 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 2-1.4.2-.6.2-1.2.2-1.3-.1-.1-.3-.2-.6-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.5 21.5 10.2 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.6 0-3.1-.4-4.4-1.2l-.3-.2-3.2.8.9-3.1-.2-.3C4.1 14.5 3.7 13.3 3.7 12 3.7 7.4 7.4 3.7 12 3.7S20.3 7.4 20.3 12 16.6 20 12 20z"/></svg>
         </a>
       </div>
     </div>
     <div class="footer-col">
-      <h3>Платформа</h3>
-      <a href="#catalog">Направления</a>
-      <a href="kt-stats.html">Экзамен</a>
-      <a href="#how">Как поступить</a>
-      <a href="#about">О платформе</a>
+      <h3 data-i18n="footer.platform">Платформа</h3>
+      <a href="#catalog" data-i18n="nav.catalog">Направления</a>
+      <a href="kt-stats.html" data-i18n="nav.exam">Экзамен</a>
+      <a href="#how" data-i18n="nav.how">Как поступить</a>
+      <a href="#about" data-i18n="nav.about">О платформе</a>
     </div>
     <div class="footer-col">
-      <h3>Поддержка</h3>
-      <a href="#contact">Связаться с нами</a>
-      <a href="#contact">Частые вопросы</a>
+      <h3 data-i18n="footer.support">Поддержка</h3>
+      <a href="#contact" data-i18n="footer.contactUs">Связаться с нами</a>
+      <a href="#contact" data-i18n="footer.faq">Частые вопросы</a>
     </div>
   </div>
   <div class="wrap footer-bottom">
-    <span>© 2026 JetisHub. Учебный макет.</span>
+    <span data-i18n="footer.copyright">© 2026 JetisHub. Учебный макет.</span>
   </div>
 </footer>
 
 <!-- ================= TEST PAGE (full-screen) ================= -->
 <div class="test-page hidden" id="testPage">
-  <button class="test-exit" id="testExit" aria-label="Выйти из теста">×</button>
+  <button class="test-exit" id="testExit" data-i18n-aria-label="test.exit.aria" aria-label="Выйти из теста">×</button>
   <div class="test-page-inner">
 
     <div id="testRun">
-      <h2 class="test-title" id="testTitle">Тест</h2>
-      <p class="test-sub" id="testSub">Направление</p>
+      <h2 class="test-title" id="testTitle" data-i18n="test.title">Тест</h2>
+      <p class="test-sub" id="testSub" data-i18n="test.direction">Направление</p>
       <div class="kt-qnav" id="testQnav"></div>
 
       <div class="test-qwrap">
@@ -337,23 +341,23 @@
         <div id="testImage"></div>
         <div class="test-options" id="testOptions"></div>
         <div class="test-foot">
-          <button class="btn test-prev" id="testPrev">← Назад</button>
-          <span class="test-hint">Нажмите <b>ENTER</b></span>
-          <button class="btn test-next" id="testNext">Далее</button>
+          <button class="btn test-prev" id="testPrev" data-i18n="test.prev">← Назад</button>
+          <span class="test-hint" data-i18n-html="test.enterHint">Нажмите <b>ENTER</b></span>
+          <button class="btn test-next" id="testNext" data-i18n="test.next">Далее</button>
         </div>
       </div>
     </div>
 
     <div id="testResult" class="test-result hidden">
       <div class="stamp" id="quizStamp">
-        <span class="stamp-status" id="stampStatus">Сдано</span>
+        <span class="stamp-status" id="stampStatus" data-i18n="test.passed">Сдано</span>
         <span class="stamp-score" id="stampScore">3/4</span>
       </div>
-      <h3 id="resultHeadline">Тест пройден</h3>
+      <h3 id="resultHeadline" data-i18n="test.result.title">Тест пройден</h3>
       <p id="resultText">Вы ответили правильно на 3 из 4 вопросов.</p>
       <div class="test-result-nav">
-        <button class="btn btn-ghost" id="reviewBtn">Работа над ошибками</button>
-        <button class="btn btn-primary" id="quizDashBtn">В личный кабинет</button>
+        <button class="btn btn-ghost" id="reviewBtn" data-i18n="test.review">Работа над ошибками</button>
+        <button class="btn btn-primary" id="quizDashBtn" data-i18n="test.toCabinet">В личный кабинет</button>
       </div>
     </div>
 
@@ -362,48 +366,48 @@
 
 <!-- ================= REVIEW PAGE (работа над ошибками) ================= -->
 <div class="test-page review-page hidden" id="reviewPage">
-  <button class="test-exit" id="reviewExit" aria-label="Закрыть разбор">×</button>
-  <button class="scroll-top-btn" id="reviewScrollTop" aria-label="Наверх">
+  <button class="test-exit" id="reviewExit" data-i18n-aria-label="review.close.aria" aria-label="Закрыть разбор">×</button>
+  <button class="scroll-top-btn" id="reviewScrollTop" data-i18n-aria-label="review.scrollTop.aria" aria-label="Наверх">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
   </button>
   <div class="review-inner">
-    <h2 class="test-title">Работа над ошибками</h2>
-    <p class="test-sub" id="reviewSub">Направление</p>
+    <h2 class="test-title" data-i18n="review.title">Работа над ошибками</h2>
+    <p class="test-sub" id="reviewSub" data-i18n="test.direction">Направление</p>
     <div class="review-nav" id="reviewNav"></div>
     <div id="reviewList"></div>
-    <div class="test-result-nav"><button class="btn btn-primary" id="reviewClose">Готово</button></div>
+    <div class="test-result-nav"><button class="btn btn-primary" id="reviewClose" data-i18n="review.done">Готово</button></div>
   </div>
 </div>
 
 <!-- ================= RESULT DETAIL (пройденный тест) ================= -->
 <div class="test-page review-page hidden" id="resultPage">
-  <button class="test-exit" id="resultExit" aria-label="Закрыть">×</button>
+  <button class="test-exit" id="resultExit" data-i18n-aria-label="result.close.aria" aria-label="Закрыть">×</button>
   <div class="review-inner">
     <div class="kt-stamp" id="resultStamp">
-      <span class="kt-stamp-status" id="resultStampStatus">Сдано</span>
+      <span class="kt-stamp-status" id="resultStampStatus" data-i18n="test.passed">Сдано</span>
       <span class="kt-stamp-score" id="resultStampScore">3/4</span>
     </div>
     <h2 class="test-title" id="resultTitle">Направление</h2>
     <p class="test-sub" id="resultSub">Дата</p>
-    <p class="topics-head" style="margin-top:26px">Вопросы теста и правильные ответы</p>
+    <p class="topics-head" style="margin-top:26px" data-i18n="result.questionsHead">Вопросы теста и правильные ответы</p>
     <div id="resultQList"></div>
     <div class="test-result-nav">
-      <button class="btn btn-ghost" id="resultRetryBtn">Пройти ещё раз</button>
-      <button class="btn btn-primary" id="resultCloseBtn">В личный кабинет</button>
+      <button class="btn btn-ghost" id="resultRetryBtn" data-i18n="test.retake">Пройти ещё раз</button>
+      <button class="btn btn-primary" id="resultCloseBtn" data-i18n="test.toCabinet">В личный кабинет</button>
     </div>
   </div>
 </div>
 
 <!-- ================= КТ SIMULATION (full-screen) ================= -->
 <div class="test-page hidden" id="ktPage">
-  <button class="test-exit" id="ktClose" aria-label="Выйти из КТ">×</button>
+  <button class="test-exit" id="ktClose" data-i18n-aria-label="kt.exit.aria" aria-label="Выйти из КТ">×</button>
   <div class="test-page-inner" id="ktPageBody"><!-- injected by kt.js --></div>
 </div>
 
 <!-- ================= DIRECTION → SUBJECTS → TOPICS MODAL ================= -->
 <div class="modal-overlay hidden" id="dirModal">
   <div class="modal">
-    <button class="modal-close" id="dirClose" aria-label="Закрыть">×</button>
+    <button class="modal-close" id="dirClose" data-i18n-aria-label="modal.close.aria" aria-label="Закрыть">×</button>
     <div id="dirModalBody"><!-- injected by script.js --></div>
   </div>
 </div>
@@ -411,7 +415,7 @@
 <!-- ================= ВЫБОР ПРЕДМЕТА (перед простым тестом) ================= -->
 <div class="modal-overlay hidden" id="subjectModal">
   <div class="modal">
-    <button class="modal-close" id="subjectClose" aria-label="Закрыть">×</button>
+    <button class="modal-close" id="subjectClose" data-i18n-aria-label="modal.close.aria" aria-label="Закрыть">×</button>
     <div id="subjectModalBody"><!-- injected by script.js --></div>
   </div>
 </div>
@@ -419,13 +423,13 @@
 <!-- ================= AUTH GATE (тест/КТ только для вошедших) ================= -->
 <div class="modal-overlay hidden" id="gateModal">
   <div class="modal gate-modal">
-    <button class="modal-close" id="gateClose" aria-label="Закрыть">×</button>
+    <button class="modal-close" id="gateClose" data-i18n-aria-label="modal.close.aria" aria-label="Закрыть">×</button>
     <div class="gate-lock" aria-hidden="true">🔒</div>
-    <h3 id="gateTitle">Доступ к тестированию открывается после входа</h3>
-    <p id="gateLead">Для прохождения теста и симуляции КТ необходим личный аккаунт. Войдите в систему или обратитесь к администратору для получения доступа.</p>
-    <a class="btn btn-primary btn-block" href="cabinet.html" id="gateLoginBtn">Войти в личный кабинет</a>
-    <p class="form-hint" id="gateBuyHint">Ещё нет аккаунта?</p>
-    <a class="btn btn-ghost btn-block gate-buy-btn" id="gateBuyBtn" href="#" target="_blank" rel="noopener">Приобрести курс</a>
+    <h3 id="gateTitle" data-i18n="gate.title">Доступ к тестированию открывается после входа</h3>
+    <p id="gateLead" data-i18n="gate.lead">Для прохождения теста и симуляции КТ необходим личный аккаунт. Войдите в систему или обратитесь к администратору для получения доступа.</p>
+    <a class="btn btn-primary btn-block" href="cabinet.html" id="gateLoginBtn" data-i18n="gate.login">Войти в личный кабинет</a>
+    <p class="form-hint" id="gateBuyHint" data-i18n="gate.noAccount">Ещё нет аккаунта?</p>
+    <a class="btn btn-ghost btn-block gate-buy-btn" id="gateBuyBtn" href="#" target="_blank" rel="noopener" data-i18n="gate.buy">Приобрести курс</a>
   </div>
 </div>
 
@@ -434,7 +438,8 @@
   <div class="toast" id="toast"></div>
 </div>
 
-<script src="script.js?v=24"></script>
-<script src="kt.js?v=27"></script>
+<script src="i18n.js?v=1"></script>
+<script src="script.js?v=25"></script>
+<script src="kt.js?v=28"></script>
 </body>
 </html>

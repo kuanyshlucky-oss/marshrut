@@ -1,0 +1,495 @@
+/* =========================================================
+   i18n.js — переключатель интерфейса RU / KK для JetisHub
+   Переводит только «обвязку» интерфейса (навигация, кнопки,
+   подписи форм, тосты, статичные секции). Контент направлений,
+   вопросов, конспектов и офиц. спецификаций остаётся как есть —
+   это не в скоупе (см. обсуждение с заказчиком).
+
+   Использование в HTML:
+     <span data-i18n="nav.catalog">Направления</span>
+     <input data-i18n-placeholder="search.placeholder" placeholder="...">
+     <button data-i18n-aria-label="theme.toggle" aria-label="...">
+   Использование в JS (script.js/kt.js):
+     I18N.t('common.openSubjects')
+   ========================================================= */
+(function () {
+  var STORAGE_KEY = 'jetishub-lang';
+
+  var DICT = {
+    ru: {
+      'nav.catalog': 'Направления',
+      'nav.exam': 'Экзамен',
+      'nav.how': 'Как поступить',
+      'nav.about': 'О платформе',
+      'nav.aria': 'Главная навигация',
+      'nav.toggle.aria': 'Открыть меню',
+      'logo.tag': 'Путь к магистратуре',
+      'header.login': 'Войти',
+      'header.loginLong': ' в кабинет',
+      'header.consult': 'Получить консультацию',
+      'header.instagram.aria': 'JetisHub в Instagram',
+      'header.whatsapp.aria': 'JetisHub в WhatsApp',
+      'theme.toggle.aria': 'Переключить тему',
+      'lang.toggle.aria': 'Переключить язык интерфейса',
+      'back.home': '← На главную',
+      'back.cabinet': '← В кабинет',
+
+      'hero.eyebrow': 'КТ-2025 · 147 групп образовательных программ',
+      'hero.title1': 'Выберите ',
+      'hero.titleAccent': 'направление',
+      'hero.title2': 'и готовьтесь к поступлению',
+      'hero.sub': '147 групп образовательных программ по официальным итогам КТ-2025. Найдите свою группу по коду или названию — увидите реальную статистику прохождения порога.',
+      'hero.viewDirections': 'Смотреть направления',
+      'search.label': 'Я ищу программу по…',
+      'search.placeholder': 'Код (M094) или название — «информационные технологии»…',
+      'search.submit': 'Найти',
+
+      'catalog.eyebrow': 'Каталог',
+      'catalog.title': 'Направления магистратуры',
+      'catalog.allGroups': 'Все группы',
+      'catalog.applications': 'Заявлений',
+      'sort.label': 'Сортировка',
+      'sort.alpha': 'По алфавиту',
+      'sort.passed': 'По % прохождения порога',
+      'sort.participants': 'По числу участников',
+      'catalog.empty': 'Ничего не нашлось. Попробуйте другой запрос.',
+
+      'how.eyebrow': 'Как поступить',
+      'how.title': 'Путь абитуриента',
+      'how.step1.meta': '01 · Направление',
+      'how.step1.title': 'Выбор программы',
+      'how.step1.text': 'Изучение списка специальностей и выбор направления.',
+      'how.step2.meta': '02 · НЦТ',
+      'how.step2.title': 'Регистрация на КТ',
+      'how.step2.text': 'Подача заявки через портал НЦТ (Национального центра тестирования).',
+      'how.step3.meta': '03 · JetisHub',
+      'how.step3.title': 'Подготовка',
+      'how.step3.text': 'Использование нашей платформы для симуляции тестирования.',
+      'how.step4.meta': '04 · Экзамен',
+      'how.step4.title': 'Сдача КТ',
+      'how.step4.text': 'Прохождение Комплексного Тестирования.',
+      'how.step5.meta': '05 · Финал',
+      'how.step5.title': 'Подача документов',
+      'how.step5.text': 'Зачисление в выбранный вуз при получении проходного балла.',
+
+      'about.eyebrow': 'О платформе',
+      'about.title': 'Всё для подготовки к КТ — в одном месте',
+      'about.note': 'JetisHub собирает официальную статистику КТ-2025 и инструменты подготовки в одном личном кабинете.',
+      'about.feat1.title': 'Симуляция КТ',
+      'about.feat1.text': 'Полный формат: иностранный язык (Listening/Reading/Тесты), ТГО, два профильных предмета — с таймером и порогами по блокам.',
+      'about.feat2.title': 'Личный кабинет',
+      'about.feat2.text': 'Профиль, история попыток с разбором ошибок, избранные направления — доступны в любое время.',
+      'about.feat3.title': 'Roadmap подготовки',
+      'about.feat3.text': 'Чеклист шагов от выбора программы до подачи документов — с отметками о выполнении.',
+
+      'aboutUs.eyebrow': 'О нас',
+      'aboutUs.title': 'Сначала практика. Потом платформа.',
+      'aboutUs.text': 'Мы вживую готовили абитуриентов к магистратуре — разбирали реальные экзамены, требования вузов и ошибки, которые стоят баллов. JetisHub — не теория с чистого листа, а тот же опыт, только в цифре: доступный в любое время и без привязки к расписанию очных занятий.',
+      'aboutUs.achievement': ' учеников прошли подготовку с нами и сдали экзамен со средним баллом 96',
+
+      'contact.eyebrow': 'Остались вопросы?',
+      'contact.title': 'Поможем выбрать направление и предметы',
+      'contact.text': 'Команда кураторов на связи каждый будний день — подскажем по структуре экзамена, профильным предметам и темам подготовки.',
+      'contact.chooseDirection': 'Выбрать направление',
+
+      'footer.about': 'Платформа подготовки к вступительным экзаменам в магистратуру по группам образовательных программ.',
+      'footer.platform': 'Платформа',
+      'footer.support': 'Поддержка',
+      'footer.contactUs': 'Связаться с нами',
+      'footer.faq': 'Частые вопросы',
+      'footer.copyright': '© 2026 JetisHub. Учебный макет.',
+      'footer.home': 'На главную',
+      'footer.cabinet': 'Личный кабинет',
+      'footer.exam': 'Экзамен',
+
+      'test.title': 'Тест',
+      'test.direction': 'Направление',
+      'test.exit.aria': 'Выйти из теста',
+      'test.prev': '← Назад',
+      'test.enterHint': 'Нажмите <b>ENTER</b>',
+      'test.next': 'Далее',
+      'test.finish': 'Завершить',
+      'test.passed': 'Сдано',
+      'test.notPassed': 'Не сдано',
+      'test.result.title': 'Тест пройден',
+      'test.review': 'Работа над ошибками',
+      'test.toCabinet': 'В личный кабинет',
+      'test.retake': 'Пройти ещё раз',
+      'review.title': 'Работа над ошибками',
+      'review.close.aria': 'Закрыть разбор',
+      'review.done': 'Готово',
+      'review.scrollTop.aria': 'Наверх',
+      'result.close.aria': 'Закрыть',
+      'result.questionsHead': 'Вопросы теста и правильные ответы',
+      'kt.exit.aria': 'Выйти из КТ',
+
+      'modal.close.aria': 'Закрыть',
+      'gate.title': 'Доступ к тестированию открывается после входа',
+      'gate.lead': 'Для прохождения теста и симуляции КТ необходим личный аккаунт. Войдите в систему или обратитесь к администратору для получения доступа.',
+      'gate.login': 'Войти в личный кабинет',
+      'gate.noAccount': 'Ещё нет аккаунта?',
+      'gate.buy': 'Приобрести курс',
+
+      'auth.eyebrow': 'Личный кабинет',
+      'auth.title': 'Войдите, чтобы продолжить',
+      'auth.login': 'Логин',
+      'auth.loginPlaceholder': 'логин от администратора',
+      'auth.password': 'Пароль',
+      'auth.submit': 'Войти в кабинет',
+      'auth.hint': 'Ещё нет аккаунта? Логин и пароль выдаёт администратор.',
+      'auth.whatsapp': 'Написать в WhatsApp',
+      'auth.disclaimer': 'Данные хранятся на сервере. Аккаунт, профиль и результаты доступны с любого устройства.',
+      'dashboard.title': 'Личный кабинет',
+      'progress.title': 'Прогресс подготовки',
+      'profile.title': 'Личные данные',
+      'profile.edit': '✎ Редактировать',
+      'profile.uploadPhoto': 'Загрузить фото',
+      'profile.removePhoto': 'Удалить',
+      'profile.fullName': 'ФИО',
+      'profile.fullNamePlaceholder': 'Фамилия Имя Отчество',
+      'profile.email': 'Email',
+      'profile.phone': 'Телефон',
+      'profile.phonePlaceholder': '+7 ___ ___ __ __',
+      'profile.save': 'Сохранить',
+      'profile.cancel': 'Отмена',
+      'profile.saved': 'Сохранено ✓',
+      'roadmap.title': 'Дорожная карта поступления',
+      'roadmap.empty': 'Не удалось загрузить дорожную карту.',
+      'results.title': 'Результаты тестов',
+      'results.col.num': '№',
+      'results.col.direction': 'Направление',
+      'results.col.result': 'Результат',
+      'results.col.status': 'Статус',
+      'results.col.date': 'Дата',
+      'results.empty1': 'Вы ещё не проходили тесты. Откройте направление в ',
+      'results.empty2': 'каталоге',
+      'results.empty3': ' и нажмите «Пройти тест».',
+      'account.logout': 'Выйти из аккаунта',
+      'testCta.eyebrow': 'Симуляция КТ и тесты по предметам',
+      'testCta.title': 'Пройти тест',
+      'testCta.text': 'Предметы для подготовки, тест по направлению и полная симуляция КТ.',
+      'testCta.emptyText': 'Выберите направление в каталоге и начните подготовку прямо сейчас.',
+      'word.group.kk': 'топ',
+
+      'kt.simTitle': 'Симуляция КТ',
+      'kt.simLead': 'Полный прогон с таймером и проверкой по правилам реального комплексного тестирования.',
+      'kt.questionsWord': 'вопросов',
+      'kt.threshold': 'Порог',
+      'kt.hasBlockMin': 'есть минимумы по блокам',
+      'kt.noBlockMin': 'без минимумов по блокам',
+      'kt.foreignLangLabel': 'Иностранный язык',
+      'kt.start': 'Начать КТ',
+      'kt.play.aria': 'Воспроизвести',
+      'kt.timeLeft': 'Оставшееся время:',
+      'kt.questionOf': 'Вопрос {n} из {total}',
+      'kt.questionImage.alt': 'Условие вопроса',
+      'kt.multiHint': 'Выберите все подходящие варианты',
+      'kt.optionImage.alt': 'Вариант ответа',
+      'kt.prev.aria': 'Назад',
+      'kt.type.nauchped': 'Научно-педагогическое',
+      'kt.type.profile': 'Английский язык + ТГО',
+      'kt.lang.en': 'Английский',
+      'kt.block.lang': 'Иностранный язык',
+      'kt.block.logic': 'Тест готовности к обучению (ТГО)',
+      'kt.block.subj1': 'Профильный предмет №1',
+      'kt.block.subj2': 'Профильный предмет №2',
+      'kt.passed': 'КТ сдано',
+      'kt.notPassed': 'КТ не сдано',
+      'rev.yourAnswerOk': 'Ваш ответ ✓',
+      'rev.correctAnswer': 'Правильный ответ',
+      'rev.yourAnswerBad': 'Ваш ответ ✗',
+      'rev.why': 'Почему:',
+      'rev.correctAnswerColon': 'Правильный ответ:',
+      'rev.conspect': 'Конспект',
+      'rev.conspects': 'Конспекты',
+
+      'ktStats.title': 'Статистика КТ 2025',
+      'ktStats.lead': 'Итоги комплексного тестирования в магистратуру, лето 2025 — 147 групп образовательных программ. Выберите группу, чтобы увидеть цифры.',
+      'ktStats.searchPlaceholder': 'Найти группу: код (M094) или название (информационные технологии)…',
+      'ktStats.found': 'Найдено:',
+      'ktStats.notFound': 'Ничего не найдено',
+      'ktStats.stat.applications': 'Заявлений',
+      'ktStats.stat.participants': 'Участников КТ',
+      'ktStats.stat.passed': 'Набрали порог',
+      'ktStats.stat.failed': 'Не набрали порог',
+      'ktStats.takeSubjectTest': 'Пройти тест по предмету',
+      'ktStats.simulateKt': 'Симуляция КТ',
+
+      'konspekty.loading': 'Загрузка…',
+      'konspekty.viewOnly': 'Материал доступен только для просмотра. Копирование и сохранение файла отключены.',
+      'konspekty.noAccess': 'Раздел «Конспекты» пока недоступен — доступ выдаётся вместе с курсом.',
+      'konspekty.backToCabinet': 'Вернуться в кабинет',
+      'konspekty.cardPrefix': 'Конспекты ·',
+      'konspekty.topicsWord': 'тем.',
+      'konspekty.sectionSoon': 'Конспекты по разделу «{title}» готовятся и скоро появятся здесь.',
+      'konspekt.back': '← Назад',
+      'konspekt.notFound': 'Конспект не найден.',
+      'konspekt.prev': '← Пред.',
+      'konspekt.next': 'След. →',
+      'konspekt.pageOf': 'Страница {n} из {total}',
+    },
+    kk: {
+      'nav.catalog': 'Бағыттар',
+      'nav.exam': 'Емтихан',
+      'nav.how': 'Қалай түсуге болады',
+      'nav.about': 'Платформа туралы',
+      'nav.aria': 'Негізгі навигация',
+      'nav.toggle.aria': 'Мәзірді ашу',
+      'logo.tag': 'Магистратураға жол',
+      'header.login': 'Кіру',
+      'header.loginLong': ' кабинетке',
+      'header.consult': 'Кеңес алу',
+      'header.instagram.aria': 'JetisHub Instagram-да',
+      'header.whatsapp.aria': 'JetisHub WhatsApp-та',
+      'theme.toggle.aria': 'Тақырыпты ауыстыру',
+      'lang.toggle.aria': 'Интерфейс тілін ауыстыру',
+      'back.home': '← Басты бетке',
+      'back.cabinet': '← Кабинетке',
+
+      'hero.eyebrow': 'КТ-2025 · білім беру бағдарламалары бойынша 147 топ',
+      'hero.title1': '',
+      'hero.titleAccent': 'Бағытты',
+      'hero.title2': 'таңдаңыз және түсуге дайындалыңыз',
+      'hero.sub': 'КТ-2025 ресми қорытындылары бойынша білім беру бағдарламаларының 147 тобы. Тобыңызды коды немесе атауы бойынша тауып, өту шегінен өту статистикасын көріңіз.',
+      'hero.viewDirections': 'Бағыттарды қарау',
+      'search.label': 'Бағдарламаны... бойынша іздеп жатырмын',
+      'search.placeholder': 'Коды (M094) немесе атауы — «ақпараттық технологиялар»…',
+      'search.submit': 'Іздеу',
+
+      'catalog.eyebrow': 'Каталог',
+      'catalog.title': 'Магистратура бағыттары',
+      'catalog.allGroups': 'Барлық топтар',
+      'catalog.applications': 'Өтінімдер',
+      'sort.label': 'Сұрыптау',
+      'sort.alpha': 'Әліпби бойынша',
+      'sort.passed': 'Өту шегінен % бойынша',
+      'sort.participants': 'Қатысушылар саны бойынша',
+      'catalog.empty': 'Ештеңе табылмады. Басқа сұрау көріңіз.',
+
+      'how.eyebrow': 'Қалай түсуге болады',
+      'how.title': 'Талапкердің жолы',
+      'how.step1.meta': '01 · Бағыт',
+      'how.step1.title': 'Бағдарламаны таңдау',
+      'how.step1.text': 'Мамандықтар тізімін зерттеп, бағыт таңдау.',
+      'how.step2.meta': '02 · ҰТО',
+      'how.step2.title': 'КТ-ға тіркелу',
+      'how.step2.text': 'Ұлттық тестілеу орталығының порталы арқылы өтінім беру.',
+      'how.step3.meta': '03 · JetisHub',
+      'how.step3.title': 'Дайындық',
+      'how.step3.text': 'Тестілеуді симуляциялау үшін біздің платформаны пайдалану.',
+      'how.step4.meta': '04 · Емтихан',
+      'how.step4.title': 'КТ тапсыру',
+      'how.step4.text': 'Кешенді тестілеуден өту.',
+      'how.step5.meta': '05 · Қорытынды',
+      'how.step5.title': 'Құжаттарды тапсыру',
+      'how.step5.text': 'Өту балын алған жағдайда таңдалған ЖОО-ға қабылдану.',
+
+      'about.eyebrow': 'Платформа туралы',
+      'about.title': 'КТ-ға дайындықтың бәрі — бір жерде',
+      'about.note': 'JetisHub КТ-2025 ресми статистикасы мен дайындық құралдарын бір жеке кабинетте жинақтайды.',
+      'about.feat1.title': 'КТ симуляциясы',
+      'about.feat1.text': 'Толық формат: шет тілі (Listening/Reading/Тесттер), ОДТ, екі бейіндік пән — таймермен және блоктар бойынша шектермен.',
+      'about.feat2.title': 'Жеке кабинет',
+      'about.feat2.text': 'Профиль, қателерді талдаумен әрекеттер тарихы, таңдаулы бағыттар — кез келген уақытта қолжетімді.',
+      'about.feat3.title': 'Дайындық жол картасы',
+      'about.feat3.text': 'Бағдарламаны таңдаудан құжат тапсыруға дейінгі қадамдар тізімі — орындалу белгілерімен.',
+
+      'aboutUs.eyebrow': 'Біз туралы',
+      'aboutUs.title': 'Алдымен — тәжірибе. Содан кейін — платформа.',
+      'aboutUs.text': 'Біз талапкерлерді тірідей дайындадық — нақты емтихандарды, ЖОО талаптарын және балдан айыратын қателерді талдадық. JetisHub — таза теория емес, сол тәжірибенің өзі, тек цифрлық түрде: кез келген уақытта қолжетімді және сабақ кестесіне байланысты емес.',
+      'aboutUs.achievement': ' оқушы бізбен дайындықтан өтіп, орташа 96 балмен емтихан тапсырды',
+
+      'contact.eyebrow': 'Сұрақтарыңыз бар ма?',
+      'contact.title': 'Бағыт пен пәндерді таңдауға көмектесеміз',
+      'contact.text': 'Кураторлар тобы әр жұмыс күні байланыста — емтихан құрылымы, бейіндік пәндер және дайындық тақырыптары бойынша кеңес береміз.',
+      'contact.chooseDirection': 'Бағыт таңдау',
+
+      'footer.about': 'Білім беру бағдарламалары топтары бойынша магистратураға түсу емтихандарына дайындық платформасы.',
+      'footer.platform': 'Платформа',
+      'footer.support': 'Қолдау',
+      'footer.contactUs': 'Бізбен байланысу',
+      'footer.faq': 'Жиі қойылатын сұрақтар',
+      'footer.copyright': '© 2026 JetisHub. Оқу макеті.',
+      'footer.home': 'Басты бетке',
+      'footer.cabinet': 'Жеке кабинет',
+      'footer.exam': 'Емтихан',
+
+      'test.title': 'Тест',
+      'test.direction': 'Бағыт',
+      'test.exit.aria': 'Тесттен шығу',
+      'test.prev': '← Артқа',
+      'test.enterHint': '<b>ENTER</b> пернесін басыңыз',
+      'test.next': 'Келесі',
+      'test.finish': 'Аяқтау',
+      'test.passed': 'Тапсырылды',
+      'test.notPassed': 'Тапсырылмады',
+      'test.result.title': 'Тест аяқталды',
+      'test.review': 'Қателермен жұмыс',
+      'test.toCabinet': 'Жеке кабинетке',
+      'test.retake': 'Қайта тапсыру',
+      'review.title': 'Қателермен жұмыс',
+      'review.close.aria': 'Талдауды жабу',
+      'review.done': 'Дайын',
+      'review.scrollTop.aria': 'Жоғарыға',
+      'result.close.aria': 'Жабу',
+      'result.questionsHead': 'Тест сұрақтары және дұрыс жауаптар',
+      'kt.exit.aria': 'КТ-дан шығу',
+
+      'modal.close.aria': 'Жабу',
+      'gate.title': 'Тестілеуге қолжетімділік кіргеннен кейін ашылады',
+      'gate.lead': 'Тест пен КТ симуляциясынан өту үшін жеке аккаунт қажет. Жүйеге кіріңіз немесе қолжетімділік алу үшін әкімшіге хабарласыңыз.',
+      'gate.login': 'Жеке кабинетке кіру',
+      'gate.noAccount': 'Аккаунтыңыз жоқ па?',
+      'gate.buy': 'Курсты сатып алу',
+
+      'auth.eyebrow': 'Жеке кабинет',
+      'auth.title': 'Жалғастыру үшін кіріңіз',
+      'auth.login': 'Логин',
+      'auth.loginPlaceholder': 'әкімшіден алынған логин',
+      'auth.password': 'Құпия сөз',
+      'auth.submit': 'Кабинетке кіру',
+      'auth.hint': 'Аккаунтыңыз жоқ па? Логин мен құпия сөзді әкімші береді.',
+      'auth.whatsapp': 'WhatsApp-қа жазу',
+      'auth.disclaimer': 'Деректер серверде сақталады. Аккаунт, профиль және нәтижелер кез келген құрылғыдан қолжетімді.',
+      'dashboard.title': 'Жеке кабинет',
+      'progress.title': 'Дайындық барысы',
+      'profile.title': 'Жеке деректер',
+      'profile.edit': '✎ Өзгерту',
+      'profile.uploadPhoto': 'Фото жүктеу',
+      'profile.removePhoto': 'Жою',
+      'profile.fullName': 'Аты-жөні',
+      'profile.fullNamePlaceholder': 'Тегі Аты Әкесінің аты',
+      'profile.email': 'Email',
+      'profile.phone': 'Телефон',
+      'profile.phonePlaceholder': '+7 ___ ___ __ __',
+      'profile.save': 'Сақтау',
+      'profile.cancel': 'Бас тарту',
+      'profile.saved': 'Сақталды ✓',
+      'roadmap.title': 'Түсу жол картасы',
+      'roadmap.empty': 'Жол картасын жүктеу мүмкін болмады.',
+      'results.title': 'Тест нәтижелері',
+      'results.col.num': '№',
+      'results.col.direction': 'Бағыт',
+      'results.col.result': 'Нәтиже',
+      'results.col.status': 'Мәртебе',
+      'results.col.date': 'Күні',
+      'results.empty1': 'Сіз әлі тест тапсырған жоқсыз. ',
+      'results.empty2': 'Каталогтан',
+      'results.empty3': ' бағытты ашып, «Тест тапсыру» түймесін басыңыз.',
+      'account.logout': 'Аккаунттан шығу',
+      'testCta.eyebrow': 'КТ симуляциясы және пәндер бойынша тесттер',
+      'testCta.title': 'Тест тапсыру',
+      'testCta.text': 'Дайындыққа арналған пәндер, бағыт бойынша тест және толық КТ симуляциясы.',
+      'testCta.emptyText': 'Каталогтан бағытты таңдап, дайындықты дәл қазір бастаңыз.',
+
+      'kt.simTitle': 'КТ симуляциясы',
+      'kt.simLead': 'Нақты кешенді тестілеу ережелері бойынша таймермен толық өту.',
+      'kt.questionsWord': 'сұрақ',
+      'kt.threshold': 'Шек',
+      'kt.hasBlockMin': 'блоктар бойынша ең төменгі шектер бар',
+      'kt.noBlockMin': 'блоктар бойынша ең төменгі шектер жоқ',
+      'kt.foreignLangLabel': 'Шет тілі',
+      'kt.start': 'КТ бастау',
+      'kt.play.aria': 'Ойнату',
+      'kt.timeLeft': 'Қалған уақыт:',
+      'kt.questionOf': '{total} сұрақтың {n}-і',
+      'kt.questionImage.alt': 'Сұрақ шарты',
+      'kt.multiHint': 'Барлық сәйкес нұсқаларды таңдаңыз',
+      'kt.optionImage.alt': 'Жауап нұсқасы',
+      'kt.prev.aria': 'Артқа',
+      'kt.type.nauchped': 'Ғылыми-педагогикалық',
+      'kt.type.profile': 'Ағылшын тілі + ОДТ',
+      'kt.lang.en': 'Ағылшын',
+      'kt.block.lang': 'Шет тілі',
+      'kt.block.logic': 'Оқуға дайындық тесті (ОДТ)',
+      'kt.block.subj1': '№1 бейіндік пән',
+      'kt.block.subj2': '№2 бейіндік пән',
+      'kt.passed': 'КТ тапсырылды',
+      'kt.notPassed': 'КТ тапсырылмады',
+      'rev.yourAnswerOk': 'Сіздің жауабыңыз ✓',
+      'rev.correctAnswer': 'Дұрыс жауап',
+      'rev.yourAnswerBad': 'Сіздің жауабыңыз ✗',
+      'rev.why': 'Себебі:',
+      'rev.correctAnswerColon': 'Дұрыс жауап:',
+      'rev.conspect': 'Конспект',
+      'rev.conspects': 'Конспектілер',
+
+      'ktStats.title': '2025 жылғы КТ статистикасы',
+      'ktStats.lead': '2025 жылғы жазда өткен магистратураға кешенді тестілеудің қорытындылары — білім беру бағдарламалары бойынша 147 топ. Сандарды көру үшін топты таңдаңыз.',
+      'ktStats.searchPlaceholder': 'Топты табу: коды (M094) немесе атауы (ақпараттық технологиялар)…',
+      'ktStats.found': 'Табылды:',
+      'ktStats.notFound': 'Ештеңе табылмады',
+      'ktStats.stat.applications': 'Өтінімдер',
+      'ktStats.stat.participants': 'КТ қатысушылары',
+      'ktStats.stat.passed': 'Шектен өткендер',
+      'ktStats.stat.failed': 'Шектен өтпегендер',
+      'ktStats.takeSubjectTest': 'Пән бойынша тест тапсыру',
+      'ktStats.simulateKt': 'КТ симуляциясы',
+
+      'konspekty.loading': 'Жүктелуде…',
+      'konspekty.viewOnly': 'Материал тек қарауға қолжетімді. Көшіру және сақтау өшірілген.',
+      'konspekty.noAccess': '«Конспектілер» бөлімі әлі қолжетімді емес — қолжетімділік курспен бірге беріледі.',
+      'konspekty.backToCabinet': 'Кабинетке оралу',
+      'konspekty.cardPrefix': 'Конспектілер ·',
+      'konspekty.topicsWord': 'тақырып.',
+      'konspekty.sectionSoon': '«{title}» бөлімінің конспектілері дайындалуда, жақында осында пайда болады.',
+      'konspekt.back': '← Артқа',
+      'konspekt.notFound': 'Конспект табылмады.',
+      'konspekt.prev': '← Алдыңғы',
+      'konspekt.next': 'Келесі →',
+      'konspekt.pageOf': '{total} беттің {n}-і',
+    },
+  };
+
+  function getLang() {
+    try {
+      var v = localStorage.getItem(STORAGE_KEY);
+      return v === 'kk' ? 'kk' : 'ru';
+    } catch (e) { return 'ru'; }
+  }
+  function setLang(lang) {
+    try { localStorage.setItem(STORAGE_KEY, lang === 'kk' ? 'kk' : 'ru'); } catch (e) {}
+  }
+  function t(key) {
+    var lang = getLang();
+    var d = DICT[lang] || DICT.ru;
+    if (Object.prototype.hasOwnProperty.call(d, key)) return d[key];
+    if (Object.prototype.hasOwnProperty.call(DICT.ru, key)) return DICT.ru[key];
+    return key;
+  }
+
+  function applyI18n(root) {
+    root = root || document;
+    root.querySelectorAll('[data-i18n]').forEach(function (el) { el.textContent = t(el.getAttribute('data-i18n')); });
+    root.querySelectorAll('[data-i18n-html]').forEach(function (el) { el.innerHTML = t(el.getAttribute('data-i18n-html')); });
+    root.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) { el.setAttribute('placeholder', t(el.getAttribute('data-i18n-placeholder'))); });
+    root.querySelectorAll('[data-i18n-aria-label]').forEach(function (el) { el.setAttribute('aria-label', t(el.getAttribute('data-i18n-aria-label'))); });
+    root.querySelectorAll('[data-i18n-title]').forEach(function (el) { el.setAttribute('title', t(el.getAttribute('data-i18n-title'))); });
+    if (root === document) document.documentElement.setAttribute('lang', getLang());
+  }
+
+  function wireLangToggle() {
+    var btn = document.getElementById('langToggle');
+    if (!btn) return;
+    function sync() {
+      var lang = getLang();
+      btn.querySelectorAll('[data-lang-opt]').forEach(function (el) {
+        el.classList.toggle('is-active', el.getAttribute('data-lang-opt') === lang);
+      });
+      btn.setAttribute('aria-pressed', String(lang === 'kk'));
+    }
+    sync();
+    btn.addEventListener('click', function () {
+      setLang(getLang() === 'kk' ? 'ru' : 'kk');
+      applyI18n(document);
+      sync();
+      document.dispatchEvent(new CustomEvent('jetishub-lang-change', { detail: { lang: getLang() } }));
+    });
+  }
+
+  window.I18N = { t: t, getLang: getLang, setLang: setLang, applyI18n: applyI18n };
+
+  function boot() { applyI18n(document); wireLangToggle(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();

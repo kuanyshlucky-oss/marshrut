@@ -43,6 +43,14 @@ const KT_BLOCK_LABELS = {
   subj2: 'Профильный предмет №2',
 };
 
+// Подписи типа теста/языка на экране настройки КТ — берутся из словаря i18n.js
+// по id, а не напрямую из KT_TYPES/KT_LANGUAGES (те хранят русский текст как fallback/ключ).
+const KT_TYPE_I18N_KEYS = { nauchped: 'kt.type.nauchped', profile: 'kt.type.profile' };
+const KT_LANG_I18N_KEYS = { en: 'kt.lang.en' };
+const KT_BLOCK_I18N_KEYS = { lang: 'kt.block.lang', logic: 'kt.block.logic', subj1: 'kt.block.subj1', subj2: 'kt.block.subj2' };
+function ktTypeLabel(id) { return (KT_TYPE_I18N_KEYS[id] && I18N.t(KT_TYPE_I18N_KEYS[id])) || KT_TYPES[id].label; }
+function ktLangLabel(k) { return (KT_LANG_I18N_KEYS[k] && I18N.t(KT_LANG_I18N_KEYS[k])) || KT_LANGUAGES[k]; }
+
 // Реальные названия профильных предметов по коду направления.
 const KT_SUBJECT_NAMES = {
   '7M01': { subj1: 'Педагогика', subj2: 'Психология' },
@@ -648,10 +656,10 @@ function assembleKT(typeId, code, content, lang) {
   return {
     typeId, code, lang,
     blocks: [
-      { id: 'lang',  label: KT_BLOCK_LABELS.lang + ' · ' + KT_LANGUAGES[lang], questions: langPool },
-      { id: 'logic', label: KT_BLOCK_LABELS.logic, questions: ktCycle(KT_LOGIC_POOL, bs.logic) },
-      { id: 'subj1', label: KT_BLOCK_LABELS.subj1, questions: ktCycle(ktSubjectPool(content, 'subj1'), bs.subj1) },
-      { id: 'subj2', label: KT_BLOCK_LABELS.subj2, questions: ktCycle(ktSubjectPool(content, 'subj2'), bs.subj2) },
+      { id: 'lang',  label: ktBlockLabel(code, 'lang') + ' · ' + ktLangLabel(lang), questions: langPool },
+      { id: 'logic', label: ktBlockLabel(code, 'logic'), questions: ktCycle(KT_LOGIC_POOL, bs.logic) },
+      { id: 'subj1', label: ktBlockLabel(code, 'subj1'), questions: ktCycle(ktSubjectPool(content, 'subj1'), bs.subj1) },
+      { id: 'subj2', label: ktBlockLabel(code, 'subj2'), questions: ktCycle(ktSubjectPool(content, 'subj2'), bs.subj2) },
     ],
   };
 }
@@ -754,25 +762,25 @@ function openKT(code) {
   activeKT = { code };
   const body = ktEl();
   body.innerHTML = `
-    <h2 class="test-title">Симуляция КТ</h2>
+    <h2 class="test-title">${I18N.t('kt.simTitle')}</h2>
     <p class="test-sub">${d.code} · ${d.name}</p>
-    <p class="kt-setup-lead">Полный прогон с таймером и проверкой по правилам реального комплексного тестирования.</p>
+    <p class="kt-setup-lead">${I18N.t('kt.simLead')}</p>
 
     <div class="kt-type-cards" id="ktType">
       ${Object.values(KT_TYPES).map((t, i) => `
         <button class="kt-type-card ${i === 0 ? 'is-active' : ''}" data-type="${t.id}">
-          <span class="kt-type-name">${t.label}</span>
-          <span class="kt-type-total">${t.total} вопросов</span>
-          <span class="kt-type-meta">Порог ${t.thresholdTotal} · ${t.blockMin ? 'есть минимумы по блокам' : 'без минимумов по блокам'}</span>
+          <span class="kt-type-name">${ktTypeLabel(t.id)}</span>
+          <span class="kt-type-total">${t.total} ${I18N.t('kt.questionsWord')}</span>
+          <span class="kt-type-meta">${I18N.t('kt.threshold')} ${t.thresholdTotal} · ${t.blockMin ? I18N.t('kt.hasBlockMin') : I18N.t('kt.noBlockMin')}</span>
         </button>`).join('')}
     </div>
 
-    <p class="kt-field-label">Иностранный язык</p>
+    <p class="kt-field-label">${I18N.t('kt.foreignLangLabel')}</p>
     <div class="kt-lang-row" id="ktLang">
-      ${Object.entries(KT_LANGUAGES).map(([k, v], i) => `<button class="kt-lang ${i === 0 ? 'is-active' : ''}" data-lang="${k}">${v}</button>`).join('')}
+      ${Object.keys(KT_LANGUAGES).map((k, i) => `<button class="kt-lang ${i === 0 ? 'is-active' : ''}" data-lang="${k}">${ktLangLabel(k)}</button>`).join('')}
     </div>
 
-    <button class="btn test-next kt-start" id="ktStartBtn">Начать КТ</button>
+    <button class="btn test-next kt-start" id="ktStartBtn">${I18N.t('kt.start')}</button>
   `;
 
   body.querySelectorAll('#ktType .kt-type-card').forEach(b =>
@@ -812,7 +820,7 @@ function ktBlockRanges(s) {
     let start = -1, end = -1;
     s.flat.forEach((item, i) => { if (item.block === id) { if (start === -1) start = i; end = i; } });
     if (start !== -1) {
-      const label = id === 'lang' ? `${ktBlockLabel(s.code, id)} · ${KT_LANGUAGES[s.lang]}` : ktBlockLabel(s.code, id);
+      const label = id === 'lang' ? `${ktBlockLabel(s.code, id)} · ${ktLangLabel(s.lang)}` : ktBlockLabel(s.code, id);
       ranges.push({ id, label, start, end });
     }
   });
@@ -859,31 +867,31 @@ function renderKTQuestion() {
     <div class="kt-qnav" id="ktQnav">${qnav}</div>
     <div class="kt-run-head">
       <span class="kt-block-tag">${blockTag}</span>
-      <span class="kt-timer-group"><span class="kt-timer-label">Оставшееся время:</span><span class="kt-run-timer" id="ktTimer">${fmtTime(s.secondsLeft)}</span></span>
+      <span class="kt-timer-group"><span class="kt-timer-label">${I18N.t('kt.timeLeft')}</span><span class="kt-run-timer" id="ktTimer">${fmtTime(s.secondsLeft)}</span></span>
     </div>
     <div class="kt-progress"><div class="kt-progress-bar" style="width:${((s.idx + 1) / s.flat.length) * 100}%"></div></div>
-    <p class="test-qnum-line">Вопрос ${s.idx + 1} из ${s.flat.length}</p>
+    <p class="test-qnum-line">${I18N.t('kt.questionOf').replace('{n}', s.idx + 1).replace('{total}', s.flat.length)}</p>
     ${media}
     <p class="test-question">${item.imageReplacesText ? '' : esc(item.q)}</p>
-    ${item.image ? `<div class="kt-question-image${item.imageReplacesText ? ' math-question-image' : ''}"><img src="${item.image}" alt="Условие вопроса"></div>` : ''}
-    ${Array.isArray(item.correct) ? '<p class="kt-multi-hint">Выберите все подходящие варианты</p>' : ''}
+    ${item.image ? `<div class="kt-question-image${item.imageReplacesText ? ' math-question-image' : ''}"><img src="${item.image}" alt="${I18N.t('kt.questionImage.alt')}"></div>` : ''}
+    ${Array.isArray(item.correct) ? `<p class="kt-multi-hint">${I18N.t('kt.multiHint')}</p>` : ''}
     <div class="test-options" id="ktOptions">
       ${item.options.map((o, i) => {
         const isMulti = Array.isArray(item.correct);
         const isSel = isMulti ? (Array.isArray(s.answers[s.idx]) && s.answers[s.idx].includes(i)) : s.answers[s.idx] === i;
         return `
         <button class="test-opt ${isSel ? 'is-selected' : ''}" data-opt="${i}">
-          <span class="test-radio ${isMulti ? 'is-checkbox' : ''}" aria-hidden="true"></span>${item.optionImages && item.optionImages[i] ? `<span class="test-opt-image"><img src="${item.optionImages[i]}" alt="Вариант ответа"></span>` : `<span class="test-opt-label">${esc(o)}</span>`}
+          <span class="test-radio ${isMulti ? 'is-checkbox' : ''}" aria-hidden="true"></span>${item.optionImages && item.optionImages[i] ? `<span class="test-opt-image"><img src="${item.optionImages[i]}" alt="${I18N.t('kt.optionImage.alt')}"></span>` : `<span class="test-opt-label">${esc(o)}</span>`}
         </button>`;
       }).join('')}
     </div>
     <div class="kt-nav">
-      <button class="kt-nav-btn kt-nav-prev" id="ktPrev" ${s.idx === 0 ? 'disabled' : ''} aria-label="Назад">
+      <button class="kt-nav-btn kt-nav-prev" id="ktPrev" ${s.idx === 0 ? 'disabled' : ''} aria-label="${I18N.t('kt.prev.aria')}">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
       </button>
-      <span class="kt-nav-hint">Нажмите <b>ENTER</b></span>
+      <span class="kt-nav-hint">${I18N.t('test.enterHint')}</span>
       <button class="kt-nav-btn kt-nav-next is-primary" id="ktNext">
-        <span>${s.idx === s.flat.length - 1 ? 'Завершить' : 'Далее'}</span>
+        <span>${s.idx === s.flat.length - 1 ? I18N.t('test.finish') : I18N.t('test.next')}</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       </button>
     </div>
@@ -1025,8 +1033,8 @@ function finishKT() {
   const d = findDirection(s.code);
   ktEl().innerHTML = `
    <div class="kt-result-wrap">
-    <h2 class="test-title">${res.passed ? 'КТ сдано' : 'КТ не сдано'}</h2>
-    <p class="test-sub">${d.code} · ${KT_TYPES[s.typeId].label} · ${KT_LANGUAGES[s.lang]}</p>
+    <h2 class="test-title">${res.passed ? I18N.t('kt.passed') : I18N.t('kt.notPassed')}</h2>
+    <p class="test-sub">${d.code} · ${ktTypeLabel(s.typeId)} · ${ktLangLabel(s.lang)}</p>
     ${praise ? `<p class="kt-praise">${esc(praise)}</p>` : ''}
 
     <table class="kt-result-table">
@@ -1070,20 +1078,20 @@ function closeKT() {
 
 // Работа над ошибками для КТ — полноэкранная страница разбора (#reviewPage).
 function ktBlockLabel(code, block) {
-  return (KT_SUBJECT_NAMES[code] && KT_SUBJECT_NAMES[code][block]) || KT_BLOCK_LABELS[block];
+  return (KT_SUBJECT_NAMES[code] && KT_SUBJECT_NAMES[code][block]) || (KT_BLOCK_I18N_KEYS[block] && I18N.t(KT_BLOCK_I18N_KEYS[block])) || KT_BLOCK_LABELS[block];
 }
 
 function openKTReview() {
   const s = activeKT;
   const d = findDirection(s.code);
-  document.getElementById('reviewSub').textContent = `${d.code} · КТ · ${KT_TYPES[s.typeId].label} · ${KT_LANGUAGES[s.lang]}`;
+  document.getElementById('reviewSub').textContent = `${d.code} · КТ · ${ktTypeLabel(s.typeId)} · ${ktLangLabel(s.lang)}`;
 
   // Навигация по разделам сверху (requirement: клик переходит к вопросам раздела).
   const blockOrder = ['lang', 'logic', 'subj1', 'subj2'];
   const firstIdxByBlock = {};
   s.flat.forEach((item, i) => { if (!(item.block in firstIdxByBlock)) firstIdxByBlock[item.block] = i; });
   document.getElementById('reviewNav').innerHTML = blockOrder.filter(b => b in firstIdxByBlock).map(b => {
-    const label = b === 'lang' ? `${ktBlockLabel(s.code, b)} · ${KT_LANGUAGES[s.lang]}` : ktBlockLabel(s.code, b);
+    const label = b === 'lang' ? `${ktBlockLabel(s.code, b)} · ${ktLangLabel(s.lang)}` : ktBlockLabel(s.code, b);
     return `<button class="review-nav-btn" data-jump="${firstIdxByBlock[b]}">${esc(label)}</button>`;
   }).join('');
   document.getElementById('reviewNav').querySelectorAll('[data-jump]').forEach(btn => {
@@ -1104,26 +1112,26 @@ function openKTReview() {
       const isCorrectOpt = correctSet.includes(oi);
       const isUserOpt = userSet.includes(oi);
       let cls = 'rev-opt', tag = '';
-      if (isCorrectOpt) { cls += ' correct'; tag = isUserOpt ? '<span class="rev-tag ok">Ваш ответ ✓</span>' : '<span class="rev-tag ok">Правильный ответ</span>'; }
-      else if (isUserOpt) { cls += ' wrong'; tag = '<span class="rev-tag bad">Ваш ответ ✗</span>'; }
+      if (isCorrectOpt) { cls += ' correct'; tag = isUserOpt ? `<span class="rev-tag ok">${I18N.t('rev.yourAnswerOk')}</span>` : `<span class="rev-tag ok">${I18N.t('rev.correctAnswer')}</span>`; }
+      else if (isUserOpt) { cls += ' wrong'; tag = `<span class="rev-tag bad">${I18N.t('rev.yourAnswerBad')}</span>`; }
       // Объяснение для студентов по каждому варианту (requirement #4) — если есть в данных.
       const expl = item.explanations && item.explanations[oi]
         ? `<div class="rev-opt-expl">${esc(item.explanations[oi])}</div>` : '';
       const optContent = item.optionImages && item.optionImages[oi]
-        ? `<span class="rev-opt-image"><img src="${item.optionImages[oi]}" alt="Вариант ответа"></span>` : `<span>${esc(o)}</span>`;
+        ? `<span class="rev-opt-image"><img src="${item.optionImages[oi]}" alt="${I18N.t('kt.optionImage.alt')}"></span>` : `<span>${esc(o)}</span>`;
       return `<div class="${cls}"><div class="rev-opt-row">${optContent}${tag}</div>${expl}</div>`;
     }).join('');
     const why = item.explanations ? '' : (item.why
-      ? `<div class="rev-why"><b>Почему:</b> ${esc(item.why)}</div>`
-      : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(item.options[correctSet[0]])}</div>`);
+      ? `<div class="rev-why"><b>${I18N.t('rev.why')}</b> ${esc(item.why)}</div>`
+      : `<div class="rev-why"><b>${I18N.t('rev.correctAnswerColon')}</b> ${esc(item.options[correctSet[0]])}</div>`);
     const blockTag = item.stage ? `${ktBlockLabel(s.code, item.block)} · ${KT_LANG_STAGE_LABELS[item.stage]}` : ktBlockLabel(s.code, item.block);
     // Кнопка «Конспекты» — отдельный подробный разбор вопроса (не привязан к тому,
     // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
     const conspectBody = item.conspectImage
-      ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${item.conspectImage}" alt="Конспект"></div>`
+      ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${item.conspectImage}" alt="${I18N.t('rev.conspect')}"></div>`
       : (item.conspect ? `<div class="rev-conspect-body">${esc(item.conspect)}</div>` : '');
     const conspectBlock = conspectBody
-      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">Конспекты</summary>${conspectBody}</details>`
+      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">${I18N.t('rev.conspects')}</summary>${conspectBody}</details>`
       : '';
     // Ссылка на конспект по теме вопроса — только при неверном ответе (только для Педагогики/Психологии).
     const konspekt = wrong && typeof conspectLink === 'function' ? conspectLink(item.topic) : '';
@@ -1131,7 +1139,7 @@ function openKTReview() {
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <span class="rev-block">${blockTag}</span>
         <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${item.imageReplacesText ? '' : esc(item.q)}</p>
-        ${item.image ? `<div class="kt-question-image${item.imageReplacesText ? ' math-question-image' : ''}"><img src="${item.image}" alt="Условие вопроса"></div>` : ''}
+        ${item.image ? `<div class="kt-question-image${item.imageReplacesText ? ' math-question-image' : ''}"><img src="${item.image}" alt="${I18N.t('kt.questionImage.alt')}"></div>` : ''}
         ${item.passage ? `<div class="kt-reading-passage">${esc(item.passage)}</div>` : ''}
         <div class="rev-opts">${opts}</div>
         ${why}
