@@ -43,11 +43,12 @@ func initTrack() error {
 		UNIQUE(university_id, speciality_id, year)
 	);
 	CREATE TABLE IF NOT EXISTS checklist_templates (
-		id          BIGSERIAL PRIMARY KEY,
-		year        INT NOT NULL,
-		step_order  INT NOT NULL,
-		description TEXT NOT NULL,
-		deadline    DATE NOT NULL,
+		id             BIGSERIAL PRIMARY KEY,
+		year           INT NOT NULL,
+		step_order     INT NOT NULL,
+		description    TEXT NOT NULL,
+		description_kk TEXT NOT NULL DEFAULT '',
+		deadline       DATE NOT NULL,
 		UNIQUE(year, step_order)
 	);
 	CREATE TABLE IF NOT EXISTS user_checklist (
@@ -58,6 +59,9 @@ func initTrack() error {
 		completed_at TIMESTAMPTZ,
 		UNIQUE(user_id, template_id)
 	);
+	-- казахский перевод шагов дорожной карты (обвязка интерфейса — в скоупе i18n,
+	-- в отличие от контента направлений/тем, который остаётся русскоязычным)
+	ALTER TABLE checklist_templates ADD COLUMN IF NOT EXISTS description_kk TEXT NOT NULL DEFAULT '';
 	-- расширение справочника специальностей (статистика КТ-2025 по группам)
 	ALTER TABLE specialities ADD COLUMN IF NOT EXISTS kt_applications INT NOT NULL DEFAULT 0;
 	ALTER TABLE specialities ADD COLUMN IF NOT EXISTS kt_participants INT NOT NULL DEFAULT 0;
@@ -281,17 +285,17 @@ func seedTrack() error {
 	// что и раньше в летнём варианте (+2, +8, +2, +3, +5, +1 день от предыдущего шага).
 	// DO UPDATE (не DO NOTHING) — иначе при повторном деплое уже вставленные летние
 	// даты в БД не заменились бы на зимние.
-	_, err := db.Exec(`INSERT INTO checklist_templates(year, step_order, description, deadline) VALUES
-		(2026, 1, 'Зарегистрироваться на Комплексное тестирование (КТ) на сайте Национального центра тестирования — окно регистрации 28.10–10.11.2026', '2026-11-10'),
-		(2026, 2, 'Сдать КТ (иностранный язык + профильный предмет) — окно тестирования 18.11–11.12.2026', '2026-12-11'),
-		(2026, 3, 'Получить электронный сертификат КТ с баллами', '2026-12-13'),
-		(2026, 4, 'Подать заявление и документы в приёмную комиссию вуза (онлайн или очно)', '2026-12-21'),
-		(2026, 5, 'Пройти собеседование (если требуется педагогической специальностью)', '2026-12-23'),
-		(2026, 6, 'Участие в конкурсе государственных грантов (автоматически)', '2026-12-26'),
-		(2026, 7, 'Заключить договор и принести оригиналы документов в вуз', '2026-12-31'),
-		(2026, 8, 'Приказ о зачислении', '2027-01-01')
+	_, err := db.Exec(`INSERT INTO checklist_templates(year, step_order, description, description_kk, deadline) VALUES
+		(2026, 1, 'Зарегистрироваться на Комплексное тестирование (КТ) на сайте Национального центра тестирования — окно регистрации 28.10–10.11.2026', 'Ұлттық тестілеу орталығының сайтында Кешенді тестілеуге (КТ) тіркелу — тіркеу мерзімі 28.10–10.11.2026', '2026-11-10'),
+		(2026, 2, 'Сдать КТ (иностранный язык + профильный предмет) — окно тестирования 18.11–11.12.2026', 'КТ тапсыру (шет тілі + бейіндік пән) — тестілеу мерзімі 18.11–11.12.2026', '2026-12-11'),
+		(2026, 3, 'Получить электронный сертификат КТ с баллами', 'Балдары көрсетілген КТ электрондық сертификатын алу', '2026-12-13'),
+		(2026, 4, 'Подать заявление и документы в приёмную комиссию вуза (онлайн или очно)', 'ЖОО қабылдау комиссиясына өтініш пен құжаттарды тапсыру (онлайн немесе оффлайн)', '2026-12-21'),
+		(2026, 5, 'Пройти собеседование (если требуется педагогической специальностью)', 'Әңгімелесуден өту (педагогикалық мамандық талап еткен жағдайда)', '2026-12-23'),
+		(2026, 6, 'Участие в конкурсе государственных грантов (автоматически)', 'Мемлекеттік гранттар конкурсына қатысу (автоматты түрде)', '2026-12-26'),
+		(2026, 7, 'Заключить договор и принести оригиналы документов в вуз', 'Шарт жасасу және құжаттардың түпнұсқаларын ЖОО-ға әкелу', '2026-12-31'),
+		(2026, 8, 'Приказ о зачислении', 'Қабылдау туралы бұйрық', '2027-01-01')
 		ON CONFLICT (year, step_order) DO UPDATE SET
-			description = EXCLUDED.description, deadline = EXCLUDED.deadline`)
+			description = EXCLUDED.description, description_kk = EXCLUDED.description_kk, deadline = EXCLUDED.deadline`)
 	if err != nil {
 		return err
 	}
@@ -471,10 +475,15 @@ type RoadmapStep struct {
 	CompletedAt string `json:"completed_at,omitempty"`
 }
 
-// GET /api/roadmap — при первом обращении копирует шаги из шаблона.
+// GET /api/roadmap?lang=kk — при первом обращении копирует шаги из шаблона.
+// lang выбирает язык описания шага; любое значение кроме "kk" отдаёт русский.
 func handleRoadmap(w http.ResponseWriter, r *http.Request) {
 	uid := currentUID(r)
 	year := time.Now().Year()
+	descCol := "t.description"
+	if r.URL.Query().Get("lang") == "kk" {
+		descCol = "COALESCE(NULLIF(t.description_kk, ''), t.description)"
+	}
 
 	// генерация при первом входе: вставляем недостающие шаги текущего года
 	if _, err := db.Exec(`
@@ -486,7 +495,7 @@ func handleRoadmap(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := db.Query(`
-		SELECT t.id, t.step_order, t.description, t.deadline::text, uc.completed, COALESCE(uc.completed_at::text, '')
+		SELECT t.id, t.step_order, `+descCol+`, t.deadline::text, uc.completed, COALESCE(uc.completed_at::text, '')
 		FROM user_checklist uc JOIN checklist_templates t ON t.id = uc.template_id
 		WHERE uc.user_id = $1 AND t.year = $2
 		ORDER BY t.step_order`, uid, year)

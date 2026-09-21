@@ -870,7 +870,9 @@ const GOP_SUBJECTS = {
   ],
 };
 
+let lastOpenGopCode = null; // для повторного рендера модалки при смене языка (RU/KK)
 function openGopGroup(code) {
+  lastOpenGopCode = code;
   renderGopModalView(code);
   document.getElementById('dirModal').classList.remove('hidden');
 }
@@ -898,29 +900,29 @@ function renderGopModalView(code) {
     <h3 class="modal-title">${esc(g.name)}</h3>
     <div class="kcat-stat-grid" style="margin:14px 0 22px">
       <div class="kcat-stat">
-        <div class="kcat-stat-label">Заявлений</div>
+        <div class="kcat-stat-label">${I18N.t('gop.stat.applications')}</div>
         <div class="kcat-stat-value">${g.applications.toLocaleString('ru-RU')}</div>
       </div>
       <div class="kcat-stat">
-        <div class="kcat-stat-label">Участников КТ</div>
+        <div class="kcat-stat-label">${I18N.t('gop.stat.participants')}</div>
         <div class="kcat-stat-value">${g.participants.toLocaleString('ru-RU')} <small>${g.participation_pct.toFixed(1)}%</small></div>
       </div>
       <div class="kcat-stat">
-        <div class="kcat-stat-label">Набрали порог</div>
+        <div class="kcat-stat-label">${I18N.t('gop.stat.passed')}</div>
         <div class="kcat-stat-value" style="color:var(--teal)">${g.passed.toLocaleString('ru-RU')} <small>${g.passed_pct.toFixed(1)}%</small></div>
       </div>
       <div class="kcat-stat">
-        <div class="kcat-stat-label">Не набрали порог</div>
+        <div class="kcat-stat-label">${I18N.t('gop.stat.failed')}</div>
         <div class="kcat-stat-value" style="color:var(--danger)">${g.failed.toLocaleString('ru-RU')} <small>${g.failed_pct.toFixed(1)}%</small></div>
       </div>
     </div>
-    <p class="modal-lead">Вступительный экзамен включает предметы для подготовки. Выберите предмет, чтобы увидеть темы.</p>
+    <p class="modal-lead">${I18N.t('gop.lead')}</p>
     <ul class="subject-list">
       ${subjects.map(s => `
         <li>
           <button class="subject-row" data-open-gop-subject="${s.id}">
             ${SUBJECT_ICONS[s.title] ? `<img class="subject-icon" src="${SUBJECT_ICONS[s.title]}" alt="" aria-hidden="true">` : ''}
-            <span class="subject-kind ${s.kind === 'common' ? 'is-common' : 'is-profile'}">${s.kind === 'common' ? 'Общий' : 'Профильный'}</span>
+            <span class="subject-kind ${s.kind === 'common' ? 'is-common' : 'is-profile'}">${s.kind === 'common' ? I18N.t('gop.subject.common') : I18N.t('gop.subject.profile')}</span>
             <span class="subject-text">
               <span class="subject-title">${s.title}</span>
               <span class="subject-sub">${s.sub}</span>
@@ -930,9 +932,9 @@ function renderGopModalView(code) {
         </li>
       `).join('')}
     </ul>
-    ${!hasProfile ? `<p class="modal-lead">Профильные предметы для этой группы пока готовятся — сюда добавится, как только появится банк вопросов. Общие предметы (язык, ТГО) уже доступны выше.</p>` : ''}
-    <button class="btn btn-primary btn-block" id="gopTestBtn">Пройти тест по направлению</button>
-    ${GOP_DIRECTION_MAP[code] ? `<button class="btn btn-ghost btn-block" id="gopKTBtn" style="margin-top:10px">Симуляция КТ (полный формат)</button>` : ''}
+    ${!hasProfile ? `<p class="modal-lead">${I18N.t('gop.pending')}</p>` : ''}
+    <button class="btn btn-primary btn-block" id="gopTestBtn">${I18N.t('gop.testBtn')}</button>
+    ${GOP_DIRECTION_MAP[code] ? `<button class="btn btn-ghost btn-block" id="gopKTBtn" style="margin-top:10px">${I18N.t('gop.ktBtn')}</button>` : ''}
   `;
   body.querySelectorAll('[data-open-gop-subject]').forEach(btn => btn.addEventListener('click', () => renderGopSubjectView(code, btn.dataset.openGopSubject)));
   // Без готового банка по направлению «Пройти тест» всё равно открывает пикер
@@ -950,10 +952,10 @@ function renderGopSubjectView(code, subjectId) {
   const body = document.getElementById('dirModalBody');
   body.innerHTML = `
     <button class="back-link" id="gopSubjectBack">← ${g.code} · ${esc(g.name)}</button>
-    <p class="eyebrow">${s.kind === 'common' ? 'Общий предмет' : 'Профильный предмет'}</p>
+    <p class="eyebrow">${s.kind === 'common' ? I18N.t('gop.subjectView.common') : I18N.t('gop.subjectView.profile')}</p>
     <h3 class="modal-title">${s.title}</h3>
     <p class="modal-lead">${s.sub}</p>
-    <p class="topics-head">Темы для подготовки</p>
+    <p class="topics-head">${I18N.t('gop.topicsHead')}</p>
     <ol class="topic-list">
       ${s.topics.map(t => `<li><span class="topic-dot" aria-hidden="true"></span>${t}</li>`).join('')}
     </ol>
@@ -2444,7 +2446,7 @@ async function loadRoadmap() {
   const list = document.getElementById('rmList');
   if (!list || !API.getCurrentUser()) return;
   try {
-    renderRoadmap(await apiFetch('/api/roadmap', { auth: true }));
+    renderRoadmap(await apiFetch(`/api/roadmap?lang=${I18N.getLang()}`, { auth: true }));
   } catch (_) {
     document.getElementById('rmEmpty').classList.remove('hidden');
   }
@@ -2455,10 +2457,11 @@ function renderRoadmap(data) {
   document.getElementById('rmProgressRing').innerHTML = ringSvg(data.progress, { size: 56, stroke: 5, color: 'var(--accent)', numFontSize: 12 });
   document.getElementById('rmEmpty').classList.add('hidden');
 
-  const fmt = (d) => { const [y, m, day] = d.split('-'); return `до ${Number(day)}.${m}.${y}`; };
+  const isKk = I18N.getLang() === 'kk';
+  const fmt = (d) => { const [y, m, day] = d.split('-'); return isKk ? `${Number(day)}.${m}.${y} дейін` : `до ${Number(day)}.${m}.${y}`; };
   document.getElementById('rmList').innerHTML = data.steps.map(s => `
     <li class="rm-step ${s.completed ? 'is-done' : ''}">
-      <button class="rm-check" data-rm="${s.template_id}" aria-label="Отметить шаг">${s.completed ? '✓' : ''}</button>
+      <button class="rm-check" data-rm="${s.template_id}" aria-label="${I18N.t('roadmap.check.aria')}">${s.completed ? '✓' : ''}</button>
       <span class="rm-text">${esc(s.description)}</span>
       <span class="rm-deadline">${fmt(s.deadline)}</span>
     </li>
@@ -2467,7 +2470,7 @@ function renderRoadmap(data) {
   document.querySelectorAll('[data-rm]').forEach(btn => {
     btn.addEventListener('click', async () => {
       try {
-        renderRoadmap(await apiFetch('/api/roadmap/toggle', {
+        renderRoadmap(await apiFetch(`/api/roadmap/toggle?lang=${I18N.getLang()}`, {
           method: 'POST', auth: true, body: { template_id: Number(btn.dataset.rm) },
         }));
       } catch (e) { showToast(e.message); }
@@ -2482,6 +2485,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   // сразу рисуем то, что не зависит от пользователя, и вешаем обработчики
   renderCatalog();
   renderStatsCatalog();
+  // Переключение RU/KK не перезагружает страницу — динамические блоки, которые
+  // сами вызывают I18N.t(), нужно перерисовать вручную, иначе метки останутся
+  // на прежнем языке до следующей перезагрузки.
+  document.addEventListener('jetishub-lang-change', () => {
+    renderStatsCatalog();
+    if (lastOpenGopCode && document.getElementById('dirModal') && !document.getElementById('dirModal').classList.contains('hidden')) {
+      renderGopModalView(lastOpenGopCode);
+    }
+    loadRoadmap();
+  });
   // Если токен уже есть в localStorage, пользователь почти наверняка залогинен —
   // скрываем гостевой экран («Войдите, чтобы продолжить») сразу, не дожидаясь
   // fetchMe(), иначе на долю секунды мелькает неверное состояние. Дашборд по
