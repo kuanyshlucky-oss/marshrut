@@ -19,44 +19,73 @@ var gopCodeByDirection = map[string]string{
 // сервера и отдаются только через авторизованный API с проверкой доступа
 // (см. access.go).
 //
+// Язык теста определяется именем файла: "<код>.json" — русский (по
+// умолчанию, для всех тестов, созданных до появления казахских), "<код>-kk.json"
+// — казахский. Один код направления => не больше одного файла на язык.
+//
 //go:embed content/*.json
 var contentFS embed.FS
 
-// testContentBytes возвращает сырые байты JSON для кода направления как есть —
-// формат файла уже совпадает с тем, что раньше лежало во фронтенде
+func contentFileName(code, language string) string {
+	if language == "kk" {
+		return code + "-kk"
+	}
+	return code
+}
+
+// testContentBytes возвращает сырые байты JSON для кода направления и языка
+// как есть — формат файла уже совпадает с тем, что раньше лежало во фронтенде
 // (title, questions, bySubject), пересобирать нечего.
-func testContentBytes(code string) ([]byte, bool) {
-	b, err := contentFS.ReadFile("content/" + code + ".json")
+func testContentBytes(code, language string) ([]byte, bool) {
+	b, err := contentFS.ReadFile("content/" + contentFileName(code, language) + ".json")
 	if err != nil {
 		return nil, false
 	}
 	return b, true
 }
 
-// listContentCodes — список кодов направлений, у которых вообще есть контент
-// (для админки — чтобы не хардкодить список выдаваемых тестов).
-func listContentCodes() []string {
+// contentFile — один физический файл контента: код направления и язык,
+// вытащенные из имени файла (см. contentFileName).
+type contentFile struct {
+	Code     string
+	Language string
+}
+
+// listContentFiles — все файлы контента, каждый со своим (код, язык).
+func listContentFiles() []contentFile {
 	entries, err := contentFS.ReadDir("content")
 	if err != nil {
 		return nil
 	}
-	out := make([]string, 0, len(entries))
+	out := make([]contentFile, 0, len(entries))
 	for _, e := range entries {
 		name := e.Name()
-		if strings.HasSuffix(name, ".json") {
-			out = append(out, strings.TrimSuffix(name, ".json"))
+		if !strings.HasSuffix(name, ".json") {
+			continue
+		}
+		base := strings.TrimSuffix(name, ".json")
+		if code, ok := strings.CutSuffix(base, "-kk"); ok {
+			out = append(out, contentFile{Code: code, Language: "kk"})
+		} else {
+			out = append(out, contentFile{Code: base, Language: "ru"})
 		}
 	}
-	sort.Strings(out)
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].Code != out[j].Code {
+			return out[i].Code < out[j].Code
+		}
+		return out[i].Language < out[j].Language
+	})
 	return out
 }
 
-// ContentInfo — то, что видит админ при выдаче доступа: код + человекочитаемое
-// название + код ГОП, если известен (напр. 7M01 → M001).
+// ContentInfo — то, что видит админ при выдаче доступа: код + язык +
+// человекочитаемое название + код ГОП, если известен (напр. 7M01 → M001).
 type ContentInfo struct {
-	Code    string `json:"code"`
-	GopCode string `json:"gopCode,omitempty"`
-	Title   string `json:"title"`
+	Code     string `json:"code"`
+	Language string `json:"language"`
+	GopCode  string `json:"gopCode,omitempty"`
+	Title    string `json:"title"`
 }
 
 // minQuestionsForAdmin — направления с банком вопросов меньше этого порога
@@ -85,14 +114,14 @@ func countQuestions(b []byte) int {
 }
 
 func listContentInfo() []ContentInfo {
-	codes := listContentCodes()
-	out := make([]ContentInfo, 0, len(codes))
-	for _, code := range codes {
-		b, ok := testContentBytes(code)
+	files := listContentFiles()
+	out := make([]ContentInfo, 0, len(files))
+	for _, f := range files {
+		b, ok := testContentBytes(f.Code, f.Language)
 		if !ok || countQuestions(b) < minQuestionsForAdmin {
 			continue
 		}
-		info := ContentInfo{Code: code, GopCode: gopCodeByDirection[code]}
+		info := ContentInfo{Code: f.Code, Language: f.Language, GopCode: gopCodeByDirection[f.Code]}
 		var t struct {
 			Title string `json:"title"`
 		}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"strings"
 	"time"
 
@@ -240,7 +241,9 @@ func loadUser(id int64) (*User, error) {
 	}
 	topicRows.Close()
 
-	accRows, err := db.Query(`SELECT code FROM test_access WHERE user_id = $1 ORDER BY code`, id)
+	// DISTINCT: пользователь может иметь доступ к одному коду на обоих языках
+	// (ru и kk) — для карточек «мои направления» язык не важен, только код.
+	accRows, err := db.Query(`SELECT DISTINCT code FROM test_access WHERE user_id = $1 ORDER BY code`, id)
 	if err != nil {
 		return nil, err
 	}
@@ -292,29 +295,37 @@ func toggleFavorite(id int64, code string) error {
 	return err
 }
 
-// AdminUser — безопасное представление пользователя для админ-списка (без пароля).
-type AdminUser struct {
-	ID        int64    `json:"id"`
-	Name      string   `json:"name"`
-	Email     string   `json:"email"`
-	Phone     string   `json:"phone"`
-	Education string   `json:"education"`
-	City      string   `json:"city"`
-	Favorites []string `json:"favorites"`
-	Results   int      `json:"results"`
-	CreatedAt string   `json:"created_at"`
-	Access    []string `json:"access"`
+// AccessGrant — одна выданная пара (код направления, язык теста).
+type AccessGrant struct {
+	Code     string `json:"code"`
+	Language string `json:"language"`
 }
 
-// listUsers одним запросом (агрегаты вместо цикла N+1): избранное и выданный
-// доступ к тестам — через string_agg, число результатов — коррелированный
-// подзапрос со своим индексом.
+// AdminUser — безопасное представление пользователя для админ-списка (без пароля).
+type AdminUser struct {
+	ID        int64         `json:"id"`
+	Name      string        `json:"name"`
+	Email     string        `json:"email"`
+	Phone     string        `json:"phone"`
+	Education string        `json:"education"`
+	City      string        `json:"city"`
+	Favorites []string      `json:"favorites"`
+	Results   int           `json:"results"`
+	CreatedAt string        `json:"created_at"`
+	Access    []AccessGrant `json:"access"`
+}
+
+// listUsers одним запросом (агрегаты вместо цикла N+1): избранное — через
+// string_agg, выданный доступ к тестам — через json_agg (нужен и код, и
+// язык на каждую выдачу, для двух кнопок RU/KZ в админке), число результатов
+// — коррелированный подзапрос со своим индексом.
 func listUsers() ([]AdminUser, error) {
 	rows, err := db.Query(`
 		SELECT u.id, u.name, u.email, u.phone, u.education, u.city, u.created_at,
 		       COALESCE((SELECT string_agg(f.code, ',' ORDER BY f.code) FROM favorites f WHERE f.user_id = u.id), ''),
 		       (SELECT COUNT(*) FROM results r WHERE r.user_id = u.id),
-		       COALESCE((SELECT string_agg(a.code, ',' ORDER BY a.code) FROM test_access a WHERE a.user_id = u.id), '')
+		       COALESCE((SELECT json_agg(json_build_object('code', a.code, 'language', a.language) ORDER BY a.code, a.language)
+		                 FROM test_access a WHERE a.user_id = u.id), '[]')
 		FROM users u
 		ORDER BY u.id`)
 	if err != nil {
@@ -325,8 +336,9 @@ func listUsers() ([]AdminUser, error) {
 	out := []AdminUser{}
 	for rows.Next() {
 		var u AdminUser
-		var favCSV, accessCSV string
-		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Education, &u.City, &u.CreatedAt, &favCSV, &u.Results, &accessCSV); err != nil {
+		var favCSV string
+		var accessJSON []byte
+		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Education, &u.City, &u.CreatedAt, &favCSV, &u.Results, &accessJSON); err != nil {
 			return nil, err
 		}
 		if favCSV == "" {
@@ -334,11 +346,8 @@ func listUsers() ([]AdminUser, error) {
 		} else {
 			u.Favorites = strings.Split(favCSV, ",")
 		}
-		if accessCSV == "" {
-			u.Access = []string{}
-		} else {
-			u.Access = strings.Split(accessCSV, ",")
-		}
+		u.Access = []AccessGrant{}
+		json.Unmarshal(accessJSON, &u.Access)
 		out = append(out, u)
 	}
 	return out, rows.Err()

@@ -1090,10 +1090,12 @@ const API = {
     return currentUser;
   },
 
-  // Контент теста (вопросы) — отдаётся бэкендом только тем, у кого есть доступ.
-  // Бросает ошибку с data.status===403, если доступа нет (ловится в getOrFetchTestContent).
+  // Контент теста (вопросы) — отдаётся бэкендом только тем, у кого есть доступ
+  // именно на текущий язык интерфейса (RU/KK). Бросает ошибку с
+  // data.status===403, если доступа на этом языке нет (ловится в
+  // getOrFetchTestContent).
   getTestContent(code) {
-    return apiFetch('/api/tests/' + code, { auth: true });
+    return apiFetch(`/api/tests/${code}?lang=${I18N.getLang()}`, { auth: true });
   },
 };
 
@@ -1249,14 +1251,17 @@ function requireAuth(courseCode, courseName) {
   return false;
 }
 
-// Контент теста кэшируется на время сессии страницы. На 403 (нет выданного доступа)
-// показывает тот же гейт-модал, что и requireAuth, но с текстом про оплату/доступ.
+// Контент теста кэшируется на время сессии страницы, отдельно на каждый язык
+// интерфейса — иначе смена RU⇄KK после первого открытия теста показывала бы
+// старый закэшированный язык. На 403 (нет выданного доступа) показывает тот
+// же гейт-модал, что и requireAuth, но с текстом про оплату/доступ.
 const testContentCache = {};
 async function getOrFetchTestContent(code) {
-  if (testContentCache[code]) return testContentCache[code];
+  const cacheKey = `${code}:${I18N.getLang()}`;
+  if (testContentCache[cacheKey]) return testContentCache[cacheKey];
   try {
     const content = await API.getTestContent(code);
-    testContentCache[code] = content;
+    testContentCache[cacheKey] = content;
     return content;
   } catch (e) {
     if (e.status === 403) {

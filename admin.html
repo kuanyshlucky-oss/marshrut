@@ -100,11 +100,16 @@
   .keybar{ display:flex; gap:10px; align-items:flex-end; }
   .keybar > div{ flex:1; }
   .muted{ color:var(--soft); font-size:12px; }
-  .access-cell{ min-width:170px; }
+  .access-cell{ min-width:230px; }
   .access-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px; }
   .access-chip{
-    display:inline-flex; align-items:center; gap:6px; background:var(--ok-soft); color:var(--ok);
+    display:inline-flex; align-items:center; gap:5px; background:var(--ok-soft); color:var(--ok);
     border-radius:999px; padding:3px 6px 3px 10px; font-family:'Manrope',sans-serif; font-size:11px;
+  }
+  .access-chip.access-chip-kk{ background:var(--accent-soft); color:var(--accent-ink); }
+  .access-chip-lang{
+    font-size:9px; font-weight:800; letter-spacing:.04em; opacity:.8;
+    border:1px solid currentColor; border-radius:4px; padding:0 4px;
   }
   .access-chip button{
     background:transparent; border:none; color:inherit; font-size:13px; line-height:1; padding:2px 4px;
@@ -113,7 +118,8 @@
   .access-chip button:hover{ background:rgba(0,0,0,.08); }
   .access-add{ display:flex; gap:6px; }
   .access-add select{ flex:1; padding:6px 8px; border:1px solid var(--line); border-radius:6px; font-size:12px; font-family:inherit; margin:0; }
-  .access-add button{ padding:5px 10px; font-size:12px; }
+  .access-lang-btn{ padding:5px 10px; font-size:12px; min-width:38px; }
+  .access-lang-btn[disabled]{ opacity:.35; cursor:not-allowed; }
 </style>
 </head>
 <body>
@@ -271,42 +277,77 @@ async function del(id, login){
 
 // Список тестов, у которых вообще есть контент — подгружается один раз,
 // чтобы не хардкодить в админке, какие направления доступны для выдачи.
-// Каждый элемент: {code, gopCode?, title} — gopCode/title для человекочитаемой подписи.
+// Каждый элемент: {code, language, gopCode?, title} — один элемент на язык
+// одного направления (напр. M005 может встретиться дважды: ru и kk).
 let testCodes = [];
 async function loadTestCodes(){
   try{ testCodes = (await api('/api/admin/test-codes')).tests || []; }
   catch(e){ testCodes = []; }
 }
-function testLabel(code){
-  const t = testCodes.find(x => x.code === code);
+function langBadge(lang){ return lang === 'kk' ? 'KZ' : 'RU'; }
+function testLabel(code, language){
+  const t = testCodes.find(x => x.code === code && x.language === language) || testCodes.find(x => x.code === code);
   if (!t) return code;
   const prefix = t.gopCode ? `${t.gopCode} · ${t.code}` : t.code;
-  return t.title ? `${prefix} — ${t.title}` : prefix;
+  return (t.title ? `${prefix} — ${t.title}` : prefix) + ` [${langBadge(language)}]`;
+}
+// Группировка по направлению — для дропдоуна «выдать доступ»: одно
+// направление, а какие языки для него есть — отдельно (см. refreshGrantButtons).
+function groupedDirections(){
+  const map = new Map();
+  testCodes.forEach(t => {
+    if (!map.has(t.code)) map.set(t.code, { code:t.code, gopCode:t.gopCode, title:t.title, languages:[] });
+    map.get(t.code).languages.push(t.language);
+  });
+  return [...map.values()].sort((a,b)=>a.code.localeCompare(b.code));
 }
 
 function accessCellHtml(u){
-  const given = u.access || [];
-  const chips = given.map(code => `
-    <span class="access-chip" title="${testLabel(code)}">${code}<button data-revoke="${u.id}" data-code="${code}" title="Отозвать доступ">×</button></span>
-  `).join('');
-  const available = testCodes.filter(t => !given.includes(t.code));
-  const select = available.length
-    ? `<div class="access-add">
-         <select data-add-select="${u.id}">${available.map(t=>`<option value="${t.code}">${testLabel(t.code)}</option>`).join('')}</select>
-         <button class="btn-ghost" data-grant="${u.id}">Выдать</button>
-       </div>`
-    : (given.length ? '' : '<span class="muted">Нет доступных кодов</span>');
-  return `<div class="access-chips">${chips}</div>${select}`;
+  const given = u.access || []; // [{code, language}]
+  const chips = given.map(g => `
+    <span class="access-chip access-chip-${g.language}" title="${testLabel(g.code, g.language)}">
+      ${g.code} <span class="access-chip-lang">${langBadge(g.language)}</span>
+      <button data-revoke="${u.id}" data-code="${g.code}" data-lang="${g.language}" title="Отозвать доступ">×</button>
+    </span>`).join('');
+  const directions = groupedDirections();
+  if (!directions.length) {
+    return `<div class="access-chips">${chips || '<span class="muted">Доступа нет</span>'}</div>`;
+  }
+  const options = directions.map(d => `<option value="${d.code}">${d.gopCode ? d.gopCode+' · ' : ''}${d.code}${d.title ? ' — '+d.title : ''}</option>`).join('');
+  return `
+    <div class="access-chips">${chips || '<span class="muted">Доступа нет</span>'}</div>
+    <div class="access-add">
+      <select data-add-select="${u.id}">${options}</select>
+      <button class="btn-ghost access-lang-btn" data-grant="${u.id}" data-lang="ru">RU</button>
+      <button class="btn-ghost access-lang-btn" data-grant="${u.id}" data-lang="kk">KZ</button>
+    </div>`;
 }
 
-async function grantAccess(userId, code){
-  try{ await api('/api/admin/grant-access', { method:'POST', body:{ user_id:userId, code } }); load(); loadAuditLog(); }
+// Для выбранного в селекте направления включает/выключает кнопки RU/KZ:
+// выключены, если для этого языка нет контента вообще, или доступ уже выдан
+// (снимается через × на чипе, а не повторным нажатием).
+function refreshGrantButtons(userId, given){
+  const select = document.querySelector(`[data-add-select="${userId}"]`);
+  if (!select) return;
+  const dir = groupedDirections().find(d => d.code === select.value);
+  ['ru','kk'].forEach(lang => {
+    const btn = document.querySelector(`[data-grant="${userId}"][data-lang="${lang}"]`);
+    if (!btn) return;
+    const available = !!(dir && dir.languages.includes(lang));
+    const granted = given.some(g => g.code === select.value && g.language === lang);
+    btn.disabled = !available || granted;
+    btn.title = !available ? 'Для этого направления нет контента на этом языке' : (granted ? 'Уже выдано' : `Выдать ${langBadge(lang)}`);
+  });
+}
+
+async function grantAccess(userId, code, language){
+  try{ await api('/api/admin/grant-access', { method:'POST', body:{ user_id:userId, code, language } }); load(); loadAuditLog(); }
   catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
 }
 
-async function revokeAccess(userId, code){
-  if(!confirm('Отозвать доступ к тесту '+code+'?')) return;
-  try{ await api('/api/admin/revoke-access', { method:'POST', body:{ user_id:userId, code } }); load(); loadAuditLog(); }
+async function revokeAccess(userId, code, language){
+  if(!confirm(`Отозвать доступ к тесту ${code} [${langBadge(language)}]?`)) return;
+  try{ await api('/api/admin/revoke-access', { method:'POST', body:{ user_id:userId, code, language } }); load(); loadAuditLog(); }
   catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
 }
 
@@ -328,10 +369,16 @@ async function load(){
       </tr>`).join('');
     $('rows').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(Number(b.dataset.del), b.dataset.login));
     $('rows').querySelectorAll('[data-reset]').forEach(b=>b.onclick=()=>resetPw(Number(b.dataset.reset), b.dataset.login));
-    $('rows').querySelectorAll('[data-revoke]').forEach(b=>b.onclick=()=>revokeAccess(Number(b.dataset.revoke), b.dataset.code));
+    $('rows').querySelectorAll('[data-revoke]').forEach(b=>b.onclick=()=>revokeAccess(Number(b.dataset.revoke), b.dataset.code, b.dataset.lang));
     $('rows').querySelectorAll('[data-grant]').forEach(b=>b.onclick=()=>{
       const sel = $('rows').querySelector(`[data-add-select="${b.dataset.grant}"]`);
-      if(sel && sel.value) grantAccess(Number(b.dataset.grant), sel.value);
+      if(sel && sel.value && !b.disabled) grantAccess(Number(b.dataset.grant), sel.value, b.dataset.lang);
+    });
+    // Начальное состояние кнопок RU/KZ + пересчёт при смене направления в селекте.
+    (d.users||[]).forEach(u => {
+      refreshGrantButtons(u.id, u.access||[]);
+      const sel = $('rows').querySelector(`[data-add-select="${u.id}"]`);
+      if (sel) sel.addEventListener('change', () => refreshGrantButtons(u.id, u.access||[]));
     });
   }catch(e){ lm.textContent=e.message; lm.className='msg err'; }
 }
