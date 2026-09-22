@@ -46,10 +46,17 @@ func initAccess() error {
 	if _, err := db.Exec(`ALTER TABLE test_access DROP CONSTRAINT IF EXISTS test_access_user_id_code_key`); err != nil {
 		return err
 	}
+	// Postgres репортит "уже существует" для добавляемого constraint'а то как
+	// duplicate_object (42710), то — поскольку у именованного UNIQUE-ограничения
+	// под капотом одноимённый индекс — как duplicate_table (42P07). Ловим оба,
+	// иначе после первого успешного деплоя сервер падает на каждом следующем
+	// старте (constraint уже есть, а мы это не предвидели — ровно так и было).
 	_, err := db.Exec(`
 	DO $$ BEGIN
 		ALTER TABLE test_access ADD CONSTRAINT test_access_user_id_code_language_key UNIQUE(user_id, code, language);
-	EXCEPTION WHEN duplicate_object THEN NULL;
+	EXCEPTION
+		WHEN duplicate_object THEN NULL;
+		WHEN duplicate_table THEN NULL;
 	END $$`)
 	return err
 }
