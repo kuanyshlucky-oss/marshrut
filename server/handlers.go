@@ -43,22 +43,30 @@ func adminGuard(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
-// POST /api/admin/create-user?key=... — генерит логин+пароль, создаёт аккаунт.
+// POST /api/admin/create-user?key=... — логин+пароль генерятся, если не
+// заданы явно (админ может вписать свои — например, если клиент попросил
+// конкретный логин/пароль).
 func handleAdminCreate(w http.ResponseWriter, r *http.Request) {
 	if !adminGuard(w, r) {
 		return
 	}
 	var in struct {
-		Name  string `json:"name"`
-		Email string `json:"email"`
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 	_ = decode(r, &in)
 	name := strings.TrimSpace(in.Name)
 	email := strings.ToLower(strings.TrimSpace(in.Email))
+	password := strings.TrimSpace(in.Password)
 	if email == "" {
 		email = genLogin()
 	}
 	email = strings.ToLower(email) // логин регистронезависим (вход приводит к нижнему)
+	if password != "" && len(password) < 4 {
+		writeError(w, http.StatusBadRequest, "Пароль слишком короткий — минимум 4 символа")
+		return
+	}
 	exists, err := emailExists(email)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "Ошибка сервера")
@@ -71,7 +79,10 @@ func handleAdminCreate(w http.ResponseWriter, r *http.Request) {
 	if name == "" {
 		name = email
 	}
-	pw := genPassword()
+	pw := password
+	if pw == "" {
+		pw = genPassword()
+	}
 	hash, err := hashPassword(pw)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "Ошибка сервера")

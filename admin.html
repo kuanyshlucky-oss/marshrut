@@ -162,6 +162,10 @@
         <label for="cEmail">Логин / email (необязательно)</label>
         <input id="cEmail" type="text" placeholder="оставьте пустым — сгенерируем">
       </div>
+      <div>
+        <label for="cPassword">Пароль (необязательно)</label>
+        <input id="cPassword" type="text" placeholder="оставьте пустым — сгенерируем" autocomplete="off">
+      </div>
     </div>
     <button class="btn-primary" id="createBtn">Сгенерировать аккаунт</button>
     <div id="cred" class="cred hidden"></div>
@@ -243,7 +247,7 @@ $('createBtn').onclick = async () => {
   const msg = $('createMsg'); msg.textContent=''; msg.className='msg';
   const btn = $('createBtn'); btn.disabled=true; btn.textContent='Создаём…';
   try{
-    const r = await api('/api/admin/create-user', { method:'POST', body:{ name:$('cName').value.trim(), email:$('cEmail').value.trim() } });
+    const r = await api('/api/admin/create-user', { method:'POST', body:{ name:$('cName').value.trim(), email:$('cEmail').value.trim(), password:$('cPassword').value.trim() } });
     const cred = $('cred'); cred.classList.remove('hidden');
     cred.innerHTML = `
       <div class="line"><span class="k">Логин</span><span class="v" id="cvL">${r.login}</span><button data-c="${r.login}">Копир.</button></div>
@@ -251,7 +255,7 @@ $('createBtn').onclick = async () => {
       <div class="line"><span class="k">Строка</span><span class="v">${r.login} / ${r.password}</span><button data-c="${r.login} / ${r.password}">Копир.</button></div>
       <p class="note">⚠ Пароль показан один раз — сохраните и передайте клиенту.</p>`;
     cred.querySelectorAll('button').forEach(b=>b.onclick=()=>copy(b.dataset.c,b));
-    $('cName').value=''; $('cEmail').value='';
+    $('cName').value=''; $('cEmail').value=''; $('cPassword').value='';
     load(); loadAuditLog();
   }catch(e){ msg.textContent=e.message; msg.className='msg err'; }
   btn.disabled=false; btn.textContent='Сгенерировать аккаунт';
