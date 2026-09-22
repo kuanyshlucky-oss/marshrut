@@ -48,9 +48,6 @@ func main() {
 	if err := initAudit(); err != nil {
 		log.Fatalf("ошибка инициализации audit-лога: %v", err)
 	}
-	if err := initWhatsApp(); err != nil {
-		log.Fatalf("ошибка инициализации таблицы WhatsApp: %v", err)
-	}
 	log.Print("БД готова (Postgres)")
 
 	mux := http.NewServeMux()
@@ -72,11 +69,6 @@ func main() {
 	mux.HandleFunc("POST /api/admin/grant-access", adminIPGuard(rateLimit(adminLimiter, handleAdminGrantAccess)))
 	mux.HandleFunc("POST /api/admin/revoke-access", adminIPGuard(rateLimit(adminLimiter, handleAdminRevokeAccess)))
 	mux.HandleFunc("GET /api/admin/audit-log", adminIPGuard(rateLimit(adminLimiter, handleAdminAuditLog)))
-	// WhatsApp Cloud API: вебхук — публичный (его дёргает Meta), подпись проверяется внутри
-	mux.HandleFunc("GET /api/whatsapp/webhook", handleWhatsAppVerify)
-	mux.HandleFunc("POST /api/whatsapp/webhook", handleWhatsAppWebhook)
-	mux.HandleFunc("GET /api/admin/whatsapp/messages", adminIPGuard(rateLimit(adminLimiter, handleAdminWhatsAppMessages)))
-	mux.HandleFunc("POST /api/admin/whatsapp/send", adminIPGuard(rateLimit(adminLimiter, handleAdminWhatsAppSend)))
 	mux.HandleFunc("GET /api/tests/{code}", auth(handleGetTestContent))
 	// МагистрТрек
 	mux.HandleFunc("GET /api/universities", handleUniversities)
