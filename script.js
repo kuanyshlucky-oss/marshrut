@@ -524,6 +524,7 @@ const COMMON_CONSPECTS = {
         title: 'Критическое мышление',
         file: 'tgo-kriticheskoe-course',
         pages: 13,
+        mobile: { pages: 11, starts: [1, 4, 9] },
         topics: [
           { title: 'Тема 1. Сравнение величин', page: 1 },
           { title: 'Тема 2. Уравнения, неравенства, геометрические и текстовые задачи', page: 4 },
@@ -535,6 +536,7 @@ const COMMON_CONSPECTS = {
         title: 'Аналитическое мышление',
         file: 'tgo-analiticheskoe-course',
         pages: 9,
+        mobile: { pages: 10, starts: [1, 4, 8] },
         topics: [
           { title: 'Тема 4. Заполнение пропусков в тексте', page: 1 },
           { title: 'Тема 5. Понимание и анализ текста', page: 4 },
@@ -551,6 +553,7 @@ const COMMON_CONSPECTS = {
         title: 'Темы и лексика',
         file: 'english-themes-course',
         pages: 8,
+        mobile: { pages: 8, starts: [1, 4, 7] },
         topics: [
           { title: 'Тема 1. Человек, общество и духовные ценности', page: 1 },
           { title: 'Тема 2. Образование и наука', page: 4 },
@@ -562,6 +565,7 @@ const COMMON_CONSPECTS = {
         title: 'Грамматика',
         file: 'english-grammar-course',
         pages: 25,
+        mobile: { pages: 24, starts: [1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23] },
         topics: [
           { title: 'Тема 1. Noun — существительное', page: 1 },
           { title: 'Тема 2. Article — артикль', page: 3 },

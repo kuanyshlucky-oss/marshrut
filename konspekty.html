@@ -158,6 +158,26 @@
   }
   .lib-pager-pos{ font-size:12.5px; color:var(--ink-soft); font-family:var(--mono); white-space:nowrap; }
   .lib-topic-picker{ display:none; }
+
+  /* Мобильная версия конспекта (текст свёрстан под телефон): куски идут встык, как одна лента */
+  .page-wrap.is-flow{ gap:0; background:#FFFFFF; }
+  /* Скан A4 на телефоне: нажатие открывает страницу крупно */
+  .page-wrap.is-zoomable img{ pointer-events:auto; cursor:zoom-in; }
+  .zoom-view{
+    position:fixed; inset:0; z-index:100; background:#1b1b1d;
+    display:flex; flex-direction:column;
+  }
+  .zoom-bar{
+    display:flex; align-items:center; gap:8px; padding:10px 12px calc(10px);
+    background:#111; color:#fff; font-size:13px; font-family:var(--mono);
+  }
+  .zoom-bar span{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .zoom-bar button{
+    flex:0 0 auto; min-width:40px; height:36px; border-radius:10px; border:1px solid rgba(255,255,255,.25);
+    background:transparent; color:#fff; font-size:16px; font-weight:700; font-family:inherit; cursor:pointer;
+  }
+  .zoom-scroll{ flex:1 1 auto; overflow:auto; -webkit-overflow-scrolling:touch; touch-action:pan-x pan-y pinch-zoom; }
+  .zoom-scroll img{ display:block; max-width:none; background:#fff; pointer-events:none; -webkit-user-drag:none; -webkit-touch-callout:none; }
   .missing{ padding:120px 20px; text-align:center; color:var(--ink-soft); }
   .missing a{ color:var(--accent); }
 
@@ -250,7 +270,7 @@
 </footer>
 
 <script src="i18n.js?v=4"></script>
-<script src="script.js?v=32"></script>
+<script src="script.js?v=33"></script>
 <script>
   const root = document.getElementById('root');
   const libDocTitleEl = document.getElementById('libDocTitle');
@@ -259,13 +279,54 @@
     root.innerHTML = `<div class="missing">${html}</div>`;
   }
 
-  // Диапазон страниц темы: от её page до (page следующей темы − 1), для последней — до конца документа.
+  // Телефон: у части разделов есть мобильная версия (sec.mobile) — текст свёрстан под узкий
+  // экран и лежит в папке <file>-m. Для остальных — сканы A4 с увеличением по нажатию.
+  const phoneQuery = matchMedia('(max-width: 600px)');
+  const useMobile = sec => phoneQuery.matches && !!sec.mobile;
+
+  // Диапазон страниц темы: от её начала до (начала следующей темы − 1), для последней — до конца документа.
   function topicRange(sec, idx) {
-    const from = sec.topics[idx].page;
-    const to = idx + 1 < sec.topics.length ? sec.topics[idx + 1].page - 1 : sec.pages;
+    const m = useMobile(sec);
+    const starts = m ? sec.mobile.starts : sec.topics.map(t => t.page);
+    const from = starts[idx];
+    const to = idx + 1 < starts.length ? starts[idx + 1] - 1 : (m ? sec.mobile.pages : sec.pages);
     const pages = [];
     for (let p = from; p <= to; p++) pages.push(p);
     return pages;
+  }
+
+  // Повернули телефон / изменили окно через границу 600px — перерисовать тему в нужной версии.
+  let lastPreview = null;
+  phoneQuery.addEventListener('change', () => {
+    if (lastPreview) renderPreview(lastPreview.code, lastPreview.lib, lastPreview.sec, lastPreview.topicIdx);
+  });
+
+  function openZoom(src, title) {
+    const view = document.createElement('div');
+    view.className = 'zoom-view';
+    view.innerHTML = `
+      <div class="zoom-bar">
+        <span>${esc(title)}</span>
+        <button type="button" data-z="-">−</button>
+        <button type="button" data-z="+">+</button>
+        <button type="button" data-z="x" aria-label="Закрыть">✕</button>
+      </div>
+      <div class="zoom-scroll"><img src="${src}" alt=""></div>`;
+    document.body.appendChild(view);
+    document.body.style.overflow = 'hidden';
+    const img = view.querySelector('img');
+    let scale = 2.2; // ширина экрана × scale: текст A4 становится обычного размера
+    const apply = () => { img.style.width = Math.round(window.innerWidth * scale) + 'px'; };
+    apply();
+    const close = () => { view.remove(); document.body.style.overflow = ''; };
+    view.querySelector('.zoom-bar').addEventListener('click', e => {
+      const z = e.target.dataset && e.target.dataset.z;
+      if (z === 'x') history.back(); // закроется через popstate — без лишней записи в истории
+      else if (z === '+') { scale = Math.min(4, scale + 0.4); apply(); }
+      else if (z === '-') { scale = Math.max(1, scale - 0.4); apply(); }
+    });
+    history.pushState({ zoom: true }, '');
+    addEventListener('popstate', close, { once: true }); // «назад» на телефоне закрывает просмотр
   }
 
   function sectionSwitchHTML(lib, sec) {
@@ -373,18 +434,26 @@
         <span class="lib-pager-dir">${dir === 'prev' ? '‹ Назад' : 'Далее ›'}</span>
         <span class="lib-pager-name">${item ? esc(item.title) : ''}</span>
       </button>`;
+    const mobile = useMobile(sec);
+    const zoomable = phoneQuery.matches && !mobile;
+    const folder = mobile ? sec.file + '-m' : sec.file;
     preview.innerHTML = `
       <h3 class="lib-preview-title">${esc(topic.title)}</h3>
-      <div class="page-wrap">
-        ${pages.map(p => `<img src="assets/konspekty/img/${sec.file}/page-${p}.jpg" alt="${esc(topic.title)}, страница ${p}" loading="lazy" oncontextmenu="return false" ondragstart="return false">`).join('')}
+      <div class="page-wrap${mobile ? ' is-flow' : ''}${zoomable ? ' is-zoomable' : ''}">
+        ${pages.map(p => `<img src="assets/konspekty/img/${folder}/page-${p}.jpg" alt="${esc(topic.title)}, страница ${p}" loading="lazy" oncontextmenu="return false" ondragstart="return false">`).join('')}
       </div>
-      <p class="hint">${I18N.t('konspekty.viewOnly')}</p>
+      <p class="hint">${zoomable ? 'Нажмите на страницу, чтобы открыть её крупно. ' : ''}${I18N.t('konspekty.viewOnly')}</p>
       <nav class="lib-pager" aria-label="Переход между темами">
         ${pagerBtn(prev, 'prev')}
         <span class="lib-pager-pos">${pos + 1} / ${flat.length}</span>
         ${pagerBtn(next, 'next')}
       </nav>
     `;
+    if (zoomable) {
+      preview.querySelectorAll('.page-wrap img').forEach((img, i) => img.addEventListener('click', () =>
+        openZoom(img.src, `${topic.title} · стр. ${i + 1} из ${pages.length}`)));
+    }
+    lastPreview = { code, lib, sec, topicIdx };
     preview.querySelectorAll('.lib-pager-btn').forEach(btn => btn.addEventListener('click', () => {
       const target = btn.dataset.dir === 'prev' ? prev : next;
       if (target) goTo(code, lib, target);
