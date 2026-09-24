@@ -1168,8 +1168,8 @@ function openKTReview() {
     const conspectBlock = conspectBody
       ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">${I18N.t('rev.conspects')}</summary>${conspectBody}</details>`
       : '';
-    // Ссылка на конспект по теме вопроса — только при неверном ответе (только для Педагогики/Психологии).
-    const konspekt = wrong && typeof conspectLink === 'function' ? conspectLink(item.topic) : '';
+    // Ссылка на конспект по теме вопроса — только при неверном ответе.
+    const konspekt = wrong && typeof conspectLink === 'function' ? conspectLink(item.topic, s.code) : '';
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <span class="rev-block">${blockTag}</span>
