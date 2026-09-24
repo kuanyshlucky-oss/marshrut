@@ -288,7 +288,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Геодезия',
         file: 'geodezia-2-course',
         pages: 21,
-        mobile: { pages: 21, starts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 20, 21] },
+        mobile: { pages: 31, starts: [1, 4, 7, 9, 13, 15, 18, 20, 23, 26, 28, 30] },
         topics: [
           { title: 'Тема 1. Определение положения точек земной поверхности. Системы координат и высот, применяемые в геодезии', page: 1 },
           { title: 'Тема 2. Ориентирование линий местности', page: 3 },
@@ -309,7 +309,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Картография',
         file: 'kartografiya-course',
         pages: 11,
-        mobile: { pages: 11, starts: [1, 3, 5, 7, 8, 9, 10, 11] },
+        mobile: { pages: 15, starts: [1, 3, 5, 7, 9, 11, 13, 14] },
         topics: [
           { title: 'Тема 1. Общие сведения о картографии. Элементы карты. Типы картографического произведения. Классификация карт', page: 1 },
           { title: 'Тема 2. Формы Земли, их параметры. Математическая основа карт', page: 3 },
@@ -478,7 +478,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Бурение нефтяных и газовых скважин',
         file: 'm115-burenie-course',
         pages: 13,
-        mobile: { pages: 14, starts: [1, 3, 5, 6, 8, 10, 12, 13, 14] },
+        mobile: { pages: 18, starts: [1, 4, 6, 8, 10, 12, 14, 15, 17] },
         topics: [
           { title: 'Тема 1. Горные породы и их свойства. Разрушение пород при бурении', page: 1 },
           { title: 'Тема 2. Буровые установки и их монтаж. Бурильная колонна', page: 3 },
@@ -497,7 +497,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Технология и техника добычи нефти',
         file: 'm115-dobycha-course',
         pages: 9,
-        mobile: { pages: 9, starts: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
+        mobile: { pages: 12, starts: [1, 3, 5, 6, 7, 9, 10, 11, 12] },
         topics: [
           { title: 'Тема 1. Коллекторские свойства пластов. Фильтрация и режимы залежей', page: 1 },
           { title: 'Тема 2. Исследование скважин и приток жидкости к скважине', page: 2 },
@@ -569,7 +569,7 @@ const COMMON_CONSPECTS = {
         title: 'Критическое мышление',
         file: 'tgo-kriticheskoe-course',
         pages: 13,
-        mobile: { pages: 11, starts: [1, 4, 9] },
+        mobile: { pages: 17, starts: [1, 5, 14] },
         topics: [
           { title: 'Тема 1. Сравнение величин', page: 1 },
           { title: 'Тема 2. Уравнения, неравенства, геометрические и текстовые задачи', page: 4 },
@@ -581,7 +581,7 @@ const COMMON_CONSPECTS = {
         title: 'Аналитическое мышление',
         file: 'tgo-analiticheskoe-course',
         pages: 9,
-        mobile: { pages: 10, starts: [1, 4, 8] },
+        mobile: { pages: 14, starts: [1, 6, 11] },
         topics: [
           { title: 'Тема 4. Заполнение пропусков в тексте', page: 1 },
           { title: 'Тема 5. Понимание и анализ текста', page: 4 },
@@ -598,7 +598,7 @@ const COMMON_CONSPECTS = {
         title: 'Темы и лексика',
         file: 'english-themes-course',
         pages: 8,
-        mobile: { pages: 8, starts: [1, 4, 7] },
+        mobile: { pages: 13, starts: [1, 6, 10] },
         topics: [
           { title: 'Тема 1. Человек, общество и духовные ценности', page: 1 },
           { title: 'Тема 2. Образование и наука', page: 4 },
@@ -610,7 +610,7 @@ const COMMON_CONSPECTS = {
         title: 'Грамматика',
         file: 'english-grammar-course',
         pages: 25,
-        mobile: { pages: 24, starts: [1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23] },
+        mobile: { pages: 38, starts: [1, 4, 7, 10, 13, 15, 22, 26, 29, 32, 35] },
         topics: [
           { title: 'Тема 1. Noun — существительное', page: 1 },
           { title: 'Тема 2. Article — артикль', page: 3 },
