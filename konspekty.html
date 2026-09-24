@@ -136,20 +136,83 @@
     -webkit-user-drag:none; -webkit-touch-callout:none;
   }
   .hint{ margin-top:16px; font-size:12px; color:var(--ink-soft); text-align:center; max-width:500px; }
+
+  /* Переход между темами (в т.ч. в соседний раздел): под конспектом, на мобильных — закреплён снизу */
+  .lib-pager{
+    max-width:760px; width:100%; margin-top:20px;
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:10px;
+  }
+  .lib-pager-btn{
+    display:flex; flex-direction:column; gap:2px; min-width:0;
+    background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:10px 14px; cursor:pointer; color:var(--ink); font-family:inherit; text-align:left;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .lib-pager-btn:hover{ border-color:var(--accent); }
+  .lib-pager-btn.next{ text-align:right; align-items:flex-end; }
+  .lib-pager-btn[disabled]{ visibility:hidden; }
+  .lib-pager-dir{ font-size:12px; color:var(--accent); font-weight:700; }
+  .lib-pager-name{
+    font-size:13px; line-height:1.3; color:var(--ink-soft); max-width:100%;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  }
+  .lib-pager-pos{ font-size:12.5px; color:var(--ink-soft); font-family:var(--mono); white-space:nowrap; }
+  .lib-topic-picker{ display:none; }
   .missing{ padding:120px 20px; text-align:center; color:var(--ink-soft); }
   .missing a{ color:var(--accent); }
 
   @media (max-width:860px){
-    .lib-layout{ flex-direction:column; }
+    header{ height:56px; padding:0 12px; gap:10px; }
+    .back{ flex:0 0 auto; font-size:0; width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+      border:1px solid var(--line); border-radius:50%; color:var(--ink); }
+    .back::before{ content:'←'; font-size:18px; line-height:1; }
+    .doc-title{ flex:1 1 auto; min-width:0; font-size:15px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:center; }
+    .lang-toggle{ margin-left:0; }
+    .lang-toggle-opt{ padding:6px 9px; }
+    .theme-toggle{ margin-left:8px; }
+
+    .lib-layout{ flex-direction:column; min-height:calc(100vh - 56px); }
     .lib-sidebar{
       position:static; max-height:none; flex:0 0 auto; max-width:none;
       border-right:none; border-bottom:1px solid var(--line);
-      display:flex; flex-direction:column; padding:16px 0;
+      display:flex; flex-direction:column; padding:12px 12px 12px;
     }
-    .lib-topic-list{ flex-direction:row; overflow-x:auto; padding:0 12px; gap:4px; }
-    .lib-topic-btn{ flex:0 0 auto; white-space:nowrap; border-left:none; border-bottom:3px solid transparent; }
-    .lib-topic-btn.is-active{ border-left-color:transparent; border-bottom-color:var(--accent); }
-    .lib-preview{ padding:24px 16px 40px; }
+    .lib-section-switch{ padding:0 0 10px; gap:0; background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:3px; margin-bottom:10px; }
+    .lib-section-btn{ border:none; padding:9px 8px; font-size:12.5px; line-height:1.25; }
+    .lib-sidebar h2{ display:none; }
+    /* Тема выбирается из раскрывающегося списка, а не из горизонтальной ленты с прокруткой */
+    .lib-topic-picker{
+      display:flex; align-items:center; gap:10px; width:100%;
+      background:var(--surface); border:1px solid var(--line); border-radius:14px;
+      padding:11px 14px; font-family:inherit; color:var(--ink); cursor:pointer; text-align:left;
+    }
+    .lib-topic-picker-text{ flex:1 1 auto; min-width:0; display:flex; flex-direction:column; gap:2px; }
+    .lib-topic-picker-pos{ font-size:11.5px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
+    .lib-topic-picker-name{ font-size:14px; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .lib-topic-picker-arrow{ flex:0 0 auto; transition:transform .2s ease; color:var(--ink-soft); }
+    .lib-sidebar.is-open .lib-topic-picker-arrow{ transform:rotate(180deg); }
+    .lib-topic-list{
+      display:none; flex-direction:column; margin-top:8px;
+      background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden;
+    }
+    .lib-sidebar.is-open .lib-topic-list{ display:flex; }
+    .lib-topic-btn{ border-left:3px solid transparent; padding:12px 14px; border-top:1px solid var(--line); }
+    .lib-topic-btn:first-child{ border-top:none; }
+
+    .lib-preview{ padding:16px 0 96px; }
+    .lib-preview-title{ display:none; } /* тема уже видна на кнопке выбора темы */
+    /* Сканы — на всю ширину экрана, без рамки: так текст страницы крупнее */
+    .page-wrap{ border-radius:0; border-left:none; border-right:none; box-shadow:none; }
+    .hint{ padding:0 16px; }
+    .lib-pager{
+      position:fixed; left:0; right:0; bottom:0; z-index:40; margin:0; max-width:none;
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+      background:var(--header-bg); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      border-top:1px solid var(--line); gap:8px;
+    }
+    .lib-pager-btn{ padding:9px 12px; border-radius:12px; }
+    .lib-pager-name{ display:none; }
+    .lib-pager-dir{ font-size:14px; }
   }
 
   .site-footer{ background:var(--surface); border-top:1px solid var(--line); }
@@ -246,9 +309,16 @@
 
     root.innerHTML = `
       <div class="lib-layout">
-        <nav class="lib-sidebar">
+        <nav class="lib-sidebar" id="libSidebar">
           ${sectionSwitchHTML(lib, sec)}
           <h2>${esc(sec.title)}</h2>
+          <button class="lib-topic-picker" id="libTopicPicker" type="button" aria-expanded="false" aria-controls="libTopicList">
+            <span class="lib-topic-picker-text">
+              <span class="lib-topic-picker-pos" id="libPickerPos"></span>
+              <span class="lib-topic-picker-name" id="libPickerName"></span>
+            </span>
+            <svg class="lib-topic-picker-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
           <div class="lib-topic-list" id="libTopicList">
             ${sec.topics.map((t, i) => `<button class="lib-topic-btn ${i === topicIdx ? 'is-active' : ''}" data-idx="${i}">${esc(t.title)}</button>`).join('')}
           </div>
@@ -257,24 +327,71 @@
       </div>
     `;
 
+    const sidebar = document.getElementById('libSidebar');
+    const picker = document.getElementById('libTopicPicker');
+    picker.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('is-open');
+      picker.setAttribute('aria-expanded', String(open));
+    });
     document.querySelectorAll('.lib-topic-btn').forEach(btn => {
       btn.addEventListener('click', () => selectTopic(code, lib, sec, Number(btn.dataset.idx)));
     });
     wireSectionSwitch(code, lib);
-    renderPreview(sec, topicIdx);
+    renderPreview(code, lib, sec, topicIdx);
   }
 
-  function renderPreview(sec, topicIdx) {
+  // Все темы всех разделов подряд — «Далее» после последней темы раздела ведёт в следующий раздел.
+  function flatTopics(lib) {
+    const out = [];
+    lib.sections.forEach(s => s.topics.forEach((t, i) => out.push({ sec: s, idx: i, title: t.title })));
+    return out;
+  }
+
+  function goTo(code, lib, target) {
+    const current = new URLSearchParams(location.search).get('section');
+    if (target.sec.key !== current) {
+      const url = new URL(location.href);
+      url.searchParams.set('code', code);
+      url.searchParams.set('section', target.sec.key);
+      url.searchParams.set('topic', target.idx);
+      history.replaceState(null, '', url);
+      renderLibrary(code, lib, target.sec, target.idx);
+    } else {
+      selectTopic(code, lib, target.sec, target.idx);
+    }
+  }
+
+  function renderPreview(code, lib, sec, topicIdx) {
     const preview = document.getElementById('libPreview');
     const topic = sec.topics[topicIdx];
     const pages = topicRange(sec, topicIdx);
+    const flat = flatTopics(lib);
+    const pos = flat.findIndex(f => f.sec.key === sec.key && f.idx === topicIdx);
+    const prev = flat[pos - 1], next = flat[pos + 1];
+    const pagerBtn = (item, dir) => `
+      <button class="lib-pager-btn ${dir}" type="button" data-dir="${dir}" ${item ? '' : 'disabled'}>
+        <span class="lib-pager-dir">${dir === 'prev' ? '‹ Назад' : 'Далее ›'}</span>
+        <span class="lib-pager-name">${item ? esc(item.title) : ''}</span>
+      </button>`;
     preview.innerHTML = `
       <h3 class="lib-preview-title">${esc(topic.title)}</h3>
       <div class="page-wrap">
-        ${pages.map(p => `<img src="assets/konspekty/img/${sec.file}/page-${p}.jpg" alt="${esc(topic.title)}, страница ${p}" oncontextmenu="return false" ondragstart="return false">`).join('')}
+        ${pages.map(p => `<img src="assets/konspekty/img/${sec.file}/page-${p}.jpg" alt="${esc(topic.title)}, страница ${p}" loading="lazy" oncontextmenu="return false" ondragstart="return false">`).join('')}
       </div>
       <p class="hint">${I18N.t('konspekty.viewOnly')}</p>
+      <nav class="lib-pager" aria-label="Переход между темами">
+        ${pagerBtn(prev, 'prev')}
+        <span class="lib-pager-pos">${pos + 1} / ${flat.length}</span>
+        ${pagerBtn(next, 'next')}
+      </nav>
     `;
+    preview.querySelectorAll('.lib-pager-btn').forEach(btn => btn.addEventListener('click', () => {
+      const target = btn.dataset.dir === 'prev' ? prev : next;
+      if (target) goTo(code, lib, target);
+    }));
+
+    document.getElementById('libPickerPos').textContent = `Тема ${topicIdx + 1} из ${sec.topics.length}`;
+    document.getElementById('libPickerName').textContent = topic.title.replace(/^Тема \d+\.\s*/, '');
     preview.scrollTo({ top: 0 });
     window.scrollTo({ top: 0 });
   }
@@ -289,9 +406,11 @@
     document.querySelectorAll('.lib-topic-btn').forEach(btn => {
       btn.classList.toggle('is-active', Number(btn.dataset.idx) === topicIdx);
     });
-    const active = document.querySelector('.lib-topic-btn.is-active');
-    if (active) active.scrollIntoView({ block: 'nearest', inline: 'center' });
-    renderPreview(sec, topicIdx);
+    const sidebar = document.getElementById('libSidebar');
+    if (sidebar) sidebar.classList.remove('is-open');
+    const picker = document.getElementById('libTopicPicker');
+    if (picker) picker.setAttribute('aria-expanded', 'false');
+    renderPreview(code, lib, sec, topicIdx);
   }
 
   async function init() {
