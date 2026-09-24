@@ -193,7 +193,7 @@
   .search-wrap input{ padding-left:34px; margin-bottom:0; }
 
   .collapse-panel{ overflow:hidden; max-height:0; transition:max-height .25s ease; }
-  .collapse-panel.is-open{ max-height:220px; }
+  .collapse-panel.is-open{ max-height:1000px; }
   .collapse-inner{ padding-top:18px; border-top:1px solid var(--line); margin-top:18px; }
 
   @media (max-width:640px){
@@ -279,7 +279,7 @@
         <div class="card-head-actions">
           <div class="search-wrap">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input id="userSearch" type="text" placeholder="Поиск: имя, логин, город…">
+            <input id="userSearch" type="text" placeholder="Поиск: имя, логин, телефон, город…">
           </div>
           <button class="btn-ghost btn-sm" id="toggleCreateBtn">+ Новый аккаунт</button>
           <button class="btn-ghost btn-sm" id="reloadBtn" title="Обновить">
@@ -540,7 +540,9 @@ function filteredSortedUsers(){
   const q = $('userSearch').value.trim().toLowerCase();
   let list = usersCache;
   if (q) {
-    list = list.filter(u => [u.id, u.email, u.name, u.city].some(v => String(v||'').toLowerCase().includes(q)));
+    const qDigits = q.replace(/\D/g, '');
+    list = list.filter(u => [u.id, u.email, u.name, u.city].some(v => String(v||'').toLowerCase().includes(q))
+      || (qDigits.length >= 4 && [u.phone, u.email].some(v => String(v||'').replace(/\D/g, '').slice(-10).includes(qDigits.slice(-10)))));
   }
   list = [...list].sort((a,b) => {
     let av = a[sortKey], bv = b[sortKey];
