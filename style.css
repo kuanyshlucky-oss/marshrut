@@ -1451,6 +1451,7 @@ body.test-open #reviewPage input{ user-select:text; }
   background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-m);
   padding:14px 16px; margin:0 0 18px; font-size:13px; line-height:1.55; color:var(--ink-soft);
   max-height:260px; overflow-y:auto;
+  white-space:pre-line; /* абзацы текста хранятся через \n — вопросы вида «во втором абзаце» */
 }
 .kt-question-image{
   /* всегда светлый фон: диаграммы/сканы часто с прозрачностью и тёмными линиями,
