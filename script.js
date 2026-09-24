@@ -242,6 +242,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Педагогика',
         file: 'pedagogika-course',
         pages: 29,
+        mobile: { pages: 45, starts: [1, 4, 7, 10, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 44] },
         topics: [
           { title: 'Тема 1. Приоритетная роль образования в современных условиях', page: 1 },
           { title: 'Тема 2. Общая характеристика педагогической профессии и деятельности', page: 3 },
@@ -270,6 +271,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Психология',
         file: 'psihologiya-course',
         pages: 18,
+        mobile: { pages: 22, starts: [1, 4, 6, 9, 11, 13, 15, 18, 20] },
         topics: [
           { title: 'Тема 1. Предмет, задачи и методы психологии', page: 1 },
           { title: 'Тема 2. Основные этапы развития психики в филогенезе. Сознание', page: 3 },
@@ -335,6 +337,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Общая психология',
         file: 'obshaya-psihologiya-course',
         pages: 13,
+        mobile: { pages: 13, starts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] },
         topics: [
           { title: 'Тема 1. Предмет, отрасли и задачи психологической науки и практики', page: 1 },
           { title: 'Тема 2. Методология и методы исследования психологии', page: 2 },
@@ -356,6 +359,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Психология развития',
         file: 'psihologiya-razvitiya-course',
         pages: 10,
+        mobile: { pages: 10, starts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
         topics: [
           { title: 'Тема 1. Предмет, задачи и методы психологии развития', page: 1 },
           { title: 'Тема 2. Теории психического развития', page: 2 },
@@ -382,6 +386,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Педагогика',
         file: 'pedagogika-course',
         pages: 29,
+        mobile: { pages: 45, starts: [1, 4, 7, 10, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 44] },
         topics: [
           { title: 'Тема 1. Приоритетная роль образования в современных условиях', page: 1 },
           { title: 'Тема 2. Общая характеристика педагогической профессии и деятельности', page: 3 },
@@ -412,6 +417,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Теория и методика физической культуры',
         file: 'm005-tmfk-course',
         pages: 12,
+        mobile: { pages: 12, starts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
         topics: [
           { title: 'Тема 1. Общественные функции, формы, система и принципы физического воспитания', page: 1 },
           { title: 'Тема 2. Средства и методы физического воспитания', page: 2 },
@@ -440,6 +446,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Основы взаимозаменяемости',
         file: 'm103-ovz-course',
         pages: 8,
+        mobile: { pages: 12, starts: [1, 3, 5, 7, 9, 10, 11, 12] },
         topics: [
           { title: 'Тема 1. Взаимозаменяемость. Размеры, отклонения, допуски и посадки. Стандартизация', page: 1 },
           { title: 'Тема 2. Допуски и посадки гладких соединений. Посадки подшипников качения', page: 2 },
@@ -457,6 +464,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Детали машин',
         file: 'm103-dm-course',
         pages: 11,
+        mobile: { pages: 11, starts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
         topics: [
           { title: 'Тема 1. Общие вопросы расчёта и проектирования. Критерии работоспособности', page: 1 },
           { title: 'Тема 2. Сопряжения деталей. Машиностроительные материалы. Триботехника', page: 2 },
@@ -524,6 +532,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Математика',
         file: 'm107-matematika-course',
         pages: 10,
+        mobile: { pages: 10, starts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
         topics: [
           { title: 'Тема 1. Матрицы и определители', page: 1 },
           { title: 'Тема 2. Векторная алгебра и аналитическая геометрия', page: 2 },
@@ -542,6 +551,7 @@ const LIBRARY_CONSPECTS = {
         title: 'Физика',
         file: 'm107-fizika-course',
         pages: 10,
+        mobile: { pages: 10, starts: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
         topics: [
           { title: 'Тема 1. Кинематика и динамика материальной точки', page: 1 },
           { title: 'Тема 2. Работа, энергия, вращение твёрдого тела', page: 2 },
