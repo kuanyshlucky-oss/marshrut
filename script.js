@@ -1922,17 +1922,41 @@ function progressSectionLabel(code, section) {
 }
 
 // Считает всё нужное для карточки «Прогресс подготовки» по одному направлению:
-// лучшую попытку полной симуляции КТ (для разрыва до порога) + разбор по темам
-// (накопленный по всем попыткам — и обычным тестам, и симуляциям КТ) для слабых
-// тем и точности по блокам/предметам.
+// лучшую попытку полной симуляции КТ (разрыв до порога) и историю всех симуляций,
+// последние тесты по предметам, а также разбор по темам (накоплен по всем
+// попыткам — и обычным тестам, и симуляциям КТ). Темы берутся из программы
+// предмета (GOP_SUBJECTS), поэтому видны и те, что ещё не решались.
+const progressNorm = t => String(t || '').replace(/^(Тема\s+)?\d+\.\s*/i, '').trim().toLowerCase();
+
+// Ссылка на тему в библиотеке конспектов этого направления (или '' — если такой темы там нет).
+function progressConspectHref(code, topic) {
+  const lib = typeof LIBRARY_CONSPECTS !== 'undefined' && LIBRARY_CONSPECTS[code];
+  if (!lib) return '';
+  const key = progressNorm(topic);
+  for (const sec of lib.sections || []) {
+    const idx = (sec.topics || []).findIndex(t => progressNorm(t.title) === key);
+    if (idx >= 0) return `konspekty.html?code=${encodeURIComponent(code)}&section=${encodeURIComponent(sec.key)}&topic=${idx}`;
+  }
+  return '';
+}
+
+// Статус темы по доле верных ответов.
+function progressTopicStatus(t) {
+  if (!t.n) return { key: 'none', label: 'Не решали' };
+  if (t.acc >= 80) return { key: 'ok', label: 'Хорошо' };
+  if (t.acc >= 50) return { key: 'mid', label: 'Средне' };
+  return { key: 'low', label: 'Слабо' };
+}
+
 function computeProgressForCode(code, user) {
-  const ktAttempts = (user.results || []).filter(r => r.code === code && typeof r.kind === 'string' && r.kind.indexOf('kt:') === 0);
+  const isKt = r => typeof r.kind === 'string' && r.kind.indexOf('kt:') === 0;
+  const results = (user.results || []).filter(r => r.code === code);
+  const ktAttempts = results.filter(isKt);
   let best = null;
   ktAttempts.forEach(r => { if (!best || r.score > best.score) best = r; });
   let kt = null;
   if (best) {
-    const typeId = best.kind.slice(3);
-    const rule = KT_PASS_RULES[typeId];
+    const rule = KT_PASS_RULES[best.kind.slice(3)];
     if (rule) {
       kt = {
         score: best.score, total: best.total, date: best.date, passed: !!best.passed,
@@ -1941,34 +1965,65 @@ function computeProgressForCode(code, user) {
       };
     }
   }
+  // История симуляций — в порядке прохождения (results хранятся хронологически).
+  const ktHistory = ktAttempts.map((r, i) => {
+    const rule = KT_PASS_RULES[r.kind.slice(3)];
+    const prev = ktAttempts[i - 1];
+    return { score: r.score, total: r.total, date: r.date, passed: !!r.passed, threshold: rule ? rule.thresholdTotal : null, delta: prev ? r.score - prev.score : null };
+  });
+  const subjectTests = results.filter(r => !isKt(r))
+    .map(r => ({ score: r.score, total: r.total, date: r.date, pct: r.total ? Math.round((r.score / r.total) * 100) : 0 }));
 
   const stats = (user.topicStats || []).filter(t => t.code === code);
-  const bySection = {};
-  stats.forEach(t => {
-    const a = bySection[t.section] || (bySection[t.section] = { correct: 0, wrong: 0 });
-    a.correct += t.correct; a.wrong += t.wrong;
-  });
-  const sectionOrder = ['lang', 'logic', 'subj1', 'subj2'];
-  const sections = sectionOrder
-    .filter(s => bySection[s])
-    .map(s => {
-      const a = bySection[s];
-      const n = a.correct + a.wrong;
-      return { section: s, label: progressSectionLabel(code, s), pct: n ? Math.round((a.correct / n) * 100) : null, n };
+  const gopCode = (typeof CONTENT_TO_GOP !== 'undefined' && CONTENT_TO_GOP[code]) || code;
+  const gop = GOP_SUBJECTS[gopCode] || [];
+  const specFor = s => {
+    const id = { lang: 'lang', logic: 'tgo', subj1: 'p1', subj2: 'p2' }[s];
+    const item = gop.find(x => x.id === id);
+    return item ? item.topics || [] : [];
+  };
+
+  const statSections = new Set(stats.map(t => t.section));
+  const sections = ['lang', 'logic', 'subj1', 'subj2'].filter(s => statSections.has(s)).map(s => {
+    // Темы программы + темы из статистики, которых в программе нет (старые названия).
+    const merged = new Map();
+    specFor(s).forEach(title => merged.set(progressNorm(title), { topic: title, correct: 0, wrong: 0 }));
+    stats.filter(t => t.section === s).forEach(t => {
+      const k = progressNorm(t.topic);
+      const m = merged.get(k) || { topic: t.topic, correct: 0, wrong: 0 };
+      m.correct += t.correct; m.wrong += t.wrong;
+      merged.set(k, m);
     });
+    const topics = [...merged.values()].map(t => {
+      const n = t.correct + t.wrong;
+      const row = { ...t, n, acc: n ? Math.round((t.correct / n) * 100) : null, href: progressConspectHref(code, t.topic) };
+      row.status = progressTopicStatus(row);
+      return row;
+    }).sort((a, b) => {
+      if (!a.n !== !b.n) return a.n ? -1 : 1;                  // нерешённые — в конец
+      if (a.n && b.n && a.acc !== b.acc) return a.acc - b.acc;  // слабые — вверху
+      return b.n - a.n;
+    });
+    const correct = topics.reduce((x, t) => x + t.correct, 0);
+    const wrong = topics.reduce((x, t) => x + t.wrong, 0);
+    const n = correct + wrong;
+    return {
+      section: s, label: progressSectionLabel(code, s), correct, wrong, n,
+      pct: n ? Math.round((correct / n) * 100) : null,
+      topics, tried: topics.filter(t => t.n).length, weak: topics.filter(t => t.status.key === 'low').length,
+    };
+  });
 
-  const topics = stats
-    .map(t => ({ topic: t.topic, section: t.section, n: t.correct + t.wrong, pct: (t.correct + t.wrong) ? Math.round((t.wrong / (t.correct + t.wrong)) * 100) : 0 }))
-    .filter(t => t.n > 0 && t.pct > 0)
-    .sort((a, b) => b.pct - a.pct);
+  // «Что повторить»: самые слабые темы по всем разделам (точность < 70 %).
+  const focus = sections.flatMap(s => s.topics.filter(t => t.n && t.acc < 70).map(t => ({ ...t, sectionLabel: s.label })))
+    .sort((a, b) => a.acc - b.acc || b.n - a.n).slice(0, 3);
 
-  return { code, kt, sections, topics };
+  return { code, kt, ktHistory, subjectTests, sections, focus };
 }
 
-// Раздел «Прогресс подготовки»: сколько баллов не хватает до порога симуляции КТ
-// и какие темы чаще всего дают ошибки — по каждому направлению, где есть хоть
-// какие-то данные (попытка КТ или разбор по темам обычного теста). Темы показаны
-// отдельным блоком на каждый раздел (Физика, Математика и т.д.), не смешаны.
+// Раздел «Прогресс подготовки»: разрыв до порога КТ, история симуляций, что повторить,
+// точность по разделам и все темы программы — по каждому направлению, где есть
+// хоть какие-то данные (попытка КТ или разбор по темам обычного теста).
 let progressActiveCode = null;
 function renderProgress() {
   const user = API.getCurrentUser();
@@ -1996,12 +2051,13 @@ function renderProgress() {
   document.querySelectorAll('#progTabs .prog-tab').forEach(b => b.addEventListener('click', () => {
     if (b.dataset.code === progressActiveCode) return;
     progressActiveCode = b.dataset.code;
-    progressActiveSection = 'all'; // разделы другого направления — сбрасываем фильтр
     renderProgress();
   }));
 
   const data = computeProgressForCode(progressActiveCode, user);
   const body = document.getElementById('progBody');
+  const tierOf = pct => pct == null ? '' : (pct >= 80 ? '' : (pct >= 50 ? 'is-mid' : 'is-low'));
+  const deltaText = d => d == null ? '' : (d > 0 ? '+' + d : (d < 0 ? '−' + Math.abs(d) : '±0'));
 
   let heroHtml = '';
   if (data.kt) {
@@ -2039,8 +2095,8 @@ function renderProgress() {
           </div>
           <div class="prog-stat">
             <span class="prog-stat-label">Попыток учтено</span>
-            <span class="prog-stat-num">${(user.results || []).filter(r => r.code === progressActiveCode).length}</span>
-            <span class="prog-stat-note">тесты по предметам + симуляции КТ</span>
+            <span class="prog-stat-num">${data.ktHistory.length + data.subjectTests.length}</span>
+            <span class="prog-stat-note">симуляций КТ — ${data.ktHistory.length}, тестов по предметам — ${data.subjectTests.length}</span>
           </div>
         </div>
       </div>`;
@@ -2048,54 +2104,100 @@ function renderProgress() {
     heroHtml = `<p class="prog-empty">Пока нет ни одной полной симуляции КТ по этому направлению — пройдите её, чтобы увидеть разрыв до порога прохождения.</p>`;
   }
 
+  // История симуляций КТ: балл каждой попытки, отметка порога, изменение к прошлой попытке.
+  const historyHtml = data.ktHistory.length > 1 ? `
+    <div class="prog-section">
+      <h4>История симуляций КТ</h4>
+      <p class="prog-section-note">Все попытки по порядку; вертикальная черта — порог прохождения.</p>
+      ${data.ktHistory.map((h, i) => `
+        <div class="prog-hist-row">
+          <span class="prog-hist-no">${i + 1}</span>
+          <span class="prog-hist-date">${esc(h.date || '')}</span>
+          <div class="prog-hist-bar">
+            <div class="prog-hist-fill ${h.passed ? 'is-pass' : ''}" style="width:${h.total ? Math.round((h.score / h.total) * 100) : 0}%"></div>
+            ${h.threshold && h.total ? `<span class="prog-hist-mark" style="left:${Math.round((h.threshold / h.total) * 100)}%"></span>` : ''}
+          </div>
+          <span class="prog-hist-score">${h.score}/${h.total}</span>
+          <span class="prog-hist-delta ${h.delta > 0 ? 'up' : (h.delta < 0 ? 'down' : '')}">${deltaText(h.delta)}</span>
+        </div>`).join('')}
+    </div>` : '';
+
+  // Что повторить в первую очередь.
+  const focusHtml = data.focus.length ? `
+    <div class="prog-section">
+      <h4>Что повторить в первую очередь</h4>
+      <p class="prog-section-note">Темы с самой низкой долей верных ответов за все попытки.</p>
+      <div class="prog-focus-list">
+        ${data.focus.map(t => `
+          <div class="prog-focus-card">
+            <span class="prog-focus-sec">${esc(t.sectionLabel)}</span>
+            <span class="prog-focus-name">${esc(t.topic)}</span>
+            <span class="prog-focus-stat">верно ${t.correct} из ${t.n} · <b>${t.acc}%</b></span>
+            ${t.href ? `<a class="prog-focus-link" href="${t.href}">Открыть конспект →</a>` : ''}
+          </div>`).join('')}
+      </div>
+    </div>` : '';
+
   const blocksHtml = data.sections.length ? `
     <div class="prog-section">
       <h4>Точность по разделам</h4>
-      ${data.sections.map(s => {
-        const tier = s.pct == null ? '' : (s.pct >= 60 ? '' : (s.pct >= 40 ? 'is-mid' : 'is-low'));
-        return `
+      <p class="prog-section-note">Доля верных ответов по всем вопросам раздела. Нажмите на раздел, чтобы открыть его темы.</p>
+      ${data.sections.map(s => `
         <a class="prog-block-row" href="#prog-topics-${esc(s.section)}">
-          <div class="prog-block-name">${esc(s.label)}</div>
-          <div class="prog-block-bar"><div class="prog-block-fill ${tier}" style="width:${s.pct ?? 0}%"></div></div>
+          <div class="prog-block-name">${esc(s.label)}
+            <span class="prog-block-note">верно ${s.correct} из ${s.n} · тем решали ${s.tried} из ${s.topics.length}${s.weak ? ` · слабых ${s.weak}` : ''}</span>
+          </div>
+          <div class="prog-block-bar"><div class="prog-block-fill ${tierOf(s.pct)}" style="width:${s.pct ?? 0}%"></div></div>
           <div class="prog-block-pct">${s.pct == null ? '—' : s.pct + '%'}</div>
-        </a>`;
-      }).join('')}
+        </a>`).join('')}
     </div>` : '';
 
-  // Темы показываются отдельным блоком на каждый раздел направления (Физика,
-  // Математика и т.д.) — свёрнуты по умолчанию (компактно), разворачиваются
-  // по клику на <summary>, без общего смешанного списка.
-  const topicsBySection = {};
-  data.topics.forEach(t => { (topicsBySection[t.section] = topicsBySection[t.section] || []).push(t); });
-
-  const topicsHtml = data.sections.length ? data.sections.map(s => {
-    const shownTopics = (topicsBySection[s.section] || []).slice(0, 10);
-    const worst = shownTopics[0];
-    const summaryNote = shownTopics.length
-      ? `${shownTopics.length} ${pluralTopics(shownTopics.length)} · слабее всего «${esc(worst.topic)}» — ${worst.pct}%`
-      : 'по этому разделу пока нет ошибок';
+  // Все темы раздела (включая нерешённые) — свёрнуты по умолчанию.
+  const topicsHtml = data.sections.map(s => {
+    const untouched = s.topics.length - s.tried;
+    const summaryNote = [
+      s.weak ? `слабых ${s.weak}` : (s.tried ? 'слабых тем нет' : ''),
+      untouched ? `не решали ${untouched}` : '',
+    ].filter(Boolean).join(' · ');
     return `
     <details class="prog-section prog-topics-details" id="prog-topics-${esc(s.section)}">
       <summary class="prog-topics-summary">
         <span class="prog-topics-summary-title">Темы · ${esc(s.label)}</span>
         <span class="prog-topics-summary-note">${summaryNote}</span>
       </summary>
-      <p class="prog-section-note">По доле неверных ответов за все попытки, от самой слабой темы.</p>
-      ${shownTopics.length ? shownTopics.map(t => {
-        const mid = t.pct < 45 ? 'is-mid' : '';
-        return `
-        <div class="prog-topic-row">
+      <p class="prog-section-note">Доля верных ответов по теме за все попытки: сначала слабые, в конце — темы, которые ещё не попадались.</p>
+      ${s.topics.map(t => `
+        <div class="prog-topic-row${t.n ? '' : ' is-untried'}">
           <div class="prog-topic-main">
             <span class="prog-topic-name">${esc(t.topic)}</span>
+            <span class="prog-topic-meta">
+              <span class="prog-chip is-${t.status.key}">${t.status.label}</span>
+              ${t.n ? `<span>верно ${t.correct} из ${t.n}${t.n < 3 ? ' · мало ответов' : ''}</span>` : ''}
+              ${t.href ? `<a class="prog-topic-link" href="${t.href}">конспект</a>` : ''}
+            </span>
           </div>
-          <div class="prog-topic-bar"><div class="prog-topic-fill ${mid}" style="width:${t.pct}%"></div></div>
-          <div class="prog-topic-pct ${mid}">${t.pct}%</div>
-        </div>`;
-      }).join('') : `<p class="prog-empty">По этому разделу пока нет ошибок в накопленной статистике.</p>`}
+          <div class="prog-topic-bar"><div class="prog-topic-fill is-${t.status.key}" style="width:${t.acc ?? 0}%"></div></div>
+          <div class="prog-topic-pct is-${t.status.key}">${t.acc == null ? '—' : t.acc + '%'}</div>
+        </div>`).join('')}
     </details>`;
-  }).join('') : '';
+  }).join('');
 
-  body.innerHTML = heroHtml + blocksHtml + topicsHtml
+  // Последние тесты по предметам.
+  const recent = data.subjectTests.slice(-5).reverse();
+  const testsHtml = recent.length ? `
+    <div class="prog-section">
+      <h4>Последние тесты по предметам</h4>
+      <p class="prog-section-note">Пять последних попыток, сверху — самая свежая.</p>
+      ${recent.map(r => `
+        <div class="prog-hist-row">
+          <span class="prog-hist-date">${esc(r.date || '')}</span>
+          <div class="prog-hist-bar"><div class="prog-hist-fill ${r.pct >= 50 ? 'is-pass' : ''}" style="width:${r.pct}%"></div></div>
+          <span class="prog-hist-score">${r.score}/${r.total}</span>
+          <span class="prog-hist-delta">${r.pct}%</span>
+        </div>`).join('')}
+    </div>` : '';
+
+  body.innerHTML = heroHtml + historyHtml + focusHtml + blocksHtml + topicsHtml + testsHtml
     || `<p class="prog-empty">Пока недостаточно данных для разбора по темам.</p>`;
 
   // Клик по строке раздела выше должен не просто проскроллить, а ещё и
@@ -2105,13 +2207,6 @@ function renderProgress() {
     const el = document.querySelector(a.getAttribute('href'));
     if (el && 'open' in el) el.open = true;
   }));
-}
-
-function pluralTopics(n) {
-  const n10 = n % 10, n100 = n % 100;
-  if (n10 === 1 && n100 !== 11) return 'тема';
-  if ([2, 3, 4].includes(n10) && ![12, 13, 14].includes(n100)) return 'темы';
-  return 'тем';
 }
 
 function pluralPoints(n) {
