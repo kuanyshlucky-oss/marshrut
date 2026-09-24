@@ -798,28 +798,36 @@ function openKT(code) {
   showKTPage();
 }
 
-// Дроби в ТГО (блок logic) записаны в данных как «a/b», «(7x−12)/3», «1/(0,75−1)» —
-// показываем их с горизонтальной дробной чертой. Работает по уже экранированному тексту.
-// Операнд: число (с разрядными пробелами, запятой, степенью), √число или выражение с
-// латинской переменной (x, 7x, √3a⁻²b⁻²). Кириллица не считается операндом:
-// «признаки/классификация» — слова через косую, а не дробь.
+// Дроби в данных записаны как «a/b», «(7x−12)/3», «1/(0,75−1)», «√μ/a^(3/2)» — показываем их
+// с горизонтальной дробной чертой. Работает по уже экранированному тексту. Включено для ТГО
+// (блок logic) и для профильных предметов направлений из KT_FRAC_CODES (формулы в вариантах).
+// Операнд: число (с разрядными пробелами, запятой, степенью), √число, выражение в скобках или
+// с латинской/греческой переменной, в т.ч. со степенью ^(...). Кириллица операндом не считается:
+// «признаки/классификация» — слова через косую, «км/с» — единица, а не дробь.
+const KT_FRAC_CODES = new Set(['M107']);
 const KT_FRAC_SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹⁻ⁿ';
-const KT_FRAC_NUM = '[0-9]{1,3}(?: [0-9]{3})+|[0-9]+(?:,[0-9]+)?';
-const KT_FRAC_ATOM = `√?(?:${KT_FRAC_NUM})?[a-z](?:[a-z${KT_FRAC_SUP}]|[0-9](?![0-9]))*|√?(?:${KT_FRAC_NUM})[${KT_FRAC_SUP}]*`;
+const KT_FRAC_NUM = '[0-9]{1,3}(?: [0-9]{3})+|[0-9]+(?:[,.][0-9]+)?';
 const KT_FRAC_GROUP = '\\([^()]*\\)';
-const KT_FRAC_RE = new RegExp(`((?:${KT_FRAC_GROUP}|${KT_FRAC_ATOM})+)\\s*\\/\\s*(${KT_FRAC_GROUP}|${KT_FRAC_ATOM})(?![a-zа-яё0-9])`, 'gi');
+const KT_FRAC_LETTER = 'a-zπμεωφσθυρτβγδλ';
+const KT_FRAC_BASE = `√?(?:${KT_FRAC_NUM})?(?:[${KT_FRAC_LETTER}](?:[${KT_FRAC_LETTER}${KT_FRAC_SUP}₀-₉]|[0-9](?![0-9]))*|${KT_FRAC_GROUP})|√?(?:${KT_FRAC_NUM})[${KT_FRAC_SUP}]*|√${KT_FRAC_GROUP}`;
+const KT_FRAC_ATOM = `(?:${KT_FRAC_BASE})(?:\\^(?:${KT_FRAC_GROUP}|-?[0-9a-z]+))?`;
+const KT_FRAC_RE = new RegExp(`((?:${KT_FRAC_ATOM})+)\\s*\\/\\s*(${KT_FRAC_ATOM})(?![a-zа-яё0-9(])`, 'gi');
 const KT_FRAC_UNIT = /^(ч|час|мин|с|год|км|м|см|мм|кг|г|л|сут)$/i;
 function ktFracHtml(html) {
   const strip = x => (/^\([^()]*\)$/.test(x) ? x.slice(1, -1) : x);
   return html.replace(KT_FRAC_RE, (m, a, b) => KT_FRAC_UNIT.test(b) ? m
     : `<span class="frac"><span class="frac-n">${strip(a)}</span><span class="frac-d">${strip(b)}</span></span>`)
     // «(11/12)h» → дробь без скобок; «(5⁶/5⁵)⁵» — скобки нужны для степени, оставляем.
-    .replace(/\((<span class="frac"><span class="frac-n">[^<]*<\/span><span class="frac-d">[^<]*<\/span><\/span>)\)(?![⁰¹²³⁴⁵⁶⁷⁸⁹])/g, '$1');
+    .replace(/\((<span class="frac"><span class="frac-n">[^<]*<\/span><span class="frac-d">[^<]*<\/span><\/span>)\)(?![⁰¹²³⁴⁵⁶⁷⁸⁹^])/g, '$1');
 }
-// Текст вопроса/варианта/пояснения: экранирование + дроби для ТГО.
+// Показывать ли дроби с чертой для вопроса блока blockId направления code.
+function ktFracEnabled(code, blockId) {
+  return blockId === 'logic' || (KT_FRAC_CODES.has(code) && (blockId === 'subj1' || blockId === 'subj2'));
+}
+// Текст вопроса/варианта/пояснения: экранирование + дроби, если включены для этого вопроса.
 function ktText(item, text) {
   const html = esc(text);
-  return item && item.block === 'logic' ? ktFracHtml(html) : html;
+  return item && item.fracs ? ktFracHtml(html) : html;
 }
 
 async function beginKT(code, typeId, lang) {
@@ -828,7 +836,7 @@ async function beginKT(code, typeId, lang) {
   const a = assembleKT(typeId, code, content, lang);
   const flat = [];
   a.blocks.forEach(b => b.questions.forEach(q => flat.push({
-    q: q.q, options: q.options, optionImages: q.optionImages, correct: q.correct, why: q.why, explanations: q.explanations, image: q.image, imageReplacesText: q.imageReplacesText, topic: q.topic, block: b.id,
+    q: q.q, options: q.options, optionImages: q.optionImages, correct: q.correct, why: q.why, explanations: q.explanations, image: q.image, imageReplacesText: q.imageReplacesText, topic: q.topic, block: b.id, fracs: ktFracEnabled(code, b.id),
     stage: q.stage, audio: q.audio, passage: q.passage, // только для lang-блока (en)
     conspect: q.conspect, conspectImage: q.conspectImage,
   })));

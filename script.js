@@ -1471,6 +1471,13 @@ function closeQuiz() {
   activeQuiz = null;
 }
 
+// Текст вопроса теста: экранирование + дробная черта для направлений из KT_FRAC_CODES (kt.js,
+// подключён на той же странице index.html, что и тест).
+function quizText(text) {
+  const html = esc(text);
+  return activeQuiz && typeof ktFracEnabled === 'function' && ktFracEnabled(activeQuiz.code, activeQuiz.section) ? ktFracHtml(html) : html;
+}
+
 // экранирование HTML — варианты могут содержать <a>, <link> и т.п.
 function esc(s) {
   return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -1500,7 +1507,7 @@ function renderQuizQuestion() {
   const q = activeQuiz.pool[activeQuiz.qIndex];
   renderQuizQnav();
   document.getElementById('testQNum').textContent = `${activeQuiz.qIndex + 1}.`;
-  document.getElementById('testQuestion').textContent = q.imageReplacesText ? '' : q.q;
+  document.getElementById('testQuestion').innerHTML = q.imageReplacesText ? '' : quizText(q.q);
 
   // Аудио (Listening) или текст для чтения (Reading) — только у блока «Английский».
   const mediaEl = document.getElementById('testMedia');
@@ -1532,7 +1539,7 @@ function renderQuizQuestion() {
     const isSel = isMulti ? (Array.isArray(curAns) && curAns.includes(i)) : curAns === i;
     return `
     <button class="test-opt ${isSel ? 'is-selected' : ''}" data-option="${i}">
-      <span class="test-radio ${isMulti ? 'is-checkbox' : ''}" aria-hidden="true"></span>${q.optionImages && q.optionImages[i] ? `<span class="test-opt-image"><img src="${q.optionImages[i]}" alt="Вариант ответа"></span>` : `<span class="test-opt-label">${esc(opt)}</span>`}
+      <span class="test-radio ${isMulti ? 'is-checkbox' : ''}" aria-hidden="true"></span>${q.optionImages && q.optionImages[i] ? `<span class="test-opt-image"><img src="${q.optionImages[i]}" alt="Вариант ответа"></span>` : `<span class="test-opt-label">${quizText(opt)}</span>`}
     </button>`;
   }).join('');
   optionsEl.querySelectorAll('[data-option]').forEach(btn => {
@@ -1674,9 +1681,9 @@ function openReview() {
       else if (isUserOpt) { cls += ' wrong'; tag = '<span class="rev-tag bad">Ваш ответ ✗</span>'; }
       // Объяснение для студентов по каждому варианту, если есть в данных.
       const expl = q.explanations && q.explanations[oi]
-        ? `<div class="rev-opt-expl">${esc(q.explanations[oi])}</div>` : '';
+        ? `<div class="rev-opt-expl">${quizText(q.explanations[oi])}</div>` : '';
       const optContent = q.optionImages && q.optionImages[oi]
-        ? `<span class="rev-opt-image"><img src="${q.optionImages[oi]}" alt="Вариант ответа"></span>` : `<span>${esc(o)}</span>`;
+        ? `<span class="rev-opt-image"><img src="${q.optionImages[oi]}" alt="Вариант ответа"></span>` : `<span>${quizText(o)}</span>`;
       return `<div class="${cls}"><div class="rev-opt-row">${optContent}${tag}</div>${expl}</div>`;
     }).join('');
     const why = q.explanations ? '' : (q.why
@@ -1686,7 +1693,7 @@ function openReview() {
     // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
     const conspectBody = q.conspectImage
       ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${q.conspectImage}" alt="Конспект"></div>`
-      : (q.conspect ? `<div class="rev-conspect-body">${esc(q.conspect)}</div>` : '');
+      : (q.conspect ? `<div class="rev-conspect-body">${quizText(q.conspect)}</div>` : '');
     const conspectBlock = conspectBody
       ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">Конспекты</summary>${conspectBody}</details>`
       : '';
@@ -1694,7 +1701,7 @@ function openReview() {
     const konspekt = wrong ? conspectLink(q.topic) : '';
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
-        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${q.imageReplacesText ? '' : esc(q.q)}</p>
+        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${q.imageReplacesText ? '' : quizText(q.q)}</p>
         ${q.image ? `<div class="kt-question-image${q.imageReplacesText ? ' math-question-image' : ''}"><img src="${q.image}" alt="Условие вопроса"></div>` : ''}
         ${q.passage ? `<div class="kt-reading-passage">${esc(q.passage)}</div>` : ''}
         <div class="rev-opts">${opts}</div>
