@@ -1646,3 +1646,11 @@ html[data-theme="dark"] .math-question-image{
     transition-duration:.001ms !important;
   }
 }
+
+/* Дробь с горизонтальной чертой (ТГО: «a/b» в данных → числитель над знаменателем) */
+.frac{
+  display:inline-flex; flex-direction:column; align-items:center; vertical-align:middle;
+  font-size:.92em; line-height:1.15; margin:0 .12em; text-align:center;
+}
+.frac-n{ padding:0 .18em .08em; }
+.frac-d{ padding:.08em .18em 0; border-top:1.2px solid currentColor; align-self:stretch; }

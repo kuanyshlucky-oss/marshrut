@@ -797,6 +797,30 @@ function openKT(code) {
   showKTPage();
 }
 
+// Дроби в ТГО (блок logic) записаны в данных как «a/b», «(7x−12)/3», «1/(0,75−1)» —
+// показываем их с горизонтальной дробной чертой. Работает по уже экранированному тексту.
+// Операнд: число (с разрядными пробелами, запятой, степенью), √число или выражение с
+// латинской переменной (x, 7x, √3a⁻²b⁻²). Кириллица не считается операндом:
+// «признаки/классификация» — слова через косую, а не дробь.
+const KT_FRAC_SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹⁻ⁿ';
+const KT_FRAC_NUM = '[0-9]{1,3}(?: [0-9]{3})+|[0-9]+(?:,[0-9]+)?';
+const KT_FRAC_ATOM = `√?(?:${KT_FRAC_NUM})?[a-z](?:[a-z${KT_FRAC_SUP}]|[0-9](?![0-9]))*|√?(?:${KT_FRAC_NUM})[${KT_FRAC_SUP}]*`;
+const KT_FRAC_GROUP = '\\([^()]*\\)';
+const KT_FRAC_RE = new RegExp(`((?:${KT_FRAC_GROUP}|${KT_FRAC_ATOM})+)\\s*\\/\\s*(${KT_FRAC_GROUP}|${KT_FRAC_ATOM})(?![a-zа-яё0-9])`, 'gi');
+const KT_FRAC_UNIT = /^(ч|час|мин|с|год|км|м|см|мм|кг|г|л|сут)$/i;
+function ktFracHtml(html) {
+  const strip = x => (/^\([^()]*\)$/.test(x) ? x.slice(1, -1) : x);
+  return html.replace(KT_FRAC_RE, (m, a, b) => KT_FRAC_UNIT.test(b) ? m
+    : `<span class="frac"><span class="frac-n">${strip(a)}</span><span class="frac-d">${strip(b)}</span></span>`)
+    // «(11/12)h» → дробь без скобок; «(5⁶/5⁵)⁵» — скобки нужны для степени, оставляем.
+    .replace(/\((<span class="frac"><span class="frac-n">[^<]*<\/span><span class="frac-d">[^<]*<\/span><\/span>)\)(?![⁰¹²³⁴⁵⁶⁷⁸⁹])/g, '$1');
+}
+// Текст вопроса/варианта/пояснения: экранирование + дроби для ТГО.
+function ktText(item, text) {
+  const html = esc(text);
+  return item && item.block === 'logic' ? ktFracHtml(html) : html;
+}
+
 async function beginKT(code, typeId, lang) {
   const content = await getOrFetchTestContent(code);
   if (!content) return; // нет доступа или ошибка сети — гейт/тост уже показаны
@@ -873,7 +897,7 @@ function renderKTQuestion() {
     <div class="kt-progress"><div class="kt-progress-bar" style="width:${((s.idx + 1) / s.flat.length) * 100}%"></div></div>
     <p class="test-qnum-line">${I18N.t('kt.questionOf').replace('{n}', s.idx + 1).replace('{total}', s.flat.length)}</p>
     ${media}
-    <p class="test-question">${item.imageReplacesText ? '' : esc(item.q)}</p>
+    <p class="test-question">${item.imageReplacesText ? '' : ktText(item, item.q)}</p>
     ${item.image ? `<div class="kt-question-image${item.imageReplacesText ? ' math-question-image' : ''}"><img src="${item.image}" alt="${I18N.t('kt.questionImage.alt')}"></div>` : ''}
     ${Array.isArray(item.correct) ? `<p class="kt-multi-hint">${I18N.t('kt.multiHint')}</p>` : ''}
     <div class="test-options" id="ktOptions">
@@ -882,7 +906,7 @@ function renderKTQuestion() {
         const isSel = isMulti ? (Array.isArray(s.answers[s.idx]) && s.answers[s.idx].includes(i)) : s.answers[s.idx] === i;
         return `
         <button class="test-opt ${isSel ? 'is-selected' : ''}" data-opt="${i}">
-          <span class="test-radio ${isMulti ? 'is-checkbox' : ''}" aria-hidden="true"></span>${item.optionImages && item.optionImages[i] ? `<span class="test-opt-image"><img src="${item.optionImages[i]}" alt="${I18N.t('kt.optionImage.alt')}"></span>` : `<span class="test-opt-label">${esc(o)}</span>`}
+          <span class="test-radio ${isMulti ? 'is-checkbox' : ''}" aria-hidden="true"></span>${item.optionImages && item.optionImages[i] ? `<span class="test-opt-image"><img src="${item.optionImages[i]}" alt="${I18N.t('kt.optionImage.alt')}"></span>` : `<span class="test-opt-label">${ktText(item, o)}</span>`}
         </button>`;
       }).join('')}
     </div>
@@ -1117,9 +1141,9 @@ function openKTReview() {
       else if (isUserOpt) { cls += ' wrong'; tag = `<span class="rev-tag bad">${I18N.t('rev.yourAnswerBad')}</span>`; }
       // Объяснение для студентов по каждому варианту (requirement #4) — если есть в данных.
       const expl = item.explanations && item.explanations[oi]
-        ? `<div class="rev-opt-expl">${esc(item.explanations[oi])}</div>` : '';
+        ? `<div class="rev-opt-expl">${ktText(item, item.explanations[oi])}</div>` : '';
       const optContent = item.optionImages && item.optionImages[oi]
-        ? `<span class="rev-opt-image"><img src="${item.optionImages[oi]}" alt="${I18N.t('kt.optionImage.alt')}"></span>` : `<span>${esc(o)}</span>`;
+        ? `<span class="rev-opt-image"><img src="${item.optionImages[oi]}" alt="${I18N.t('kt.optionImage.alt')}"></span>` : `<span>${ktText(item, o)}</span>`;
       return `<div class="${cls}"><div class="rev-opt-row">${optContent}${tag}</div>${expl}</div>`;
     }).join('');
     const why = item.explanations ? '' : (item.why
@@ -1130,7 +1154,7 @@ function openKTReview() {
     // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
     const conspectBody = item.conspectImage
       ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${item.conspectImage}" alt="${I18N.t('rev.conspect')}"></div>`
-      : (item.conspect ? `<div class="rev-conspect-body">${esc(item.conspect)}</div>` : '');
+      : (item.conspect ? `<div class="rev-conspect-body">${ktText(item, item.conspect)}</div>` : '');
     const conspectBlock = conspectBody
       ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">${I18N.t('rev.conspects')}</summary>${conspectBody}</details>`
       : '';
@@ -1139,7 +1163,7 @@ function openKTReview() {
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <span class="rev-block">${blockTag}</span>
-        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${item.imageReplacesText ? '' : esc(item.q)}</p>
+        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${item.imageReplacesText ? '' : ktText(item, item.q)}</p>
         ${item.image ? `<div class="kt-question-image${item.imageReplacesText ? ' math-question-image' : ''}"><img src="${item.image}" alt="${I18N.t('kt.questionImage.alt')}"></div>` : ''}
         ${item.passage ? `<div class="kt-reading-passage">${esc(item.passage)}</div>` : ''}
         <div class="rev-opts">${opts}</div>
