@@ -105,7 +105,7 @@
   .footer-bottom a{ color:var(--ink-soft); text-decoration:none; }
   .footer-bottom a:hover{ color:var(--accent); }
   .page-wrap{
-    /* всегда белый фон — это скан страницы конспекта, не подстраиваем под тему */
+    /* лист остаётся белым сам по себе (см. инверсию изображения ниже для тёмной темы) */
     max-width:760px; width:100%; background:#FFFFFF; border:1px solid var(--line);
     border-radius:14px; box-shadow:0 12px 32px -12px rgba(29,29,31,.2); overflow:hidden;
   }
@@ -113,6 +113,9 @@
     width:100%; display:block; pointer-events:none;
     -webkit-user-drag:none; -webkit-touch-callout:none;
   }
+  /* Чёрный/синий текст на белом (как отрендеренные формулы в разборе теста) —
+     в тёмной теме просто инвертируем цвета вместо белого листа на чёрном фоне. */
+  html[data-theme="dark"] .page-wrap img{ filter:invert(1) hue-rotate(180deg); }
   .nav{
     display:flex; align-items:center; justify-content:center; gap:18px;
     margin-top:22px; font-family:var(--mono); font-size:13px; color:var(--ink-soft);

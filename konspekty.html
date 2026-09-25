@@ -126,7 +126,9 @@
   .lib-preview{ flex:1 1 auto; padding:32px 28px 60px; display:flex; flex-direction:column; align-items:center; }
   .lib-preview-title{ font-family:var(--serif); font-weight:400; font-size:22px; max-width:760px; width:100%; margin:0 0 18px; }
   .page-wrap{
-    /* фон-разделитель между сканами страниц — сами сканы всегда белые, не подстраиваем под тему */
+    /* фон-разделитель между сканами страниц — обычный лист остаётся белым сам
+       по себе (см. инверсию ниже для тёмной темы), поэтому фон карточки
+       подстраивать под тему бессмысленно только в промежутках между листами */
     max-width:760px; width:100%; border:1px solid var(--line);
     border-radius:14px; box-shadow:0 12px 32px -12px rgba(29,29,31,.2); overflow:hidden;
     display:flex; flex-direction:column; gap:1px; background-color:var(--line);
@@ -135,6 +137,10 @@
     width:100%; display:block; pointer-events:none; background:#FFFFFF;
     -webkit-user-drag:none; -webkit-touch-callout:none;
   }
+  /* Конспекты-картинки — чёрный/синий текст на белом (как отрендеренные формулы
+     в разборе теста), поэтому в тёмной теме просто инвертируем цвета вместо
+     того, чтобы держать белый лист на чёрном фоне сайта. */
+  html[data-theme="dark"] .page-wrap img{ filter:invert(1) hue-rotate(180deg); }
   /* Текстовый конспект (M107 и другие текстовые темы) — та же карточка, что и
      у сканов (page-wrap), но живой HTML-текст вместо картинки: свой системный
      шрифт, а не шрифт, зашитый в JPG. */
