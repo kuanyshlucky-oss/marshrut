@@ -329,7 +329,7 @@ func handleSaveResult(w http.ResponseWriter, r *http.Request) {
 		in.Score = in.Total
 	}
 	uid := currentUID(r)
-	if err := addResult(uid, strings.TrimSpace(in.Code), in.Score, in.Total, strings.TrimSpace(in.Kind), in.Passed); err != nil {
+	if err := addResult(uid, strings.TrimSpace(in.Code), in.Score, in.Total, strings.TrimSpace(in.Kind), in.Passed, strings.TrimSpace(in.Section)); err != nil {
 		writeError(w, http.StatusInternalServerError, "Не удалось сохранить результат")
 		return
 	}

@@ -53,6 +53,11 @@ type Result struct {
 	// в момент завершения попытки (gradeKT) — восстановить его позже из одной
 	// только суммы нельзя, поэтому сохраняем сразу.
 	Passed bool `json:"passed"`
+	// Section — блок (lang/logic/subj1/subj2) для обычного теста по предмету
+	// (kind="subject"); у симуляции КТ пусто, там результат сразу по всем
+	// четырём блокам. Нужен только для подписи в «Последние тесты по предметам»
+	// в кабинете — раньше не сохранялся, старые результаты будут с пустым.
+	Section string `json:"section"`
 }
 
 // TopicStat — накопленная статистика по одной теме предмета (сколько раз
@@ -121,8 +126,9 @@ func initDB(dsn string) error {
 	-- kind различает обычный тест по предмету от полной симуляции КТ (см. Result
 	-- в этом файле); passed — официальный вердикт симуляции (сумма + минимумы
 	-- по блокам), посчитанный один раз на клиенте в момент завершения попытки.
-	ALTER TABLE results ADD COLUMN IF NOT EXISTS kind   TEXT NOT NULL DEFAULT '';
-	ALTER TABLE results ADD COLUMN IF NOT EXISTS passed BOOLEAN NOT NULL DEFAULT false;
+	ALTER TABLE results ADD COLUMN IF NOT EXISTS kind    TEXT NOT NULL DEFAULT '';
+	ALTER TABLE results ADD COLUMN IF NOT EXISTS passed  BOOLEAN NOT NULL DEFAULT false;
+	ALTER TABLE results ADD COLUMN IF NOT EXISTS section TEXT NOT NULL DEFAULT '';
 	CREATE TABLE IF NOT EXISTS topic_stats (
 		id      BIGSERIAL PRIMARY KEY,
 		user_id BIGINT NOT NULL,
@@ -213,13 +219,13 @@ func loadUser(id int64) (*User, error) {
 	}
 	favRows.Close()
 
-	resRows, err := db.Query(`SELECT code, score, total, date, kind, passed FROM results WHERE user_id = $1 ORDER BY id`, id)
+	resRows, err := db.Query(`SELECT code, score, total, date, kind, passed, section FROM results WHERE user_id = $1 ORDER BY id`, id)
 	if err != nil {
 		return nil, err
 	}
 	for resRows.Next() {
 		var r Result
-		if err := resRows.Scan(&r.Code, &r.Score, &r.Total, &r.Date, &r.Kind, &r.Passed); err != nil {
+		if err := resRows.Scan(&r.Code, &r.Score, &r.Total, &r.Date, &r.Kind, &r.Passed, &r.Section); err != nil {
 			resRows.Close()
 			return nil, err
 		}
@@ -404,10 +410,10 @@ func resetUserProgress(id int64) error {
 	return err
 }
 
-func addResult(id int64, code string, score, total int, kind string, passed bool) error {
+func addResult(id int64, code string, score, total int, kind string, passed bool, section string) error {
 	_, err := db.Exec(
-		`INSERT INTO results(user_id, code, score, total, date, kind, passed) VALUES($1, $2, $3, $4, $5, $6, $7)`,
-		id, code, score, total, time.Now().UTC().Format("2006-01-02"), kind, passed,
+		`INSERT INTO results(user_id, code, score, total, date, kind, passed, section) VALUES($1, $2, $3, $4, $5, $6, $7, $8)`,
+		id, code, score, total, time.Now().UTC().Format("2006-01-02"), kind, passed, section,
 	)
 	return err
 }

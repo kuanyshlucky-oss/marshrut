@@ -2132,6 +2132,7 @@ const KT_PASS_RULES = {
 // направления code. lang/logic — общие для всех направлений; subj1/subj2 — через
 // реальные названия профильных предметов в GOP_SUBJECTS (p1/p2).
 function progressSectionLabel(code, section) {
+  if (!section) return ''; // старые результаты без сохранённого раздела (до этого поля)
   if (section === 'lang') return 'Иностранный язык';
   if (section === 'logic') return 'Тест готовности к обучению (ТГО)';
   const gopId = section === 'subj1' ? 'p1' : 'p2';
@@ -2289,7 +2290,7 @@ function computeProgressForCode(code, user) {
     return { score: r.score, total: r.total, date: r.date, passed: !!r.passed, threshold: rule ? rule.thresholdTotal : null, delta: prev ? r.score - prev.score : null };
   });
   const subjectTests = results.filter(r => !isKt(r))
-    .map(r => ({ score: r.score, total: r.total, date: r.date, pct: r.total ? Math.round((r.score / r.total) * 100) : 0 }));
+    .map(r => ({ score: r.score, total: r.total, date: r.date, pct: r.total ? Math.round((r.score / r.total) * 100) : 0, label: progressSectionLabel(code, r.section) }));
 
   const stats = (user.topicStats || []).filter(t => t.code === code);
   const gopCode = (typeof CONTENT_TO_GOP !== 'undefined' && CONTENT_TO_GOP[code]) || code;
@@ -2517,8 +2518,10 @@ function renderProgress() {
       <h4>Последние тесты по предметам</h4>
       <p class="prog-section-note">Пять последних попыток, сверху — самая свежая.</p>
       ${recent.map(r => `
-        <div class="prog-hist-row">
-          <span class="prog-hist-date">${esc(r.date || '')}</span>
+        <div class="prog-hist-row${r.label ? ' has-label' : ''}">
+          ${r.label
+            ? `<div class="prog-hist-label-date"><span class="prog-hist-label">${esc(r.label)}</span><span class="prog-hist-date">${esc(r.date || '')}</span></div>`
+            : `<span class="prog-hist-date">${esc(r.date || '')}</span>`}
           <div class="prog-hist-bar"><div class="prog-hist-fill ${r.pct >= 50 ? 'is-pass' : ''}" style="width:${r.pct}%"></div></div>
           <span class="prog-hist-score">${r.score}/${r.total}</span>
           <span class="prog-hist-delta">${r.pct}%</span>
