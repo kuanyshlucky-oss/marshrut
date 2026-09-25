@@ -1367,14 +1367,16 @@ body.test-open #reviewPage input{ user-select:text; }
 
 .rev-conspect-block{
   margin-top:14px; border:1px solid var(--line); border-radius:var(--radius-m);
-  overflow:hidden; background:color-mix(in srgb, var(--ink) 2%, transparent);
+  overflow:hidden; background:color-mix(in srgb, var(--beige) 6%, transparent);
 }
 .rev-conspect-btn{
   cursor:pointer; list-style:none; user-select:none;
   display:flex; align-items:center; justify-content:space-between; gap:8px;
   padding:11px 14px; font-family:var(--font-mono); font-size:12px;
-  text-transform:uppercase; letter-spacing:.05em; color:var(--accent);
+  text-transform:uppercase; letter-spacing:.05em; color:var(--beige);
 }
+.rev-conspect-btn-label{ display:inline-flex; align-items:center; gap:7px; }
+.rev-conspect-icon{ width:15px; height:15px; flex-shrink:0; }
 .rev-conspect-btn::-webkit-details-marker{ display:none; }
 .rev-conspect-btn::after{ content:'+'; font-size:15px; line-height:1; }
 .rev-conspect-block[open] .rev-conspect-btn{ border-bottom:1px solid var(--line); }
@@ -1382,6 +1384,13 @@ body.test-open #reviewPage input{ user-select:text; }
 .rev-conspect-body{
   padding:14px 16px; font-size:14px; line-height:1.6; color:var(--ink-soft); white-space:pre-line;
 }
+.rev-conspect-text p{ margin:0 0 10px; }
+.rev-conspect-text p:last-child{ margin-bottom:0; }
+.rev-conspect-list{ margin:0 0 10px; padding-left:0; list-style:none; }
+.rev-conspect-list:last-child{ margin-bottom:0; }
+.rev-conspect-list li{ position:relative; padding-left:16px; margin-bottom:6px; }
+.rev-conspect-list li:last-child{ margin-bottom:0; }
+.rev-conspect-list li::before{ content:''; position:absolute; left:2px; top:9px; width:5px; height:5px; border-radius:50%; background:var(--beige); }
 .rev-conspect-image{
   display:block; width:100%; height:auto; border-radius:var(--radius-s, 8px);
   background:#FFFFFF;

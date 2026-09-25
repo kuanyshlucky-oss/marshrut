@@ -1596,6 +1596,32 @@ function esc(s) {
   return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 }
 
+// Конспект хранится как обычный текст с переносами строк и «• пункт» для
+// перечислений — разбираем на абзацы/список, чтобы карточка конспекта в
+// разборе теста читалась как оформленная заметка, а не сплошной абзац.
+function formatConspectText(text) {
+  const blocks = [];
+  let list = null;
+  String(text).split('\n').forEach(line => {
+    const t = line.trim();
+    if (!t) { list = null; return; }
+    if (t.startsWith('•')) {
+      if (!list) { list = []; blocks.push({ list }); }
+      list.push(t.slice(1).trim());
+    } else {
+      list = null;
+      blocks.push({ p: t });
+    }
+  });
+  return blocks.map(b => b.list
+    ? `<ul class="rev-conspect-list">${b.list.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`
+    : `<p>${esc(b.p)}</p>`
+  ).join('');
+}
+
+// Иконка-книжка перед подписью кнопки «Конспект» в разборе теста.
+const REV_CONSPECT_ICON = '<svg class="rev-conspect-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>';
+
 // Номерная навигация по вопросам (как в симуляции КТ) — клик прыгает на вопрос,
 // текущий подсвечен акцентом, отвеченные становятся тёмными.
 function renderQuizQnav() {
@@ -1806,9 +1832,9 @@ function openReview() {
     // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
     const conspectBody = q.conspectImage
       ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${q.conspectImage}" alt="Конспект"></div>`
-      : (q.conspect ? `<div class="rev-conspect-body">${quizText(q.conspect)}</div>` : '');
+      : (q.conspect ? `<div class="rev-conspect-body rev-conspect-text">${formatConspectText(q.conspect)}</div>` : '');
     const conspectBlock = conspectBody
-      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">Конспекты</summary>${conspectBody}</details>`
+      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn"><span class="rev-conspect-btn-label">${REV_CONSPECT_ICON}<span>Конспект</span></span></summary>${conspectBody}</details>`
       : '';
     // Ссылка на конспект по теме вопроса — только при неверном ответе.
     const konspekt = wrong ? conspectLink(q.topic, activeQuiz.code) : '';
@@ -2978,9 +3004,9 @@ async function openResultDetail(code, score, total, date) {
       : (q.explanations ? '' : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(q.options[correctSet[0]])}</div>`);
     const conspectBody = q.conspectImage
       ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${q.conspectImage}" alt="Конспект"></div>`
-      : (q.conspect ? `<div class="rev-conspect-body">${esc(q.conspect)}</div>` : '');
+      : (q.conspect ? `<div class="rev-conspect-body rev-conspect-text">${formatConspectText(q.conspect)}</div>` : '');
     const conspectBlock = conspectBody
-      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">Конспекты</summary>${conspectBody}</details>`
+      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn"><span class="rev-conspect-btn-label">${REV_CONSPECT_ICON}<span>Конспект</span></span></summary>${conspectBody}</details>`
       : '';
     return `
       <div class="rev-item">

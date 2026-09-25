@@ -1164,9 +1164,9 @@ function openKTReview() {
     // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
     const conspectBody = item.conspectImage
       ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${item.conspectImage}" alt="${I18N.t('rev.conspect')}"></div>`
-      : (item.conspect ? `<div class="rev-conspect-body">${ktText(item, item.conspect)}</div>` : '');
+      : (item.conspect ? `<div class="rev-conspect-body rev-conspect-text">${formatConspectText(item.conspect)}</div>` : '');
     const conspectBlock = conspectBody
-      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">${I18N.t('rev.conspects')}</summary>${conspectBody}</details>`
+      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn"><span class="rev-conspect-btn-label">${REV_CONSPECT_ICON}<span>${I18N.t('rev.conspects')}</span></span></summary>${conspectBody}</details>`
       : '';
     // Ссылка на конспект по теме вопроса — только при неверном ответе.
     const konspekt = wrong && typeof conspectLink === 'function' ? conspectLink(item.topic, s.code) : '';
