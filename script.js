@@ -2528,15 +2528,28 @@ function renderProgress() {
         </div>`).join('')}
     </div>` : '';
 
-  body.innerHTML = heroHtml + historyHtml + focusHtml + blocksHtml + topicsHtml + testsHtml
+  // Полный разбор по темам + история — самая длинная часть блока (на телефоне
+  // это лишний экран прокрутки до «Что повторить»/гейджа при каждом заходе),
+  // сворачиваем под один тумблер; «Точность по разделам» остаётся видной сразу —
+  // это уже компактная сводка на 3-4 строки.
+  const moreHtml = (historyHtml || topicsHtml || testsHtml) ? `
+    <details class="prog-section prog-more">
+      <summary class="prog-more-summary">Подробная статистика</summary>
+      ${historyHtml}${topicsHtml}${testsHtml}
+    </details>` : '';
+
+  body.innerHTML = heroHtml + focusHtml + blocksHtml + moreHtml
     || `<p class="prog-empty">Пока недостаточно данных для разбора по темам.</p>`;
 
   // Клик по строке раздела выше должен не просто проскроллить, а ещё и
   // раскрыть свёрнутый блок тем — на случай браузеров без auto-expand
-  // свёрнутых <details> при переходе по #якорю.
+  // свёрнутых <details> при переходе по #якорю, и раскрыть внешний тумблер
+  // «Подробная статистика», внутри которого теперь лежит блок тем.
   document.querySelectorAll('.prog-block-row').forEach(a => a.addEventListener('click', () => {
     const el = document.querySelector(a.getAttribute('href'));
     if (el && 'open' in el) el.open = true;
+    const wrap = el && el.closest('details.prog-more');
+    if (wrap) wrap.open = true;
   }));
 }
 
