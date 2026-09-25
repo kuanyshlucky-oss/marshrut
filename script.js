@@ -2923,6 +2923,7 @@ function wireSearch() {
 function wireMobileNav() {
   const toggle = document.getElementById('navToggle');
   const nav = document.getElementById('mainNav');
+  if (!toggle || !nav) return; // страницы без главной навигации (конспекты и т.п.)
   const setOpen = (open) => {
     nav.classList.toggle('is-open', open);
     toggle.classList.toggle('is-open', open);
