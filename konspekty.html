@@ -135,6 +135,29 @@
     width:100%; display:block; pointer-events:none; background:#FFFFFF;
     -webkit-user-drag:none; -webkit-touch-callout:none;
   }
+  /* Текстовый конспект (M107 и другие текстовые темы) — та же карточка, что и
+     у сканов (page-wrap), но живой HTML-текст вместо картинки: свой системный
+     шрифт, а не шрифт, зашитый в JPG. */
+  .konspekt-article{
+    max-width:760px; width:100%; background:var(--surface); border:1px solid var(--line);
+    border-radius:14px; box-shadow:0 12px 32px -12px rgba(29,29,31,.2);
+    padding:28px 32px; font-size:15px; line-height:1.7; color:var(--ink-soft);
+  }
+  .konspekt-article .rev-conspect-h{
+    font-family:var(--serif); font-weight:600; font-size:17px; color:var(--ink);
+    margin:26px 0 10px;
+  }
+  .konspekt-article .rev-conspect-h:first-child{ margin-top:0; }
+  .konspekt-article p{ margin:0 0 12px; }
+  .konspekt-article p:last-child{ margin-bottom:0; }
+  .konspekt-article .rev-conspect-list{ margin:0 0 12px; padding-left:0; list-style:none; }
+  .konspekt-article .rev-conspect-list:last-child{ margin-bottom:0; }
+  .konspekt-article .rev-conspect-list li{ position:relative; padding-left:18px; margin-bottom:8px; }
+  .konspekt-article .rev-conspect-list li:last-child{ margin-bottom:0; }
+  .konspekt-article .rev-conspect-list li::before{
+    content:''; position:absolute; left:2px; top:10px; width:5px; height:5px;
+    border-radius:50%; background:var(--beige);
+  }
   .hint{ margin-top:16px; font-size:12px; color:var(--ink-soft); text-align:center; max-width:500px; }
 
   /* Переход между темами (в т.ч. в соседний раздел): под конспектом, на мобильных — закреплён снизу */
@@ -223,6 +246,7 @@
     .lib-preview-title{ display:none; } /* тема уже видна на кнопке выбора темы */
     /* Сканы — на всю ширину экрана, без рамки: так текст страницы крупнее */
     .page-wrap{ border-radius:0; border-left:none; border-right:none; box-shadow:none; }
+    .konspekt-article{ border-radius:0; border-left:none; border-right:none; box-shadow:none; padding:20px 16px; }
     .hint{ padding:0 16px; }
     .lib-pager{
       position:fixed; left:0; right:0; bottom:0; z-index:40; margin:0; max-width:none;
@@ -270,7 +294,7 @@
 </footer>
 
 <script src="i18n.js?v=4"></script>
-<script src="script.js?v=40"></script>
+<script src="script.js?v=41"></script>
 <script>
   const root = document.getElementById('root');
   const libDocTitleEl = document.getElementById('libDocTitle');
@@ -425,7 +449,6 @@
   function renderPreview(code, lib, sec, topicIdx) {
     const preview = document.getElementById('libPreview');
     const topic = sec.topics[topicIdx];
-    const pages = topicRange(sec, topicIdx);
     const flat = flatTopics(lib);
     const pos = flat.findIndex(f => f.sec.key === sec.key && f.idx === topicIdx);
     const prev = flat[pos - 1], next = flat[pos + 1];
@@ -434,6 +457,34 @@
         <span class="lib-pager-dir">${dir === 'prev' ? '‹ Назад' : 'Далее ›'}</span>
         <span class="lib-pager-name">${item ? esc(item.title) : ''}</span>
       </button>`;
+
+    // Текстовый конспект (не скан страниц) — формируется из уже отформатированного
+    // (переносы строк, «• пункт», «## подзаголовок») текста через ту же функцию,
+    // что и карточка конспекта в разборе теста (см. formatConspectText в script.js).
+    if (sec.text) {
+      preview.innerHTML = `
+        <h3 class="lib-preview-title">${esc(topic.title)}</h3>
+        <div class="konspekt-article">${formatConspectText(topic.body)}</div>
+        <p class="hint">${I18N.t('konspekty.viewOnly')}</p>
+        <nav class="lib-pager" aria-label="Переход между темами">
+          ${pagerBtn(prev, 'prev')}
+          <span class="lib-pager-pos">${pos + 1} / ${flat.length}</span>
+          ${pagerBtn(next, 'next')}
+        </nav>
+      `;
+      lastPreview = { code, lib, sec, topicIdx };
+      preview.querySelectorAll('.lib-pager-btn').forEach(btn => btn.addEventListener('click', () => {
+        const target = btn.dataset.dir === 'prev' ? prev : next;
+        if (target) goTo(code, lib, target);
+      }));
+      document.getElementById('libPickerPos').textContent = `Тема ${topicIdx + 1} из ${sec.topics.length}`;
+      document.getElementById('libPickerName').textContent = topic.title;
+      preview.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0 });
+      return;
+    }
+
+    const pages = topicRange(sec, topicIdx);
     const mobile = useMobile(sec);
     const zoomable = phoneQuery.matches && !mobile;
     const folder = mobile ? sec.file + '-m' : sec.file;
