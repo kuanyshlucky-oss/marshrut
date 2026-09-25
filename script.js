@@ -2976,11 +2976,18 @@ async function openResultDetail(code, score, total, date) {
     const why = q.why
       ? `<div class="rev-why"><b>Почему:</b> ${esc(q.why)}</div>`
       : (q.explanations ? '' : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(q.options[correctSet[0]])}</div>`);
+    const conspectBody = q.conspectImage
+      ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${q.conspectImage}" alt="Конспект"></div>`
+      : (q.conspect ? `<div class="rev-conspect-body">${esc(q.conspect)}</div>` : '');
+    const conspectBlock = conspectBody
+      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn">Конспекты</summary>${conspectBody}</details>`
+      : '';
     return `
       <div class="rev-item">
         <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${esc(q.q)}</p>
         <div class="rev-opts">${opts}</div>
         ${why}
+        ${conspectBlock}
       </div>`;
   }).join('');
 
