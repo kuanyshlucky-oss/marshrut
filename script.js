@@ -2417,8 +2417,19 @@ function renderProgress() {
           </div>
         </div>
       </div>`;
+  } else if (data.sections.length) {
+    // Есть результаты по отдельным предметам, но не было полной симуляции КТ —
+    // не пересчитываем это в «разрыв до порога» (у отдельных тестов и блоков
+    // симуляции разный размер пула и для части предметов разное начисление
+    // баллов), просто показываем честную сводку по тому, что реально пройдено.
+    const totalCorrect = data.sections.reduce((s, sec) => s + sec.correct, 0);
+    const totalN = data.sections.reduce((s, sec) => s + sec.n, 0);
+    const pct = totalN ? Math.round((totalCorrect / totalN) * 100) : 0;
+    const note = I18N.t('progress.noKt.subjectsNote')
+      .replace('{n}', data.sections.length).replace('{correct}', totalCorrect).replace('{count}', totalN).replace('{pct}', pct);
+    heroHtml = `<p class="prog-empty">${I18N.t('progress.noKt.lead')}</p><p class="prog-section-note">${note}</p>`;
   } else {
-    heroHtml = `<p class="prog-empty">Пока нет ни одной полной симуляции КТ по этому направлению — пройдите её, чтобы увидеть разрыв до порога прохождения.</p>`;
+    heroHtml = `<p class="prog-empty">${I18N.t('progress.noKt.empty')}</p>`;
   }
 
   // История симуляций КТ: балл каждой попытки, отметка порога, изменение к прошлой попытке.
