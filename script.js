@@ -1393,7 +1393,7 @@ function renderDirectionView(code) {
 /* Гейт: тест/КТ доступны только вошедшим И только с выданным доступом. Возвращает
    true, если можно продолжать. courseCode/courseName — для текста сообщения в WhatsApp.
    reason: 'auth' — не вошёл в аккаунт; 'access' — вошёл, но доступ к этому тесту не выдан. */
-const WHATSAPP_PHONE = '77785564853';
+const WHATSAPP_PHONE = '77075621907';
 function showAccessGate(courseCode, courseName, reason) {
   const buyBtn = document.getElementById('gateBuyBtn');
   if (buyBtn) {
@@ -2952,7 +2952,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function openResultDetail(code, score, total, date) {
   const d = findDirection(code);
   const test = await getOrFetchTestContent(code);
-  if (!test || !d) return; // нет доступа/направления — гейт или тост уже показаны
+  if (!test) return; // нет доступа — гейт/тост уже показаны
+  if (!d) { showToast('Направление не найдено'); return; }
+  // Контент направления бывает в двух форматах: плоский "questions" (старые
+  // 7M0x) или "bySubject" по предметам (новые ГОП-группы вроде M005/M103) —
+  // без этого запасного варианта review падал на bySubject-направлениях,
+  // потому что test.questions там просто нет (undefined.slice бросал исключение
+  // молча, клик по такому результату ничего не показывал).
+  const allQuestions = test.questions || (test.bySubject ? Object.values(test.bySubject).flat() : []);
   const passed = total > 0 && Math.round((score / total) * 100) >= 60;
 
   document.getElementById('resultStamp').classList.toggle('is-fail', !passed);
@@ -2961,7 +2968,7 @@ async function openResultDetail(code, score, total, date) {
   document.getElementById('resultTitle').textContent = `${d.code} · ${d.name}`;
   document.getElementById('resultSub').textContent = date ? `Пройден ${date}` : '';
 
-  document.getElementById('resultQList').innerHTML = test.questions.slice(0, QUIZ_MAX_QUESTIONS).map((q, i) => {
+  document.getElementById('resultQList').innerHTML = allQuestions.slice(0, QUIZ_MAX_QUESTIONS).map((q, i) => {
     const correctSet = Array.isArray(q.correct) ? q.correct : [q.correct];
     const opts = q.options.map((o, oi) => `
       <div class="rev-opt ${correctSet.includes(oi) ? 'correct' : ''}"><span>${esc(o)}</span>${correctSet.includes(oi) ? '<span class="rev-tag ok">Правильный ответ</span>' : ''}</div>
