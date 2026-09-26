@@ -855,7 +855,12 @@ function ktBlockRanges(s) {
     let start = -1, end = -1;
     s.flat.forEach((item, i) => { if (item.block === id) { if (start === -1) start = i; end = i; } });
     if (start !== -1) {
-      const label = id === 'lang' ? `${ktBlockLabel(s.code, id)} · ${ktLangLabel(s.lang)}` : ktBlockLabel(s.code, id);
+      // Короткие подписи именно для верхней панели блоков — «Иностранный язык ·
+      // Английский» и «Тест готовности к обучению (ТГО)» не помещаются в узкую
+      // вкладку на телефоне и обрезаются на середине слова (в остальных местах,
+      // где подпись блока встречается — под самим вопросом, в таблице итогов —
+      // места достаточно, там оставлена полная формулировка через ktBlockLabel).
+      const label = id === 'lang' ? ktLangLabel(s.lang) : id === 'logic' ? 'ТГО' : ktBlockLabel(s.code, id);
       ranges.push({ id, label, start, end });
     }
   });

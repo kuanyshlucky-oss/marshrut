@@ -1658,7 +1658,7 @@ function loadKtJs() {
   if (!ktJsPromise) {
     ktJsPromise = new Promise((resolve, reject) => {
       const s = document.createElement('script');
-      s.src = 'kt.js?v=38';
+      s.src = 'kt.js?v=39';
       s.onload = resolve;
       s.onerror = () => { ktJsPromise = null; reject(new Error('Не удалось загрузить тест — проверьте соединение')); };
       document.body.appendChild(s);

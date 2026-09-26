@@ -1226,6 +1226,10 @@ body.test-open #reviewPage input{ user-select:text; }
   position:fixed; top:0; left:0; right:90px; z-index:3;
   display:flex; flex-wrap:nowrap; overflow-x:auto; gap:8px;
   padding:14px 16px 10px 26px; background:var(--bg); border-bottom:1px solid var(--line);
+  /* Плавное затухание у правого края — визуальная подсказка, что вкладки
+     блоков можно пролистать, а не что название обрезано на середине слова. */
+  -webkit-mask-image:linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
+  mask-image:linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
 }
 .kt-block-nav-btn{
   flex:0 0 auto; white-space:nowrap;
@@ -1240,6 +1244,8 @@ body.test-open #reviewPage input{ user-select:text; }
   position:fixed; top:53px; left:0; right:90px; z-index:2;
   display:flex; flex-wrap:nowrap; overflow-x:auto; gap:6px;
   padding:16px 16px 16px 26px; background:var(--bg); border-bottom:1px solid var(--line);
+  -webkit-mask-image:linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
+  mask-image:linear-gradient(to right, #000 calc(100% - 28px), transparent 100%);
 }
 /* Обычный тест по предмету (#testQnav) не имеет панели блоков (.kt-block-nav)
    над собой — та 53px-отступа нужна только полной симуляции КТ (#ktQnav),
