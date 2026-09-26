@@ -1262,7 +1262,7 @@ function renderGopModalView(code) {
   const dirCode = GOP_DIRECTION_MAP[code] || code;
   document.getElementById('gopTestBtn').addEventListener('click', () => { if (requireAuth(g.code, g.name)) startQuiz(dirCode); });
   const ktBtn = document.getElementById('gopKTBtn');
-  if (ktBtn) ktBtn.addEventListener('click', () => { if (requireAuth(g.code, g.name)) { closeDirModal(); window.openKT(dirCode); } });
+  if (ktBtn) ktBtn.addEventListener('click', () => { if (requireAuth(g.code, g.name)) { closeDirModal(); openKTSafe(dirCode); } });
 }
 
 function renderGopSubjectView(code, subjectId) {
@@ -1532,7 +1532,7 @@ function renderDirectionView(code) {
 
   body.querySelectorAll('[data-open-subject]').forEach(btn => btn.addEventListener('click', () => renderSubjectView(code, btn.dataset.openSubject)));
   document.getElementById('dirTestBtn').addEventListener('click', () => { if (requireAuth(d.code, d.name)) startQuiz(code); });
-  document.getElementById('dirKTBtn').addEventListener('click', () => { if (requireAuth(d.code, d.name)) { closeDirModal(); window.openKT(code); } });
+  document.getElementById('dirKTBtn').addEventListener('click', () => { if (requireAuth(d.code, d.name)) { closeDirModal(); openKTSafe(code); } });
 }
 
 /* Гейт: тест/КТ доступны только вошедшим И только с выданным доступом. Возвращает
@@ -1646,7 +1646,33 @@ function shuffleArr(arr) {
 
 const QUIZ_MAX_QUESTIONS = 50;
 
+// kt.js — банки вопросов общих предметов и логика симуляции КТ, ~900КБ —
+// самый тяжёлый файл сайта, и до этого места он был не нужен: каталог,
+// карточки направлений, кабинет прекрасно обходятся без него. Грузим только
+// в момент первого реального запуска теста/симуляции (клик, а не заход на
+// страницу) — на мобильном это заметно меньше JS для разбора при просто
+// просмотре каталога.
+let ktJsPromise = null;
+function loadKtJs() {
+  if (typeof window.openKT === 'function') return Promise.resolve();
+  if (!ktJsPromise) {
+    ktJsPromise = new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'kt.js?v=38';
+      s.onload = resolve;
+      s.onerror = () => { ktJsPromise = null; reject(new Error('Не удалось загрузить тест — проверьте соединение')); };
+      document.body.appendChild(s);
+    });
+  }
+  return ktJsPromise;
+}
+async function openKTSafe(code) {
+  try { await loadKtJs(); } catch (e) { showToast(e.message); return; }
+  window.openKT(code);
+}
+
 async function startQuiz(code) {
+  try { await loadKtJs(); } catch (e) { showToast(e.message); return; }
   showSubjectPicker(code);
 }
 
@@ -3127,7 +3153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const ktCode = new URLSearchParams(location.search).get('kt');
   const ktCodeDir = ktCode ? findDirection(ktCode) : null;
   if (ktCode && document.getElementById('ktPage') && requireAuth(ktCodeDir && ktCodeDir.code, ktCodeDir && ktCodeDir.name)) {
-    if (INTERACTIVE_TEST_CODES.includes(ktCode) && window.openKT) window.openKT(ktCode);
+    if (INTERACTIVE_TEST_CODES.includes(ktCode)) openKTSafe(ktCode);
     else showToast('Симуляция КТ для этого направления временно недоступна');
   }
 
