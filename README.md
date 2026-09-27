@@ -17,14 +17,17 @@
 ## Запуск
 Открыть `index.html` в браузере — сборка не требуется.
 
-## script.min.js / kt.min.js
-Сайт грузит минифицированные `script.min.js` и `kt.min.js`, а не
-`script.js`/`kt.js` напрямую. После правок в `script.js` или `kt.js`
-пересоберите минифицированные версии:
+## script.min.js / kt.min.js / style.min.css
+`index.html` и `cabinet.html` грузят минифицированные `script.min.js`,
+`kt.min.js` и `style.min.css`, а не исходники напрямую (остальные страницы
+держат свои стили инлайн в `<style>` — их не минифицируем, они небольшие).
+После правок в `script.js`, `kt.js` или `style.css` пересоберите
+минифицированные версии:
 
 ```
 npx esbuild script.js --minify --charset=utf8 --outfile=script.min.js
 npx esbuild kt.js --minify --charset=utf8 --outfile=kt.min.js
+npx esbuild style.css --minify --charset=utf8 --outfile=style.min.css
 ```
 
 (`--charset=utf8` обязателен — без него esbuild экранирует кириллицу в
