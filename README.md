@@ -17,5 +17,18 @@
 ## Запуск
 Открыть `index.html` в браузере — сборка не требуется.
 
+## script.min.js / kt.min.js
+Сайт грузит минифицированные `script.min.js` и `kt.min.js`, а не
+`script.js`/`kt.js` напрямую. После правок в `script.js` или `kt.js`
+пересоберите минифицированные версии:
+
+```
+npx esbuild script.js --minify --charset=utf8 --outfile=script.min.js
+npx esbuild kt.js --minify --charset=utf8 --outfile=kt.min.js
+```
+
+(`--charset=utf8` обязателен — без него esbuild экранирует кириллицу в
+`\uXXXX` и файл раздувается втрое.)
+
 ## Демо-аккаунт
 `demo@marshrut.ru` / `demo1234`
