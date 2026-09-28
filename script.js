@@ -1378,14 +1378,28 @@ const API = {
   // Синхронно возвращает кэш (обновляется при login/fetchMe/мутациях)
   getCurrentUser() { return currentUser; },
 
-  // Подтягивает пользователя по сохранённому токену (при загрузке страницы)
+  // Подтягивает пользователя по сохранённому токену (при загрузке страницы).
+  // Токен стираем ТОЛЬКО при явном 401 от сервера (токен правда невалиден/истёк).
+  // Раньше любая сетевая ошибка — например, Render "спал" после простоя и не успел
+  // подняться — тоже стирала токен, и кабинет требовал новый вход хотя сессия была
+  // рабочей. Несколько попыток с паузой дают серверу время проснуться.
   async fetchMe() {
     if (!getToken()) { currentUser = null; return null; }
-    try {
-      currentUser = await apiFetch('/api/me', { auth: true });
-    } catch (_) {
-      clearToken(); currentUser = null; // токен невалиден/протух
+    const retryDelays = [0, 2000, 5000];
+    let lastErr = null;
+    for (const delay of retryDelays) {
+      if (delay) await new Promise(r => setTimeout(r, delay));
+      try {
+        currentUser = await apiFetch('/api/me', { auth: true });
+        return currentUser;
+      } catch (e) {
+        lastErr = e;
+        if (e.status === 401) break; // токен и правда невалиден — дальше пробовать бессмысленно
+      }
     }
+    if (lastErr && lastErr.status === 401) { clearToken(); currentUser = null; }
+    // иначе (сеть/сервер ещё поднимается) — токен не трогаем: сейчас профиль не
+    // подтянется, но при следующей загрузке страницы (сервер уже тёплый) войдёт молча.
     return currentUser;
   },
 
