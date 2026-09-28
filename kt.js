@@ -944,7 +944,21 @@ function renderKTQuestion() {
     if (isMulti) {
       const cur = Array.isArray(s.answers[s.idx]) ? s.answers[s.idx].slice() : [];
       const pos = cur.indexOf(i);
-      if (pos === -1) cur.push(i); else cur.splice(pos, 1);
+      if (pos === -1) {
+        // Не даём отметить больше вариантов, чем правильных ответов у вопроса
+        // (kt.multiHint честно предупреждает — не более трёх, а у части
+        // вопросов и того меньше), иначе студент мог отметить вообще все
+        // варианты и случайно попасть в правильные.
+        if (cur.length >= item.correct.length) {
+          if (typeof showToast === 'function') {
+            showToast(I18N.t('kt.multiLimit').replace('{n}', String(item.correct.length)));
+          }
+          return;
+        }
+        cur.push(i);
+      } else {
+        cur.splice(pos, 1);
+      }
       s.answers[s.idx] = cur;
       b.classList.toggle('is-selected', cur.includes(i));
     } else {
