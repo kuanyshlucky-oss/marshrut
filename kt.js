@@ -32,6 +32,12 @@ const KT_TYPES = {
   },
 };
 
+// Сколько вариантов максимум можно отметить в вопросе с несколькими правильными
+// ответами — фиксированно 3 для всех таких вопросов (см. kt.multiHint), не
+// зависит от того, сколько реально правильных у конкретного вопроса: иначе
+// сам лимит выдавал бы студенту число верных ответов.
+const KT_MULTI_ANSWER_LIMIT = 3;
+
 const KT_LANGUAGES = {
   en: 'Английский',
 };
@@ -945,13 +951,13 @@ function renderKTQuestion() {
       const cur = Array.isArray(s.answers[s.idx]) ? s.answers[s.idx].slice() : [];
       const pos = cur.indexOf(i);
       if (pos === -1) {
-        // Не даём отметить больше вариантов, чем правильных ответов у вопроса
-        // (kt.multiHint честно предупреждает — не более трёх, а у части
-        // вопросов и того меньше), иначе студент мог отметить вообще все
-        // варианты и случайно попасть в правильные.
-        if (cur.length >= item.correct.length) {
+        // Лимит фиксированный — 3, как в kt.multiHint, а НЕ item.correct.length:
+        // если ограничивать точным числом правильных ответов конкретного вопроса,
+        // это выдаёт студенту ответ (раз дают отметить только 2 — значит верных
+        // ровно 2). Не даём отметить больше 3 вариантов ни на одном вопросе.
+        if (cur.length >= KT_MULTI_ANSWER_LIMIT) {
           if (typeof showToast === 'function') {
-            showToast(I18N.t('kt.multiLimit').replace('{n}', String(item.correct.length)));
+            showToast(I18N.t('kt.multiLimit').replace('{n}', String(KT_MULTI_ANSWER_LIMIT)));
           }
           return;
         }
