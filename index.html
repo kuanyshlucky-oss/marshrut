@@ -76,7 +76,13 @@
   });
 })();
 </script>
-<link rel="stylesheet" href="style.min.css?v=1">
+<script>
+  // Если токен уже есть — прячем кнопку "Войти в кабинет" ещё до первой отрисовки,
+  // чтобы у залогиненного пользователя она не мелькала на секунду при каждой загрузке
+  // (см. has-token в style.css — до этого прятался только #authZone на cabinet.html).
+  if (localStorage.getItem('marshrut_token')) document.documentElement.classList.add('has-token');
+</script>
+<link rel="stylesheet" href="style.min.css?v=2">
 </head>
 <body>
 
