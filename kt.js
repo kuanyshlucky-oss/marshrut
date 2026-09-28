@@ -674,12 +674,14 @@ function assembleKT(typeId, code, content, lang) {
 }
 
 // Правильность ответа: correct — число (один вариант) или массив (несколько верных, Психология).
+// ua тоже приводим к массиву на обе стороны сравнения: в предметах с
+// isPartialCreditSubject интерфейс всегда чекбоксы (см. renderKTQuestion), поэтому
+// даже для вопроса с одним правильным ответом ua может прийти как [i], а не i.
 function ktIsCorrect(item, ua) {
-  if (Array.isArray(item.correct)) {
-    if (!Array.isArray(ua) || ua.length === 0) return false;
-    return item.correct.slice().sort().join(',') === ua.slice().sort().join(',');
-  }
-  return ua === item.correct;
+  const correctArr = Array.isArray(item.correct) ? item.correct : [item.correct];
+  const userArr = Array.isArray(ua) ? ua : (ua == null ? [] : [ua]);
+  if (userArr.length === 0) return false;
+  return correctArr.slice().sort().join(',') === userArr.slice().sort().join(',');
 }
 
 // Картография (M123, subj2), Психология развития (M066, subj2), Математика
@@ -876,6 +878,12 @@ function ktBlockRanges(s) {
 function renderKTQuestion() {
   const s = activeKT;
   const item = s.flat[s.idx];
+  // В предметах с частичным начислением баллов (isPartialCreditSubject) банк
+  // вопросов вперемешку содержит вопросы с одним и с несколькими правильными
+  // ответами. Рисуем чекбоксы для ВСЕХ вопросов такого предмета, даже если у
+  // конкретного item.correct всего одно число — иначе тип виджета (radio vs
+  // checkbox) сам по себе выдаёт студенту, сколько правильных у этого вопроса.
+  const isMulti = Array.isArray(item.correct) || isPartialCreditSubject(s.code, item.block);
   const blockTag = item.stage ? `${ktBlockLabel(s.code, item.block)} · ${KT_LANG_STAGE_LABELS[item.stage]}` : ktBlockLabel(s.code, item.block);
 
   const ranges = ktBlockRanges(s);
@@ -920,10 +928,9 @@ function renderKTQuestion() {
     ${media}
     <p class="test-question">${item.imageReplacesText ? '' : ktText(item, item.q)}</p>
     ${item.image ? `<div class="kt-question-image${item.imageReplacesText ? ' math-question-image' : ''}"><img src="${item.image}" alt="${I18N.t('kt.questionImage.alt')}"></div>` : ''}
-    ${Array.isArray(item.correct) ? `<p class="kt-multi-hint">${I18N.t('kt.multiHint')}</p>` : ''}
+    ${isMulti ? `<p class="kt-multi-hint">${I18N.t('kt.multiHint')}</p>` : ''}
     <div class="test-options" id="ktOptions">
       ${item.options.map((o, i) => {
-        const isMulti = Array.isArray(item.correct);
         const isSel = isMulti ? (Array.isArray(s.answers[s.idx]) && s.answers[s.idx].includes(i)) : s.answers[s.idx] === i;
         return `
         <button class="test-opt ${isSel ? 'is-selected' : ''}" data-opt="${i}">
@@ -946,7 +953,6 @@ function renderKTQuestion() {
   // иначе на Listening пересоздавался бы <audio>, и трек обрывался при каждом ответе.
   ktEl().querySelectorAll('[data-opt]').forEach(b => b.addEventListener('click', () => {
     const i = Number(b.dataset.opt);
-    const isMulti = Array.isArray(item.correct);
     if (isMulti) {
       const cur = Array.isArray(s.answers[s.idx]) ? s.answers[s.idx].slice() : [];
       const pos = cur.indexOf(i);
@@ -1164,9 +1170,11 @@ function openKTReview() {
 
   document.getElementById('reviewList').innerHTML = s.flat.map((item, i) => {
     const ua = s.answers[i];
-    const isMulti = Array.isArray(item.correct);
-    const correctSet = isMulti ? item.correct : [item.correct];
-    const userSet = isMulti ? (Array.isArray(ua) ? ua : []) : (ua == null ? [] : [ua]);
+    const correctSet = Array.isArray(item.correct) ? item.correct : [item.correct];
+    // ua может быть массивом даже для вопроса с одним правильным ответом
+    // (isPartialCreditSubject рисует чекбоксы всем вопросам предмета подряд) —
+    // нормализуем независимо от формы item.correct.
+    const userSet = Array.isArray(ua) ? ua : (ua == null ? [] : [ua]);
     const wrong = !ktIsCorrect(item, ua);
     const opts = item.options.map((o, oi) => {
       const isCorrectOpt = correctSet.includes(oi);
