@@ -457,6 +457,12 @@ async function del(id, login){
   catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
 }
 
+async function resetProgress(id, login){
+  if(!confirm('Очистить все результаты тестов и статистику по темам для '+login+'? Сам аккаунт (логин, пароль, доступ к направлениям) не тронется. Действие необратимо.')) return;
+  try{ await api('/api/admin/reset-progress', { method:'POST', body:{ id } }); load(); loadAuditLog(); }
+  catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
+}
+
 // Список тестов, у которых вообще есть контент — подгружается один раз,
 // чтобы не хардкодить в админке, какие направления доступны для выдачи.
 // Каждый элемент: {code, language, gopCode?, title} — один элемент на язык
@@ -566,7 +572,7 @@ function renderUsersTable(){
       <td><span class="id-pill">#${u.id}</span></td>
       <td><div class="user-cell">${avatarHtml(u.name, u.email)}<span>${escapeHtml(u.email)}${u.name ? `<br><span class="muted">${escapeHtml(u.name)}</span>` : ''}</span></div></td>
       <td>${escapeHtml(u.city||'—')}</td>
-      <td>${u.results}</td>
+      <td class="results-cell">${u.results}${u.results > 0 ? ` <button class="btn-reset" data-reset-progress="${u.id}" data-login="${escapeHtml(u.email)}" title="Очистить результаты тестов и статистику по темам">Очистить</button>` : ''}</td>
       <td class="access-cell">${accessCellHtml(u)}</td>
       <td>${(u.created_at||'').slice(0,10)}</td>
       <td class="pw-cell" id="pw-${u.id}"><button class="btn-reset" data-reset="${u.id}" data-login="${u.email}">Сбросить пароль</button></td>
@@ -576,6 +582,7 @@ function renderUsersTable(){
 
   $('rows').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(Number(b.dataset.del), b.dataset.login));
   $('rows').querySelectorAll('[data-reset]').forEach(b=>b.onclick=()=>resetPw(Number(b.dataset.reset), b.dataset.login));
+  $('rows').querySelectorAll('[data-reset-progress]').forEach(b=>b.onclick=()=>resetProgress(Number(b.dataset.resetProgress), b.dataset.login));
   $('rows').querySelectorAll('[data-revoke]').forEach(b=>b.onclick=()=>revokeAccess(Number(b.dataset.revoke), b.dataset.code, b.dataset.lang));
   $('rows').querySelectorAll('[data-grant]').forEach(b=>b.onclick=()=>{
     const sel = $('rows').querySelector(`[data-add-select="${b.dataset.grant}"]`);
