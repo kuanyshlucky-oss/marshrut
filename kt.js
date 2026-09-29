@@ -66,6 +66,7 @@ const KT_SUBJECT_NAMES = {
   'M005': { subj1: 'Педагогика', subj2: 'Теория и методика физической культуры' },
   'M103': { subj1: 'Основы взаимозаменяемости', subj2: 'Детали машин' },
   'M115': { subj1: 'Бурение нефтяных и газовых скважин', subj2: 'Технология и техника добычи нефти' },
+  'M149': { subj1: 'Основы предпринимательской деятельности в ресторанном и гостиничном бизнесе', subj2: 'Менеджмент гостиниц и ресторанов' },
 };
 
 /* ---------- Пулы вопросов (демо; дополняются) ---------- */
@@ -695,7 +696,7 @@ function ktIsCorrect(item, ua) {
 // что и в script.js (стандартный тест по предмету) — здесь для блока полной
 // симуляции КТ.
 function isPartialCreditSubject(code, block) {
-  return (code === 'M123' || code === 'M066' || code === 'M107' || code === 'M005' || code === 'M103' || code === 'M115') && block === 'subj2';
+  return (code === 'M123' || code === 'M066' || code === 'M107' || code === 'M005' || code === 'M103' || code === 'M115' || code === 'M149') && block === 'subj2';
 }
 function ktMaxPoints(item, code, block) {
   return (Array.isArray(item.correct) && isPartialCreditSubject(code, block)) ? 2 : 1;
