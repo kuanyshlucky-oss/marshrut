@@ -724,7 +724,7 @@ const LIBRARY_CONSPECTS = {
     sections: [
       {
         key: 'osnovy-predprinimatelstva',
-        title: 'Основы предпринимательской деятельности в ресторанном и гостиничном бизнесе',
+        title: 'Основы предпринимательства',
         text: true,
         topics: [
           { title: 'Предпринимательская деятельность в современном обществе', body:
