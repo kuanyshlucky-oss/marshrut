@@ -1202,8 +1202,6 @@ function openKTReview() {
     const conspectBlock = conspectBody
       ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn"><span class="rev-conspect-btn-label">${REV_CONSPECT_ICON}<span>${I18N.t('rev.conspects')}</span></span></summary>${conspectBody}</details>`
       : '';
-    // Ссылка на конспект по теме вопроса — только при неверном ответе.
-    const konspekt = wrong && typeof conspectLink === 'function' ? conspectLink(item.topic, s.code) : '';
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <span class="rev-block">${blockTag}</span>
@@ -1213,7 +1211,6 @@ function openKTReview() {
         <div class="rev-opts">${opts}</div>
         ${why}
         ${conspectBlock}
-        ${konspekt}
       </div>`;
   }).join('');
 

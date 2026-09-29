@@ -2371,8 +2371,6 @@ function openReview() {
     const conspectBlock = conspectBody
       ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn"><span class="rev-conspect-btn-label">${REV_CONSPECT_ICON}<span>Конспект</span></span></summary>${conspectBody}</details>`
       : '';
-    // Ссылка на конспект по теме вопроса — только при неверном ответе.
-    const konspekt = wrong ? conspectLink(q.topic, activeQuiz.code) : '';
     return `
       <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
         <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${q.imageReplacesText ? '' : quizText(q.q)}</p>
@@ -2381,7 +2379,6 @@ function openReview() {
         <div class="rev-opts">${opts}</div>
         ${why}
         ${conspectBlock}
-        ${konspekt}
       </div>`;
   }).join('');
 
