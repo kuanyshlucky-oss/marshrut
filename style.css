@@ -1384,6 +1384,7 @@ body.test-open #reviewPage input{ user-select:text; }
 .rev-opt.wrong .rev-opt-expl{ color:var(--danger); }
 .rev-why{ margin-top:14px; font-size:14px; line-height:1.55; color:var(--ink-soft); border-left:2px solid var(--accent); padding-left:12px; }
 .rev-why b{ color:var(--ink); }
+.rev-unavailable{ margin:8px 0; padding:16px 18px; border-radius:12px; background:var(--surface-2); color:var(--ink-soft); font-size:14px; line-height:1.55; }
 .rev-conspect{ margin-top:14px; font-size:14px; line-height:1.55; color:var(--ink-soft); border-left:2px solid var(--beige); padding-left:12px; }
 .rev-conspect b{ color:var(--ink); }
 .rev-konspekt-btn{

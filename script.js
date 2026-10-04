@@ -1644,7 +1644,14 @@ function findSubject(direction, subjectId) { return subjectsFor(direction).find(
    кэшируется в currentUser, чтобы getCurrentUser() оставался
    синхронным для рендер-функций. Токен хранится в localStorage.
    --------------------------------------------------------- */
-const API_BASE = 'https://marshrut-9c5z.onrender.com';
+// Адрес API. Для локальной разработки (только localhost) его можно переопределить:
+// localStorage.setItem('marshrut_api_base', 'http://localhost:8080').
+const API_BASE = (() => {
+  const local = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  let override = null;
+  try { override = local ? localStorage.getItem('marshrut_api_base') : null; } catch (_) { /* localStorage может быть недоступен */ }
+  return override || 'https://marshrut-9c5z.onrender.com';
+})();
 const TOKEN_KEY = 'marshrut_token';
 
 let currentUser = null; // кэш пользователя, полученного с сервера
@@ -1760,17 +1767,25 @@ const API = {
     return currentUser;
   },
 
-  async saveResult(code, score, total, section, topics, kind, passed) {
-    currentUser = await apiFetch('/api/results', { method: 'POST', auth: true, body: { code, score, total, section, topics, kind, passed } });
-    return currentUser;
+  // Попытка теста: вариант собирает СЕРВЕР и отдаёт вопросы без ключей ответов;
+  // при сдаче сервер сам проверяет ответы, считает балл и вердикт и сохраняет
+  // результат, а ключи и разбор возвращает только после сдачи. Бросает ошибку с
+  // status===403, если у пользователя нет доступа к профильному тесту.
+  createAttempt(body) {
+    return apiFetch('/api/attempts', { method: 'POST', auth: true, body });
   },
 
-  // Контент теста (вопросы) — отдаётся бэкендом только тем, у кого есть доступ
-  // именно на текущий язык интерфейса (RU/KK). Бросает ошибку с
-  // data.status===403, если доступа на этом языке нет (ловится в
-  // getOrFetchTestContent).
-  getTestContent(code) {
-    return apiFetch(`/api/tests/${code}?lang=${I18N.getLang()}`, { auth: true });
+  // Сдача попытки. Идемпотентна: повторная отправка тех же ответов (после сбоя сети)
+  // вернёт тот же итог. Возвращает { result, review, user }; user обновляет кэш.
+  async submitAttempt(id, answers) {
+    const r = await apiFetch(`/api/attempts/${encodeURIComponent(id)}/submit`, { method: 'POST', auth: true, body: { answers } });
+    currentUser = r.user;
+    return r;
+  },
+
+  // Разбор сданной попытки из кабинета: вопросы, ключи, ответы пользователя.
+  getAttemptReview(id) {
+    return apiFetch(`/api/attempts/${encodeURIComponent(id)}/review`, { auth: true });
   },
 };
 
@@ -1926,18 +1941,14 @@ function requireAuth(courseCode, courseName) {
   return false;
 }
 
-// Контент теста кэшируется на время сессии страницы, отдельно на каждый язык
-// интерфейса — иначе смена RU⇄KK после первого открытия теста показывала бы
-// старый закэшированный язык. На 403 (нет выданного доступа) показывает тот
-// же гейт-модал, что и requireAuth, но с текстом про оплату/доступ.
-const testContentCache = {};
-async function getOrFetchTestContent(code) {
-  const cacheKey = `${code}:${I18N.getLang()}`;
-  if (testContentCache[cacheKey]) return testContentCache[cacheKey];
+// Создаёт попытку теста на сервере. Вариант (вопросы БЕЗ ключей) собирает сервер;
+// на 403 (нет выданного доступа) показывает гейт-модал с текстом про оплату/доступ,
+// на прочие ошибки — тост. Возвращает попытку или null.
+async function startAttempt(code, body) {
+  // «Холодный» сервер может отвечать десятки секунд — не оставляем экран без реакции.
+  const slow = setTimeout(() => showToast(I18N.t('test.preparing')), 500);
   try {
-    const content = await API.getTestContent(code);
-    testContentCache[cacheKey] = content;
-    return content;
+    return await API.createAttempt({ code, contentLang: I18N.getLang(), ...body });
   } catch (e) {
     if (e.status === 403) {
       const d = findDirection(code);
@@ -1946,6 +1957,8 @@ async function getOrFetchTestContent(code) {
       showToast(e.message || 'Не удалось загрузить тест');
     }
     return null;
+  } finally {
+    clearTimeout(slow);
   }
 }
 
@@ -1990,31 +2003,17 @@ function wireDirModal() {
 /* ---------------------------------------------------------
    5) КВИЗ-ДВИЖОК (тест по направлению)
    --------------------------------------------------------- */
-// Перемешивает копию массива (Фишер-Йейтс), не трогая исходный пул.
-function shuffleArr(arr) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-const QUIZ_MAX_QUESTIONS = 50;
-
-// kt.js — банки вопросов общих предметов и логика симуляции КТ, ~900КБ —
-// самый тяжёлый файл сайта, и до этого места он был не нужен: каталог,
-// карточки направлений, кабинет прекрасно обходятся без него. Грузим только
-// в момент первого реального запуска теста/симуляции (клик, а не заход на
-// страницу) — на мобильном это заметно меньше JS для разбора при просто
-// просмотре каталога.
+// kt.js — интерфейс симуляции КТ и названия предметов. Банков вопросов в нём больше
+// нет (они на сервере), поэтому файл небольшой, но каталог, карточки направлений и
+// кабинет по-прежнему обходятся без него: грузим только в момент первого реального
+// запуска теста/симуляции (клик, а не заход на страницу).
 let ktJsPromise = null;
 function loadKtJs() {
   if (typeof window.openKT === 'function') return Promise.resolve();
   if (!ktJsPromise) {
     ktJsPromise = new Promise((resolve, reject) => {
       const s = document.createElement('script');
-      s.src = 'kt.min.js?v=4';
+      s.src = 'kt.min.js?v=5';
       s.onload = resolve;
       s.onerror = () => { ktJsPromise = null; reject(new Error('Не удалось загрузить тест — проверьте соединение')); };
       document.body.appendChild(s);
@@ -2070,27 +2069,14 @@ function wireSubjectModal() {
 
 async function beginQuizSection(code, section) {
   const d = findDirection(code);
-  let source, title;
-  if (section === 'lang') {
-    source = [...KT_LANG_EN_STAGES.listening, ...KT_LANG_EN_STAGES.grammar, ...KT_LANG_EN_STAGES.reading];
-    title = 'Английский язык';
-  } else if (section === 'logic') {
-    source = KT_LOGIC_POOL;
-    title = 'Тест готовности к обучению (ТГО)';
-  } else {
-    // Профильный предмет — здесь и только здесь нужен выданный доступ.
-    const content = await getOrFetchTestContent(code);
-    if (!content) return; // нет доступа или ошибка сети — гейт/тост уже показаны
-    source = (content.bySubject && content.bySubject[section]) ? content.bySubject[section] : content.questions;
-    const names = (typeof KT_SUBJECT_NAMES !== 'undefined' && KT_SUBJECT_NAMES[code]) || null;
-    title = (names && names[section]) || content.title;
-  }
-
-  // Пул перемешивается и ограничивается разумной длиной теста, чтобы при большом
-  // банке вопросов (несколько вариантов) каждая попытка была разной, а не показывала
-  // все вопросы подряд за одну сессию.
-  const pool = shuffleArr(source).slice(0, QUIZ_MAX_QUESTIONS);
-  activeQuiz = { code, section, qIndex: 0, answers: new Array(pool.length).fill(null), pool };
+  // Вариант собирает сервер: пул предмета перемешивается и обрезается до 50 вопросов.
+  // Английский и ТГО доступны любому вошедшему пользователю; профильные предметы —
+  // только с выданным доступом (иначе сервер ответит 403 и покажется гейт).
+  const att = await startAttempt(code, { kind: 'subject', section });
+  if (!att) return;
+  const names = (typeof KT_SUBJECT_NAMES !== 'undefined' && KT_SUBJECT_NAMES[code]) || null;
+  const title = (section === 'subj1' || section === 'subj2') ? ((names && names[section]) || att.title) : att.title;
+  activeQuiz = { attemptId: att.id, code, section, qIndex: 0, answers: new Array(att.questions.length).fill(null), pool: att.questions, result: null };
 
   document.getElementById('testTitle').textContent = title;
   document.getElementById('testSub').textContent = d ? `${d.code} · ${d.name}` : '';
@@ -2196,7 +2182,7 @@ function renderQuizQuestion() {
     imageEl.innerHTML = q.image ? `<div class="kt-question-image${q.imageReplacesText ? ' math-question-image' : ''}"><img src="${q.image}" alt="Условие вопроса"></div>` : '';
   }
 
-  const isMulti = Array.isArray(q.correct);
+  const isMulti = !!q.multi; // чекбоксы/радио определяет сервер: ключей на клиенте до сдачи нет
   const curAns = activeQuiz.answers[activeQuiz.qIndex];
   const hintEl = document.getElementById('testMultiHint');
   if (hintEl) hintEl.remove();
@@ -2219,7 +2205,7 @@ function renderQuizQuestion() {
   optionsEl.querySelectorAll('[data-option]').forEach(btn => {
     btn.addEventListener('click', () => {
       const i = Number(btn.dataset.option);
-      if (Array.isArray(q.correct)) {
+      if (q.multi) {
         const cur = Array.isArray(activeQuiz.answers[activeQuiz.qIndex]) ? activeQuiz.answers[activeQuiz.qIndex].slice() : [];
         const pos = cur.indexOf(i);
         if (pos === -1) cur.push(i); else cur.splice(pos, 1);
@@ -2245,43 +2231,13 @@ function quizNext() {
   else finishQuiz();
 }
 
-// Правильность ответа: q.correct — число (один вариант) или массив (несколько верных, Психология).
+// Верен ли ответ — ТОЛЬКО для подсветки в разборе, когда сервер уже вернул ключи после
+// сдачи. Балл и вердикт считает сервер. correct — число или массив; ответ приводим к
+// массиву, потому что в предметах с частичным баллом чекбоксы даже у одиночных вопросов.
 function quizIsCorrect(q, ua) {
-  if (Array.isArray(q.correct)) {
-    if (!Array.isArray(ua) || ua.length === 0) return false;
-    return q.correct.slice().sort().join(',') === ua.slice().sort().join(',');
-  }
-  return ua === q.correct;
-}
-
-// Картография (M123, subj2), Психология развития (M066, subj2), Математика
-// (M107, subj2), Теория и методика физической культуры (M005, subj2) и Детали
-// машин (M103, subj2), Технология и техника добычи нефти (M115, subj2) — предметы с частичным начислением баллов по официальной схеме
-// КТ для вопросов с множественным выбором (до 3 верных ответов): 2 балла — все
-// верные выбраны и ни одного лишнего; 1 балл — ровно одна ошибка (не выбран
-// один верный, ИЛИ выбраны все верные плюс один лишний); 0 баллов — две и более
-// ошибки, включая пустой ответ. Остальные предметы (включая другие вопросы с
-// несколькими ответами) считаются «всё или ничего» за 1 балл.
-function isPartialCreditSubject(code, section) {
-  return (code === 'M123' || code === 'M066' || code === 'M107' || code === 'M005' || code === 'M103' || code === 'M115' || code === 'M149') && section === 'subj2';
-}
-function quizMaxPoints(q, code, section) {
-  return (Array.isArray(q.correct) && isPartialCreditSubject(code, section)) ? 2 : 1;
-}
-function quizEarnedPoints(q, ua, code, section) {
-  if (Array.isArray(q.correct) && isPartialCreditSubject(code, section)) {
-    const selected = Array.isArray(ua) ? ua : [];
-    if (selected.length === 0) return 0;
-    const correctSet = new Set(q.correct);
-    const selectedSet = new Set(selected);
-    let mistakes = 0;
-    correctSet.forEach(c => { if (!selectedSet.has(c)) mistakes++; });
-    selectedSet.forEach(o => { if (!correctSet.has(o)) mistakes++; });
-    if (mistakes === 0) return 2;
-    if (mistakes === 1) return 1;
-    return 0;
-  }
-  return quizIsCorrect(q, ua) ? 1 : 0;
+  const correct = Array.isArray(q.correct) ? q.correct : [q.correct];
+  const user = Array.isArray(ua) ? ua : (ua == null ? [] : [ua]);
+  return user.length > 0 && correct.slice().sort().join(',') === user.slice().sort().join(',');
 }
 
 // Тёплое сообщение по итогам теста — хвалит за хороший результат, подбадривает при неудаче.
@@ -2295,25 +2251,42 @@ function quizPraiseMessage(score, total, passed) {
   return 'Тест не сдан — но это нормальная часть подготовки. Изучите конспекты по ошибкам и повторите тест, всё получится.';
 }
 
-function finishQuiz() {
-  let score = 0, total = 0;
-  activeQuiz.pool.forEach((q, i) => {
-    score += quizEarnedPoints(q, activeQuiz.answers[i], activeQuiz.code, activeQuiz.section);
-    total += quizMaxPoints(q, activeQuiz.code, activeQuiz.section);
-  });
-  const passed = Math.round((score / total) * 100) >= 60;
-  const praise = quizPraiseMessage(score, total, passed);
-
-  const user = API.getCurrentUser();
-  if (user) {
-    // Разбор по темам — только у вопросов с тегом topic (профильные предметы
-    // из бэкенд-контента); у общих предметов (язык/ТГО) topic нет, и это ок.
-    const topics = activeQuiz.pool
-      .map((q, i) => (q.topic ? { topic: q.topic, correct: quizIsCorrect(q, activeQuiz.answers[i]) } : null))
-      .filter(Boolean);
-    API.saveResult(activeQuiz.code, score, total, activeQuiz.section, topics, 'subject', passed)
-      .then(() => renderDashboard()).catch((e) => showToast(e.message));
+// Сдача теста: ответы уходят на сервер, он сам проверяет их, считает балл и вердикт,
+// сохраняет результат и возвращает разбор с ключами. До сдачи в браузере нет ни одного
+// ключа ответа. Сдача идемпотентна: при сбое сети ответы остаются на экране, и
+// повторное нажатие «Завершить» безопасно.
+let quizSubmitting = false;
+async function finishQuiz() {
+  if (!activeQuiz || quizSubmitting) return;
+  const quiz = activeQuiz;
+  const nextBtn = document.getElementById('testNext');
+  quizSubmitting = true;
+  nextBtn.disabled = true;
+  nextBtn.textContent = I18N.t('test.checking');
+  let r;
+  try {
+    r = await API.submitAttempt(quiz.attemptId, quiz.answers);
+  } catch (e) {
+    quizSubmitting = false;
+    nextBtn.disabled = false;
+    if (e.status === 410 || e.status === 409 || e.status === 404) {
+      showToast(I18N.t(e.status === 410 ? 'test.expired' : 'test.stale'));
+      closeQuiz();
+    } else {
+      showToast(e.status ? e.message : I18N.t('test.submitRetry'));
+      renderQuizQuestion();
+    }
+    return;
   }
+  quizSubmitting = false;
+  if (activeQuiz !== quiz) return; // тест закрыли, пока шла проверка
+
+  quiz.result = r.result;
+  // ключи и объяснения приходят только теперь — подмешиваем их для «Работы над ошибками»
+  quiz.pool = quiz.pool.map((q, i) => ({ ...q, ...r.review[i] }));
+  const { score, total, passed } = r.result;
+  const praise = quizPraiseMessage(score, total, passed);
+  renderDashboard();
 
   const stamp = document.getElementById('quizStamp');
   stamp.classList.toggle('is-fail', !passed);
@@ -2322,65 +2295,67 @@ function finishQuiz() {
   stampScoreEl.textContent = `0/${total}`;
   countUp(stampScoreEl, score, { duration: 900, suffix: `/${total}` });
   document.getElementById('resultHeadline').textContent = passed ? 'Тест пройден' : 'Пока не получилось';
-  document.getElementById('resultText').textContent = user
-    ? `${praise} Результат сохранён в кабинете.`
-    : `${praise} Войдите в аккаунт, чтобы сохранять результаты.`;
+  document.getElementById('resultText').textContent = `${praise} Результат сохранён в кабинете.`;
 
   document.getElementById('testRun').classList.add('hidden');
   document.getElementById('testResult').classList.remove('hidden');
+  nextBtn.disabled = false;
   if (passed) burstConfetti(stamp);
 }
 
+// HTML одного вопроса в разборе: варианты с пометками «верно / ваш ответ», объяснения,
+// конспект. Общий для «Работы над ошибками» после теста и для страницы деталей результата.
+// q — вопрос с ключами (correct, explanations, ...), ua — ответ пользователя (null/число/массив).
+function reviewItemHtml(q, ua, i) {
+  const isMulti = Array.isArray(q.correct);
+  const correctSet = isMulti ? q.correct : [q.correct];
+  const userSet = Array.isArray(ua) ? ua : (ua == null ? [] : [ua]);
+  const wrong = !quizIsCorrect(q, ua);
+  const opts = q.options.map((o, oi) => {
+    const isCorrectOpt = correctSet.includes(oi);
+    const isUserOpt = userSet.includes(oi);
+    let cls = 'rev-opt', tag = '';
+    if (isCorrectOpt) { cls += ' correct'; tag = isUserOpt ? '<span class="rev-tag ok">Ваш ответ ✓</span>' : '<span class="rev-tag ok">Правильный ответ</span>'; }
+    else if (isUserOpt) { cls += ' wrong'; tag = '<span class="rev-tag bad">Ваш ответ ✗</span>'; }
+    // Объяснение для студентов по каждому варианту, если есть в данных.
+    const expl = q.explanations && q.explanations[oi]
+      ? `<div class="rev-opt-expl">${quizText(q.explanations[oi])}</div>` : '';
+    const optContent = q.optionImages && q.optionImages[oi]
+      ? `<span class="rev-opt-image"><img src="${q.optionImages[oi]}" alt="Вариант ответа"></span>` : `<span>${quizText(o)}</span>`;
+    return `<div class="${cls}"><div class="rev-opt-row">${optContent}${tag}</div>${expl}</div>`;
+  }).join('');
+  const why = q.explanations ? '' : (q.why
+    ? `<div class="rev-why"><b>Почему:</b> ${esc(q.why)}</div>`
+    : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(q.options[correctSet[0]])}</div>`);
+  // Кнопка «Конспекты» — отдельный подробный разбор вопроса (не привязан к тому,
+  // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
+  const conspectBody = q.conspectImage
+    ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${q.conspectImage}" alt="Конспект"></div>`
+    : (q.conspect ? `<div class="rev-conspect-body rev-conspect-text">${formatConspectText(q.conspect)}</div>` : '');
+  const conspectBlock = conspectBody
+    ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn"><span class="rev-conspect-btn-label">${REV_CONSPECT_ICON}<span>Конспект</span></span></summary>${conspectBody}</details>`
+    : '';
+  return `
+    <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
+      <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${q.imageReplacesText ? '' : quizText(q.q)}</p>
+      ${q.image ? `<div class="kt-question-image${q.imageReplacesText ? ' math-question-image' : ''}"><img src="${q.image}" alt="Условие вопроса"></div>` : ''}
+      ${q.passage ? `<div class="kt-reading-passage">${esc(q.passage)}</div>` : ''}
+      <div class="rev-opts">${opts}</div>
+      ${why}
+      ${conspectBlock}
+    </div>`;
+}
+
 // Работа над ошибками: разбор всех вопросов с правильными/неправильными ответами.
+// Открывается только после сдачи (finishQuiz), когда сервер уже вернул ключи.
 function openReview() {
+  if (!activeQuiz || !activeQuiz.result) return;
   const d = findDirection(activeQuiz.code);
-  let score = 0, total = 0;
-  activeQuiz.pool.forEach((q, i) => {
-    score += quizEarnedPoints(q, activeQuiz.answers[i], activeQuiz.code, activeQuiz.section);
-    total += quizMaxPoints(q, activeQuiz.code, activeQuiz.section);
-  });
+  const { score, total } = activeQuiz.result;
   document.getElementById('reviewSub').textContent = `${d.code} · ${d.name} — ${score} из ${total}`;
 
-  document.getElementById('reviewList').innerHTML = activeQuiz.pool.map((q, i) => {
-    const ua = activeQuiz.answers[i]; // ответ пользователя (или null)
-    const isMulti = Array.isArray(q.correct);
-    const correctSet = isMulti ? q.correct : [q.correct];
-    const userSet = isMulti ? (Array.isArray(ua) ? ua : []) : (ua == null ? [] : [ua]);
-    const wrong = !quizIsCorrect(q, ua);
-    const opts = q.options.map((o, oi) => {
-      const isCorrectOpt = correctSet.includes(oi);
-      const isUserOpt = userSet.includes(oi);
-      let cls = 'rev-opt', tag = '';
-      if (isCorrectOpt) { cls += ' correct'; tag = isUserOpt ? '<span class="rev-tag ok">Ваш ответ ✓</span>' : '<span class="rev-tag ok">Правильный ответ</span>'; }
-      else if (isUserOpt) { cls += ' wrong'; tag = '<span class="rev-tag bad">Ваш ответ ✗</span>'; }
-      // Объяснение для студентов по каждому варианту, если есть в данных.
-      const expl = q.explanations && q.explanations[oi]
-        ? `<div class="rev-opt-expl">${quizText(q.explanations[oi])}</div>` : '';
-      const optContent = q.optionImages && q.optionImages[oi]
-        ? `<span class="rev-opt-image"><img src="${q.optionImages[oi]}" alt="Вариант ответа"></span>` : `<span>${quizText(o)}</span>`;
-      return `<div class="${cls}"><div class="rev-opt-row">${optContent}${tag}</div>${expl}</div>`;
-    }).join('');
-    const why = q.explanations ? '' : (q.why
-      ? `<div class="rev-why"><b>Почему:</b> ${esc(q.why)}</div>`
-      : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(q.options[correctSet[0]])}</div>`);
-    // Кнопка «Конспекты» — отдельный подробный разбор вопроса (не привязан к тому,
-    // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
-    const conspectBody = q.conspectImage
-      ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${q.conspectImage}" alt="Конспект"></div>`
-      : (q.conspect ? `<div class="rev-conspect-body rev-conspect-text">${formatConspectText(q.conspect)}</div>` : '');
-    const conspectBlock = conspectBody
-      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn"><span class="rev-conspect-btn-label">${REV_CONSPECT_ICON}<span>Конспект</span></span></summary>${conspectBody}</details>`
-      : '';
-    return `
-      <div class="rev-item ${wrong ? 'is-wrong' : 'is-ok'}">
-        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${q.imageReplacesText ? '' : quizText(q.q)}</p>
-        ${q.image ? `<div class="kt-question-image${q.imageReplacesText ? ' math-question-image' : ''}"><img src="${q.image}" alt="Условие вопроса"></div>` : ''}
-        ${q.passage ? `<div class="kt-reading-passage">${esc(q.passage)}</div>` : ''}
-        <div class="rev-opts">${opts}</div>
-        ${why}
-        ${conspectBlock}
-      </div>`;
-  }).join('');
+  document.getElementById('reviewList').innerHTML = activeQuiz.pool
+    .map((q, i) => reviewItemHtml(q, activeQuiz.answers[i], i)).join('');
 
   document.getElementById('testPage').classList.add('hidden');
   document.getElementById('reviewPage').classList.remove('hidden');
@@ -3033,6 +3008,7 @@ function renderDashboard() {
     const passed = pct >= 60;
     const d = findDirection(r.code);
     const q = new URLSearchParams({ result: r.code, score: r.score, total: r.total, date: r.date });
+    if (r.attemptId) q.set('attempt', r.attemptId); // разбор ответов этой попытки
     return `
       <tr class="results-row" data-href="index.html?${q.toString()}" tabindex="0">
         <td class="results-num">${i + 1}</td>
@@ -3574,13 +3550,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     else showToast('Симуляция КТ для этого направления временно недоступна');
   }
 
-  // страница деталей пройденного теста: index.html?result=7M06&score=3&total=4&date=2026-07-05
+  // страница деталей пройденного теста: index.html?result=7M06&score=3&total=4&date=2026-07-05&attempt=<id>
   const qs = new URLSearchParams(location.search);
   const resultCode = qs.get('result');
   if (resultCode && document.getElementById('resultPage')) {
     const rDir = findDirection(resultCode);
     if (requireAuth(rDir && rDir.code, rDir && rDir.name)) {
-      openResultDetail(resultCode, Number(qs.get('score')), Number(qs.get('total')), qs.get('date') || '');
+      openResultDetail(resultCode, Number(qs.get('score')), Number(qs.get('total')), qs.get('date') || '', qs.get('attempt') || '');
     }
   }
 
@@ -3597,19 +3573,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-/* Страница деталей пройденного теста (без данных о конкретных ответах —
-   БД хранит только score/total; показываем вопросы с правильными ответами). */
-async function openResultDetail(code, score, total, date) {
+/* Страница деталей пройденного теста. Разбор берётся из СОХРАНЁННОЙ попытки
+   (вопросы, ответы пользователя, ключи) — так показывается ровно то, что человек проходил,
+   и нельзя открыть ответы теста, не сдав его. Разбор хранится 90 дней; у старых результатов
+   (сохранённых без попытки) показывается только итог. */
+async function openResultDetail(code, score, total, date, attemptId) {
   const d = findDirection(code);
-  const test = await getOrFetchTestContent(code);
-  if (!test) return; // нет доступа — гейт/тост уже показаны
   if (!d) { showToast('Направление не найдено'); return; }
-  // Контент направления бывает в двух форматах: плоский "questions" (старые
-  // 7M0x) или "bySubject" по предметам (новые ГОП-группы вроде M005/M103) —
-  // без этого запасного варианта review падал на bySubject-направлениях,
-  // потому что test.questions там просто нет (undefined.slice бросал исключение
-  // молча, клик по такому результату ничего не показывал).
-  const allQuestions = test.questions || (test.bySubject ? Object.values(test.bySubject).flat() : []);
   const passed = total > 0 && Math.round((score / total) * 100) >= 60;
 
   document.getElementById('resultStamp').classList.toggle('is-fail', !passed);
@@ -3618,28 +3588,19 @@ async function openResultDetail(code, score, total, date) {
   document.getElementById('resultTitle').textContent = `${d.code} · ${d.name}`;
   document.getElementById('resultSub').textContent = date ? `Пройден ${date}` : '';
 
-  document.getElementById('resultQList').innerHTML = allQuestions.slice(0, QUIZ_MAX_QUESTIONS).map((q, i) => {
-    const correctSet = Array.isArray(q.correct) ? q.correct : [q.correct];
-    const opts = q.options.map((o, oi) => `
-      <div class="rev-opt ${correctSet.includes(oi) ? 'correct' : ''}"><span>${esc(o)}</span>${correctSet.includes(oi) ? '<span class="rev-tag ok">Правильный ответ</span>' : ''}</div>
-    `).join('');
-    const why = q.why
-      ? `<div class="rev-why"><b>Почему:</b> ${esc(q.why)}</div>`
-      : (q.explanations ? '' : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(q.options[correctSet[0]])}</div>`);
-    const conspectBody = q.conspectImage
-      ? `<div class="rev-conspect-body"><img class="rev-conspect-image" src="${q.conspectImage}" alt="Конспект"></div>`
-      : (q.conspect ? `<div class="rev-conspect-body rev-conspect-text">${formatConspectText(q.conspect)}</div>` : '');
-    const conspectBlock = conspectBody
-      ? `<details class="rev-conspect-block"><summary class="rev-conspect-btn"><span class="rev-conspect-btn-label">${REV_CONSPECT_ICON}<span>Конспект</span></span></summary>${conspectBody}</details>`
-      : '';
-    return `
-      <div class="rev-item">
-        <p class="rev-q"><span class="test-qnum">${i + 1}.</span> ${esc(q.q)}</p>
-        <div class="rev-opts">${opts}</div>
-        ${why}
-        ${conspectBlock}
-      </div>`;
-  }).join('');
+  const list = document.getElementById('resultQList');
+  list.innerHTML = '';
+  let rv = null;
+  if (attemptId) {
+    try { rv = await API.getAttemptReview(attemptId); } catch (_) { rv = null; }
+  }
+  if (rv) {
+    // quizText() берёт настройки дробей из activeQuiz — здесь его нет, поэтому дроби не рисуем
+    list.innerHTML = rv.questions
+      .map((q, i) => reviewItemHtml({ ...q, ...rv.review[i] }, rv.answers[i], i)).join('');
+  } else {
+    list.innerHTML = `<p class="rev-unavailable">${esc(I18N.t('test.reviewUnavailable'))}</p>`;
+  }
 
   document.getElementById('resultExit').onclick = () => location.href = 'cabinet.html';
   document.getElementById('resultCloseBtn').onclick = () => location.href = 'cabinet.html';
