@@ -47,6 +47,7 @@ internal/
 | POST | `/api/attempts` | 🔑 (+ доступ) | **начать тест**: сервер собирает вариант и отдаёт вопросы БЕЗ ключей |
 | POST | `/api/attempts/{id}/submit` | 🔑 | **сдать**: сервер проверяет ответы, считает балл и вердикт, сохраняет результат, возвращает разбор с ключами |
 | GET  | `/api/attempts/{id}/review` | 🔑 (владелец) | разбор сданной попытки (вопросы, ваши ответы, ключи); до сдачи — 409 |
+| GET  | `/api/konspekt/{course}/{file}` | 🔑 (+ доступ к курсу) | страница конспекта (JPG) из закрытой папки `private/konspekty`; общие курсы (ТГО, английский) — любому вошедшему |
 | GET  | `/api/universities`, `/api/specialities` | — | справочники (кэш 5 мин) |
 | GET  | `/api/calculate-chances`, `/api/roadmap` · POST `/api/roadmap/toggle` | 🔑 | МагистрТрек |
 | *    | `/api/admin/*` | `X-Admin-Key` | пользователи, пароли, доступы, аудит-лог |
@@ -135,7 +136,7 @@ SQL-файлы `internal/store/migrations/NNNN_name.sql` применяются 
 
 ## Переменные окружения
 См. `.env.example`. Обязательные: `DATABASE_URL`, `JWT_SECRET` (≥16 символов).
-Остальные: `ADMIN_KEY`, `ADMIN_ALLOWED_IPS`, `ALLOWED_ORIGIN`, `TRUSTED_PROXY_HOPS`,
+Остальные: `KONSPEKT_DIR` (по умолчанию `private/konspekty`), `ADMIN_KEY`, `ADMIN_ALLOWED_IPS`, `ALLOWED_ORIGIN`, `TRUSTED_PROXY_HOPS`,
 `DB_MAX_CONNS`, `SESSION_CACHE_TTL_SEC`, `LOG_FORMAT`, `PORT`.
 
 ## Запуск и тесты

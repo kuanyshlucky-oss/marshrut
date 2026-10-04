@@ -100,6 +100,9 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/admin/revoke-access", s.admin(s.handleAdminRevokeAccess))
 	mux.HandleFunc("GET /api/admin/audit-log", s.admin(s.handleAdminAuditLog))
 
+	// Конспекты (картинки страниц) — только по доступу к курсу
+	mux.HandleFunc("GET /api/konspekt/{course}/{file}", s.auth(s.handleKonspektImage))
+
 	// МагистрТрек
 	mux.HandleFunc("GET /api/universities", s.handleUniversities)
 	mux.HandleFunc("GET /api/specialities", s.handleSpecialities)

@@ -16,6 +16,8 @@ FROM alpine:3.20
 RUN apk add --no-cache ca-certificates
 WORKDIR /app
 COPY --from=build /out/server /app/server
+# закрытые картинки конспектов: отдаются API только после проверки доступа (KONSPEKT_DIR)
+COPY private/konspekty /app/private/konspekty
 
 # не запускаем от root: при взломе процесса доступ к контейнеру ограничен
 RUN adduser -D -H app

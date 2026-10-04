@@ -130,6 +130,8 @@
   /* Чёрный/синий текст на белом (как отрендеренные формулы в разборе теста) —
      в тёмной теме просто инвертируем цвета вместо белого листа на чёрном фоне. */
   html[data-theme="dark"] .page-wrap img{ filter:invert(1) hue-rotate(180deg); }
+  .page-wrap img:not([src]){ min-height:70vh; background:rgba(127,127,127,.08); }
+  .page-wrap img.konspekt-failed{ min-height:0; padding:24px 16px; font-size:14px; }
   .nav{
     display:flex; align-items:center; justify-content:center; gap:18px;
     margin-top:22px; font-family:var(--mono); font-size:13px; color:var(--ink-soft);
@@ -169,6 +171,7 @@
   </div>
 </footer>
 <script src="i18n.js?v=9"></script>
+<script src="script.min.js?v=8"></script>
 <script>
   const DOCS = {
     pedagogika:   { title: 'Педагогика', pages: 5 },
@@ -177,6 +180,8 @@
     'psihologiya-course': { title: 'Психология — конспекты по темам', pages: 18 },
   };
 
+  // конспекты закрыты: без входа в аккаунт сервер страницы не отдаёт
+  if (!getToken()) { location.href = 'cabinet.html'; }
   const params = new URLSearchParams(location.search);
   const file = params.get('file');
   const doc = DOCS[file];
@@ -201,7 +206,7 @@
 
     main.innerHTML = `
       <div class="page-wrap">
-        <img src="assets/konspekty/img/${file}/page-${page}.jpg" alt="${doc.title}, страница ${page}"
+        <img data-konspekt="${file}/page-${page}.jpg" alt="${doc.title}, страница ${page}"
              oncontextmenu="return false" ondragstart="return false">
       </div>
       <div class="nav">
@@ -211,6 +216,7 @@
       </div>
       <p class="hint">${I18N.t('konspekty.viewOnly')}</p>
     `;
+    hydrateKonspektImages(main);
     document.getElementById('prevBtn').addEventListener('click', () => { if (page > 1) { page--; render(); } });
     document.getElementById('nextBtn').addEventListener('click', () => { if (page < doc.pages) { page++; render(); } });
   }

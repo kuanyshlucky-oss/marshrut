@@ -26,6 +26,9 @@ type Config struct {
 	// TrustedProxyHops — сколько прокси перед сервером дописывает X-Forwarded-For.
 	TrustedProxyHops int
 
+	// KonspektDir — папка с закрытыми картинками конспектов (отдаются только по доступу).
+	KonspektDir string
+
 	DBMaxConns      int
 	SessionCacheTTL time.Duration
 	LogJSON         bool
@@ -51,6 +54,7 @@ func Load(getenv func(string) string) (*Config, error) {
 		JWTSecret:   []byte(strings.TrimSpace(getenv("JWT_SECRET"))),
 		AdminKey:    strings.TrimSpace(getenv("ADMIN_KEY")),
 		LogJSON:     env("LOG_FORMAT", "json") != "text",
+		KonspektDir: env("KONSPEKT_DIR", "private/konspekty"),
 	}
 	var err error
 	if c.TrustedProxyHops, err = envInt(env, "TRUSTED_PROXY_HOPS", 1, 0, 10); err != nil {

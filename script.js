@@ -1699,6 +1699,44 @@ function handleSessionKicked() {
   }
 }
 
+/* Страницы конспектов лежат на сервере и отдаются только по доступу. <img src> не умеет
+   слать токен, поэтому грузим картинку через fetch и показываем её как blob-URL. */
+const konspektBlobCache = new Map();
+async function fetchKonspektImage(folder, file) {
+  const key = folder + '/' + file;
+  if (konspektBlobCache.has(key)) return konspektBlobCache.get(key);
+  const res = await fetch(`${API_BASE}/api/konspekt/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`, {
+    headers: { Authorization: 'Bearer ' + (getToken() || '') },
+  });
+  if (!res.ok) {
+    const err = new Error(`Конспект недоступен (${res.status})`);
+    err.status = res.status;
+    throw err;
+  }
+  const url = URL.createObjectURL(await res.blob());
+  konspektBlobCache.set(key, url);
+  return url;
+}
+
+/* Подгружает все <img data-konspekt="папка/page-N.jpg"> внутри root по мере прокрутки. */
+function hydrateKonspektImages(root) {
+  const imgs = [...root.querySelectorAll('img[data-konspekt]')];
+  const load = async img => {
+    const [folder, file] = img.dataset.konspekt.split('/');
+    try {
+      img.src = await fetchKonspektImage(folder, file);
+    } catch (e) {
+      img.alt = e.status === 403 ? 'Нет доступа к этому конспекту' : 'Не удалось загрузить страницу — обновите страницу';
+      img.classList.add('konspekt-failed');
+    }
+  };
+  if (!('IntersectionObserver' in window)) { imgs.forEach(load); return; }
+  const io = new IntersectionObserver(entries => {
+    for (const en of entries) if (en.isIntersecting) { io.unobserve(en.target); load(en.target); }
+  }, { rootMargin: '600px 0px' });
+  imgs.forEach(img => io.observe(img));
+}
+
 const API = {
   async register(name, email, password) {
     const { token, user } = await apiFetch('/api/auth/register', {

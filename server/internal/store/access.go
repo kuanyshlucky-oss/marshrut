@@ -29,3 +29,12 @@ func (s *Store) HasAccess(ctx context.Context, userID int64, code, language stri
 		userID, code, language).Scan(&ok)
 	return ok, err
 }
+
+// HasAnyAccess — выдан ли пользователю доступ к направлению code хотя бы на одном языке.
+func (s *Store) HasAnyAccess(ctx context.Context, userID int64, code string) (bool, error) {
+	var ok bool
+	err := s.db.QueryRowContext(ctx,
+		`SELECT EXISTS(SELECT 1 FROM test_access WHERE user_id = $1 AND code = $2)`,
+		userID, code).Scan(&ok)
+	return ok, err
+}
