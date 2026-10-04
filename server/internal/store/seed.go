@@ -1,93 +1,27 @@
-package main
-
-// МагистрТрек: справочники (вузы, специальности, статистика приёма),
-// дорожная карта, калькулятор шансов.
+package store
 
 import (
-	"fmt"
-	"net/http"
-	"time"
+	"context"
+	"database/sql"
 )
 
-/* ---------------- Схема и сид ---------------- */
-
-func initTrack() error {
-	schema := `
-	CREATE TABLE IF NOT EXISTS universities (
-		id   INT PRIMARY KEY,
-		name TEXT NOT NULL,
-		city TEXT NOT NULL,
-		lat  DOUBLE PRECISION NOT NULL,
-		lng  DOUBLE PRECISION NOT NULL
-	);
-	CREATE TABLE IF NOT EXISTS specialities (
-		id              INT PRIMARY KEY,
-		name            TEXT NOT NULL,
-		code            TEXT NOT NULL,
-		profile_subject TEXT NOT NULL,
-		kt_applications  INT NOT NULL DEFAULT 0,
-		kt_participants  INT NOT NULL DEFAULT 0,
-		kt_passed        INT NOT NULL DEFAULT 0,
-		kt_passed_pct    DOUBLE PRECISION NOT NULL DEFAULT 0
-	);
-	CREATE TABLE IF NOT EXISTS admission_rules (
-		id                BIGSERIAL PRIMARY KEY,
-		university_id     INT NOT NULL,
-		speciality_id     INT NOT NULL,
-		year              INT NOT NULL,
-		min_foreign_score INT NOT NULL,
-		min_profile_score INT NOT NULL,
-		grant_count       INT NOT NULL,
-		avg_passing_score DOUBLE PRECISION NOT NULL,
-		applicants_count  INT NOT NULL,
-		UNIQUE(university_id, speciality_id, year)
-	);
-	CREATE TABLE IF NOT EXISTS checklist_templates (
-		id             BIGSERIAL PRIMARY KEY,
-		year           INT NOT NULL,
-		step_order     INT NOT NULL,
-		description    TEXT NOT NULL,
-		description_kk TEXT NOT NULL DEFAULT '',
-		deadline       DATE NOT NULL,
-		UNIQUE(year, step_order)
-	);
-	CREATE TABLE IF NOT EXISTS user_checklist (
-		id           BIGSERIAL PRIMARY KEY,
-		user_id      BIGINT NOT NULL,
-		template_id  BIGINT NOT NULL,
-		completed    BOOLEAN NOT NULL DEFAULT FALSE,
-		completed_at TIMESTAMPTZ,
-		UNIQUE(user_id, template_id)
-	);
-	-- казахский перевод шагов дорожной карты (обвязка интерфейса — в скоупе i18n,
-	-- в отличие от контента направлений/тем, который остаётся русскоязычным)
-	ALTER TABLE checklist_templates ADD COLUMN IF NOT EXISTS description_kk TEXT NOT NULL DEFAULT '';
-	-- расширение справочника специальностей (статистика КТ-2025 по группам)
-	ALTER TABLE specialities ADD COLUMN IF NOT EXISTS kt_applications INT NOT NULL DEFAULT 0;
-	ALTER TABLE specialities ADD COLUMN IF NOT EXISTS kt_participants INT NOT NULL DEFAULT 0;
-	ALTER TABLE specialities ADD COLUMN IF NOT EXISTS kt_passed       INT NOT NULL DEFAULT 0;
-	ALTER TABLE specialities ADD COLUMN IF NOT EXISTS kt_passed_pct   DOUBLE PRECISION NOT NULL DEFAULT 0;
-	-- расширение профиля пользователя
-	ALTER TABLE users ADD COLUMN IF NOT EXISTS speciality_id INT NOT NULL DEFAULT 0;
-	ALTER TABLE users ADD COLUMN IF NOT EXISTS language      TEXT NOT NULL DEFAULT '';
-	ALTER TABLE users ADD COLUMN IF NOT EXISTS target_type   TEXT NOT NULL DEFAULT '';
-	ALTER TABLE users ADD COLUMN IF NOT EXISTS foreign_score INT NOT NULL DEFAULT 0;
-	ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_score INT NOT NULL DEFAULT 0;
-	ALTER TABLE users ADD COLUMN IF NOT EXISTS bonus_points  INT NOT NULL DEFAULT 0;
-	ALTER TABLE users ADD COLUMN IF NOT EXISTS session_id    TEXT NOT NULL DEFAULT '';
-	-- аватар — data URL (data:image/jpeg;base64,...), уменьшенный и сжатый на
-	-- клиенте перед отправкой (см. handleSetAvatar про лимит размера)
-	ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar        TEXT NOT NULL DEFAULT '';
-	`
-	if _, err := db.Exec(schema); err != nil {
-		return err
-	}
-	return seedTrack()
+// SeedReference заливает справочные данные (вузы, специальности, правила приёма,
+// шаблон дорожной карты). Идемпотентно: безопасно вызывать при каждом старте.
+// Специальности и вузы — DO NOTHING/DO UPDATE по первичному ключу, шаблон
+// дорожной карты обновляется, чтобы правки дедлайнов доезжали с деплоем.
+func (s *Store) SeedReference(ctx context.Context) error {
+	return s.inTx(ctx, func(tx *sql.Tx) error {
+		// тот же lock, что и у миграций: два инстанса при деплое не заливают справочники одновременно
+		if _, err := tx.ExecContext(ctx, `SELECT pg_advisory_xact_lock($1)`, migrationLockID); err != nil {
+			return err
+		}
+		return seedReference(ctx, tx)
+	})
 }
 
-func seedTrack() error {
+func seedReference(ctx context.Context, tx *sql.Tx) error {
 	// Вузы
-	if _, err := db.Exec(`INSERT INTO universities(id, name, city, lat, lng) VALUES
+	if _, err := tx.ExecContext(ctx, `INSERT INTO universities(id, name, city, lat, lng) VALUES
 		(1, 'Казахский национальный университет им. аль-Фараби', 'Алматы', 43.2551, 76.9126),
 		(2, 'Евразийский национальный университет им. Л.Н. Гумилева', 'Астана', 51.1605, 71.4704),
 		(3, 'Satbayev University (КазНИТУ им. Сатпаева)', 'Алматы', 43.2364, 76.9293)
@@ -97,7 +31,7 @@ func seedTrack() error {
 	// Специальности — полный официальный перечень 147 групп образовательных программ (ГОП)
 	// магистратуры + статистика комплексного тестирования 2025 (лето, НЦТ РК) по каждой группе.
 	// profile_subject = имя ГОП: профильный тест КТ носит то же название, что и сама группа.
-	if _, err := db.Exec(`INSERT INTO specialities
+	if _, err := tx.ExecContext(ctx, `INSERT INTO specialities
 		(id, name, code, profile_subject, kt_applications, kt_participants, kt_passed, kt_passed_pct) VALUES
 		(1, 'Педагогика и психология', 'M001', 'Педагогика и психология', 2055, 1872, 779, 41.61),
 		(2, 'Дошкольное обучение и воспитание', 'M002', 'Дошкольное обучение и воспитание', 265, 254, 56, 22.05),
@@ -256,11 +190,11 @@ func seedTrack() error {
 	// Переносим их на реальные id ГОП: IT->81, Экономика->57, Право->65, Педагогика->1
 	// (id=1 у Педагогики совпал случайно — правильные значения проставит DO UPDATE ниже);
 	// прочую утратившую смысл привязку к 2,3,4 (теперь другие ГОП) удаляем.
-	if _, err := db.Exec(`DELETE FROM admission_rules WHERE speciality_id IN (2, 3, 4) AND year = 2025`); err != nil {
+	if _, err := tx.ExecContext(ctx, `DELETE FROM admission_rules WHERE speciality_id IN (2, 3, 4) AND year = 2025`); err != nil {
 		return err
 	}
 	// Статистика приёма 2025 (демо-данные по 3 вузам; NULL-строки Satbayev не заводим — приёма нет)
-	if _, err := db.Exec(`INSERT INTO admission_rules
+	if _, err := tx.ExecContext(ctx, `INSERT INTO admission_rules
 		(university_id, speciality_id, year, min_foreign_score, min_profile_score, grant_count, avg_passing_score, applicants_count) VALUES
 		(1, 81, 2025, 25, 25, 35, 131, 320),
 		(1, 57, 2025, 25, 25, 20, 127, 280),
@@ -285,7 +219,7 @@ func seedTrack() error {
 	// что и раньше в летнём варианте (+2, +8, +2, +3, +5, +1 день от предыдущего шага).
 	// DO UPDATE (не DO NOTHING) — иначе при повторном деплое уже вставленные летние
 	// даты в БД не заменились бы на зимние.
-	_, err := db.Exec(`INSERT INTO checklist_templates(year, step_order, description, description_kk, deadline) VALUES
+	_, err := tx.ExecContext(ctx, `INSERT INTO checklist_templates(year, step_order, description, description_kk, deadline) VALUES
 		(2026, 1, 'Зарегистрироваться на Комплексное тестирование (КТ) на сайте Национального центра тестирования — окно регистрации 28.10–10.11.2026', 'Ұлттық тестілеу орталығының сайтында Кешенді тестілеуге (КТ) тіркелу — тіркеу мерзімі 28.10–10.11.2026', '2026-11-10'),
 		(2026, 2, 'Сдать КТ (иностранный язык + профильный предмет) — окно тестирования 18.11–11.12.2026', 'КТ тапсыру (шет тілі + бейіндік пән) — тестілеу мерзімі 18.11–11.12.2026', '2026-12-11'),
 		(2026, 3, 'Получить электронный сертификат КТ с баллами', 'Балдары көрсетілген КТ электрондық сертификатын алу', '2026-12-13'),
@@ -301,244 +235,6 @@ func seedTrack() error {
 	}
 	// Шаги 9-10 из предыдущей версии (отдельная зимняя регистрация/тестирование)
 	// дублировали бы теперь шаги 1-2 выше — убираем, если успели попасть в БД.
-	_, err = db.Exec(`DELETE FROM checklist_templates WHERE year = 2026 AND step_order IN (9, 10)`)
+	_, err = tx.ExecContext(ctx, `DELETE FROM checklist_templates WHERE year = 2026 AND step_order IN (9, 10)`)
 	return err
-}
-
-/* ---------------- Справочники (публичные) ---------------- */
-
-func handleUniversities(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query(`SELECT id, name, city, lat, lng FROM universities ORDER BY id`)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, "Ошибка сервера")
-		return
-	}
-	defer rows.Close()
-	type U struct {
-		ID   int     `json:"id"`
-		Name string  `json:"name"`
-		City string  `json:"city"`
-		Lat  float64 `json:"lat"`
-		Lng  float64 `json:"lng"`
-	}
-	out := []U{}
-	for rows.Next() {
-		var u U
-		rows.Scan(&u.ID, &u.Name, &u.City, &u.Lat, &u.Lng)
-		out = append(out, u)
-	}
-	writeJSON(w, http.StatusOK, out)
-}
-
-func handleSpecialities(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query(`
-		SELECT id, name, code, profile_subject, kt_applications, kt_participants, kt_passed, kt_passed_pct
-		FROM specialities ORDER BY id`)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, "Ошибка сервера")
-		return
-	}
-	defer rows.Close()
-	type S struct {
-		ID             int     `json:"id"`
-		Name           string  `json:"name"`
-		Code           string  `json:"code"`
-		ProfileSubject string  `json:"profile_subject"`
-		KTApplications int     `json:"kt_applications"`
-		KTParticipants int     `json:"kt_participants"`
-		KTPassed       int     `json:"kt_passed"`
-		KTPassedPct    float64 `json:"kt_passed_pct"`
-	}
-	out := []S{}
-	for rows.Next() {
-		var s S
-		rows.Scan(&s.ID, &s.Name, &s.Code, &s.ProfileSubject, &s.KTApplications, &s.KTParticipants, &s.KTPassed, &s.KTPassedPct)
-		out = append(out, s)
-	}
-	writeJSON(w, http.StatusOK, out)
-}
-
-/* ---------------- Калькулятор шансов (auth) ---------------- */
-
-func handleCalculate(w http.ResponseWriter, r *http.Request) {
-	q := r.URL.Query()
-	uni, spec := q.Get("university_id"), q.Get("speciality_id")
-	foreign, profile, bonus := atoiSafe(q.Get("foreign")), atoiSafe(q.Get("profile")), atoiSafe(q.Get("bonus"))
-	if uni == "" || spec == "" {
-		writeError(w, http.StatusBadRequest, "Укажите университет и специальность")
-		return
-	}
-	total := foreign + profile + bonus
-
-	var ktApplications, ktParticipants, ktPassed int
-	var ktPassedPct float64
-	if err := db.QueryRow(`
-		SELECT kt_applications, kt_participants, kt_passed, kt_passed_pct
-		FROM specialities WHERE id = $1`, spec).Scan(&ktApplications, &ktParticipants, &ktPassed, &ktPassedPct); err != nil {
-		writeError(w, http.StatusNotFound, "Специальность не найдена")
-		return
-	}
-	ktStats := map[string]any{
-		"applications": ktApplications, "participants": ktParticipants,
-		"passed": ktPassed, "passed_pct": ktPassedPct,
-	}
-
-	var avg float64
-	var grants, applicants, minF, minP int
-	err := db.QueryRow(`
-		SELECT avg_passing_score, grant_count, applicants_count, min_foreign_score, min_profile_score
-		FROM admission_rules WHERE university_id = $1 AND speciality_id = $2
-		ORDER BY year DESC LIMIT 1`, uni, spec).Scan(&avg, &grants, &applicants, &minF, &minP)
-	if err != nil {
-		// По этой группе нет данных о проходных баллах в данном вузе — отдаём
-		// хотя бы общестрановую статистику КТ-2025, без выдуманного вердикта о шансах.
-		writeJSON(w, http.StatusOK, map[string]any{
-			"total": total, "level": "no_data",
-			"message": fmt.Sprintf(
-				"Пока нет статистики проходных баллов по вузам для этой группы. По стране на КТ-2025 порог набрали %.1f%% из %d участников.",
-				ktPassedPct, ktParticipants),
-			"kt_stats": ktStats,
-		})
-		return
-	}
-
-	var level, message string
-	switch {
-	case foreign < minF || profile < minP:
-		level = "none"
-		message = "Ниже минимального порога (25/25) — к конкурсу не допускают."
-	case float64(total) >= avg+5:
-		level = "high"
-		message = "Высокий шанс: ваш балл заметно выше прошлогоднего среднего проходного."
-	case float64(total) >= avg-5:
-		level = "medium"
-		message = "Средний шанс: вы на уровне прошлогоднего проходного балла — всё решит конкуренция."
-	default:
-		level = "low"
-		message = "Низкий шанс: ваш балл ниже прошлогоднего проходного."
-	}
-
-	// Рекомендации при низком шансе: другие вузы этой специальности с меньшим проходным
-	type Rec struct {
-		UniversityID int     `json:"university_id"`
-		Name         string  `json:"name"`
-		City         string  `json:"city"`
-		AvgScore     float64 `json:"avg_score"`
-		Ratio        float64 `json:"competition_ratio"`
-	}
-	recs := []Rec{}
-	if level == "low" || level == "none" {
-		rows, err := db.Query(`
-			SELECT u.id, u.name, u.city, ar.avg_passing_score,
-			       CASE WHEN ar.grant_count > 0 THEN ar.applicants_count::float / ar.grant_count ELSE 0 END AS ratio
-			FROM admission_rules ar JOIN universities u ON u.id = ar.university_id
-			WHERE ar.speciality_id = $1 AND ar.university_id <> $2
-			ORDER BY ar.avg_passing_score ASC LIMIT 3`, spec, uni)
-		if err == nil {
-			for rows.Next() {
-				var rec Rec
-				rows.Scan(&rec.UniversityID, &rec.Name, &rec.City, &rec.AvgScore, &rec.Ratio)
-				recs = append(recs, rec)
-			}
-			rows.Close()
-		}
-	}
-
-	writeJSON(w, http.StatusOK, map[string]any{
-		"total": total, "avg_passing_score": avg,
-		"grant_count": grants, "applicants_count": applicants,
-		"level": level, "message": message,
-		"recommendations": recs,
-		"kt_stats":        ktStats,
-	})
-}
-
-func atoiSafe(s string) int {
-	n := 0
-	for _, c := range s {
-		if c < '0' || c > '9' {
-			return n
-		}
-		n = n*10 + int(c-'0')
-	}
-	return n
-}
-
-/* ---------------- Дорожная карта (auth) ---------------- */
-
-type RoadmapStep struct {
-	TemplateID  int64  `json:"template_id"`
-	StepOrder   int    `json:"step_order"`
-	Description string `json:"description"`
-	Deadline    string `json:"deadline"`
-	Completed   bool   `json:"completed"`
-	CompletedAt string `json:"completed_at,omitempty"`
-}
-
-// GET /api/roadmap?lang=kk — при первом обращении копирует шаги из шаблона.
-// lang выбирает язык описания шага; любое значение кроме "kk" отдаёт русский.
-func handleRoadmap(w http.ResponseWriter, r *http.Request) {
-	uid := currentUID(r)
-	year := time.Now().Year()
-	descCol := "t.description"
-	if r.URL.Query().Get("lang") == "kk" {
-		descCol = "COALESCE(NULLIF(t.description_kk, ''), t.description)"
-	}
-
-	// генерация при первом входе: вставляем недостающие шаги текущего года
-	if _, err := db.Exec(`
-		INSERT INTO user_checklist(user_id, template_id)
-		SELECT $1, id FROM checklist_templates WHERE year = $2
-		ON CONFLICT (user_id, template_id) DO NOTHING`, uid, year); err != nil {
-		writeError(w, http.StatusInternalServerError, "Не удалось создать дорожную карту")
-		return
-	}
-
-	rows, err := db.Query(`
-		SELECT t.id, t.step_order, `+descCol+`, t.deadline::text, uc.completed, COALESCE(uc.completed_at::text, '')
-		FROM user_checklist uc JOIN checklist_templates t ON t.id = uc.template_id
-		WHERE uc.user_id = $1 AND t.year = $2
-		ORDER BY t.step_order`, uid, year)
-	if err != nil {
-		writeError(w, http.StatusInternalServerError, "Ошибка сервера")
-		return
-	}
-	defer rows.Close()
-
-	steps := []RoadmapStep{}
-	done := 0
-	for rows.Next() {
-		var s RoadmapStep
-		rows.Scan(&s.TemplateID, &s.StepOrder, &s.Description, &s.Deadline, &s.Completed, &s.CompletedAt)
-		if s.Completed {
-			done++
-		}
-		steps = append(steps, s)
-	}
-	progress := 0
-	if len(steps) > 0 {
-		progress = done * 100 / len(steps)
-	}
-	writeJSON(w, http.StatusOK, map[string]any{"year": year, "progress": progress, "steps": steps})
-}
-
-// POST /api/roadmap/toggle {template_id}
-func handleRoadmapToggle(w http.ResponseWriter, r *http.Request) {
-	uid := currentUID(r)
-	var in struct {
-		TemplateID int64 `json:"template_id"`
-	}
-	if err := decode(r, &in); err != nil || in.TemplateID <= 0 {
-		writeError(w, http.StatusBadRequest, "Не указан шаг")
-		return
-	}
-	if _, err := db.Exec(`
-		UPDATE user_checklist SET
-			completed = NOT completed,
-			completed_at = CASE WHEN NOT completed THEN NOW() ELSE NULL END
-		WHERE user_id = $1 AND template_id = $2`, uid, in.TemplateID); err != nil {
-		writeError(w, http.StatusInternalServerError, "Не удалось обновить шаг")
-		return
-	}
-	handleRoadmap(w, r)
 }

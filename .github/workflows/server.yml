@@ -1,0 +1,51 @@
+name: server
+
+# Проверки бэкенда: форматирование, статический анализ, тесты с детектором гонок
+# (юнит + интеграционные на настоящем PostgreSQL) и поиск уязвимостей в зависимостях.
+on:
+  push:
+    paths: ["server/**", ".github/workflows/server.yml"]
+  pull_request:
+    paths: ["server/**", ".github/workflows/server.yml"]
+
+defaults:
+  run:
+    working-directory: server
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+
+      - name: gofmt
+        run: test -z "$(gofmt -l .)" || { gofmt -l .; exit 1; }
+
+      - name: go vet
+        run: go vet -tags integration ./...
+
+      - name: Юнит-тесты (-race)
+        run: go test -race -count=1 ./...
+
+      # embedded-postgres скачивает бинарники Postgres и запускается не от root —
+      # на раннере GitHub это выполняется как обычный пользователь.
+      - name: Интеграционные тесты на PostgreSQL (-race)
+        run: go test -race -count=1 -tags integration ./...
+
+      - name: Сборка как в Docker
+        run: CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /tmp/server ./cmd/api
+
+  vulncheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+      - name: govulncheck
+        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...

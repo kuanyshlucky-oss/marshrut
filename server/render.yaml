@@ -8,7 +8,12 @@ services:
     rootDir: server
     # Данные хранятся во внешней Postgres (Neon) — постоянно, не зависит от редеплоя.
     plan: free
+    # Render не переключает трафик на новую версию, пока проба не пройдёт, —
+    # деплой со сломанной конфигурацией (миграции, секреты) не заменит рабочий.
+    healthCheckPath: /api/health
     envVars:
+      - key: TRUSTED_PROXY_HOPS
+        value: "1"                     # перед сервером один прокси Render (X-Forwarded-For)
       - key: JWT_SECRET
         generateValue: true            # Render сгенерирует случайный секрет
       - key: ALLOWED_ORIGIN
