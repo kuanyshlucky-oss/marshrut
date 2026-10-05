@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"marshrut-api/internal/config"
+	"marshrut-api/internal/content"
 )
 
 // testServer — Server без БД: хватает для middleware и защит, которые её не трогают.
@@ -416,6 +417,25 @@ func TestGzipSkips(t *testing.T) {
 		}
 		if w.Body.String() != c.body {
 			t.Errorf("%s: тело изменено: %q", name, w.Body.String())
+		}
+	}
+}
+
+// Тема вопроса попадает в статистику по темам как есть: если её длина больше лимита,
+// clip молча обрежет название, и тема в «Прогрессе подготовки» не совпадёт с программой.
+func TestEveryBankTopicFitsTopicLimit(t *testing.T) {
+	svc, err := content.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, info := range svc.Infos() {
+		for _, subj := range []string{"subj1", "subj2"} {
+			b, _ := svc.ProfileBank(info.Code, info.Language, subj)
+			for i, q := range b.Questions {
+				if n := len([]rune(q.Topic)); n > maxTopicLen {
+					t.Errorf("%s/%s/%s[%d]: тема %d знаков > %d: %q", info.Code, info.Language, subj, i, n, maxTopicLen, q.Topic)
+				}
+			}
 		}
 	}
 }

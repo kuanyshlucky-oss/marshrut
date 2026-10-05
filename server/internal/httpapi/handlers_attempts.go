@@ -171,7 +171,7 @@ func (s *Server) handleSubmitAttempt(w http.ResponseWriter, r *http.Request) {
 			sub.Section = a.Section
 		}
 		for _, h := range ev.outcome.Hits {
-			sub.Hits = append(sub.Hits, store.TopicHit{Topic: clip(h.Topic, maxFieldLen), Correct: h.Correct, Section: h.Section})
+			sub.Hits = append(sub.Hits, store.TopicHit{Topic: clip(h.Topic, maxTopicLen), Correct: h.Correct, Section: h.Section})
 		}
 		return sub, nil
 	}

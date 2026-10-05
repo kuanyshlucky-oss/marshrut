@@ -11,6 +11,7 @@ const (
 	minAdminPasswordLen = 8
 	maxEmailLen         = 254
 	maxFieldLen         = 100
+	maxTopicLen         = 200 // тема вопроса из банка (официальные названия тем КТ бывают длиннее 100 знаков)
 	maxProfileFieldLen  = 200
 	maxAvatarDataURLLen = 500_000
 	maxScore            = 1000
