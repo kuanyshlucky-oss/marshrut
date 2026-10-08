@@ -20,6 +20,8 @@ const (
 	KindSubject = "subject" // тест по одному предмету
 	KindKTSci   = "kt:nauchped"
 	KindKTProf  = "kt:profile"
+	// KindKTProf2 — симуляция КТ из двух профильных предметов (направления profileOnly, без английского и ТГО).
+	KindKTProf2 = "kt:profile2"
 
 	// QuizMaxQuestions — длина теста по одному предмету (пул перемешивается и обрезается).
 	QuizMaxQuestions = 50
@@ -38,6 +40,13 @@ var (
 	ErrStale       = errors.New("тест обновлён — начните заново")
 )
 
+// profileOnly — направления, где сдаются только два профильных предмета: без
+// английского и ТГО, без симуляции КТ (клиент: PROFILE_ONLY_CODES в script.js).
+var profileOnly = map[string]bool{"M078": true}
+
+// ProfileOnly — направление без общих предметов (английский, ТГО).
+func ProfileOnly(code string) bool { return profileOnly[code] }
+
 // Blocks — порядок блоков КТ.
 var Blocks = []string{"lang", "logic", "subj1", "subj2"}
 
@@ -50,6 +59,8 @@ type KTType struct {
 	Threshold int
 	TimeMin   int
 	BlockMin  map[string]int // nil — минимумов по блокам нет, только общий порог
+	Blocks    []string       // nil — все блоки КТ (Blocks); иначе только перечисленные
+	NoCommon  bool           // без английского и ТГО: только subj1 + subj2
 }
 
 var ktTypes = map[string]*KTType{
@@ -57,6 +68,12 @@ var ktTypes = map[string]*KTType{
 		ID: "nauchped", BlockSize: map[string]int{"lang": 50, "logic": 30, "subj1": 30, "subj2": 20},
 		LangFixed: true, Total: 130, Threshold: 75, TimeMin: 210,
 		BlockMin: map[string]int{"lang": 25, "logic": 14, "subj1": 7, "subj2": 7},
+	},
+	// profile2: два профильных предмета (30 + 20 вопросов; во втором до 2 баллов за вопрос).
+	// Порог — условные 50% от максимума (35 из 70), минимумов по блокам нет.
+	"profile2": {
+		ID: "profile2", BlockSize: map[string]int{"subj1": 30, "subj2": 20},
+		Total: 70, Threshold: 35, TimeMin: 80, Blocks: []string{"subj1", "subj2"}, NoCommon: true,
 	},
 	"profile": {
 		ID: "profile", BlockSize: map[string]int{"lang": 10, "logic": 10, "subj1": 10, "subj2": 10},
@@ -223,6 +240,9 @@ func refs(bank *content.Bank, items []item, block string) []Ref {
 // обрезается до QuizMaxQuestions (script.js: beginQuizSection).
 func BuildSubject(svc *content.Service, r Shuffler, code, contentLang, section string) (*Plan, error) {
 	p := &Plan{Kind: KindSubject, Code: code, Section: section, ContentLang: contentLang}
+	if profileOnly[code] && (section == "lang" || section == "logic") {
+		return nil, ErrBadSection
+	}
 
 	var banks []*content.Bank
 	switch section {
@@ -276,8 +296,12 @@ func BuildSubject(svc *content.Service, r Shuffler, code, contentLang, section s
 // BuildKT собирает симуляцию КТ (kt.js: assembleKT): блоки lang → logic → subj1 → subj2.
 func BuildKT(svc *content.Service, r Shuffler, typeID, code, contentLang, lang string) (*Plan, error) {
 	t, ok := ktTypes[typeID]
-	if !ok {
+	// Направления без общих предметов проходят только КТ из двух профильных, остальные — только обычные типы.
+	if !ok || profileOnly[code] != t.NoCommon {
 		return nil, ErrBadKind
+	}
+	if t.NoCommon {
+		return buildKTProfileOnly(svc, r, t, code, contentLang)
 	}
 	if lang != "en" { // в интерфейсе доступен только английский
 		return nil, ErrBadLanguage
@@ -348,4 +372,19 @@ func Resolve(svc *content.Service, refs []Ref) ([]*content.Question, error) {
 		out[i] = b.Questions[r.Idx]
 	}
 	return out, nil
+}
+
+// buildKTProfileOnly собирает КТ из двух профильных предметов (subj1 → subj2) для направлений
+// без английского и ТГО.
+func buildKTProfileOnly(svc *content.Service, r Shuffler, t *KTType, code, contentLang string) (*Plan, error) {
+	s1, ok1 := svc.ProfileBank(code, contentLang, "subj1")
+	s2, ok2 := svc.ProfileBank(code, contentLang, "subj2")
+	if !ok1 || !ok2 || len(s1.Questions) == 0 || len(s2.Questions) == 0 {
+		return nil, ErrNoContent
+	}
+	p := &Plan{Kind: "kt:" + t.ID, Code: code, ContentLang: contentLang,
+		Title: svc.ProfileTitle(code, contentLang), Limit: time.Duration(t.TimeMin) * time.Minute}
+	p.Refs = append(p.Refs, refs(s1, cycle(r, toItems(s1), t.BlockSize["subj1"]), "subj1")...)
+	p.Refs = append(p.Refs, refs(s2, cycle(r, toItems(s2), t.BlockSize["subj2"]), "subj2")...)
+	return p, nil
 }

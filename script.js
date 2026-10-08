@@ -1575,7 +1575,10 @@ function renderConspectsLibrary() {
   const user = API.getCurrentUser();
   if (!user) { wrap.classList.add('hidden'); return; }
   const access = user.access || [];
-  const common = Object.entries(COMMON_CONSPECTS).map(([code, lib]) => ({ code, lib }));
+  // Общие конспекты (ТГО, английский) не показываем тем, у кого доступ только к
+  // направлениям без общих предметов (PROFILE_ONLY_CODES, например M078).
+  const profileOnlyUser = access.length > 0 && access.every(c => PROFILE_ONLY_CODES.has(c));
+  const common = profileOnlyUser ? [] : Object.entries(COMMON_CONSPECTS).map(([code, lib]) => ({ code, lib }));
   const gated = access.map(code => ({ code, lib: LIBRARY_CONSPECTS[code] })).filter(x => x.lib);
   const available = [...common, ...gated];
   if (!available.length) { wrap.classList.add('hidden'); return; }
@@ -1982,7 +1985,33 @@ const GOP_SUBJECTS = {
       'Политические коммуникации',
       'Избирательные технологии' ]},
   ],
+  // M078 «Право» — только два профильных предмета, без английского и ТГО (PROFILE_ONLY_CODES).
+  // Темы выведены из вопросов банка M078.json (официальные спецификации не использовались).
+  M078: [
+    { id: 'p1', title: 'Теория государства и права', sub: 'государство, право, нормы, правоотношения, правонарушение, законность', kind: 'profile', topics: [
+      'Предмет, методы и функции теории государства и права',
+      'Происхождение, сущность, признаки и типы государства',
+      'Формы государства и функции государства. Механизм государства',
+      'Правовое государство, гражданское общество, политическая система',
+      'Понятие, сущность и признаки права. Право и мораль',
+      'Нормы права, источники права, система права',
+      'Реализация, толкование и систематизация права. Юридическая техника',
+      'Правоотношения, правонарушение и юридическая ответственность',
+      'Законность, правопорядок, правосознание и правовая культура' ]},
+    { id: 'p2', title: 'Ситуативный кейс', sub: 'комплексный юридический анализ практической ситуации по нормам РК и международного права', kind: 'profile', topics: [
+      'Гражданское право: договоры, неустойка, задаток, залог, госпошлина',
+      'Гражданский процесс: подсудность, доказательства, решение суда',
+      'Уголовное право: квалификация деяний, освобождение от ответственности',
+      'Уголовный процесс: потерпевший, обыск, мера пресечения, оценка доказательств',
+      'Семейное и наследственное право, право собственности',
+      'Международное право: принципы, суверенное равенство, морское право' ]},
+  ],
 };
+
+// Направления, где сдаются только два профильных предмета — без английского и ТГО
+// (нет блоков lang/logic в простом тесте; симуляция КТ — отдельный тип profile2: 30 + 20
+// вопросов, максимум 70 баллов). Сервер дублирует правило (exam.profileOnly).
+const PROFILE_ONLY_CODES = new Set(['M078']);
 
 let lastOpenGopCode = null; // для повторного рендера модалки при смене языка (RU/KK)
 function openGopGroup(code) {
@@ -2048,7 +2077,7 @@ function renderGopModalView(code) {
     </ul>
     ${!hasProfile ? `<p class="modal-lead">${I18N.t('gop.pending')}</p>` : ''}
     <button class="btn btn-primary btn-block" id="gopTestBtn">${I18N.t('gop.testBtn')}</button>
-    ${GOP_DIRECTION_MAP[code] ? `<button class="btn btn-ghost btn-block" id="gopKTBtn" style="margin-top:10px">${I18N.t('gop.ktBtn')}</button>` : ''}
+    ${GOP_DIRECTION_MAP[code] ? `<button class="btn btn-ghost btn-block" id="gopKTBtn" style="margin-top:10px">${I18N.t(PROFILE_ONLY_CODES.has(code) ? 'gop.ktBtnProfile2' : 'gop.ktBtn')}</button>` : ''}
   `;
   body.querySelectorAll('[data-open-gop-subject]').forEach(btn => btn.addEventListener('click', () => renderGopSubjectView(code, btn.dataset.openGopSubject)));
   // Без готового банка по направлению «Пройти тест» всё равно открывает пикер
@@ -2504,7 +2533,7 @@ function loadKtJs() {
   if (!ktJsPromise) {
     ktJsPromise = new Promise((resolve, reject) => {
       const s = document.createElement('script');
-      s.src = 'kt.min.js?v=7';
+      s.src = 'kt.min.js?v=8';
       s.onload = resolve;
       s.onerror = () => { ktJsPromise = null; reject(new Error('Не удалось загрузить тест — проверьте соединение')); };
       document.body.appendChild(s);
@@ -2529,16 +2558,17 @@ async function startQuiz(code) {
 // доступ проверяется отдельно, только при выборе профильного предмета.
 function showSubjectPicker(code) {
   const d = findDirection(code);
+  const profileOnly = PROFILE_ONLY_CODES.has(code);
   const subj = (typeof KT_SUBJECT_NAMES !== 'undefined' && KT_SUBJECT_NAMES[code])
     || { subj1: 'Профильный предмет №1', subj2: 'Профильный предмет №2' };
   const body = document.getElementById('subjectModalBody');
   body.innerHTML = `
     <p class="eyebrow">${d ? d.code + ' · ' : ''}Пройти тест</p>
     <h3 class="modal-title">Выберите предмет</h3>
-    <p class="modal-lead">Тест состоит из 4 предметов, как на настоящем КТ — потренируйтесь по каждому отдельно.</p>
+    <p class="modal-lead">${profileOnly ? 'Тест состоит из 2 профильных предметов — потренируйтесь по каждому отдельно.' : 'Тест состоит из 4 предметов, как на настоящем КТ — потренируйтесь по каждому отдельно.'}</p>
     <div class="kt-type-cards">
-      <button class="kt-type-card" data-subject="lang"><span class="kt-type-name">Английский</span></button>
-      <button class="kt-type-card" data-subject="logic"><span class="kt-type-name">ТГО</span></button>
+      ${profileOnly ? '' : `<button class="kt-type-card" data-subject="lang"><span class="kt-type-name">Английский</span></button>
+      <button class="kt-type-card" data-subject="logic"><span class="kt-type-name">ТГО</span></button>`}
       <button class="kt-type-card" data-subject="subj1"><span class="kt-type-name">${subj.subj1}</span></button>
       <button class="kt-type-card" data-subject="subj2"><span class="kt-type-name">${subj.subj2}</span></button>
     </div>

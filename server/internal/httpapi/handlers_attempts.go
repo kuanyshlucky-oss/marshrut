@@ -20,13 +20,13 @@ import (
 
 var attemptIDRe = regexp.MustCompile(`^[A-Za-z0-9]{24}$`)
 
-var validAttemptKinds = map[string]bool{exam.KindSubject: true, exam.KindKTSci: true, exam.KindKTProf: true}
+var validAttemptKinds = map[string]bool{exam.KindSubject: true, exam.KindKTSci: true, exam.KindKTProf: true, exam.KindKTProf2: true}
 
 const msgNoAccess = "Нет доступа к этому тесту — обратитесь к администратору для получения доступа"
 
 // POST /api/attempts
 // {kind:"subject", code, section:"lang|logic|subj1|subj2", contentLang}
-// {kind:"kt:nauchped"|"kt:profile", code, lang:"en", contentLang}
+// {kind:"kt:nauchped"|"kt:profile"|"kt:profile2", code, lang:"en", contentLang}
 func (s *Server) handleCreateAttempt(w http.ResponseWriter, r *http.Request) {
 	var in struct {
 		Kind        string `json:"kind"`

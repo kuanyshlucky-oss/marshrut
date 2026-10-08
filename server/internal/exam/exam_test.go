@@ -492,3 +492,66 @@ func TestTopicHits(t *testing.T) {
 		t.Errorf("hits = %+v", o.Hits)
 	}
 }
+
+func TestProfileOnlyDirection(t *testing.T) {
+	s := svc(t)
+	if !ProfileOnly("M078") || ProfileOnly("M063") {
+		t.Fatal("ProfileOnly: ожидается только M078")
+	}
+	for _, sec := range []string{"lang", "logic"} {
+		if _, err := BuildSubject(s, seeded(1), "M078", "ru", sec); err != ErrBadSection {
+			t.Fatalf("M078/%s: err=%v, ожидалось ErrBadSection", sec, err)
+		}
+	}
+	for _, sec := range []string{"subj1", "subj2"} {
+		p, err := BuildSubject(s, seeded(1), "M078", "ru", sec)
+		if err != nil || len(p.Refs) == 0 {
+			t.Fatalf("M078/%s: %v (%d вопросов)", sec, err, len(p.Refs))
+		}
+	}
+	if _, err := BuildKT(s, seeded(1), "nauchped", "M078", "ru", "en"); err != ErrBadKind {
+		t.Fatalf("КТ для M078: err=%v, ожидалось ErrBadKind", err)
+	}
+	// у других направлений английский и ТГО остаются
+	if _, err := BuildSubject(s, seeded(1), "M063", "ru", "lang"); err != nil {
+		t.Fatalf("M063/lang: %v", err)
+	}
+}
+
+func TestBuildKTProfileOnly(t *testing.T) {
+	s := svc(t)
+	p, err := BuildKT(s, seeded(2), "profile2", "M078", "ru", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+	n := map[string]int{}
+	for _, r := range p.Refs {
+		n[r.Block]++
+	}
+	if len(p.Refs) != 50 || n["subj1"] != 30 || n["subj2"] != 20 || len(n) != 2 {
+		t.Fatalf("блоки КТ M078: %v (всего %d), ожидалось subj1=30, subj2=20", n, len(p.Refs))
+	}
+	if p.Limit != 80*time.Minute || p.Lang != "" {
+		t.Fatalf("limit=%v lang=%q", p.Limit, p.Lang)
+	}
+	qs, err := Resolve(s, p.Refs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// все ответы верные → максимум 30 + 20×2 = 70, оба блока без минимумов
+	answers := make([]Answer, len(qs))
+	for i, q := range qs {
+		answers[i] = append(Answer(nil), q.Correct...)
+	}
+	o, err := Grade(p, qs, answers)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if o.Score != 70 || o.Total != 70 || o.Threshold != 35 || !o.Passed || len(o.Blocks) != 2 {
+		t.Fatalf("итог КТ M078: %+v", o)
+	}
+	// profile2 — только для направлений без общих предметов
+	if _, err := BuildKT(s, seeded(2), "profile2", "M063", "ru", ""); err != ErrBadKind {
+		t.Fatalf("profile2 для M063: err=%v, ожидалось ErrBadKind", err)
+	}
+}

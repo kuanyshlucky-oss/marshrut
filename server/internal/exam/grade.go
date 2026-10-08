@@ -189,7 +189,11 @@ func Grade(p *Plan, qs []*content.Question, answers []Answer) (*Outcome, error) 
 	if t, ok := KTTypeByKind(p.Kind); ok {
 		o.Threshold = t.Threshold
 		allBlocksOK := true
-		for _, id := range Blocks {
+		ids := Blocks
+		if t.Blocks != nil {
+			ids = t.Blocks
+		}
+		for _, id := range ids {
 			br := BlockResult{ID: id, Score: blockScore[id], Max: blockMax[id], OK: true}
 			if t.BlockMin != nil {
 				m := t.BlockMin[id]

@@ -33,6 +33,19 @@ const KT_TYPES = {
     timeMin: 210,                 // 3.5 часа как на реальном КТ
     blockMin: null,               // минимумов по блокам нет — только общий порог
   },
+  // Только для направлений без английского и ТГО (PROFILE_ONLY_CODES): 30 + 20 вопросов,
+  // максимум 30 + 20×2 = 70 баллов, условный порог 35, минимумов по блокам нет.
+  profile2: {
+    id: 'profile2',
+    label: 'Два профильных предмета',
+    blockSize: { subj1: 30, subj2: 20 },
+    langFixed: false,
+    total: 70,                    // максимум баллов: 30 + 20×2
+    questions: 50,                // вопросов: 30 + 20
+    thresholdTotal: 35,
+    timeMin: 80,
+    blockMin: null,
+  },
 };
 
 // Сколько вариантов максимум можно отметить в вопросе с несколькими правильными
@@ -54,11 +67,13 @@ const KT_BLOCK_LABELS = {
 
 // Подписи типа теста/языка на экране настройки КТ — берутся из словаря i18n.js
 // по id, а не напрямую из KT_TYPES/KT_LANGUAGES (те хранят русский текст как fallback/ключ).
-const KT_TYPE_I18N_KEYS = { nauchped: 'kt.type.nauchped', profile: 'kt.type.profile' };
+const KT_TYPE_I18N_KEYS = { nauchped: 'kt.type.nauchped', profile: 'kt.type.profile', profile2: 'kt.type.profile2' };
 const KT_LANG_I18N_KEYS = { en: 'kt.lang.en' };
 const KT_BLOCK_I18N_KEYS = { lang: 'kt.block.lang', logic: 'kt.block.logic', subj1: 'kt.block.subj1', subj2: 'kt.block.subj2' };
 function ktTypeLabel(id) { return (KT_TYPE_I18N_KEYS[id] && I18N.t(KT_TYPE_I18N_KEYS[id])) || KT_TYPES[id].label; }
-function ktLangLabel(k) { return (KT_LANG_I18N_KEYS[k] && I18N.t(KT_LANG_I18N_KEYS[k])) || KT_LANGUAGES[k]; }
+function ktLangLabel(k) { return (KT_LANG_I18N_KEYS[k] && I18N.t(KT_LANG_I18N_KEYS[k])) || KT_LANGUAGES[k] || ''; }
+// « · Английский» для подзаголовков КТ; у КТ из двух профильных предметов языка нет.
+function ktLangSuffix(k) { return k ? ' · ' + ktLangLabel(k) : ''; }
 
 // Реальные названия профильных предметов по коду направления.
 const KT_SUBJECT_NAMES = {
@@ -115,28 +130,36 @@ function showKTPage() {
 }
 
 // Экран 1 — настройка: две секции (профильное / научно-педагогическое) + язык
+// Типы КТ для направления: у направлений без английского и ТГО (PROFILE_ONLY_CODES) — только
+// profile2, у остальных — обычные.
+function ktTypesFor(code) {
+  const only = PROFILE_ONLY_CODES.has(code);
+  return Object.values(KT_TYPES).filter(t => (t.id === 'profile2') === only);
+}
+
 function openKT(code) {
   const d = findDirection(code);
+  const profileOnly = PROFILE_ONLY_CODES.has(code);
   activeKT = { code };
   const body = ktEl();
   body.innerHTML = `
     <h2 class="test-title">${I18N.t('kt.simTitle')}</h2>
     <p class="test-sub">${d.code} · ${d.name}</p>
-    <p class="kt-setup-lead">${I18N.t('kt.simLead')}</p>
+    <p class="kt-setup-lead">${I18N.t(profileOnly ? 'kt.simLeadProfile2' : 'kt.simLead')}</p>
 
     <div class="kt-type-cards" id="ktType">
-      ${Object.values(KT_TYPES).map((t, i) => `
+      ${ktTypesFor(code).map((t, i) => `
         <button class="kt-type-card ${i === 0 ? 'is-active' : ''}" data-type="${t.id}">
           <span class="kt-type-name">${ktTypeLabel(t.id)}</span>
-          <span class="kt-type-total">${t.total} ${I18N.t('kt.questionsWord')}</span>
+          <span class="kt-type-total">${t.questions || t.total} ${I18N.t('kt.questionsWord')}${t.questions ? ` · ${I18N.t('kt.maxScore')} ${t.total}` : ''}</span>
           <span class="kt-type-meta">${I18N.t('kt.threshold')} ${t.thresholdTotal} · ${t.blockMin ? I18N.t('kt.hasBlockMin') : I18N.t('kt.noBlockMin')}</span>
         </button>`).join('')}
     </div>
 
-    <p class="kt-field-label">${I18N.t('kt.foreignLangLabel')}</p>
+    ${profileOnly ? '' : `<p class="kt-field-label">${I18N.t('kt.foreignLangLabel')}</p>
     <div class="kt-lang-row" id="ktLang">
       ${Object.keys(KT_LANGUAGES).map((k, i) => `<button class="kt-lang ${i === 0 ? 'is-active' : ''}" data-lang="${k}">${ktLangLabel(k)}</button>`).join('')}
-    </div>
+    </div>`}
 
     <button class="btn test-next kt-start" id="ktStartBtn">${I18N.t('kt.start')}</button>
   `;
@@ -147,7 +170,7 @@ function openKT(code) {
     b.addEventListener('click', () => { body.querySelectorAll('#ktLang .kt-lang').forEach(x => x.classList.remove('is-active')); b.classList.add('is-active'); }));
   document.getElementById('ktStartBtn').addEventListener('click', () => {
     const typeId = body.querySelector('#ktType .kt-type-card.is-active').dataset.type;
-    const lang = body.querySelector('#ktLang .kt-lang.is-active').dataset.lang;
+    const lang = profileOnly ? '' : body.querySelector('#ktLang .kt-lang.is-active').dataset.lang;
     beginKT(code, typeId, lang);
   });
 
@@ -454,7 +477,7 @@ async function finishKT() {
   ktEl().innerHTML = `
    <div class="kt-result-wrap">
     <h2 class="test-title">${res.passed ? I18N.t('kt.passed') : I18N.t('kt.notPassed')}</h2>
-    <p class="test-sub">${d.code} · ${ktTypeLabel(s.typeId)} · ${ktLangLabel(s.lang)}</p>
+    <p class="test-sub">${d.code} · ${ktTypeLabel(s.typeId)}${ktLangSuffix(s.lang)}</p>
     ${praise ? `<p class="kt-praise">${esc(praise)}</p>` : ''}
 
     <table class="kt-result-table">
@@ -521,7 +544,7 @@ function ktBlockLabel(code, block) {
 function openKTReview() {
   const s = activeKT;
   const d = findDirection(s.code);
-  document.getElementById('reviewSub').textContent = `${d.code} · КТ · ${ktTypeLabel(s.typeId)} · ${ktLangLabel(s.lang)}`;
+  document.getElementById('reviewSub').textContent = `${d.code} · КТ · ${ktTypeLabel(s.typeId)}${ktLangSuffix(s.lang)}`;
 
   // Навигация по разделам сверху (requirement: клик переходит к вопросам раздела).
   const blockOrder = ['lang', 'logic', 'subj1', 'subj2'];
