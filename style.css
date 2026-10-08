@@ -1137,17 +1137,28 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
   .subject-arrow{ position:absolute; top:50%; right:14px; transform:translateY(-50%); }
 }
 
+/* M078: единый вертикальный ритм окна направления (все ширины): заголовок → вступление → предметы → кнопки */
+.modal:has(#dirModalBody.is-compact){ padding:34px 30px 30px; }
+.modal:has(#dirModalBody.is-compact) .modal-close{ top:14px; right:14px; }
+#dirModalBody.is-compact .modal-title{ margin:8px 0 0; }
+#dirModalBody.is-compact .modal-lead{ margin:14px 0 22px; line-height:1.55; }
+#dirModalBody.is-compact .subject-list{ gap:12px; margin-bottom:24px; }
+#dirModalBody.is-compact .subject-row{ padding:16px 18px; gap:14px; }
+#dirModalBody.is-compact .subject-text{ gap:4px; }
+#dirModalBody.is-compact .btn-block{ min-height:50px; }
+#dirModalBody.is-compact #gopKTBtn{ margin-top:12px !important; }
+
 /* M078: компактное модальное окно направления на телефоне ("is-compact" ставит renderGopModalView) */
 @media (max-width:560px){
   .modal-overlay{ padding:12px; }
-  .modal:has(#dirModalBody.is-compact){ padding:22px 16px 18px; max-height:92vh; max-height:92dvh; }
+  .modal:has(#dirModalBody.is-compact){ padding:22px 16px 22px; max-height:92vh; max-height:92dvh; }
   .modal:has(#dirModalBody.is-compact) .modal-close{ top:6px; right:6px; width:44px; height:44px; font-size:26px; display:flex; align-items:center; justify-content:center; }
   #dirModalBody.is-compact .modal-title{ font-size:24px; }
-  #dirModalBody.is-compact .modal-lead{ margin:10px 0 16px; }
+  #dirModalBody.is-compact .modal-lead{ margin:12px 0 18px; }
   #dirModalBody.is-compact .subject-row{ padding:12px 38px 12px 12px; gap:8px 10px; }
   #dirModalBody.is-compact .subject-title{ font-size:15px; line-height:1.3; }
   #dirModalBody.is-compact .subject-sub{ line-height:1.35; }
-  #dirModalBody.is-compact .subject-list{ margin-bottom:16px; }
+  #dirModalBody.is-compact .subject-list{ gap:10px; margin-bottom:20px; }
   #dirModalBody.is-compact .btn-block{ min-height:48px; }
 }
 
