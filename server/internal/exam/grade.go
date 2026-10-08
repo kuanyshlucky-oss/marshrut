@@ -67,7 +67,7 @@ func Validate(qs []*content.Question, answers []Answer) error {
 // partialCreditCodes — предметы (subj2) с частичным начислением баллов по
 // официальной схеме КТ для вопросов с множественным выбором.
 var partialCreditCodes = map[string]bool{
-	"M123": true, "M066": true, "M107": true, "M005": true, "M103": true, "M115": true, "M149": true, "M063": true,
+	"M123": true, "M066": true, "M107": true, "M005": true, "M103": true, "M115": true, "M149": true, "M063": true, "M078": true,
 }
 
 // PartialCredit: 2 балла — все верные выбраны и ни одного лишнего; 1 балл —
