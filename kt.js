@@ -299,7 +299,7 @@ function renderKTQuestion() {
   }).join('');
 
   ktEl().innerHTML = `
-    <div class="kt-block-nav" id="ktBlockNav">${blockNav}</div>
+    <div class="kt-block-nav${ranges.length <= 2 ? ' is-few' : ''}" id="ktBlockNav">${blockNav}</div>
     <div class="kt-qnav" id="ktQnav">${qnav}</div>
     <div class="kt-run-head">
       <span class="kt-block-tag">${blockTag}</span>

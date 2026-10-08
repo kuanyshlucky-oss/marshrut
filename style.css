@@ -1714,6 +1714,8 @@ html[data-theme="dark"] .math-question-image{
   .kt-block-nav, .kt-qnav{ right:56px; padding-left:16px; padding-right:10px; }
   .kt-block-nav{ padding-top:12px; padding-bottom:8px; }
   .kt-block-nav-btn{ font-size:10px; padding:7px 10px; }
+  /* Два блока (КТ из двух профильных предметов): делят ширину поровну, длинные названия переносятся */
+  .kt-block-nav.is-few .kt-block-nav-btn{ flex:1 1 0; min-width:0; white-space:normal; line-height:1.25; text-align:center; }
   .kt-qnav-btn{ width:30px; height:30px; }
   .kt-run-head{ flex-wrap:wrap; row-gap:8px; }
   .kt-timer-label, .kt-block-tag{ white-space:nowrap; }
