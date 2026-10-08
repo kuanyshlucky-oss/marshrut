@@ -137,8 +137,8 @@ function ktTypesFor(code) {
   return Object.values(KT_TYPES).filter(t => (t.id === 'profile2') === only);
 }
 
-// Справа от карточки типа КТ из двух профильных предметов — два блока теста: предмет, число вопросов,
-// максимум баллов (1-й предмет: 1 балл за вопрос; 2-й: до 2 баллов, несколько верных ответов).
+// КТ из двух профильных предметов: два блока теста рядом — предмет, число вопросов, максимум баллов
+// (1-й предмет: 1 балл за вопрос; 2-й: до 2 баллов, несколько верных ответов).
 function ktProfileBlocksHtml(code) {
   const t = KT_TYPES.profile2;
   const names = KT_SUBJECT_NAMES[code] || {};
@@ -161,16 +161,14 @@ function openKT(code) {
     <p class="test-sub">${d.code} · ${d.name}</p>
     <p class="kt-setup-lead">${I18N.t(profileOnly ? 'kt.simLeadProfile2' : 'kt.simLead')}</p>
 
-    ${profileOnly ? '<div class="kt-split">' : ''}
-    <div class="kt-type-cards" id="ktType">
+    ${profileOnly ? ktProfileBlocksHtml(code) : `<div class="kt-type-cards" id="ktType">
       ${ktTypesFor(code).map((t, i) => `
         <button class="kt-type-card ${i === 0 ? 'is-active' : ''}" data-type="${t.id}">
           <span class="kt-type-name">${ktTypeLabel(t.id)}</span>
           <span class="kt-type-total">${t.questions || t.total} ${I18N.t('kt.questionsWord')}${t.questions ? ` · ${I18N.t('kt.maxScore')} ${t.total}` : ''}</span>
           <span class="kt-type-meta">${I18N.t('kt.threshold')} ${t.thresholdTotal} · ${t.blockMin ? I18N.t('kt.hasBlockMin') : I18N.t('kt.noBlockMin')}</span>
         </button>`).join('')}
-    </div>
-    ${profileOnly ? ktProfileBlocksHtml(code) + '</div>' : ''}
+    </div>`}
 
     ${profileOnly ? '' : `<p class="kt-field-label">${I18N.t('kt.foreignLangLabel')}</p>
     <div class="kt-lang-row" id="ktLang">
@@ -185,7 +183,7 @@ function openKT(code) {
   body.querySelectorAll('#ktLang .kt-lang').forEach(b =>
     b.addEventListener('click', () => { body.querySelectorAll('#ktLang .kt-lang').forEach(x => x.classList.remove('is-active')); b.classList.add('is-active'); }));
   document.getElementById('ktStartBtn').addEventListener('click', () => {
-    const typeId = body.querySelector('#ktType .kt-type-card.is-active').dataset.type;
+    const typeId = profileOnly ? 'profile2' : body.querySelector('#ktType .kt-type-card.is-active').dataset.type;
     const lang = profileOnly ? '' : body.querySelector('#ktLang .kt-lang.is-active').dataset.lang;
     beginKT(code, typeId, lang);
   });
@@ -646,7 +644,8 @@ function wireKT() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', wireKT);
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireKT);
+else wireKT(); // kt.js грузится лениво, когда DOMContentLoaded уже прошло
 
 /* экспорт в глобал */
 if (typeof window !== 'undefined') {
