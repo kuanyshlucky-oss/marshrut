@@ -531,7 +531,7 @@ func TestBuildKTProfileOnly(t *testing.T) {
 	if len(p.Refs) != 50 || n["subj1"] != 30 || n["subj2"] != 20 || len(n) != 2 {
 		t.Fatalf("блоки КТ M078: %v (всего %d), ожидалось subj1=30, subj2=20", n, len(p.Refs))
 	}
-	if p.Limit != 90*time.Minute || p.Lang != "" {
+	if p.Limit != 115*time.Minute || p.Lang != "" {
 		t.Fatalf("limit=%v lang=%q", p.Limit, p.Lang)
 	}
 	qs, err := Resolve(s, p.Refs)

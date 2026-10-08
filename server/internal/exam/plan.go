@@ -69,11 +69,11 @@ var ktTypes = map[string]*KTType{
 		LangFixed: true, Total: 130, Threshold: 75, TimeMin: 210,
 		BlockMin: map[string]int{"lang": 25, "logic": 14, "subj1": 7, "subj2": 7},
 	},
-	// profile2: два профильных предмета (30 + 20 вопросов; во втором до 2 баллов за вопрос). Время по спецификациям НЦТ: теория 60 мин (2 мин на вопрос) + кейс 30 мин (1,5 мин на вопрос) = 90.
+	// profile2: два профильных предмета (30 + 20 вопросов; во втором до 2 баллов за вопрос). Время — 115 минут (задано владельцем; по спецификациям НЦТ: теория 60 мин + кейс 30 мин = 90).
 	// Порог — условные 50% от максимума (35 из 70), минимумов по блокам нет.
 	"profile2": {
 		ID: "profile2", BlockSize: map[string]int{"subj1": 30, "subj2": 20},
-		Total: 70, Threshold: 35, TimeMin: 90, Blocks: []string{"subj1", "subj2"}, NoCommon: true,
+		Total: 70, Threshold: 35, TimeMin: 115, Blocks: []string{"subj1", "subj2"}, NoCommon: true,
 	},
 	"profile": {
 		ID: "profile", BlockSize: map[string]int{"lang": 10, "logic": 10, "subj1": 10, "subj2": 10},
