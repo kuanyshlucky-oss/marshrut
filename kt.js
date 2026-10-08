@@ -159,7 +159,7 @@ function openKT(code) {
   body.innerHTML = `
     <h2 class="test-title">${I18N.t('kt.simTitle')}</h2>
     <p class="test-sub">${d.code} · ${d.name}</p>
-    <p class="kt-setup-lead">${I18N.t(profileOnly ? 'kt.simLeadProfile2' : 'kt.simLead')}</p>
+    <p class="kt-setup-lead">${profileOnly ? I18N.t('kt.simLeadProfile2').replace('{min}', KT_TYPES.profile2.timeMin) : I18N.t('kt.simLead')}</p>
 
     ${profileOnly ? ktProfileBlocksHtml(code) : `<div class="kt-type-cards" id="ktType">
       ${ktTypesFor(code).map((t, i) => `

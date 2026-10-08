@@ -2457,7 +2457,7 @@ const GOP_SUBJECTS = {
   // Темы — из официальных спецификаций: «Теория государства и права» (16 тем) и «Ситуационный
   // тест» (дисциплины Приложения 1); совпадают с полем topic вопросов M078.json.
   M078: [
-    { id: 'p1', title: 'Теория государства и права', sub: 'государство, право, нормы, правоотношения, правонарушение, законность', kind: 'profile', topics: [
+    { id: 'p1', title: 'Теория государства и права', sub: 'государство, право, нормы, правонарушение, законность', kind: 'profile', topics: [
       "Предмет и методы теории государства и права. Теория государства и права в системе юридических наук",
       "Происхождение, понятие и признаки государства",
       "Типология государств. Форма государства",
@@ -2474,7 +2474,7 @@ const GOP_SUBJECTS = {
       "Законность и правопорядок",
       "Правовое сознание и правовая культура",
       "Механизм правового регулирования" ]},
-    { id: 'p2', title: 'Ситуативный кейс', sub: 'комплексный юридический анализ практической ситуации по нормам РК и международного права', kind: 'profile', topics: [
+    { id: 'p2', title: 'Ситуативный кейс', sub: 'анализ практической ситуации по нормам РК и международного права', kind: 'profile', topics: [
       "Международное публичное право",
       "Гражданское право. Общая часть",
       "Гражданское право. Особенная часть",
@@ -2514,27 +2514,10 @@ function renderGopModalView(code) {
   const hasProfile = !!GOP_SUBJECTS[code];
   const subjects = GOP_SUBJECTS[code] || COMMON_SUBJECTS;
   const body = document.getElementById('dirModalBody');
+  body.classList.toggle('is-compact', PROFILE_ONLY_CODES.has(code)); // M078: компактная мобильная раскладка
   body.innerHTML = `
     <p class="eyebrow">${g.code} · Магистратура</p>
     <h3 class="modal-title">${esc(g.name)}</h3>
-    <div class="kcat-stat-grid" style="margin:14px 0 22px">
-      <div class="kcat-stat">
-        <div class="kcat-stat-label">${I18N.t('gop.stat.applications')}</div>
-        <div class="kcat-stat-value">${g.applications.toLocaleString('ru-RU')}</div>
-      </div>
-      <div class="kcat-stat">
-        <div class="kcat-stat-label">${I18N.t('gop.stat.participants')}</div>
-        <div class="kcat-stat-value">${g.participants.toLocaleString('ru-RU')} <small>${g.participation_pct.toFixed(1)}%</small></div>
-      </div>
-      <div class="kcat-stat">
-        <div class="kcat-stat-label">${I18N.t('gop.stat.passed')}</div>
-        <div class="kcat-stat-value" style="color:var(--teal)">${g.passed.toLocaleString('ru-RU')} <small>${g.passed_pct.toFixed(1)}%</small></div>
-      </div>
-      <div class="kcat-stat">
-        <div class="kcat-stat-label">${I18N.t('gop.stat.failed')}</div>
-        <div class="kcat-stat-value" style="color:var(--danger)">${g.failed.toLocaleString('ru-RU')} <small>${g.failed_pct.toFixed(1)}%</small></div>
-      </div>
-    </div>
     <p class="modal-lead">${I18N.t('gop.lead')}</p>
     <ul class="subject-list">
       ${subjects.map(s => `
@@ -3009,7 +2992,7 @@ function loadKtJs() {
   if (!ktJsPromise) {
     ktJsPromise = new Promise((resolve, reject) => {
       const s = document.createElement('script');
-      s.src = 'kt.min.js?v=14';
+      s.src = 'kt.min.js?v=15';
       s.onload = resolve;
       s.onerror = () => { ktJsPromise = null; reject(new Error('Не удалось загрузить тест — проверьте соединение')); };
       document.body.appendChild(s);

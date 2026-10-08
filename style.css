@@ -1137,6 +1137,20 @@ html[data-theme="dark"] .theme-toggle .icon-moon{ display:block; }
   .subject-arrow{ position:absolute; top:50%; right:14px; transform:translateY(-50%); }
 }
 
+/* M078: компактное модальное окно направления на телефоне ("is-compact" ставит renderGopModalView) */
+@media (max-width:560px){
+  .modal-overlay{ padding:12px; }
+  .modal:has(#dirModalBody.is-compact){ padding:22px 16px 18px; max-height:92vh; max-height:92dvh; }
+  .modal:has(#dirModalBody.is-compact) .modal-close{ top:6px; right:6px; width:44px; height:44px; font-size:26px; display:flex; align-items:center; justify-content:center; }
+  #dirModalBody.is-compact .modal-title{ font-size:24px; }
+  #dirModalBody.is-compact .modal-lead{ margin:10px 0 16px; }
+  #dirModalBody.is-compact .subject-row{ padding:12px 38px 12px 12px; gap:8px 10px; }
+  #dirModalBody.is-compact .subject-title{ font-size:15px; line-height:1.3; }
+  #dirModalBody.is-compact .subject-sub{ line-height:1.35; }
+  #dirModalBody.is-compact .subject-list{ margin-bottom:16px; }
+  #dirModalBody.is-compact .btn-block{ min-height:48px; }
+}
+
 .back-link{
   background:transparent; border:none; color:var(--ink-soft);
   font-family:var(--font-mono); font-size:12px; padding:0 0 14px; letter-spacing:.05em;
