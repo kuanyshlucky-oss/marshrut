@@ -43,7 +43,7 @@ const KT_TYPES = {
     total: 70,                    // максимум баллов: 30 + 20×2
     questions: 50,                // вопросов: 30 + 20
     thresholdTotal: 35,
-    timeMin: 80,
+    timeMin: 90,                  // по спецификациям НЦТ: теория 60 мин + кейс 30 мин
     blockMin: null,
   },
 };

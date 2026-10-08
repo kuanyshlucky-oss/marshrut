@@ -1417,6 +1417,13 @@ body.test-open #reviewPage input{ user-select:text; }
 }
 .rev-conspect-text p{ margin:0 0 10px; }
 .rev-conspect-text p:last-child{ margin-bottom:0; }
+/* Текстовые конспекты: **термин** и заметка «> Запомните…» (formatConspectText) */
+.kp-term{ color:var(--accent); font-weight:600; }
+.kp-callout{
+  margin:14px 0 4px; padding:12px 16px; border-left:3px solid var(--accent);
+  background:rgba(10,108,201,.07); border-radius:0 12px 12px 0;
+  color:var(--ink); font-weight:500; line-height:1.6;
+}
 .rev-conspect-list{ margin:0 0 10px; padding-left:0; list-style:none; }
 .rev-conspect-list:last-child{ margin-bottom:0; }
 .rev-conspect-list li{ position:relative; padding-left:16px; margin-bottom:6px; }
