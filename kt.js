@@ -618,6 +618,7 @@ function openKTReview() {
         <div class="rev-opts">${opts}</div>
         ${why}
         ${conspectBlock}
+        ${reviewTopicLink(s.code, item.topic)}
       </div>`;
   }).join('');
 
