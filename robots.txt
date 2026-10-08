@@ -2,5 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /cabinet.html
+Disallow: /konspekty.html
+Disallow: /konspekt.html
 
 Sitemap: https://jetishub.kz/sitemap.xml

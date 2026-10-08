@@ -2,18 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://jetishub.kz/</loc>
+    <lastmod>2026-10-09</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://jetishub.kz/exam-guide.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://jetishub.kz/konspekty.html</loc>
+    <lastmod>2026-10-09</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://jetishub.kz/kt-stats.html</loc>
+    <lastmod>2026-10-09</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>
