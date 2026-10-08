@@ -137,6 +137,20 @@ function ktTypesFor(code) {
   return Object.values(KT_TYPES).filter(t => (t.id === 'profile2') === only);
 }
 
+// Справа от карточки типа КТ из двух профильных предметов — два блока теста: предмет, число вопросов,
+// максимум баллов (1-й предмет: 1 балл за вопрос; 2-й: до 2 баллов, несколько верных ответов).
+function ktProfileBlocksHtml(code) {
+  const t = KT_TYPES.profile2;
+  const names = KT_SUBJECT_NAMES[code] || {};
+  const card = (id, pts, hintKey) => `
+      <div class="kt-block-card">
+        <span class="kt-type-name">${esc(names[id] || ktBlockLabel(code, id))}</span>
+        <span class="kt-type-total">${t.blockSize[id]} ${I18N.t('kt.questionsWord')} · ${I18N.t('kt.maxScore')} ${pts}</span>
+        <span class="kt-type-meta">${I18N.t(hintKey)}</span>
+      </div>`;
+  return `<div class="kt-block-cards">${card('subj1', t.blockSize.subj1, 'kt.profile2.single')}${card('subj2', t.blockSize.subj2 * 2, 'kt.profile2.multi')}</div>`;
+}
+
 function openKT(code) {
   const d = findDirection(code);
   const profileOnly = PROFILE_ONLY_CODES.has(code);
@@ -147,6 +161,7 @@ function openKT(code) {
     <p class="test-sub">${d.code} · ${d.name}</p>
     <p class="kt-setup-lead">${I18N.t(profileOnly ? 'kt.simLeadProfile2' : 'kt.simLead')}</p>
 
+    ${profileOnly ? '<div class="kt-split">' : ''}
     <div class="kt-type-cards" id="ktType">
       ${ktTypesFor(code).map((t, i) => `
         <button class="kt-type-card ${i === 0 ? 'is-active' : ''}" data-type="${t.id}">
@@ -155,6 +170,7 @@ function openKT(code) {
           <span class="kt-type-meta">${I18N.t('kt.threshold')} ${t.thresholdTotal} · ${t.blockMin ? I18N.t('kt.hasBlockMin') : I18N.t('kt.noBlockMin')}</span>
         </button>`).join('')}
     </div>
+    ${profileOnly ? ktProfileBlocksHtml(code) + '</div>' : ''}
 
     ${profileOnly ? '' : `<p class="kt-field-label">${I18N.t('kt.foreignLangLabel')}</p>
     <div class="kt-lang-row" id="ktLang">
