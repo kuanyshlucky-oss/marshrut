@@ -593,3 +593,26 @@ func TestFrenchLangDirection(t *testing.T) {
 		t.Fatalf("fr для M107 должен быть отклонён, err=%v", err)
 	}
 }
+
+func TestFrenchListeningTracksUseDistinctFiles(t *testing.T) {
+	s := svc(t)
+	for seed := uint64(1); seed <= 60; seed++ {
+		p, err := BuildKT(s, seeded(seed), "nauchped", "M019", "ru", "fr")
+		if err != nil {
+			t.Fatal(err)
+		}
+		files := map[string]bool{}
+		n := 0
+		for _, r := range p.Refs {
+			if r.Block == "lang" && r.Stage == "listening" {
+				b, _ := s.Bank(r.Bank)
+				f, _, _ := strings.Cut(b.Questions[r.Idx].Audio, "?")
+				files[f] = true
+				n++
+			}
+		}
+		if n != 16 || len(files) != 2 {
+			t.Fatalf("seed %d: вопросов %d, разных файлов %d (нужно 16 и 2)", seed, n, len(files))
+		}
+	}
+}

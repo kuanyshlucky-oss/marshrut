@@ -11,6 +11,7 @@ import (
 	"errors"
 	"math/rand/v2"
 	"sort"
+	"strings"
 	"time"
 
 	"marshrut-api/internal/content"
@@ -210,11 +211,23 @@ func pickTracks(r Shuffler, pool []item, tracks int) []item {
 		byAudio[it.q.Audio] = append(byAudio[it.q.Audio], it)
 	}
 	r.Shuffle(len(order), func(i, j int) { order[i], order[j] = order[j], order[i] })
-	if tracks > len(order) {
-		tracks = len(order)
+	// Две записи с одним и тем же файлом (у французского одна запись стоит у нескольких наборов
+	// вопросов, адреса различаются суффиксом «?s=…») в одну попытку не берём.
+	var picked []string
+	usedFile := map[string]bool{}
+	for _, a := range order {
+		if len(picked) == tracks {
+			break
+		}
+		file, _, _ := strings.Cut(a, "?")
+		if usedFile[file] {
+			continue
+		}
+		usedFile[file] = true
+		picked = append(picked, a)
 	}
 	var out []item
-	for _, a := range order[:tracks] {
+	for _, a := range picked {
 		out = append(out, withStage(append([]item(nil), byAudio[a]...), "listening")...)
 	}
 	return groupByAudio(out)
@@ -224,6 +237,14 @@ func pickTracks(r Shuffler, pool []item, tracks int) []item {
 // вопросов, у французского групп по 7–8, поэтому при нехватке берётся ещё одна запись, а лишнее отсекается.
 func pickListening(r Shuffler, pool []item, need int) []item {
 	var out []item
+	// Сначала пробуем набрать need вопросов двумя записями (у одной из французских записей 7 вопросов,
+	// пара 7+8 даёт 15) — пересборка выбора; если не вышло, берём третью запись.
+	for attempt := 0; attempt < 30; attempt++ {
+		out = pickTracks(r, pool, 2)
+		if len(out) >= need {
+			return out[:need]
+		}
+	}
 	for tracks := 2; tracks <= 8; tracks++ {
 		out = pickTracks(r, pool, tracks)
 		if len(out) >= need {
