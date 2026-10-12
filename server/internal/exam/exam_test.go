@@ -656,3 +656,79 @@ func TestListeningRecordingsDoNotRepeat(t *testing.T) {
 		}
 	}
 }
+
+// Прогресс подготовки по общим предметам: попытка даёт темы только блоков lang/logic из банков
+// своего иностранного языка и ТГО, верный ответ → Correct, неверный → !Correct.
+func TestProgressTopicsOfCommonSubjects(t *testing.T) {
+	s := svc(t)
+	wantLang := map[string]map[string]bool{"M107": {}, "M019": {}}
+	for code := range wantLang {
+		l, g, r := content.LangBankIDs(code)
+		for _, id := range []string{l, g, r} {
+			b, _ := s.Bank(id)
+			for _, q := range b.Questions {
+				if q.Topic == "" {
+					t.Fatalf("%s: вопрос без темы в %s", code, id)
+				}
+				wantLang[code][q.Topic] = true
+			}
+		}
+	}
+	logicB, _ := s.Bank(content.BankLogic)
+	wantLogic := map[string]bool{}
+	for _, q := range logicB.Questions {
+		wantLogic[q.Topic] = true
+	}
+	if len(wantLang["M107"]) != 3 || len(wantLang["M019"]) != 22 || len(wantLogic) != 5 {
+		t.Fatalf("число тем: en %d, fr %d, тго %d (ожидалось 3, 22, 5)", len(wantLang["M107"]), len(wantLang["M019"]), len(wantLogic))
+	}
+	for code, want := range wantLang {
+		plans := map[string]*Plan{}
+		for _, sec := range []string{"lang", "logic"} {
+			p, err := BuildSubject(s, seeded(7), code, "ru", sec)
+			if err != nil {
+				t.Fatal(err)
+			}
+			plans["subject-"+sec] = p
+		}
+		kt, err := BuildKT(s, seeded(7), "nauchped", code, "ru", "en")
+		if err != nil {
+			t.Fatal(err)
+		}
+		plans["kt"] = kt
+		for name, p := range plans {
+			qs, err := Resolve(s, p.Refs)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, mode := range []string{"correct", "wrong"} {
+				answers := make([]Answer, len(qs))
+				for i, q := range qs {
+					if mode == "correct" {
+						answers[i] = Answer(q.Correct)
+					} else {
+						answers[i] = Answer{} // пусто = неверно
+					}
+				}
+				o, err := Grade(p, qs, answers)
+				if err != nil {
+					t.Fatalf("%s %s %s: %v", code, name, mode, err)
+				}
+				hitsBySection := map[string]int{}
+				for _, h := range o.Hits {
+					hitsBySection[h.Section]++
+					ok := (h.Section == "lang" && want[h.Topic]) || (h.Section == "logic" && wantLogic[h.Topic]) || h.Section == "subj1" || h.Section == "subj2"
+					if !ok {
+						t.Fatalf("%s %s: тема %q не из банка раздела %s", code, name, h.Topic, h.Section)
+					}
+					if h.Section != "subj1" && h.Section != "subj2" && h.Correct != (mode == "correct") {
+						t.Fatalf("%s %s %s: Correct=%v для %q", code, name, mode, h.Correct, h.Topic)
+					}
+				}
+				if name == "kt" && (hitsBySection["lang"] != 50 || hitsBySection["logic"] != 30) {
+					t.Fatalf("%s kt: hits lang=%d logic=%d, want 50/30", code, hitsBySection["lang"], hitsBySection["logic"])
+				}
+			}
+		}
+	}
+}
