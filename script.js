@@ -43,6 +43,31 @@ const COMMON_SUBJECTS = [
 
 /* У этих направлений общий иностранный язык — французский (на сервере content.FrenchLang). */
 const FRENCH_LANG_CODES = new Set(['M019']);
+// Темы общего французского (прогресс подготовки) — названия совпадают с темами библиотеки COMMON_CONSPECTS.french.
+const FRENCH_LANG_TOPICS = [
+  "Артикли и слияния",
+  "Существительные и прилагательные: род и число",
+  "Числительные и даты",
+  "Местоимения: личные, y, en, относительные",
+  "Вопрос и отрицание",
+  "Настоящее время: главные глаголы",
+  "Прошедшие времена",
+  "Будущее и условное наклонение",
+  "Subjonctif",
+  "Повелительное, герундий, причастие",
+  "Пассив и косвенная речь",
+  "Предлоги, страны и время",
+  "Наречия и степени сравнения",
+  "Работа, профессии, карьера",
+  "Семья, воспитание, молодёжь",
+  "Франция: символы, праздники, учреждения",
+  "Образование",
+  "Права человека, общество, экология",
+  "СМИ, культура и коммуникация",
+  "Отпуск, путешествия и досуг",
+  "Здоровье, спорт и образ жизни",
+  "Искусство, музыка и литература"
+];
 const COMMON_SUBJECTS_FR = COMMON_SUBJECTS.map(s => s.id === 'lang'
   ? { ...s, title: 'Французский язык', sub: 'аудирование, грамматика, чтение', topics: [
       'Аудирование (Compréhension orale) — 16 вопросов: диалоги и сообщения на слух',
@@ -243,7 +268,7 @@ function conspectLink(topic, code) {
 // Ссылка из разбора теста на конспект темы вопроса в библиотеке (там же, откуда идёт «Прогресс
 // подготовки»). Пока включена для направлений из REVIEW_TOPIC_LINK_CODES (M078); ссылки нет,
 // если темы в библиотеке конспектов нет.
-const REVIEW_TOPIC_LINK_CODES = new Set(['M078']);
+const REVIEW_TOPIC_LINK_CODES = new Set(['M078', 'M019']);
 function reviewTopicLink(code, topic) {
   if (!code || !topic || !REVIEW_TOPIC_LINK_CODES.has(code) || typeof progressConspectHref !== 'function') return '';
   const href = progressConspectHref(code, topic);
@@ -3174,7 +3199,8 @@ const COMMON_CONSPECTS = {
     ],
   },
   // Французский (общий иностранный язык у направлений из FRENCH_LANG_CODES): авторские текстовые конспекты —
-  // грамматика, темы и лексика, стратегии аудирования и чтения; под вопросы банка c/lang-fr.
+  // грамматика, темы и лексика, стратегии аудирования и чтения. Названия тем грамматики и лексики совпадают с полем
+  // topic вопросов c/lang-fr (прогресс подготовки) и со списком тем предмета M019 в GOP_SUBJECTS.
   french: {
     title: 'Иностранный язык (французский)',
     sections: [
@@ -3493,6 +3519,46 @@ const COMMON_CONSPECTS = {
 • Качества: {{g:la tolérance, le respect, l’ouverture}}; важны la maîtrise de la langue и les connaissances.
 • Коллективисты: la solidarité, l’unisson, l’accord. Индивидуалисты: la responsabilité individuelle, l’ambition personnelle, l’autonomie.
 • Обращение к незнакомым: Madame, Monsieur.`},
+
+          { title: "Отпуск, путешествия и досуг", body:
+`## Аренда и поездки
+| louer une maison / un appartement | снять дом, квартиру |
+| un {{o:camping-car}} | автодом, кемпер |
+| une agence | агентство |
+| un voyage {{b:organisé}} | организованная поездка |
+| circuler {{g:librement}} | свободно передвигаться |
+• Pendant les vacances on {{b:part}} (en vacances), on {{b:s’arrête}} chez des amis, on {{b:visite}} les villes et les parcs nationaux.
+>? Cet été, nous {{g:louons}} une maison {{g:en Bretagne}}. Nous allons au {{g:Québec}} pour trois semaines.
+## Досуг и занятия
+• {{b:faire de la planche à voile}} (виндсёрфинг), {{b:faire de la randonnée}} (поход), faire du camping, faire du tennis, {{b:bricoler}} (мастерить), jardiner, lire, dormir, peindre.
+• Pays et lieux de l’audio: la Bretagne, le Québec, Barcelone, la Grèce, Baie-Saint-Paul, le fleuve Saint-Laurent.
+## Путешествие на машине
+• {{b:conduire}} — водить; {{o:doubler}} une voiture — обгонять; un panneau «Stationnement interdit»; une {{r:amende}} — штраф; une autoroute {{o:payante}} — платная трасса; le péage; les embouteillages; le permis de conduire (с 18 лет).
+>+ Из аудио берите «кто — что делает — куда едет»: вопросы идут в том же порядке, что и рассказ.`},
+
+          { title: "Здоровье, спорт и образ жизни", body:
+`## Быть в форме
+• {{b:garder la forme}}, {{b:être en forme}} — оставаться в форме; {{g:se sentir bien dans sa peau}} — хорошо чувствовать себя; un régime alimentaire — диета.
+• Здоровые привычки: se coucher tôt, {{g:8 heures de sommeil}} — c’est {{g:indispensable}}; faire du sport, de la marche à pied; manger léger (salade, légumes, fruits).
+• Чего избегают: {{r:pas d’alcool, surtout pas de cigarettes}}, pas de plats en sauce, pas de graisse, jamais de sucrerie.
+>? Il ne fait pas {{o:grand-chose}} pour être en forme. · Je suis inscrite à un {{b:club de danse}} : j’y vais {{b:deux fois par semaine}}.
+## Вес
+• {{r:perdre des kilos}} — c’est {{r:difficile}} (dur); grossir — набирать вес.
+## Большой спорт: Тур де Франс
+• Le Tour de France — la grande compétition française de {{b:cyclisme}}, en {{b:juillet}}, {{b:20–22 étapes}}, финиш на Елисейских полях; победитель носит {{o:maillot jaune}}; горы — Альпы и Пиренеи, «les Géants de la route». Первый — 1903 г.
+• Зрители ставят {{b:tentes ou caravanes}} вдоль дороги, едут часть пути на велосипеде.`},
+
+          { title: "Искусство, музыка и литература", body:
+`## Живопись: Клод Моне
+• {{b:Claude Monet}} (родился в 1840 в Париже) — глава {{g:школы импрессионистов}}; название стиля — от картины «{{o:Impression, soleil levant}}» (1872, вид Гавра).
+• Жил в {{b:Живерни}} (Нормандия) в розовом доме с 1883 до смерти в 1926; музей Моне — с японскими гравюрами (estampes), садом и «японским мостиком» (кувшинки — «Les Nymphéas»). Лучше ехать {{g:осенью и весной}}.
+## Музыка
+• Annabelle joue de la {{b:clarinette}} (с 11 лет), в двух оркестрах (Амбуаз, Сен-Мартен-ле-Бо); 4 концерта в год; любит рок — {{o:Stereophonics}}; слушает музыку на iPod.
+## Эйфелева башня
+• Посетили более {{b:200 миллионов}}; около {{b:6 миллионов}} в год; открыта {{b:365 дней}}; {{b:10 000}} лампочек; лифты проходят около 103 000 км в год — {{g:2,5 оборота вокруг Земли}}.
+• Слова: les {{b:trajets / parcours}}, des modèles {{o:différents}} ↔ {{o:similaires}}.
+## Литература: Ги де Мопассан
+• Родился в Фекане (1850), мать — Лор ле Пуатвен, отец — Гюстав де Мопассан; наставник — {{b:Гюстав Флобер}}; успех — «Boule de suif» (1880); герои — {{b:крестьяне и рыбаки}} Нормандии; болезнь, попытка самоубийства, умер в клинике доктора Бланша в 1893.`},
         ],
       },
       {
@@ -4103,7 +4169,7 @@ const GOP_SUBJECTS = {
   // Темы — из официальных спецификаций НЦТ: «Педагогика» (20 тем, 30 заданий) и «Профессионально-ориентированный
   // иностранный язык (французский язык)» (5 тем, 20 заданий, 50 мин). Совпадают с полем topic вопросов M019.json.
   M019: [
-    ...COMMON_SUBJECTS_FR,
+    ...COMMON_SUBJECTS_FR.map(x => x.id === 'lang' ? { ...x, topics: FRENCH_LANG_TOPICS } : x),
     { id: 'p1', title: 'Педагогика', sub: 'профессия педагога, методология, воспитание и обучение, ЦПП, технологии', kind: 'profile', topics: [
       "Приоритетная роль образования в современных условиях",
       "Общая характеристика педагогической профессии и деятельности",
@@ -5311,6 +5377,14 @@ function progressConspectHref(code, topic) {
     for (const sec of lib.sections || []) {
       const idx = (sec.topics || []).findIndex(t => test(progressNorm(t.title)));
       if (idx >= 0) return `konspekty.html?code=${encodeURIComponent(code)}&section=${encodeURIComponent(sec.key)}&topic=${idx}`;
+    }
+  }
+  // Общий французский (раздел «Иностранный язык» у M019) живёт в общей библиотеке, не в профильной.
+  if (FRENCH_LANG_CODES.has(code)) {
+    const fr = COMMON_CONSPECTS.french;
+    for (const sec of fr.sections) {
+      const idx = sec.topics.findIndex(t => progressNorm(t.title) === key);
+      if (idx >= 0) return `konspekty.html?code=french&section=${encodeURIComponent(sec.key)}&topic=${idx}`;
     }
   }
   return '';
