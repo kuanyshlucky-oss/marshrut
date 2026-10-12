@@ -60,7 +60,7 @@
     ],
     "correct": 1,
     "audio": "assets/listening-fr/audio-a.mp3?s=1a",
-    "conspect": "Дети хотят заниматься виндсëрфингом: «Les enfants veulent faire de la planche à voile»."
+    "conspect": "Дети хотят заниматься виндсёрфингом: «Les enfants veulent faire de la planche à voile»."
    },
    {
     "q": "Leur maison louée est ...",
@@ -348,7 +348,7 @@
     ],
     "correct": 0,
     "audio": "assets/listening-fr/audio-c.mp3?s=2b",
-    "conspect": "У неë нет детей: «Pas d’enfant» — «Elle n’a pas d’enfant»."
+    "conspect": "У неё нет детей: «Pas d’enfant» — «Elle n’a pas d’enfant»."
    },
    {
     "q": "Son téléphone est le 06 10 ... 58 10.",
@@ -492,7 +492,7 @@
     ],
     "correct": 3,
     "audio": "assets/listening-fr/audio-a.mp3?s=3b",
-    "conspect": "Мадлен хочется отдохнуть: «je veux lire, dormir et peut-être peindre» — в вопросе верный вариант «dormir»."
+    "conspect": "Мадлен говорит: «je veux lire, dormir et peut-être peindre» — из предложенных вариантов подходит «dormir» (спать, отдыхать)."
    },
    {
     "q": "Les amis de Delphine sont ...",
@@ -516,7 +516,7 @@
     ],
     "correct": 3,
     "audio": "assets/listening-fr/audio-a.mp3?s=3b",
-    "conspect": "Вторая дочь — Матильда (Mathilde): едет в Грецию со своим другом."
+    "conspect": "В записи названы две девушки: Delphine (едет в Барселону) и Mathilde (едет в Грецию с другом). Вторая — Mathilde."
    },
    {
     "q": "Le nom de la première copine de Catherine est ...",
@@ -528,7 +528,7 @@
     ],
     "correct": 3,
     "audio": "assets/listening-fr/audio-a.mp3?s=3b",
-    "conspect": "Первая дочь — Дельфина (Delphine): едет в Барселону к друзьям."
+    "conspect": "В записи названы две девушки: Delphine (едет в Барселону к друзьям) и Mathilde (едет в Грецию). Первая — Delphine."
    },
    {
     "q": "On va s’arrêter",
@@ -828,7 +828,7 @@
     ],
     "correct": 2,
     "audio": "assets/listening-fr/audio-g.mp3?s=6a",
-    "conspect": "В Туре она больше не играет: репетиции заканчивались вечером, поздно, а прав у неë ещë не было и родителям приходилось за ней приезжать."
+    "conspect": "В Туре она больше не играет: репетиции заканчивались вечером, поздно, а прав у неё ещё не было и родителям приходилось за ней приезжать."
    },
    {
     "q": "Le groupe de rock s’appelle ...",
@@ -852,7 +852,7 @@
     ],
     "correct": 3,
     "audio": "assets/listening-fr/audio-g.mp3?s=6a",
-    "conspect": "Она слушает музыку на своëм iPod (sur son i-pod)."
+    "conspect": "Она слушает музыку на своём iPod (sur son i-pod)."
    },
    {
     "q": "... millions de visiteurs sont venus depuis sa construction.",
@@ -1346,7 +1346,7 @@
      "-"
     ],
     "correct": 1,
-    "conspect": "Герундий en + participe présent: en quittant la location — «покидая жильë»."
+    "conspect": "Герундий en + participe présent: en quittant la location — «покидая жильё»."
    },
    {
     "q": "Mes parents ___ des champs et ___ au marché tous les samedis",
@@ -1819,7 +1819,7 @@
      "Le policier lui dit de le suivre."
     ],
     "correct": 3,
-    "conspect": "Косвенная речь: приказ передаëтся конструкцией «dire de + инфинитив»: Le policier lui dit de le suivre."
+    "conspect": "Косвенная речь: приказ передаётся конструкцией «dire de + инфинитив»: Le policier lui dit de le suivre."
    },
    {
     "q": "Il_____14 heures.",
@@ -1970,7 +1970,7 @@
     ],
     "correct": 3,
     "passage": "LE VOYAGE EN VOITURE\nChaque jour, ma mère m'emmène au collège. On monte en voiture, on attache les ceintures de sécurité et on démarre. Ma mère conduit doucement, elle est très prudente. Elle respecte le code de la route. Sinon, on risque d'avoir un accident ou de renverser un piéton. Mais quand une voiture roule vraiment très lentement devant nous, ma mère la double. Chaque matin, on fait le même trajet: on prend l’avenue Gambetta et on continue tout droit. Ensuite, on s'arrête au feu rouge et on tourne à gauche. On traverse une petite place, tourne à droite et continue jusqu'au collège. A quatre heures de l'après-midi, ma mère vient me chercher après les cours. Avant de rentrer à la maison, on prend une tasse de thé avec un croissant. Parfois, il est difficile de se garer car il n'y a pas de place. Une fois, ma mère n'a pas vu le panneau «Stationnement interdit» et elle a dû payer une amende. Le dimanche, on va à la campagne. Le dimanche, c'est mon père qui conduit. Il aime la vitesse et il prend toujours l’autoroute car sur une autoroute, on peut rouler à 180 kilomètres à l'heure. En France, toutes les autoroutes sont payantes : on paie au péage. Voyager en voiture, c'est très rapide et pratique. Mais il y a quelques inconvénients. Aux heures de pointe, il y a des embouteillages. Ensuite, il faut prendre de l’essence qui coûte assez cher. Puis, si la voiture est en panne, il faut la faire réparer ce qui n'est pas gratuit. Enfin, le voyage en voiture est très risqué. Mais malgré tout ça, à 18 ans, je m'inscrirai à l'autoécole pour avoir le permis de conduire.",
-    "conspect": "За рулëм по воскресеньям — отец: «Le dimanche, c’est mon père qui conduit»."
+    "conspect": "За рулём по воскресеньям — отец: «Le dimanche, c’est mon père qui conduit»."
    },
    {
     "q": "On risque d'avoir un accident ou de renverser _______",
@@ -2102,7 +2102,7 @@
     ],
     "correct": 1,
     "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
-    "conspect": "Французская молодëжь любит слушать музыку и заниматься спортом («Ils aiment écouter de la musique»). Ответ: «la musique»."
+    "conspect": "Французская молодёжь любит слушать музыку и заниматься спортом («Ils aiment écouter de la musique»). Ответ: «la musique»."
    },
    {
     "q": "En générale, les jeunes suivent … heures de cours au lycée.",
@@ -2114,7 +2114,7 @@
     ],
     "correct": 3,
     "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
-    "conspect": "В лицее они «suivent leurs 39 heures de cours» — 39 часов занятий в неделю (trente-neuf)."
+    "conspect": "В лицее они «suivent leurs 39 heures de cours» — 39 часов занятий (trente-neuf)."
    },
    {
     "q": "Ils trouvent aussi le temps pour",
@@ -2126,7 +2126,7 @@
     ],
     "correct": 1,
     "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
-    "conspect": "Молодëжь любит читать: «La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire»."
+    "conspect": "Молодёжь любит читать: «La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire»."
    },
    {
     "q": "Les jeunes ne voient presque personne à cause de manque de / d’",
@@ -2150,7 +2150,7 @@
     ],
     "correct": 1,
     "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
-    "conspect": "Несмотря на свои проблемы (soucis — заботы), молодëжь остаëтся весëлой и оптимистичной: «Malgré leurs problèmes… ils restent gais»."
+    "conspect": "Несмотря на свои проблемы (soucis — заботы), молодёжь остаётся весёлой и оптимистичной: «Malgré leurs problèmes… ils restent gais»."
    },
    {
     "q": "D’habitude, le Ministère de la jeunesse et des sports organise des chantiers internationaux quand les étudiants sont",
@@ -2162,7 +2162,7 @@
     ],
     "correct": 3,
     "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
-    "conspect": "Министерство молодëжи и спорта организует международные стройки на каникулах (pendant les vacances)."
+    "conspect": "Министерство молодёжи и спорта организует международные стройки на каникулах (pendant les vacances)."
    },
    {
     "q": "On organise des forums où les jeunes peuvent obtenir des renseignements nécessaires concernant",
@@ -2174,7 +2174,7 @@
     ],
     "correct": 2,
     "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
-    "conspect": "На форумах молодëжь получает информацию о потребностях в обучении: «obtenir des informations sur les besoins en formation»."
+    "conspect": "На форумах молодёжь получает информацию о потребностях в обучении: «obtenir des informations sur les besoins en formation»."
    },
    {
     "q": "Les jeunes Français ont besoin d’argent pour",
@@ -2234,7 +2234,7 @@
     ],
     "correct": 3,
     "passage": "Guy de Maupassant\nGuy de Maupassant est né à Fécamp le cinq août 1850, fils d'une bourgeoise, Laure le Poitevin et d'un noble, Gustave de Maupassant. La famille s'installe à Paris mais les époux ne s'entendent pas et le garçon n'oubliera jamais les scènes de violence conjugale auxquelles il assiste. Ses parents séparés, l'enfant est élevé à Etretat par sa mère qu'il adore, femme éprise de littérature et amie de Flaubert. Il grandit dans la campagne normande et se lie avec les paysans et les pêcheurs de la région qui lui inspireront plus tard des personnages. A douze ans, il rentre dans l'institution ecclésiastique d'Yvetot (qu'il quittera avec une profonde aversion pour la religion) puis termine ses études au lycée de Rouen. A Paris, il fait des études de droit, interrompues par une mobilisation à Rouen pendant la guerre franco-prussienne. Ensuite, il trouve un emploi au ministère de la Marine puis de l'Instruction publique (1872-1880). Flaubert devient son mentor, le guide dans le journalisme et l'introduit dans le milieu littéraire réaliste et naturaliste : il rencontre Zola, Huysmans, Tourguéniev, Daudet et les frères Goncourt et participe aux Soirées de Médan. Après le succès de « Boule de suif » (1880), Maupassant abandonne son emploi au ministère pour se consacrer à l'écriture. Dès lors, de 1880 à 1890, il publie six romans et plus de trois cents contes et nouvelles. Ses récits sont publiés dans des recueils tels « Les sœurs Rondoli», « Les contes de la bécasse ». Il écrit des chroniques dans des journaux comme Gil Blas », « Le Gaulois » et « Le Figaro », ainsi que des récits de voyage et des correspondances. Vers la fin des années 1880, sa santé physique et morale se dégrade (il est victime d'hallucinations). Vivant reclus, il sombre peu à peu dans la folie et, après une tentative de suicide, il est interné dans la clinique du docteur Blanche où il meurt le six juillet 1893.",
-    "conspect": "Мопассан был помещëн в клинику доктора Бланша после попытки самоубийства («après une tentative de suicide»)."
+    "conspect": "Мопассан был помещён в клинику доктора Бланша после попытки самоубийства («après une tentative de suicide»)."
    },
    {
     "q": "L’écrivain avait un état psychologique",
@@ -2378,7 +2378,7 @@
     ],
     "correct": 0,
     "passage": "Réné, un professeur\nRené est professeur depuis de longues années. Il est rond,doux, souriant.Dès le matin de bonne heure, il est déjà dehors pour faire ses courses. Il va au marché tout près de chez lui. Tout le monde le connaît et le salue. Il sourit, il répond à tous, il dit bonjour à tous avant de mettre dans son sac de belles salades ou des fruits mûrs. Ensuite il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser. Il sait beaucoup de choses dans tous les domaines. Il travaille le dimanche et même pendant les vacances. Cela l’intéresse. C’est son occupation préférée. On peut dire de lui qu’il est érudit. Il travaille souvent aussi à la Bibliothèque municipale.Là aussi, il connaît tout le monde. On voit qu’il a l’habitude de consulter les fichiers; il ne se trompe pas. C’est un habitué. On le voit de loin, attablé devant une place, toujours la même. Il y a beaucoup de documents devant lui; il regarde, prend des notes, apprend toujours de nouvelles choses qui le passionnent si bien que lorsqu’on le rencontre il dit souvent: «Tu sais,j’ai appris que... » et il a toujours une bonne histoire à vous raconter. Il sait très bien faire la cuisine car il est gourmand. Il aime le bon vin et les bonnes choses. Il aime rire avec des amis, souvent devant un petit café dans un bistro mais aussi au restaurant au cours d’un repas aux chandelles. Il aime beaucoup rencontrer des étrangers.Ils les accueille chez lui mais il voyage beaucoup aussi, si bien qu’il connaît des gens dans le monde entier.Il s’intéresse à l’histoire de sa région mais aussi à celle des civilisations de toute la planète, si bien que l’on peut dire que sa culture est universelle.",
-    "conspect": "Он очень умëн, потому что каждый день работает в своих книгах: «il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser»."
+    "conspect": "Он очень умён, потому что каждый день работает в своих книгах: «il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser»."
    },
    {
     "q": "Pour le petit déjeuner on peut prendre dans un bistro _____.",
@@ -2474,7 +2474,7 @@
     ],
     "correct": 3,
     "passage": "Un jardin sur les toits de Beyrouth\nÀ Beyrouth, la capitale du Liban, la pollution de l’air est très élevée. Un architecte envisage la plantation d’arbres sur les toits de la capitale pour assainir l’air de la ville. Comment une ville qui n’a pas beaucoup d’industries peut-elle être aussi polluée ? Les principales responsables, ce sont les nombreuses voitures qui circulent tous les jours. De plus, il y a très peu d’espaces verts qui aideraient les habitants à mieux respirer. Des études sur la qualité de l’air affichent des résultats inquiétants puisque le taux de dioxyde d’azote (NO2) dépasse largement la valeur limite fixée par l’Organisation Mondiale de la Santé (OMS). Parce que cette pollution atmosphérique comporte des risques importants pour la santé, des associations et des spécialistes tentent de trouver des solutions. Comme, par exemple, Wassim Melki, un jeune architecte qui a lancé en 2012 un projet appelé La forêt merveilleuse de Beyrouth (Beirut Wonder Forest). Le principe est très simple : mettre des milliers d’arbres sur les toits des immeubles de Beyrouth ! Il est également économique, car il ne s’agit pas de planter des arbres sur les toits, ce qui coûterait cher, mais de placer des arbres en pot, directement sur les toits. Ce projet a une dimension collaborative intéressante car les arbres seront plantés et entretenus par les habitants de chaque bâtiment, afin de responsabiliser tous les Beyrouthins au problème de la pollution de l’air. Les conséquences positives d’un tel projet seront multiples. La qualité de l’air sera améliorée car on sait qu’un arbre capture 10 Kg de CO2 en moyenne par an. De plus, l’ombre des arbres permettra aux habitations d’avoir une température plus fraîche et ainsi de moins utiliser les systèmes de climatisation, très énergivores. Ce jardin suspendu sur les toits de la capitale libanaise pourrait également avoir des retombées positives sur le comportement des gens. Ils pourraient participer activement et simplement à l’amélioration de leur qualité de vie. L’association essaie depuis maintenant deux ans de convaincre les habitants d’adhérer au projet et l’architecte espère obtenir un soutien de la municipalité pour que cette « forêt merveilleuse » voit bientôt le jour dans le ciel de Beyrouth.",
-    "conspect": "Загрязнение воздуха несëт серьëзные риски для здоровья: «cette pollution atmosphérique comporte des risques importants pour la santé»."
+    "conspect": "Загрязнение воздуха несёт серьёзные риски для здоровья: «cette pollution atmosphérique comporte des risques importants pour la santé»."
    },
    {
     "q": "Un jeune architecte Wassim Melki propose un projet :",
@@ -2546,7 +2546,7 @@
     ],
     "correct": 1,
     "passage": "Un jardin sur les toits de Beyrouth\nÀ Beyrouth, la capitale du Liban, la pollution de l’air est très élevée. Un architecte envisage la plantation d’arbres sur les toits de la capitale pour assainir l’air de la ville. Comment une ville qui n’a pas beaucoup d’industries peut-elle être aussi polluée ? Les principales responsables, ce sont les nombreuses voitures qui circulent tous les jours. De plus, il y a très peu d’espaces verts qui aideraient les habitants à mieux respirer. Des études sur la qualité de l’air affichent des résultats inquiétants puisque le taux de dioxyde d’azote (NO2) dépasse largement la valeur limite fixée par l’Organisation Mondiale de la Santé (OMS). Parce que cette pollution atmosphérique comporte des risques importants pour la santé, des associations et des spécialistes tentent de trouver des solutions. Comme, par exemple, Wassim Melki, un jeune architecte qui a lancé en 2012 un projet appelé La forêt merveilleuse de Beyrouth (Beirut Wonder Forest). Le principe est très simple : mettre des milliers d’arbres sur les toits des immeubles de Beyrouth ! Il est également économique, car il ne s’agit pas de planter des arbres sur les toits, ce qui coûterait cher, mais de placer des arbres en pot, directement sur les toits. Ce projet a une dimension collaborative intéressante car les arbres seront plantés et entretenus par les habitants de chaque bâtiment, afin de responsabiliser tous les Beyrouthins au problème de la pollution de l’air. Les conséquences positives d’un tel projet seront multiples. La qualité de l’air sera améliorée car on sait qu’un arbre capture 10 Kg de CO2 en moyenne par an. De plus, l’ombre des arbres permettra aux habitations d’avoir une température plus fraîche et ainsi de moins utiliser les systèmes de climatisation, très énergivores. Ce jardin suspendu sur les toits de la capitale libanaise pourrait également avoir des retombées positives sur le comportement des gens. Ils pourraient participer activement et simplement à l’amélioration de leur qualité de vie. L’association essaie depuis maintenant deux ans de convaincre les habitants d’adhérer au projet et l’architecte espère obtenir un soutien de la municipalité pour que cette « forêt merveilleuse » voit bientôt le jour dans le ciel de Beyrouth.",
-    "conspect": "В тексте: тень деревьев позволит меньше пользоваться системами кондиционирования, «très énergivores» — очень энергоëмкими."
+    "conspect": "В тексте: тень деревьев позволит меньше пользоваться системами кондиционирования, «très énergivores» — очень энергоёмкими."
    },
    {
     "q": "Le mot «energivores» signifie",
@@ -2570,7 +2570,7 @@
     ],
     "correct": 3,
     "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
-    "conspect": "Недорогое жильë находят только в пригороде: «Il fallait toujours aller en banlieue et les banlieues étaient bien loin»."
+    "conspect": "Недорогое жильё находят только в пригороде: «Il fallait toujours aller en banlieue et les banlieues étaient bien loin»."
    },
    {
     "q": "Le métro de Paris a _____",
@@ -2594,7 +2594,7 @@
     ],
     "correct": 3,
     "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
-    "conspect": "«Un logement» (жильë) — по смыслу близко к «appartement» (квартира); семья долго искала жильë."
+    "conspect": "«Un logement» (жильё) — по смыслу близко к «appartement» (квартира); семья долго искала жильё."
    },
    {
     "q": "Le synonyme: La famille n’a pas su prendre les bonnes correspondances.",
@@ -2630,7 +2630,7 @@
     ],
     "correct": 1,
     "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
-    "conspect": "«Faire peur» = «décourager, effrayer»; в тестовом варианте — «a découragé»."
+    "conspect": "«Le métro a fait peur à Farida» — метро испугало Фариду; по смыслу в тесте подходит «a découragé» (отпугнуло, обескуражило)."
    },
    {
     "q": "Le père était très triste parce qu’ ______",
@@ -2642,7 +2642,7 @@
     ],
     "correct": 1,
     "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
-    "conspect": "Отец был очень грустным, потому что не мог найти жильë: «Il n’a rien trouvé» (ни работы, ни жилья)."
+    "conspect": "Отец был очень грустным, потому что не мог найти жильё: «Il n’a rien trouvé» (ни работы, ни жилья)."
    },
    {
     "q": "D’abord la famille est venue à ______.",
@@ -2654,7 +2654,7 @@
     ],
     "correct": 3,
     "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
-    "conspect": "Корабль пришëл в Марсель: «Quand leur bateau est arrivé à Marseille», затем семья поехала в Париж на поезде."
+    "conspect": "Корабль пришёл в Марсель: «Quand leur bateau est arrivé à Marseille», затем семья поехала в Париж на поезде."
    }
   ]
  }
