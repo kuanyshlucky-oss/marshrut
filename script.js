@@ -3173,6 +3173,361 @@ const COMMON_CONSPECTS = {
       },
     ],
   },
+  // Французский (общий иностранный язык у направлений из FRENCH_LANG_CODES): авторские текстовые конспекты —
+  // грамматика, темы и лексика, стратегии аудирования и чтения; под вопросы банка c/lang-fr.
+  french: {
+    title: 'Иностранный язык (французский)',
+    sections: [
+      {
+        key: 'grammaire',
+        title: "Грамматика",
+        text: true,
+        topics: [
+          { title: "Артикли и слияния", body:
+`## Три группы артиклей
+| Артикль | Муж. | Жен. | Мн. |
+|---|
+| определённый | {{b:le}} / l’ | {{o:la}} / l’ | {{g:les}} |
+| неопределённый | {{b:un}} | {{o:une}} | {{g:des}} |
+| частичный | {{b:du}} / de l’ | {{o:de la}} / de l’ | — |
+• **Определённый** — предмет известен или единственный: le soleil, la France.
+• **Неопределённый** — «какой-то», один из многих: un livre, des amis.
+• **Частичный** — часть неисчисляемого: du vin, de la viande, de l’eau.
+>? En hiver, je prends {{o:de la}} viande et {{g:des}} fruits. — viande жен. р. → de la; fruits мн. ч. → des.
+## Слияния с предлогами à и de
+• à + le → {{b:au}}, à + les → {{b:aux}}; de + le → {{b:du}}, de + les → {{b:des}}.
+• С la и l’ слияния нет: à la banque, de l’école.
+>? Elle pense {{g:aux}} enfants. · Il parle {{b:du}} projet.
+## После отрицания и количества
+• После отрицания и слов количества артикль превращается в {{r:de / d’}}: Je ne mange pas {{r:de}} viande. Beaucoup {{r:de}} choses. Combien {{r:de}} langues ?
+>! Исключение — глагол être: артикль сохраняется, когда отрицают сам предмет: Ce n’est pas {{o:du}} vin, c’est de l’eau.`},
+
+          { title: "Существительные и прилагательные: род и число", body:
+`## Множественное число существительных
+• Обычно {{g:+ s}}: un livre → des livres.
+• -s, -x, -z не меняются: un fils → des fils.
+• -al → {{b:-aux}}: un journal → des journaux; -eau, -eu → {{b:+ x}}: un tableau → des tableaux.
+• -ou → +s, но семь исключений с {{r:-x}}: {{r:genou, bijou, caillou, chou, hibou, joujou, pou}} → des genoux, des bijoux.
+>? Elle s’est mise aux {{r:genoux}}.
+## Согласование прилагательных
+| | Муж. | Жен. |
+|---|
+| обычно | grand, petit | grande, petite |
+| -eux → -euse | généreux | généreuse |
+| -if → -ive | créatif | créative |
+| -er → -ère | cher | chère |
+| -e не меняется | sympathique | sympathique |
+• Прилагательное согласуется с существительным в роде и числе: Les filles sont {{o:sérieuses, grandes, élégantes}}.
+• Подлежащее мужского рода во мн. числе → {{b:-s}}: les footballeurs {{g:fatigués, passifs, indécis}}.
+>! Если в подлежащем есть хотя бы один мужской элемент — прилагательное идёт в мужском роде.
+## Профессии
+• Женский род: -eur → -euse (vendeur → vendeuse), -teur → -trice (traducteur → {{o:traductrice}}), -ien → -ienne (politicien → politicienne).
+• Часть профессий не меняется: professeur, médecin, ingénieur.`},
+
+          { title: "Числительные и даты", body:
+`## Ключевые числа
+| 70 | soixante-dix | 80 | quatre-vingts |
+| 71 | soixante et onze | 90 | quatre-vingt-dix |
+| 77 | soixante-dix-sept | 99 | quatre-vingt-dix-neuf |
+• {{b:et}} только в 21, 31, 41, 51, 61, 71: vingt {{b:et}} un, soixante {{b:et}} onze. В 81 и 91 — без et: quatre-vingt-un.
+• Все составные числа до 100 пишутся через дефис.
+## Правописание
+• {{r:quatre-vingts}} — с -s, если после нет другого числа; quatre-vingt-deux — без -s.
+• {{r:cent}}: deux cents (с -s, если нет числа после), но deux cent trois. Так: {{g:499}} = quatre cent quatre-vingt-dix-neuf.
+• {{r:mille}} никогда не принимает -s: deux mille. Но {{o:un million → deux millions}} (существительное).
+>? 1880 = mille huit cent quatre-vingts. · douze {{o:millions}} d’habitants.
+## Даты и время
+• Год: mille neuf cent quatre-vingt-dix (1990), deux mille vingt-six (2026).
+• Время: Il est {{b:quatorze heures}}. Il est {{b:trois heures et quart}}.
+• Для первого числа месяца — порядковое: le {{b:premier}} mai; остальные — обычные: le quatorze juillet.`},
+
+          { title: "Местоимения: личные, y, en, относительные", body:
+`## Дополнения
+| | Прямое (кого? что?) | Косвенное (кому?) |
+|---|
+| я | me | me |
+| ты | te | te |
+| он / она | {{b:le / la}} | {{o:lui}} |
+| мы, вы | nous, vous | nous, vous |
+| они | {{b:les}} | {{o:leur}} |
+• Местоимение стоит перед глаголом: Je {{b:le}} vois. Le policier {{o:lui}} dit de {{b:le}} suivre.
+## Y и en
+• {{b:y}} заменяет «à + место/вещь»: Vous allez à la banque ? — Oui, nous {{b:y}} allons.
+• {{o:en}} заменяет «de + что-то» и количество: Tu veux du café ? — J’{{o:en}} veux.
+## Относительные местоимения
+| qui | подлежащее | un travail {{g:qui}} me prend du temps |
+| que | прямое дополнение | le livre {{g:que}} je lis |
+| dont | замена «de + …» | un homme {{g:dont}} je suis sûr |
+| où | место, время | la ville {{g:où}} j’habite |
+>+ Подсказка: если после пропуска сразу глагол — {{g:qui}}; если подлежащее (je, tu, il…) — {{g:que}} или {{g:dont}}.`},
+
+          { title: "Вопрос и отрицание", body:
+`## Как задать вопрос
+• Интонация: Tu pars à Paris ?
+• {{b:Est-ce que}}: {{b:Est-ce que}} tu pars à Paris ?
+• Инверсия: Pars-tu à Paris ? · Qu’{{o:allez-vous}} faire ?
+## Вопросительные слова
+| quel / quelle / quels / quelles | какой (согласуется с существительным) |
+| combien (de) | сколько |
+| pourquoi | почему |
+| où, quand, comment | где, когда, как |
+>? {{o:Quelle}} est sa profession ? — profession жен. р. → quelle. · {{o:Combien}} de langues étudie-t-on ?
+## Отрицание
+• ne … pas, ne … jamais, ne … rien, ne … plus: Je {{r:ne}} mange {{r:pas}}.
+• В сложных временах ne … pas окружает вспомогательный глагол: Ils {{r:n’}}ont {{r:pas}} écrit.
+• Наречие количества стоит после pas: Ils n’ont pas {{o:beaucoup}} écrit.
+>! После отрицания: du / de la / des → {{r:de}}: Je n’ai pas {{r:de}} frère.`},
+
+          { title: "Настоящее время: главные глаголы", body:
+`## Неправильные глаголы
+| | être | avoir | aller | faire |
+|---|
+| je | suis | ai | vais | fais |
+| tu | es | as | vas | fais |
+| il | est | a | va | fait |
+| nous | sommes | avons | allons | faisons |
+| vous | êtes | avez | allez | faites |
+| ils | sont | ont | vont | font |
+## Другие частые
+• pouvoir: je peux, tu peux, il peut, nous pouvons, ils peuvent.
+• venir: je viens, nous venons, ils {{o:viennent}}.
+• {{b:connaître}} — знать человека, место (Nous {{b:connaissons}} quelqu’un). {{o:savoir}} — знать факт, уметь (Je {{o:sais}} nager).
+• acheter: j’achète, tu {{o:achètes}}, nous achetons (è перед немым окончанием).
+>+ Прочитайте окончания: -e, -es, -e, -ons, -ez, -ent — для глаголов на -er.`},
+
+          { title: "Прошедшие времена", body:
+`## Passé composé = вспомогательный глагол + причастие
+• avoir + причастие: Ils {{b:ont}} travaillé ensemble. Причастие не меняется, если дополнение стоит после глагола.
+• {{o:être}} + причастие у ряда глаголов движения и состояния (aller, venir, arriver, partir, sortir, entrer, rester, naître, mourir…) и у всех возвратных: причастие {{r:согласуется с подлежащим}}.
+>? Elle {{o:est sortie}}. · Hier soir, elle {{o:est restée}} seule. · Tu {{o:t’es baigné}}. · Ils {{o:se sont rencontrés}}.
+## Imparfait — «фон» и привычка
+• Основа от nous (nous parlons → parl-) + {{g:-ais, -ais, -ait, -ions, -iez, -aient}}.
+• Описание, привычка, длительное действие: Quand j’{{g:étais}} petite, je {{g:passais}} tous les étés chez ma tante.
+>? Quand le téléphone a sonné, je {{g:dormais}}. (фон — imparfait, событие — passé composé).
+## Plus-que-parfait — «ещё раньше»
+• avoir / être в imparfait + причастие: J’ai oublié ce que j’{{p:avais appris}}. Un orage l’{{p:avait arrêté}}.
+>+ Выбор: событие — passé composé; фон и привычка — imparfait; действие до другого прошедшего — plus-que-parfait.`},
+
+          { title: "Будущее и условное наклонение", body:
+`## Futur simple
+• Инфинитив + окончания {{g:-ai, -as, -a, -ons, -ez, -ont}}: Michel {{g:partira}}.
+| être | je serai | tu {{r:seras}} |
+| avoir | j’aurai | nous {{r:aurons}} |
+| aller | {{r:irai}} | tu iras |
+| pouvoir | {{r:pourrai}} | tu {{r:pourras}} |
+• Если есть {{o:l’année prochaine, demain, après les cours}} — ставьте futur.
+## Futur proche
+• aller + инфинитив: Qu’{{o:allez}}-vous faire après les cours ?
+## Si-предложения
+| si + présent | → futur | Si tu marches lentement, tu {{g:seras}} en retard. |
+| si + imparfait | → conditionnel | Si tu le voyais, tu l’{{p:aimerais}}. |
+>! После «si» никогда не ставится futur или conditionnel.
+## Conditionnel présent
+• Основа futur + окончания imparfait: j’apprendrais, tu aimerais.`},
+
+          { title: "Subjonctif", body:
+`## Когда нужен subjonctif
+• {{r:il faut que, il est nécessaire que, il arrive que, il vaut mieux que}}
+• чувства: {{r:se réjouir que, c’est dommage que}}
+• сомнение и отрицание мнения: {{r:Je ne crois pas que}} il {{r:puisse}}.
+• желание, приказ: je veux que, j’exige que
+## Формы главных глаголов
+| être | que je {{r:sois}}, que tu {{r:sois}}, qu’il {{r:soit}}, que vous {{r:soyez}} |
+| avoir | que j’{{r:aie}}, qu’il {{r:ait}}, qu’ils {{r:aient}} |
+| aller | que j’{{r:aille}}, que vous {{r:alliez}} |
+| faire | que tu {{r:fasses}}, qu’il {{r:fasse}} |
+| pouvoir | que je {{r:puisse}}, qu’il {{r:puisse}} |
+>? Il faut que tu {{r:sois}} à l’heure. · Il est nécessaire que tu {{r:fasses}} des efforts. · Il arrive que les avions {{r:aient}} du retard.
+## Passé du subjonctif
+• aie/aies/ait/aient + причастие: C’est dommage qu’ils {{r:aient refusé}} notre proposition.
+>+ Если подлежащее в обеих частях одно и то же, чаще берут инфинитив: Je veux partir (а не que je parte).`},
+
+          { title: "Повелительное, герундий, причастие", body:
+`## Impératif
+• Формы: tu / nous / vous без местоимения: Mange ! Mangeons ! Mangez !
+• Неправильные:
+| être | {{r:sois, soyons, soyez}} |
+| avoir | {{r:aie, ayons, ayez}} |
+| savoir | sache, sachons, {{r:sachez}} |
+>? {{r:Sois}} attentif ! · {{r:Ayez}} du courage ! · {{r:Sachez}} qu’on te trompe.
+• Возвратные: глагол + дефис + местоимение: {{o:Promenez-vous}} !
+## Gérondif = en + participe présent
+• Две вещи происходят одновременно: {{g:En arrivant}} à l’aéroport, vous trouverez vos billets. {{g:En entrant}} dans sa chambre, Alice avait peur.
+• Participe présent: основа от nous + {{g:-ant}} (arriver → arrivant, avoir → ayant, être → étant).
+## Инфинитив
+• После sans, pour, avant de: sans {{b:quitter}} son bureau.
+• Общие инструкции: {{b:Parler}} à haute voix.`},
+
+          { title: "Пассив и косвенная речь", body:
+`## Страдательный залог
+• être + причастие, которое {{r:согласуется с подлежащим}}: La statue de la Liberté {{o:est offerte}} par la France. Les films sont {{o:tournés}}. Les rôles {{o:ont été joués}} par les meilleurs artistes.
+• Агенс вводится предлогом {{b:par}}.
+## Косвенная речь
+| Прямая | Косвенная |
+|---|
+| Il dit : « Suivez-moi ! » | Il lui dit {{g:de}} le suivre. |
+| Il demande : « Où vas-tu ? » | Il demande {{g:où}} je vais. |
+| Il dit : « Je pars. » | Il dit {{g:qu’}}il part. |
+>+ Приказ → {{g:dire de + инфинитив}}, вопрос → вопросительное слово без est-ce que, утверждение → {{g:que}}.`},
+
+          { title: "Предлоги, страны и время", body:
+`## Страны
+| Муж. на согласную | {{b:au}} Kazakhstan, au Canada, au Japon |
+| Жен. / на гласную | {{o:en}} France, en Italie, en Grèce, en Allemagne |
+| Множественное | {{g:aux}} États-Unis |
+## Времена
+• {{b:pendant}} — в течение (законченный период): Ils ont travaillé {{b:pendant}} dix ans.
+• {{o:depuis}} — с … до сих пор: Elle travaille ici {{o:depuis}} plusieurs années.
+• {{g:il y a}} — … тому назад: Elle est sortie {{g:il y a}} dix minutes.
+• en — за какое время / в месяце, году: {{p:en}} 2015.
+## Другие
+• chez + человек: dîner {{b:chez}} des amis.
+• à + инфинитив после существительного: beaucoup de choses {{b:à}} faire.
+• penser {{o:à}}, s’intéresser {{o:à}}, parler {{o:de}}, être sûr {{o:de}}.`},
+
+          { title: "Наречия и степени сравнения", body:
+`## Наречия на -ment
+• Берут женскую форму прилагательного + {{g:-ment}}: gentil → gentille → {{g:gentiment}}; silencieux → silencieuse → {{g:silencieusement}}.
+## Сравнение
+| bon | {{r:meilleur(e)}} | La mode française est {{r:meilleure}} que l’italienne. |
+| bien | {{r:mieux}} | Il chante {{r:mieux}}. |
+| mauvais | pire / plus mauvais | |
+• plus / moins / aussi … que.
+>! «Plus bon» не говорят: только meilleur.`},
+        ],
+      },
+      {
+        key: 'themes',
+        title: "Темы и лексика",
+        text: true,
+        topics: [
+          { title: "Работа, профессии, карьера", body:
+`## Слова
+| un emploi / un travail / un {{o:boulot}} | работа |
+| un {{o:job}} | подработка |
+| un salaire | зарплата |
+| une société / une firme / une entreprise | предприятие |
+| un poste | должность |
+| un patron | хозяин, начальник |
+## Поиск работы
+• {{g:une lettre de motivation}} — мотивационное письмо; {{g:un CV}} — резюме; un entretien — собеседование.
+• postuler à une offre d’emploi — откликнуться на вакансию.
+## Увольнение и приём
+• {{r:démissionner}} — уйти по своей воле; {{r:licencier, renvoyer, virer}} — уволить; {{g:recruter}} — нанять (противоположное).
+• Le Code du travail — Трудовой кодекс; le chômage — безработица.`},
+
+          { title: "Семья, воспитание, молодёжь", body:
+`## Воспитание детей
+• Положительно: {{g:l’amour, le soutien, les soins, la chaleur, la compréhension}}.
+• Отрицательно: {{r:les menaces, la suppression de l’indépendance, la violence}}.
+• Рисование развивает {{b:l’attention, la persévérance, la concentration}}.
+## Молодёжь
+• Проблемы: {{r:le chômage, la violence, l’anxiété, la dépression}}.
+• Качества: tolérante, habile avec la technologie, a l’esprit critique.
+• Le bénévolat — волонтёрство: aider dans les centres sociaux, protéger les animaux, donner des cours gratuits.
+• Мотивация (la motivation): потеря — {{r:ne pas se sentir en sécurité, manquer de confiance, l’ennui}}.
+## Эмоции
+• Il est {{g:aux anges}}, il déborde de bonheur — очень счастлив.
+• Il a le cafard, il est déprimé — грустит.`},
+
+          { title: "Франция: символы, праздники, учреждения", body:
+`## Символы республики
+• Девиз: {{g:Liberté, Égalité, Fraternité}}.
+• La Déclaration des droits de l’homme et du citoyen (1789) — {{o:17 статей}}; Всеобщая декларация прав человека — {{o:10 декабря 1948}}.
+## Праздники
+| 1er janvier | le Jour de l’An |
+| 1er avril | день розыгрышей |
+| 1er mai | la fête du Travail, дарят {{g:le muguet}} (ландыш) |
+| 14 juillet | {{r:la fête nationale}}, день взятия Бастилии |
+| 25 décembre | Noël |
+• Гражданские праздники: 14 juillet, 1er mai. Религиозные: Noël, Pâques, Toussaint, Assomption, Ascension.
+## Власть и территории
+• Le premier ministre — глава правительства; un ambassadeur — посол.
+• Срок президентского мандата с 2002 г. — {{o:5 лет}}.
+• Заморские департаменты (DOM): la Guadeloupe, la Martinique, la Réunion.
+## История
+• Charlemagne — император, создал школы; Jeanne d’Arc — героиня Столетней войны; Louis XIV — «L’État, c’est moi»; Mai 1968 — выступления молодёжи; кино — братья {{o:Lumière}}, {{o:1895}}.`},
+
+          { title: "Образование", body:
+`## Система образования Франции
+• Централизованная (le système éducatif est {{r:centralisé}}).
+• Три уровня: {{g:l’enseignement primaire, secondaire, supérieur}}.
+• По бюджету: les écoles {{b:publiques}} и {{b:privées}}.
+• Высшее: {{o:les universités}} и {{o:les grandes écoles}}.
+## Современное обучение
+• {{g:Le e-learning}} — гибкость, доступ везде и в любое время, разные устройства; обучение {{b:en ligne}}.
+• Les doubles diplômes — совместная программа двух вузов разных стран.
+• Как заинтересовать учеников: utiliser les interactions, varier les technologies.
+• Мотивация педагога: créer un réseau professionnel, échanger avec des collègues, expérimenter.`},
+
+          { title: "Права человека, общество, экология", body:
+`## Права и организации
+• {{b:UNICEF}} защищает права и улучшает условия жизни детей.
+• Права ребёнка: право на имя с рождения, droits {{b:civils}} — жизнь, имя, гражданство.
+• La Cour pénale internationale судит: les {{r:génocides}}, les crimes contre l’{{r:humanité}}, les crimes de {{r:guerre}}.
+• Réfugié — беженец: от violence généralisée, conflit armé, violation des droits humains.
+• Les droits {{r:inaliénables}} — неотъемлемые права.
+• {{g:L’égalité}} — отсутствие дискриминации; les Restos du cœur — бесплатная еда нуждающимся.
+## Экология
+| Ископаемые | le gaz, le charbon, le pétrole |
+| Возобновляемые | {{g:solaire, de l’eau, du vent}} |
+• Le {{g:recyclage}} сокращает отходы.
+• Effet de serre — парниковый эффект (Fourier); écologie — слово ввёл Ernst Haeckel (от греч.); «Jour de la Terre» — с 1970 г.
+• Problèmes: la surexploitation des ressources naturelles, le réchauffement climatique.`},
+
+          { title: "СМИ, культура и коммуникация", body:
+`## Пресса
+• {{b:Quotidien}} — каждый день; {{b:hebdomadaire}} — раз в неделю; {{b:mensuel}} — раз в месяц.
+• Национальные: Le Monde, Libération, Le Parisien. Региональные: Ouest-France, Midi Libre.
+• Рубрики: la politique, la culture, les faits divers.
+• {{r:Le canard}} — «утка», ложная новость. Charlie Hebdo — теракт в Париже в 2015.
+## Радио и ТВ
+• Волны: les ondes {{o:moyennes}}, {{o:courtes}}, la modulation de fréquence (FM).
+• Les {{b:débats}} — дебаты; les gadgets.
+## Коммуникация
+• Коды: {{g:les gestes, les postures, les mimiques}}.
+• Контекст: les participants, le cadre temporel et spatial, le but de l’interaction.
+• Интернет: les blogs, les réseaux sociaux, les forums.
+## Межкультурный диалог
+• Препятствия: {{r:la discrimination, les préjugés, le stéréotype}}.
+• Качества: {{g:la tolérance, le respect, l’ouverture}}; важны la maîtrise de la langue и les connaissances.
+• Коллективисты: la solidarité, l’unisson, l’accord. Индивидуалисты: la responsabilité individuelle, l’ambition personnelle, l’autonomie.
+• Обращение к незнакомым: Madame, Monsieur.`},
+        ],
+      },
+      {
+        key: 'skills',
+        title: "Аудирование и чтение",
+        text: true,
+        topics: [
+          { title: "Аудирование: как слушать запись", body:
+`## Перед записью
+• {{b:Прочитайте вопросы заранее}} — запись звучит один раз, вопросы идут по порядку записи.
+• Ищите ключевые слова: числа, имена, места, времена (hier, demain).
+## Во время записи
+• Не пытайтесь понять каждое слово. Цифры и имена пишите сразу: 06-10-72-58-10; 27 ans.
+• {{o:Отвлекающие варианты}}: в записи могут прозвучать несколько вариантов («Barcelone… la Grèce»), правильный относится к конкретному человеку.
+• Одна запись охватывает 8 вопросов подряд — вопросы идут в той же последовательности, что и рассказ.
+## Типичные темы
+• Каникулы и поездки, собеседование и CV, здоровый образ жизни, праздники (1er mai), художники и памятники (Monet, Tour Eiffel), интервью с музыкантом.
+>+ Антонимы и синонимы из записи (recruter / démissionner, confectionner / fabriquer, trajets / parcours) проверяйте по смыслу фразы.`},
+
+          { title: "Чтение: как работать с текстом", body:
+`## Порядок
+• Сначала прочитайте {{b:заголовок и вопросы}}, потом текст.
+• Вопросы идут в порядке текста: ответ на 2-й вопрос ищите после ответа на 1-й.
+## Типы вопросов
+• {{g:Факт}} (число, имя, место): найдите слово в тексте и прочитайте предложение вокруг.
+• {{o:Синоним / антоним}}: подберите по смыслу контекста («faire peur» ≈ «décourager»).
+• {{p:Вывод}} («Le texte… / Il est véritable que…»): сверяйте с общей мыслью текста.
+## Ловушки
+• Вариант может содержать слова из текста, но с другим смыслом.
+• Часть утверждения верна, а часть — нет: проверяйте вариант целиком.
+>+ Не оставляйте вопрос пустым: исключите явно неверные варианты и выберите из оставшихся.`},
+        ],
+      },
+    ],
+  },
 };
 
 // «Пройти тест» в кабинете — по карточке на каждый код в test_access пользователя,
@@ -3239,7 +3594,13 @@ function renderConspectsLibrary() {
   // Общие конспекты (ТГО, английский) не показываем тем, у кого доступ только к
   // направлениям без общих предметов (PROFILE_ONLY_CODES, например M078).
   const profileOnlyUser = access.length > 0 && access.every(c => PROFILE_ONLY_CODES.has(c));
-  const common = profileOnlyUser ? [] : Object.entries(COMMON_CONSPECTS).map(([code, lib]) => ({ code, lib }));
+  // Французский (общий иностранный язык M019) заменяет английский: тем, у кого доступ только к таким направлениям,
+  // английский не показываем, французский — показываем только им (и тем, у кого есть и такие, и обычные направления).
+  const hasFrench = access.some(c => FRENCH_LANG_CODES.has(c));
+  const hasEnglish = access.length === 0 || access.some(c => !FRENCH_LANG_CODES.has(c) && !PROFILE_ONLY_CODES.has(c));
+  const common = profileOnlyUser ? [] : Object.entries(COMMON_CONSPECTS)
+    .filter(([code]) => code === 'french' ? hasFrench : code === 'english' ? hasEnglish : true)
+    .map(([code, lib]) => ({ code, lib }));
   const gated = access.map(code => ({ code, lib: LIBRARY_CONSPECTS[code] })).filter(x => x.lib);
   const available = [...common, ...gated];
   if (!available.length) { wrap.classList.add('hidden'); return; }
@@ -4385,16 +4746,31 @@ function esc(s) {
 // где фактов много и их группируют по смыслу — в конспекте одного вопроса
 // заголовки не встречаются).
 function formatConspectText(text) {
-  // **термин** — акцентный жирный; строка «> …» — выделенная заметка («Запомните»).
-  const inl = x => esc(x).replace(/\*\*(.+?)\*\*/g, '<strong class="kp-term">$1</strong>');
+  // **термин** — акцентный жирный; {{g|r|o|p|b:текст}} — цветной акцент (зелёный, красный, оранжевый,
+  // фиолетовый, синий); «> …» — заметка; «>+ …» совет, «>! …» ловушка, «>? …» пример; строки «| a | b |» —
+  // таблица (если после первой строки идёт «|---|», она — шапка).
+  const inl = x => esc(x)
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="kp-term">$1</strong>')
+    .replace(/\{\{([grobp]):(.+?)\}\}/g, '<span class="kp-c kp-c-$1">$2</span>');
   const blocks = [];
-  let list = null;
+  let list = null, table = null;
   String(text).split('\n').forEach(line => {
     const t = line.trim();
-    if (!t) { list = null; return; }
+    if (!t) { list = null; table = null; return; }
+    if (t.startsWith('|')) {
+      list = null;
+      if (/^\|[-\s|:]+\|?$/.test(t)) { if (table) table.head = true; return; }
+      if (!table) { table = { rows: [], head: false }; blocks.push({ table }); }
+      table.rows.push(t.replace(/^\||\|$/g, '').split('|').map(c => c.trim()));
+      return;
+    }
+    table = null;
     if (t.startsWith('## ')) {
       list = null;
       blocks.push({ h: t.slice(3).trim() });
+    } else if (/^>[+!?] /.test(t)) {
+      list = null;
+      blocks.push({ q: t.slice(3).trim(), kind: { '+': 'tip', '!': 'warn', '?': 'ex' }[t[1]] });
     } else if (t.startsWith('> ')) {
       list = null;
       blocks.push({ q: t.slice(2).trim() });
@@ -4409,7 +4785,12 @@ function formatConspectText(text) {
   return blocks.map(b => b.h
     ? `<h4 class="rev-conspect-h">${esc(b.h)}</h4>`
     : b.q
-    ? `<p class="kp-callout">${inl(b.q)}</p>`
+    ? `<p class="kp-callout${b.kind ? ' kp-' + b.kind : ''}">${inl(b.q)}</p>`
+    : b.table
+    ? `<div class="kp-table-wrap"><table class="kp-table">${b.table.rows.map((r, i) => {
+        const tag = b.table.head && i === 0 ? 'th' : 'td';
+        return `<tr>${r.map(c => `<${tag}>${inl(c)}</${tag}>`).join('')}</tr>`;
+      }).join('')}</table></div>`
     : b.list
     ? `<ul class="rev-conspect-list">${b.list.map(i => `<li>${inl(i)}</li>`).join('')}</ul>`
     : `<p>${inl(b.p)}</p>`
