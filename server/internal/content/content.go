@@ -121,7 +121,34 @@ const (
 	BankLangGrammar   = "c/lang-en/grammar"
 	BankLangReading   = "c/lang-en/reading"
 	BankLogic         = "c/logic"
+
+	// Французский вместо английского у направлений из frenchLang (общий иностранный язык).
+	BankLangFrListening = "c/lang-fr/listening"
+	BankLangFrGrammar   = "c/lang-fr/grammar"
+	BankLangFrReading   = "c/lang-fr/reading"
 )
+
+// frenchLang — направления, у которых общий иностранный язык — французский (клиент: FRENCH_LANG_CODES).
+var frenchLang = map[string]bool{"M019": true}
+
+// FrenchLang — сдаётся ли у направления французский вместо английского.
+func FrenchLang(code string) bool { return frenchLang[code] }
+
+// LangBankIDs — банки аудирования, грамматики и чтения общего иностранного языка направления.
+func LangBankIDs(code string) (listening, grammar, reading string) {
+	if frenchLang[code] {
+		return BankLangFrListening, BankLangFrGrammar, BankLangFrReading
+	}
+	return BankLangListening, BankLangGrammar, BankLangReading
+}
+
+// LangTitle — заголовок предмета «иностранный язык» направления.
+func (s *Service) LangTitle(code string) string {
+	if frenchLang[code] {
+		return s.titles["lang-fr"]
+	}
+	return s.titles["lang"]
+}
 
 // Info — то, что видит админ при выдаче доступа.
 type Info struct {
@@ -222,8 +249,9 @@ func (s *Service) loadProfile() error {
 	return nil
 }
 
-func (s *Service) loadCommon() error {
-	raw, err := dataFS.ReadFile("common/lang-en.json")
+// loadLangFile загружает банки одного иностранного языка (listening/grammar/reading).
+func (s *Service) loadLangFile(file, titleKey string, ids map[string]string) error {
+	raw, err := dataFS.ReadFile(file)
 	if err != nil {
 		return err
 	}
@@ -232,11 +260,9 @@ func (s *Service) loadCommon() error {
 		Stages map[string][]rawQuestion `json:"stages"`
 	}
 	if err := json.Unmarshal(raw, &lang); err != nil {
-		return fmt.Errorf("common/lang-en.json: %w", err)
+		return fmt.Errorf("%s: %w", file, err)
 	}
-	for stage, id := range map[string]string{
-		"listening": BankLangListening, "grammar": BankLangGrammar, "reading": BankLangReading,
-	} {
+	for stage, id := range ids {
 		b, err := parseBank(id, lang.Stages[stage])
 		if err != nil {
 			return err
@@ -246,9 +272,24 @@ func (s *Service) loadCommon() error {
 		}
 		s.banks[id] = b
 	}
-	s.titles["lang"] = lang.Title
+	s.titles[titleKey] = lang.Title
+	return nil
+}
 
-	raw, err = dataFS.ReadFile("common/logic.json")
+func (s *Service) loadCommon() error {
+	for _, l := range []struct {
+		file, titleKey string
+		ids            map[string]string
+	}{
+		{"common/lang-en.json", "lang", map[string]string{"listening": BankLangListening, "grammar": BankLangGrammar, "reading": BankLangReading}},
+		{"common/lang-fr.json", "lang-fr", map[string]string{"listening": BankLangFrListening, "grammar": BankLangFrGrammar, "reading": BankLangFrReading}},
+	} {
+		if err := s.loadLangFile(l.file, l.titleKey, l.ids); err != nil {
+			return err
+		}
+	}
+
+	raw, err := dataFS.ReadFile("common/logic.json")
 	if err != nil {
 		return err
 	}

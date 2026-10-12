@@ -41,6 +41,16 @@ const COMMON_SUBJECTS = [
   },
 ];
 
+/* У этих направлений общий иностранный язык — французский (на сервере content.FrenchLang). */
+const FRENCH_LANG_CODES = new Set(['M019']);
+const COMMON_SUBJECTS_FR = COMMON_SUBJECTS.map(s => s.id === 'lang'
+  ? { ...s, title: 'Французский язык', sub: 'аудирование, грамматика, чтение', topics: [
+      'Аудирование (Compréhension orale) — 16 вопросов: диалоги и сообщения на слух',
+      'Чтение (Compréhension écrite) — 16 вопросов: тексты и вопросы к ним',
+      'Грамматика и лексика — 18 вопросов: времена, наклонения, артикли, предлоги, синонимы',
+    ] }
+  : s);
+
 /* Направления — коды групп образовательных программ магистратуры.
    ВНИМАНИЕ: профильные предметы и вопросы тестов для не-IT направлений
    подобраны как правдоподобные и требуют сверки с актуальным перечнем. */
@@ -3732,7 +3742,7 @@ const GOP_SUBJECTS = {
   // Темы — из официальных спецификаций НЦТ: «Педагогика» (20 тем, 30 заданий) и «Профессионально-ориентированный
   // иностранный язык (французский язык)» (5 тем, 20 заданий, 50 мин). Совпадают с полем topic вопросов M019.json.
   M019: [
-    ...COMMON_SUBJECTS,
+    ...COMMON_SUBJECTS_FR,
     { id: 'p1', title: 'Педагогика', sub: 'профессия педагога, методология, воспитание и обучение, ЦПП, технологии', kind: 'profile', topics: [
       "Приоритетная роль образования в современных условиях",
       "Общая характеристика педагогической профессии и деятельности",
@@ -4271,7 +4281,7 @@ function loadKtJs() {
   if (!ktJsPromise) {
     ktJsPromise = new Promise((resolve, reject) => {
       const s = document.createElement('script');
-      s.src = 'kt.min.js?v=18';
+      s.src = 'kt.min.js?v=19';
       s.onload = resolve;
       s.onerror = () => { ktJsPromise = null; reject(new Error('Не удалось загрузить тест — проверьте соединение')); };
       document.body.appendChild(s);
@@ -4305,7 +4315,7 @@ function showSubjectPicker(code) {
     <h3 class="modal-title">Выберите предмет</h3>
     <p class="modal-lead">${profileOnly ? 'Тест состоит из 2 профильных предметов — потренируйтесь по каждому отдельно.' : 'Тест состоит из 4 предметов, как на настоящем КТ — потренируйтесь по каждому отдельно.'}</p>
     <div class="kt-type-cards">
-      ${profileOnly ? '' : `<button class="kt-type-card" data-subject="lang"><span class="kt-type-name">Английский</span></button>
+      ${profileOnly ? '' : `<button class="kt-type-card" data-subject="lang"><span class="kt-type-name">${FRENCH_LANG_CODES.has(code) ? 'Французский' : 'Английский'}</span></button>
       <button class="kt-type-card" data-subject="logic"><span class="kt-type-name">ТГО</span></button>`}
       <button class="kt-type-card" data-subject="subj1"><span class="kt-type-name">${subj.subj1}</span></button>
       <button class="kt-type-card" data-subject="subj2"><span class="kt-type-name">${subj.subj2}</span></button>

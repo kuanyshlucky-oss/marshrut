@@ -104,7 +104,7 @@ type Plan struct {
 	Kind        string
 	Code        string
 	Section     string // только для теста по предмету
-	Lang        string // иностранный язык КТ ("en")
+	Lang        string // иностранный язык КТ ("en" | "fr")
 	ContentLang string // язык профильного контента ("ru" | "kk")
 	Title       string
 	Refs        []Ref
@@ -220,6 +220,22 @@ func pickTracks(r Shuffler, pool []item, tracks int) []item {
 	return groupByAudio(out)
 }
 
+// pickListening выбирает записи (минимум 2) и добивает до need вопросов: у английского в записи ровно 8
+// вопросов, у французского групп по 7–8, поэтому при нехватке берётся ещё одна запись, а лишнее отсекается.
+func pickListening(r Shuffler, pool []item, need int) []item {
+	var out []item
+	for tracks := 2; tracks <= 8; tracks++ {
+		out = pickTracks(r, pool, tracks)
+		if len(out) >= need {
+			break
+		}
+	}
+	if len(out) > need {
+		out = out[:need]
+	}
+	return out
+}
+
 func mustBank(svc *content.Service, id string) (*content.Bank, error) {
 	b, ok := svc.Bank(id)
 	if !ok || len(b.Questions) == 0 {
@@ -247,14 +263,15 @@ func BuildSubject(svc *content.Service, r Shuffler, code, contentLang, section s
 	var banks []*content.Bank
 	switch section {
 	case "lang":
-		for _, id := range []string{content.BankLangListening, content.BankLangGrammar, content.BankLangReading} {
+		lisID, graID, reaID := content.LangBankIDs(code)
+		for _, id := range []string{lisID, graID, reaID} {
 			b, err := mustBank(svc, id)
 			if err != nil {
 				return nil, err
 			}
 			banks = append(banks, b)
 		}
-		p.Title = svc.CommonTitle("lang")
+		p.Title = svc.LangTitle(code)
 	case "logic":
 		b, err := mustBank(svc, content.BankLogic)
 		if err != nil {
@@ -303,18 +320,22 @@ func BuildKT(svc *content.Service, r Shuffler, typeID, code, contentLang, lang s
 	if t.NoCommon {
 		return buildKTProfileOnly(svc, r, t, code, contentLang)
 	}
-	if lang != "en" { // в интерфейсе доступен только английский
+	// Иностранный язык КТ: английский, у направлений content.FrenchLang — французский.
+	if content.FrenchLang(code) {
+		lang = "fr"
+	} else if lang != "en" {
 		return nil, ErrBadLanguage
 	}
-	lis, err := mustBank(svc, content.BankLangListening)
+	lisID, graID, reaID := content.LangBankIDs(code)
+	lis, err := mustBank(svc, lisID)
 	if err != nil {
 		return nil, err
 	}
-	gra, err := mustBank(svc, content.BankLangGrammar)
+	gra, err := mustBank(svc, graID)
 	if err != nil {
 		return nil, err
 	}
-	rea, err := mustBank(svc, content.BankLangReading)
+	rea, err := mustBank(svc, reaID)
 	if err != nil {
 		return nil, err
 	}
@@ -335,7 +356,7 @@ func BuildKT(svc *content.Service, r Shuffler, typeID, code, contentLang, lang s
 	stageBank := map[string]*content.Bank{"listening": lis, "grammar": gra, "reading": rea}
 	var langItems []item
 	if t.LangFixed {
-		langItems = append(langItems, pickTracks(r, toItems(lis), 2)...)
+		langItems = append(langItems, pickListening(r, toItems(lis), 16)...)
 		langItems = append(langItems, withStage(cycle(r, toItems(gra), 18), "grammar")...)
 		langItems = append(langItems, withStage(cycle(r, toItems(rea), 16), "reading")...)
 	} else {

@@ -1,0 +1,2661 @@
+{
+ "title": "Французский язык",
+ "stages": {
+  "listening": [
+   {
+    "q": "Dans ce dialogue il y a ... personnes.",
+    "options": [
+     "4",
+     "3",
+     "5",
+     "2"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-a.mp3?s=1a",
+    "conspect": "В диалоге об отпуске говорят четверо: Мадлен и Поль, Жак и Катрин (две семейные пары) — ответ «4»."
+   },
+   {
+    "q": "Pendant les vacances Paul et Madeleine ..",
+    "options": [
+     "louent une maison",
+     "vendent leur maison",
+     "hébèrgent à l’hôtel",
+     "achètent une maison"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-a.mp3?s=1a",
+    "conspect": "Поль и Мадлен «louent une maison en Bretagne» — арендуют дом в Бретани на лето."
+   },
+   {
+    "q": "Ils passent leurs vacances en ...",
+    "options": [
+     "Bourgogne",
+     "Auvergne",
+     "Bretagne",
+     "Alsace"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-a.mp3?s=1a",
+    "conspect": "Дом арендован в Бретани: «nous louons une maison en Bretagne» (la Bretagne — Бретань)."
+   },
+   {
+    "q": "Ils veulent aller en vacances ...",
+    "options": [
+     "le mois prochain",
+     "l’été prochain",
+     "cet automne",
+     "cet été"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-a.mp3?s=1a",
+    "conspect": "Отпуск планируют на это лето: «Cet été, nous louons une maison…» — «cet été» (этим летом), а не «l’été prochain»."
+   },
+   {
+    "q": "Leurs enfants veulent faire ...",
+    "options": [
+     "du tennis",
+     "de la planche à voile",
+     "de la randonnée",
+     "du vélo"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-a.mp3?s=1a",
+    "conspect": "Дети хотят заниматься виндсëрфингом: «Les enfants veulent faire de la planche à voile»."
+   },
+   {
+    "q": "Leur maison louée est ...",
+    "options": [
+     "grande",
+     "petite",
+     "pas confortable",
+     "loine"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-a.mp3?s=1a",
+    "conspect": "«Vous pouvez venir nous voir. La maison est grande» — арендованный дом большой (grande)."
+   },
+   {
+    "q": "Jacques et Catherine veulent visiter ....",
+    "options": [
+     "La Portugal",
+     "Le Japon",
+     "Le Canada",
+     "L’Angleterre"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-a.mp3?s=1a",
+    "conspect": "Жак и Катрин едут на три недели в Квебек, то есть в Канаду (le Canada)."
+   },
+   {
+    "q": "Jacques et Catherine veulent faire ....",
+    "options": [
+     "du tennis",
+     "de la randonnée",
+     "de la voile",
+     "de la natation"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-a.mp3?s=1a",
+    "conspect": "В Квебеке они собираются ходить в походы: «au Québec, on va faire de la randonnée»."
+   },
+   {
+    "q": "Il s’agit de la fête ...",
+    "options": [
+     "de la Francophonie",
+     "de la Musique",
+     "du Travail",
+     "Des Mères"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-b.mp3?s=1b",
+    "conspect": "Речь о Празднике труда (la fête du Travail), который отмечают 1 мая во многих странах мира."
+   },
+   {
+    "q": "Cette fête est célébrée en France le ...",
+    "options": [
+     "21 juin",
+     "1 mai",
+     "20 mai",
+     "8 mai"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-b.mp3?s=1b",
+    "conspect": "Праздник труда во Франции отмечают 1 мая (le 1er mai); день выходной."
+   },
+   {
+    "q": "Cette journée rappelle que les ouvriers ont dû se battre pour ...",
+    "options": [
+     "travailler",
+     "obtenir leurs droits",
+     "pour organiser des manifestations",
+     "prendre des congés"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-b.mp3?s=1b",
+    "conspect": "Этот день напоминает, что рабочие должны были бороться, чтобы добиться своих прав: «se battre pour obtenir leurs droits»."
+   },
+   {
+    "q": "Les ... se sont battus .",
+    "options": [
+     "fonctionnaires",
+     "ouvriers",
+     "enseignants",
+     "médecins"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-b.mp3?s=1b",
+    "conspect": "За свои права боролись рабочие (les ouvriers)."
+   },
+   {
+    "q": "On organise des manifestations chaque ...",
+    "options": [
+     "mois",
+     "semaine",
+     "année",
+     "jour"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-b.mp3?s=1b",
+    "conspect": "Профсоюзы организуют демонстрации каждый год (chaque année)."
+   },
+   {
+    "q": "On organise des manifestations",
+    "options": [
+     "partout",
+     "dans les plus grandes villes",
+     "à Paris",
+     "dans les villages"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-b.mp3?s=1b",
+    "conspect": "Демонстрации проходят в самых крупных городах (dans les plus grandes villes)."
+   },
+   {
+    "q": "Ce jour-là, on ...",
+    "options": [
+     "fait le bilan",
+     "va à l’école",
+     "travaille",
+     "se repose"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-b.mp3?s=1b",
+    "conspect": "1 мая — выходной день (jour férié): в этот день отдыхают (on se repose), большинство магазинов закрыто."
+   },
+   {
+    "q": "Avant on a fait des manifestations avec cette fleur",
+    "options": [
+     "la tulipe",
+     "le muguet",
+     "l’englantine",
+     "la rose"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-b.mp3?s=1b",
+    "conspect": "Раньше на демонстрациях носили в петлице цветок шиповника — églantine («l’englantine»); ландыш (muguet) стал символом позже."
+   },
+   {
+    "q": "Ils louent ...",
+    "options": [
+     "un vélo",
+     "une moto",
+     "une automobile",
+     "des camping- cars"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-a.mp3?s=2a",
+    "conspect": "Семья арендует кемперы (camping-cars): «une agence qui loue des camping-cars» — путешествуют свободно вдоль реки Святого Лаврентия."
+   },
+   {
+    "q": "Mathilde va avec ...",
+    "options": [
+     "son copain",
+     "sa copine",
+     "ses amis",
+     "ses amies"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-a.mp3?s=2a",
+    "conspect": "Матильда едет в Грецию со своим другом (son copain), а не с подругой."
+   },
+   {
+    "q": "Leurs amis habitent ...",
+    "options": [
+     "en Bretagne",
+     "à Mont Saint-Michel",
+     "à Bais Saint-Paul",
+     "à Paris"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-a.mp3?s=2a",
+    "conspect": "Друзья, у которых остановятся Жак и Катрин, живут в Бе-Сен-Поль (Baie-Saint-Paul, Квебек)."
+   },
+   {
+    "q": "Madeleine aime ...",
+    "options": [
+     "bricoler",
+     "jardiner",
+     "lire",
+     "chiner"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-a.mp3?s=2a",
+    "conspect": "Мадлен хочется читать, спать и, может быть, рисовать: «je veux lire, dormir et peut-être peindre» — ей нравится читать (lire)."
+   },
+   {
+    "q": "Paul va aider ...",
+    "options": [
+     "sa mère",
+     "son copain",
+     "son oncle",
+     "sa copine"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-a.mp3?s=2a",
+    "conspect": "Поль будет помогать другу (un copain) ремонтировать дом: «je vais aider un copain à refaire sa maison»."
+   },
+   {
+    "q": "Le sport préféré de Paul est ...",
+    "options": [
+     "le tennis",
+     "la voile",
+     "le judo",
+     "le vélo"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-a.mp3?s=2a",
+    "conspect": "Любимый спорт Поля — теннис: «je vais essayer de faire du tennis»."
+   },
+   {
+    "q": "Catherine et Jacques partent à ...",
+    "options": [
+     "Athènes",
+     "Québec",
+     "Madrid",
+     "Londres"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-a.mp3?s=2a",
+    "conspect": "Катрин и Жак летят в Квебек (Québec) на три недели."
+   },
+   {
+    "q": "Mathilde va ...",
+    "options": [
+     "au Japon",
+     "en Allemagne",
+     "En Espagne",
+     "en Grèce"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-a.mp3?s=2a",
+    "conspect": "Матильда едет в Грецию (en Grèce) со своим другом; они будут жить в палатке на островах."
+   },
+   {
+    "q": "La femme s’appelle madame ... .",
+    "options": [
+     "Mathieu",
+     "Durand",
+     "Pagnol",
+     "Girod"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-c.mp3?s=2b",
+    "conspect": "В интервью собеседницу зовут мадам Жиро (Girod, Giraud)."
+   },
+   {
+    "q": "Madame Girod a ... ans.",
+    "options": [
+     "27",
+     "28",
+     "25",
+     "29"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-c.mp3?s=2b",
+    "conspect": "Мадам Жиро 27 лет: «Vous avez 27 ans»."
+   },
+   {
+    "q": "Elle est ... .",
+    "options": [
+     "veuve",
+     "divorcée",
+     "célibataire",
+     "mariée"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-c.mp3?s=2b",
+    "conspect": "Она замужем: «Vous êtes mariée» (mariée — замужем)."
+   },
+   {
+    "q": "La jeune femme est ... .",
+    "options": [
+     "Allemande",
+     "Russe",
+     "Espagnole",
+     "Française"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-c.mp3?s=2b",
+    "conspect": "Она француженка: «Vous êtes française»."
+   },
+   {
+    "q": "Elle n’ pas de (d’) ... .",
+    "options": [
+     "enfant",
+     "fils",
+     "nièce",
+     "fille"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-c.mp3?s=2b",
+    "conspect": "У неë нет детей: «Pas d’enfant» — «Elle n’a pas d’enfant»."
+   },
+   {
+    "q": "Son téléphone est le 06 10 ... 58 10.",
+    "options": [
+     "82",
+     "62",
+     "12",
+     "72"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-c.mp3?s=2b",
+    "conspect": "Телефон 06-10-72-58-10: пропущенные цифры — 72."
+   },
+   {
+    "q": "Retrouvez dans l’interview entendu le contraire du mot: Elle a démissionné début août.",
+    "options": [
+     "licencier",
+     "recruter",
+     "renvoyer",
+     "quitter"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-c.mp3?s=2b",
+    "conspect": "«Démissionner» — уйти с работы по собственному желанию; по смыслу противоположное действие — «recruter» (нанять на работу). Остальные варианты — «licencier», «renvoyer» (уволить) и «quitter» — близки по смыслу к «démissionner»."
+   },
+   {
+    "q": "Donnez le synonyme. C’est une usine qui fabrique des vêtements.",
+    "options": [
+     "confectionne",
+     "confisque",
+     "configure",
+     "conditionne"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-c.mp3?s=2b",
+    "conspect": "«Confectionner» (изготавливать) — синоним глагола «fabriquer»: usine qui fabrique des vêtements = qui confectionne des vêtements."
+   },
+   {
+    "q": "Amanda fréquente un club de danse … fois par semaine.",
+    "options": [
+     "trois",
+     "quatre",
+     "deux",
+     "une"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-d.mp3?s=3a",
+    "conspect": "Аманда ходит в клуб танцев два раза в неделю: «J’y vais deux fois par semaine»."
+   },
+   {
+    "q": "Amanda ne prend pas ... .",
+    "options": [
+     "de salades et surtout pas de légumes",
+     "de fruits, pas de salades et pas de cigarettes",
+     "d’alcool, pas de viande",
+     "d’alcool, et surtout pas de cigarettes"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-d.mp3?s=3a",
+    "conspect": "В питании Аманда ограничивает: никакого алкоголя и особенно никаких сигарет («pas d’alcool et surtout pas de cigarettes»)."
+   },
+   {
+    "q": "La jeune fille fréquente un club de ... .",
+    "options": [
+     "natation",
+     "gymnastique",
+     "vélo",
+     "danse"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-d.mp3?s=3a",
+    "conspect": "Девушка записана в клуб танцев (un club de danse)."
+   },
+   {
+    "q": "Selon Amanda, le sommeil c’est... .",
+    "options": [
+     "indispensable",
+     "important",
+     "nécessaire",
+     "obligatoire"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-d.mp3?s=3a",
+    "conspect": "По словам Аманды, сон — это необходимо: «8 heures de sommeil, c’est indispensable»."
+   },
+   {
+    "q": "Michel se sent ... dans sa peau.",
+    "options": [
+     "bien",
+     "assez",
+     "trop",
+     "mal"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-d.mp3?s=3a",
+    "conspect": "Мишель чувствует себя хорошо в своей шкуре: «je me sens bien dans ma peau»."
+   },
+   {
+    "q": "Michel ne fait pas ... pour être en forme.",
+    "options": [
+     "bons résultats",
+     "grand-chose",
+     "match nul",
+     "grands travaux"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-d.mp3?s=3a",
+    "conspect": "Мишель ничего особенного для формы не делает: «je ne fais pas grand-chose»."
+   },
+   {
+    "q": "Le sujet principal de cette conversation est ... .",
+    "options": [
+     "les loisirs",
+     "l’emploi du temps",
+     "le passe-temps",
+     "la vie saine"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-d.mp3?s=3a",
+    "conspect": "Главная тема разговора — здоровый образ жизни (la vie saine): как поддерживать форму."
+   },
+   {
+    "q": "Retrouvez le synonyme de la conversation : C’est dur de perdre des kilos.",
+    "options": [
+     "agité",
+     "facile",
+     "difficile",
+     "aberrant"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-d.mp3?s=3a",
+    "conspect": "«C’est dur de perdre des kilos» = «c’est difficile» (dur — трудный)."
+   },
+   {
+    "q": "Madeleine veut ...",
+    "options": [
+     "jardiner",
+     "travailler",
+     "partir",
+     "dormir"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-a.mp3?s=3b",
+    "conspect": "Мадлен хочется отдохнуть: «je veux lire, dormir et peut-être peindre» — в вопросе верный вариант «dormir»."
+   },
+   {
+    "q": "Les amis de Delphine sont ...",
+    "options": [
+     "français",
+     "espagnols",
+     "chinois",
+     "allemands"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-a.mp3?s=3b",
+    "conspect": "У Дельфины друзья испанцы: «des amis espagnols» — она едет в Барселону."
+   },
+   {
+    "q": "Le nom de la deuxième copine de Catherine est ...",
+    "options": [
+     "Marie",
+     "Madeleine",
+     "Natalie",
+     "Mathilde"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-a.mp3?s=3b",
+    "conspect": "Вторая дочь — Матильда (Mathilde): едет в Грецию со своим другом."
+   },
+   {
+    "q": "Le nom de la première copine de Catherine est ...",
+    "options": [
+     "Lucie",
+     "Marie",
+     "Natalie",
+     "Delphine"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-a.mp3?s=3b",
+    "conspect": "Первая дочь — Дельфина (Delphine): едет в Барселону к друзьям."
+   },
+   {
+    "q": "On va s’arrêter",
+    "options": [
+     "chez des amis",
+     "a l’auberge",
+     "à l’hôtel de luxe",
+     "à l’hôtel"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-a.mp3?s=3b",
+    "conspect": "Во время поездки остановятся у друзей: «s’arrêter quelques jours chez nos amis»."
+   },
+   {
+    "q": "Ils y restent ... semaines.",
+    "options": [
+     "5",
+     "4",
+     "2",
+     "3"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-a.mp3?s=3b",
+    "conspect": "Поездка в Квебек длится три недели: «on part pour 3 semaines»."
+   },
+   {
+    "q": "Paul aime ...",
+    "options": [
+     "dormir",
+     "bricoler",
+     "réparer",
+     "jardiner"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-a.mp3?s=3b",
+    "conspect": "Поль любит мастерить: «j’aime bricoler»."
+   },
+   {
+    "q": "Le copain de Paul va ...",
+    "options": [
+     "réparer son garage",
+     "réparer sa voiture",
+     "refaire sa maison",
+     "jardiner"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-a.mp3?s=3b",
+    "conspect": "Друг Поля будет заново отделывать свой дом: «refaire sa maison»."
+   },
+   {
+    "q": "Nathalie vient de trouver un job pour le mois ...",
+    "options": [
+     "de juin",
+     "de mai",
+     "de juillet",
+     "d’août"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-e.mp3?s=5a",
+    "conspect": "Натали нашла работу на август: «un job pour le mois d’août»."
+   },
+   {
+    "q": "Elle a eu son entretien ... .",
+    "options": [
+     "avant-hier",
+     "ce lundi",
+     "hier",
+     "aujourd’hui"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-e.mp3?s=5a",
+    "conspect": "Собеседование было вчера: «J’ai eu un entretien hier avec le patron» (hier — вчера)."
+   },
+   {
+    "q": "Elle signe son contrat ... .",
+    "options": [
+     "aujourd’hui",
+     "demain",
+     "après demain",
+     "dans une semaine"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-e.mp3?s=5a",
+    "conspect": "Контракт подписывается завтра: «je signe mon contrat demain»."
+   },
+   {
+    "q": "Elle est ... pour trouver ce travail.",
+    "options": [
+     "nerveuse",
+     "mécontente",
+     "épuisée",
+     "contente"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-e.mp3?s=5a",
+    "conspect": "Она очень рада (hyper contente) — получила работу."
+   },
+   {
+    "q": "Elle va travailler comme ... .",
+    "options": [
+     "employée",
+     "animatrice",
+     "serveuse",
+     "volontaire"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-e.mp3?s=5a",
+    "conspect": "Она будет работать официанткой (serveuse)."
+   },
+   {
+    "q": "Elle va travailler dans un ... .",
+    "options": [
+     "restaurant",
+     "bureau",
+     "centre de distraction",
+     "café"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-e.mp3?s=5a",
+    "conspect": "Работать будет в кафе (un café) возле вокзала."
+   },
+   {
+    "q": "Pierre a ... par mois.",
+    "options": [
+     "1200",
+     "2100",
+     "1100",
+     "1000"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-e.mp3?s=5a",
+    "conspect": "Пьер получает 1100 евро в месяц: «j’ai 1100 € par mois»."
+   },
+   {
+    "q": "Nathalie a eu un entretien avec ...",
+    "options": [
+     "le concurrent",
+     "le personnel",
+     "le patron",
+     "l’amie"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-e.mp3?s=5a",
+    "conspect": "Собеседование Натали было с хозяином, начальником (le patron)."
+   },
+   {
+    "q": "Dans le texte il s’agit de ...",
+    "options": [
+     "Nicolas Poussin",
+     "Claude Monet",
+     "Edouard Manet",
+     "Paul Gauguin"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-f.mp3?s=5b",
+    "conspect": "В тексте речь о Клоде Моне (Claude Monet) — художнике-импрессионисте."
+   },
+   {
+    "q": "Sa profession est",
+    "options": [
+     "médecin",
+     "savant",
+     "musicien",
+     "peintre"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-f.mp3?s=5b",
+    "conspect": "Профессия Моне — художник (peintre)."
+   },
+   {
+    "q": "Il est né en ...",
+    "options": [
+     "1845",
+     "1840",
+     "1890",
+     "1880"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-f.mp3?s=5b",
+    "conspect": "Моне родился в 1840 году."
+   },
+   {
+    "q": "Il est né à ...",
+    "options": [
+     "Paris",
+     "Lyon",
+     "Orléans",
+     "Lille"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-f.mp3?s=5b",
+    "conspect": "Он родился в Париже: «Il est né en 1840 à Paris»."
+   },
+   {
+    "q": "Il est chef de l’école ...",
+    "options": [
+     "expressionniste",
+     "postimpressionniste",
+     "impressionniste",
+     "fauviste"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-f.mp3?s=5b",
+    "conspect": "Моне — глава школы импрессионистов (l’école impressionniste)."
+   },
+   {
+    "q": "Le style de sa direction est ...",
+    "options": [
+     "expressionniste",
+     "fauviste",
+     "postimpressionniste",
+     "impressionniste"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-f.mp3?s=5b",
+    "conspect": "Стиль Моне — импрессионизм (impressionniste); название пошло от его картины «Впечатление. Восходящее солнце»."
+   },
+   {
+    "q": "En 1872 il a peint ...",
+    "options": [
+     "« Le Pont Neuf»",
+     "«Le Givre »",
+     "« Vue d’un port»",
+     "«Impression soleil levant»"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-f.mp3?s=5b",
+    "conspect": "В 1872 году он написал картину «Impression, soleil levant» («Впечатление. Восход солнца») — вид Гавра."
+   },
+   {
+    "q": "On peut aller au musée...",
+    "options": [
+     "en automne et en été",
+     "en hiver et au printemps",
+     "au printemps et en été",
+     "en automne et au printemps"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-f.mp3?s=5b",
+    "conspect": "Музей и сад Моне в Живерни лучше посещать осенью и весной (en automne et au printemps)."
+   },
+   {
+    "q": "1.Annabelle fait de la musique depuis ... ans.",
+    "options": [
+     "11 ou 12",
+     "13 ou 14",
+     "1 ou 2",
+     "5 ou 6"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-g.mp3?s=6a",
+    "conspect": "Аннабель занимается музыкой около 11–12 лет: «je fais de la musique depuis 12 ans» (начала в 11 лет)."
+   },
+   {
+    "q": "Annabelle joue ... .",
+    "options": [
+     "de la trompette",
+     "de la clarinette",
+     "du trompone",
+     "du flûte"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-g.mp3?s=6a",
+    "conspect": "Она играет на кларнете (la clarinette)."
+   },
+   {
+    "q": "Elle a commencé à l’âge de ... ans.",
+    "options": [
+     "10",
+     "12",
+     "13",
+     "11"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-g.mp3?s=6a",
+    "conspect": "Она начала в 11 лет: «J’avais 11 ans»."
+   },
+   {
+    "q": "Elle joue actuellement dans .... orchestres.",
+    "options": [
+     "1",
+     "2",
+     "3",
+     "4"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-g.mp3?s=6a",
+    "conspect": "Сейчас она играет в двух оркестрах — в Амбуазе и в Сен-Мартен-ле-Бо."
+   },
+   {
+    "q": "Elle a arrêté d’aller à Tours parce que c’etait .....",
+    "options": [
+     "ses parents qui ont demandé qu’elle arrête",
+     "ses parents qui ne permettaient pas",
+     "le soir et elle n’était pas encore indépendante",
+     "dangereux pour elle conduire la nuit"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-g.mp3?s=6a",
+    "conspect": "В Туре она больше не играет: репетиции заканчивались вечером, поздно, а прав у неë ещë не было и родителям приходилось за ней приезжать."
+   },
+   {
+    "q": "Le groupe de rock s’appelle ...",
+    "options": [
+     "Stereophonics",
+     "China Rats",
+     "Foals",
+     "Action Beat"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-g.mp3?s=6a",
+    "conspect": "Английская рок-группа, которая ей нравится, — Stereophonics."
+   },
+   {
+    "q": "Elle écoute de la musique ...",
+    "options": [
+     "à la radio",
+     "au concert",
+     "à la télé",
+     "sur son i-pod"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-g.mp3?s=6a",
+    "conspect": "Она слушает музыку на своëм iPod (sur son i-pod)."
+   },
+   {
+    "q": "... millions de visiteurs sont venus depuis sa construction.",
+    "options": [
+     "2000",
+     "1000",
+     "200",
+     "100"
+    ],
+    "correct": 2,
+    "audio": "assets/listening-fr/audio-h.mp3?s=6b",
+    "conspect": "Башню с момента строительства посетили более 200 миллионов человек."
+   },
+   {
+    "q": "La Tour est ouverte :",
+    "options": [
+     "toute l’année sauf mars",
+     "toute l’ année sauf mai",
+     "presque toute l’année",
+     "toute l’année"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-h.mp3?s=6b",
+    "conspect": "Башня открыта 365 дней из 365 — круглый год (toute l’année)."
+   },
+   {
+    "q": "Il y a ... ampoules permettant l’éclairage de la Tour Eiffel.",
+    "options": [
+     "100",
+     "1 000",
+     "10",
+     "10 000"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-h.mp3?s=6b",
+    "conspect": "Иллюминация Эйфелевой башни — около 10 000 лампочек."
+   },
+   {
+    "q": "Le parcours des ascenseurs représente l’équivalent de ...",
+    "options": [
+     "deux fois et demie le tour de la Terre",
+     "cinq fois et demie le tour de la Terre",
+     "trois fois et demie le tour de la Terre",
+     "dix fois et demie le tour de la Terre"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-h.mp3?s=6b",
+    "conspect": "Суммарный пробег лифтов — более 103 000 км в год, то есть два с половиной оборота вокруг Земли."
+   },
+   {
+    "q": "La Tour est le bâtiment que les touristes visitent en ... .",
+    "options": [
+     "évidence",
+     "priorité",
+     "hélice",
+     "valeur"
+    ],
+    "correct": 1,
+    "audio": "assets/listening-fr/audio-h.mp3?s=6b",
+    "conspect": "Башня — памятник, который туристы хотят посетить в первую очередь (en priorité)."
+   },
+   {
+    "q": "Chaque année ... de personnes visitent la Tour Eiffel.",
+    "options": [
+     "deux millions",
+     "dix millions",
+     "sept millions",
+     "six millions"
+    ],
+    "correct": 3,
+    "audio": "assets/listening-fr/audio-h.mp3?s=6b",
+    "conspect": "Башню ежегодно посещают около 6 миллионов человек (six millions)."
+   },
+   {
+    "q": "Retrouvez l’antonyme. La Tour possède de modèles différents de lampes.",
+    "options": [
+     "similaires",
+     "ondulants",
+     "partageables",
+     "pitoyables"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-h.mp3?s=6b",
+    "conspect": "Антоним слова «différents» — «similaires» (одинаковые, похожие): «plus de 100 modèles différents de lampes»."
+   },
+   {
+    "q": "Retrouvez le synonyme. Leurs parcours représentent une grande distance.",
+    "options": [
+     "trajets",
+     "traces",
+     "vestiges",
+     "sillages"
+    ],
+    "correct": 0,
+    "audio": "assets/listening-fr/audio-h.mp3?s=6b",
+    "conspect": "«Trajets» — синоним слова «parcours» (путь, маршрут)."
+   }
+  ],
+  "grammar": [
+   {
+    "q": "Mon frère est ___ et travaille à l’école",
+    "options": [
+     "professeur",
+     "vendeuse",
+     "actrice",
+     "étudiante"
+    ],
+    "correct": 0,
+    "conspect": "Названия профессий: «professeur» — существительное мужского рода (mon frère est professeur). «Vendeuse», «actrice», «étudiante» — формы женского рода."
+   },
+   {
+    "q": "En hiver, je prends ___ viande et ___ fruits",
+    "options": [
+     "du, des",
+     "des, du",
+     "de la, des",
+     "de la, de la"
+    ],
+    "correct": 2,
+    "conspect": "Частичный артикль: «de la» перед существительным женского рода в ед. числе (de la viande), «des» — перед множественным числом (des fruits)."
+   },
+   {
+    "q": "Les filles de ta classe sont ...",
+    "options": [
+     "indisciplinés, généreux, excellent",
+     "sérieuses, grandes, élégantes",
+     "cultivés, généreuses, excellentes",
+     "intelligents, belles, sportifs"
+    ],
+    "correct": 1,
+    "conspect": "Прилагательные согласуются с подлежащим «les filles» (жен. род, мн. число): sérieuses, grandes, élégantes."
+   },
+   {
+    "q": "... est sa profession?",
+    "options": [
+     "quelles",
+     "quel",
+     "quelle",
+     "quels"
+    ],
+    "correct": 2,
+    "conspect": "Вопросительное прилагательное согласуется с существительным: «profession» — жен. род, ед. число → «Quelle est sa profession?»."
+   },
+   {
+    "q": "Choisissez une bonne réponse: 499",
+    "options": [
+     "quatre cent quatre-vingt-dix-neuf",
+     "quatre cent quatre-vigt-dix-neuf",
+     "quatre cent quatre-vigt-dix-neuve",
+     "quatre cents quatre-vinght-dix-neuf"
+    ],
+    "correct": 0,
+    "conspect": "Числительные: 499 = quatre cent quatre-vingt-dix-neuf; «cent» без -s, когда за ним следует другое числительное; все части соединяются дефисами."
+   },
+   {
+    "q": "Je suis heureux de le voir et je le salue ...",
+    "options": [
+     "hautement",
+     "richement",
+     "gentiment",
+     "grièvement"
+    ],
+    "correct": 2,
+    "conspect": "Наречие образуется от прилагательного: gentil → gentiment (je le salue gentiment — приветствую вежливо, любезно)."
+   },
+   {
+    "q": "Elle travaille ici .... plusieurs années",
+    "options": [
+     "en",
+     "depuis",
+     "pour",
+     "pendant"
+    ],
+    "correct": 1,
+    "conspect": "«Depuis» + период (с глаголом в настоящем времени) показывает, что действие длится до сих пор: «Elle travaille ici depuis plusieurs années»."
+   },
+   {
+    "q": "Quand le téléphone a sonné, je ....",
+    "options": [
+     "dormas",
+     "dormirais",
+     "ai dormi",
+     "dormais"
+    ],
+    "correct": 3,
+    "conspect": "Фоновое действие, во время которого что-то произошло (a sonné), выражается имперфектом: «je dormais» (я спал)."
+   },
+   {
+    "q": "Chaque année il m’ ... (offrir) un livre pour Noël.",
+    "options": [
+     "offrais",
+     "offrait",
+     "offrirait",
+     "offra"
+    ],
+    "correct": 1,
+    "conspect": "Повторяющееся действие в прошлом («chaque année») — имперфект: il m’offrait un livre."
+   },
+   {
+    "q": "Il___ ses parents et il ___ parler avec les clients",
+    "options": [
+     "accompagnait, adorait",
+     "accompagnait, adorais",
+     "accompagnais, adorais",
+     "accompagnais, adorait"
+    ],
+    "correct": 0,
+    "conspect": "Имперфект 3-го лица ед. числа: il accompagnait, il adorait (окончание -ait)."
+   },
+   {
+    "q": "Tu ___ m’aider à faire mes devoirs",
+    "options": [
+     "pourra",
+     "pourras",
+     "pourrai",
+     "pourons"
+    ],
+    "correct": 1,
+    "conspect": "Futur simple 2-го лица ед. числа глагола pouvoir: tu pourras (основа pourr- + -as)."
+   },
+   {
+    "q": "Les écoliers ___ leur classe de portraits et de tableaux",
+    "options": [
+     "sont orné",
+     "ont ornés",
+     "ont ornée",
+     "ont orné"
+    ],
+    "correct": 3,
+    "conspect": "Passé composé с avoir: причастие не согласуется с подлежащим; ont orné (прямое дополнение «leur classe» стоит после глагола)."
+   },
+   {
+    "q": "Je ___à cette question",
+    "options": [
+     "m’essuie",
+     "m’adresse",
+     "m’intéresse",
+     "m’appelle"
+    ],
+    "correct": 2,
+    "conspect": "Глагол «s’intéresser à» — интересоваться чем-либо: Je m’intéresse à cette question."
+   },
+   {
+    "q": "Sans___ son bureau, il a téléphoné à son ami",
+    "options": [
+     "fermer",
+     "asseoir",
+     "écrire",
+     "quitter"
+    ],
+    "correct": 3,
+    "conspect": "«Sans» + инфинитив: sans quitter son bureau (не выходя из кабинета)."
+   },
+   {
+    "q": "Ne dites jamais des mots incompréhénsibles ___ étant fâché",
+    "options": [
+     "le",
+     "en",
+     "-",
+     "de"
+    ],
+    "correct": 1,
+    "conspect": "Герундий «en + participe présent» выражает одновременность: en étant fâché (будучи рассерженным)."
+   },
+   {
+    "q": "Je sais que si tu le voyais, tu l’___ tout de suite",
+    "options": [
+     "a aimée",
+     "aimerait",
+     "aimerias",
+     "aimerais"
+    ],
+    "correct": 3,
+    "conspect": "Условное предложение: si + imparfait → conditionnel présent: si tu le voyais, tu l’aimerais."
+   },
+   {
+    "q": "___ attentif avec tes chemises, elles sont dans ta valise!",
+    "options": [
+     "Sois",
+     "Soiez",
+     "Soyons",
+     "Soit"
+    ],
+    "correct": 0,
+    "conspect": "Повелительное наклонение глагола être: sois, soyons, soyez (особая форма, не совпадает с настоящим временем)."
+   },
+   {
+    "q": "Elle s’est mise aux_____.",
+    "options": [
+     "genou",
+     "genouillère",
+     "genoux",
+     "genous"
+    ],
+    "correct": 2,
+    "conspect": "Существительные на -ou во мн. числе обычно принимают -s, но «genou» — исключение: genoux (se mettre aux genoux — встать на колени)."
+   },
+   {
+    "q": "Elle prend ... vin",
+    "options": [
+     "des",
+     "de l’",
+     "de la",
+     "du"
+    ],
+    "correct": 3,
+    "conspect": "Частичный артикль: du + существительное мужского рода (du vin)."
+   },
+   {
+    "q": "Mélanie a 32 ans. Elle est ...",
+    "options": [
+     "grande, élégant",
+     "romantique, créatif",
+     "décontractée, douce",
+     "généreux, excellent"
+    ],
+    "correct": 2,
+    "conspect": "Мелани — женщина, поэтому прилагательные стоят в женском роде: décontractée, douce."
+   },
+   {
+    "q": "- Maman, ... est-ce que tu pars à Paris?",
+    "options": [
+     "combien",
+     "où",
+     "pourquoi",
+     "qu’"
+    ],
+    "correct": 2,
+    "conspect": "Вопрос о причине: «Pourquoi est-ce que tu pars à Paris?» (почему ты едешь в Париж)."
+   },
+   {
+    "q": "- Quel est le prix de ce livre ? - 78 euros",
+    "options": [
+     "soixante-huit euros",
+     "soixante-dix-huit euros",
+     "quatre-vingts euros",
+     "soixante-dix-neuf euros"
+    ],
+    "correct": 1,
+    "conspect": "78 = soixante-dix-huit (60 + 18); 68 — soixante-huit, 80 — quatre-vingts."
+   },
+   {
+    "q": "A l’école maternelle les enfants ___",
+    "options": [
+     "n’ont pas beaucoup écrit",
+     "n’ont beaucoup pas écrit",
+     "n’ont pas écrit beaucoup",
+     "n’ont écrit pas beaucoup"
+    ],
+    "correct": 0,
+    "conspect": "Отрицание в passé composé: n’ont pas écrit; наречие количества «beaucoup» ставится после «pas» и перед причастием: n’ont pas beaucoup écrit."
+   },
+   {
+    "q": "Ce soir, nous sommes invités à dîner ... des amis",
+    "options": [
+     "sur",
+     "chez",
+     "à",
+     "au"
+    ],
+    "correct": 1,
+    "conspect": "«Dîner chez des amis» — «chez» + лицо: в гостях у кого-либо."
+   },
+   {
+    "q": "Nous ... quelqu’un qui habite rue de Rivoli",
+    "options": [
+     "savons",
+     "connaissez",
+     "connaissons",
+     "saurons"
+    ],
+    "correct": 2,
+    "conspect": "«Connaître» (connaissons) — знать, быть знакомым с человеком или местом; «savoir» — знать факт или уметь."
+   },
+   {
+    "q": "La statue de la Liberté .... par la France à New York en 1886",
+    "options": [
+     "est offerte",
+     "est offert",
+     "offerte",
+     "es offert"
+    ],
+    "correct": 0,
+    "conspect": "Страдательный залог: être + причастие, которое согласуется с подлежащим: la statue → est offerte (жен. род)."
+   },
+   {
+    "q": "Michel ... en France l’année prochaine",
+    "options": [
+     "partira",
+     "partirais",
+     "pars",
+     "partiras"
+    ],
+    "correct": 0,
+    "conspect": "Будущее время (l’année prochaine): Michel partira (futur simple, 3-е лицо ед. числа)."
+   },
+   {
+    "q": "Quand j’___ petite, je ___ tous les étés chez ma tante Aurélie",
+    "options": [
+     "était, passait",
+     "étais, passais",
+     "était, passais",
+     "étais, passait"
+    ],
+    "correct": 1,
+    "conspect": "Описание в прошлом (Quand j’étais petite) и повторяющееся действие (je passais tous les étés) — imparfait. «Je» + -ais."
+   },
+   {
+    "q": "Nous_____ beaucoup d’affaires après les cours.",
+    "options": [
+     "auriez",
+     "aurez",
+     "ont",
+     "aurons"
+    ],
+    "correct": 3,
+    "conspect": "Будущее время (après les cours): nous aurons — futur simple от avoir."
+   },
+   {
+    "q": "_____à haute voix.",
+    "options": [
+     "Donner",
+     "Ecrire",
+     "Parler",
+     "Prendre part"
+    ],
+    "correct": 2,
+    "conspect": "Инфинитив используется в общих инструкциях: «Parler à haute voix» (говорить вслух)."
+   },
+   {
+    "q": "Vous trouverez vos billets d’avion",
+    "options": [
+     "en visitant à l’aéroport",
+     "en faisant à l’aéroport",
+     "en sortant à l’aéroport",
+     "en arrivant à l’aéroport"
+    ],
+    "correct": 3,
+    "conspect": "Герундий: en arrivant à l’aéroport — «прибыв в аэропорт» (билеты можно будет получить)."
+   },
+   {
+    "q": "Il faut que tu ... à l’heure à ton avion de demain",
+    "options": [
+     "soit",
+     "sois",
+     "seras",
+     "es"
+    ],
+    "correct": 1,
+    "conspect": "После «il faut que» употребляется subjonctif: que tu sois (от être)."
+   },
+   {
+    "q": "Il arrive que les avions ... du retard",
+    "options": [
+     "auraient",
+     "aient",
+     "auront",
+     "ont"
+    ],
+    "correct": 1,
+    "conspect": "После «il arrive que» употребляется subjonctif: que les avions aient du retard."
+   },
+   {
+    "q": "La microscope ___dans chaque objet mille objets",
+    "options": [
+     "fait voix",
+     "fait vois",
+     "fait voit",
+     "fait voir"
+    ],
+    "correct": 3,
+    "conspect": "Выражение «faire voir» — показывать: le microscope fait voir mille objets (после faire — инфинитив)."
+   },
+   {
+    "q": "Il est nécessaire que tu ... des efforts pour réussir ton examen",
+    "options": [
+     "fasses",
+     "fait",
+     "fais",
+     "fasse"
+    ],
+    "correct": 0,
+    "conspect": "«Il est nécessaire que» требует subjonctif: que tu fasses (от faire)."
+   },
+   {
+    "q": "N’oubliez pas de rendre les clés ___ quittant la location",
+    "options": [
+     "de",
+     "en",
+     "le",
+     "-"
+    ],
+    "correct": 1,
+    "conspect": "Герундий en + participe présent: en quittant la location — «покидая жильë»."
+   },
+   {
+    "q": "Mes parents ___ des champs et ___ au marché tous les samedis",
+    "options": [
+     "s’oocupiez, alliez",
+     "s’occupais, allais",
+     "s’ocupaient, alaient",
+     "s’occupaient, allaient"
+    ],
+    "correct": 3,
+    "conspect": "Привычное действие в прошлом — imparfait 3-го лица мн. числа: ils s’occupaient, ils allaient."
+   },
+   {
+    "q": "Pendant le math les footballeurs étaient ...",
+    "options": [
+     "timides, sérieuses, responsables",
+     "douce, dynamiques, ennuyeuse",
+     "sportives, petites, cultivées",
+     "fatigués, passifs, indécis"
+    ],
+    "correct": 3,
+    "conspect": "Прилагательные согласуются с «les footballeurs» (муж. род, мн. число): fatigués, passifs, indécis."
+   },
+   {
+    "q": "Si ___ à ta place, ___ tout de suite à taper à la machine",
+    "options": [
+     "j'étais, j'appendrait",
+     "j’étais, j’apprendrais",
+     "j’était, j’apprenait",
+     "j’avais, j’ai appris"
+    ],
+    "correct": 1,
+    "conspect": "Условное предложение: si + imparfait (j’étais), главная часть — conditionnel présent (j’apprendrais)."
+   },
+   {
+    "q": "Les rôles ___ par les meilleurs artistes",
+    "options": [
+     "ont été joués",
+     "ont été jouées",
+     "sont été jouée",
+     "ont été jouée"
+    ],
+    "correct": 0,
+    "conspect": "Страдательный залог в passé composé: ont été joués — причастие согласуется с подлежащим «les rôles» (муж. род, мн. число)."
+   },
+   {
+    "q": "Non, ils me ___ de la grand-mère",
+    "options": [
+     "venons",
+     "venez",
+     "viennent",
+     "vient"
+    ],
+    "correct": 2,
+    "conspect": "Глагол «venir» в 3-м лице мн. числа: ils viennent (venir de — происходить, достаться от)."
+   },
+   {
+    "q": "- Vous allez à la banque? - Oui, nous ... allons.",
+    "options": [
+     "y",
+     "en",
+     "un",
+     "à"
+    ],
+    "correct": 0,
+    "conspect": "Местоимение «y» заменяет обстоятельство места с предлогом «à»: nous y allons (à la banque)."
+   },
+   {
+    "q": "Tu___ ce matin",
+    "options": [
+     "s’est baigné",
+     "s’es baigné",
+     "t’est baigné",
+     "t’es baigné"
+    ],
+    "correct": 3,
+    "conspect": "Возвратные глаголы в passé composé образуются с être: tu t’es baigné."
+   },
+   {
+    "q": "Nous allons au...",
+    "options": [
+     "Italie",
+     "Etats-Unis",
+     "Kazakhstan",
+     "France"
+    ],
+    "correct": 2,
+    "conspect": "Страны мужского рода на согласную: «au» (au Kazakhstan); для женского рода — «en» (en France, en Italie); «aux États-Unis»."
+   },
+   {
+    "q": "Ils ont travaillé ensemble ... dix ans",
+    "options": [
+     "en",
+     "pendant",
+     "depuis",
+     "pour"
+    ],
+    "correct": 1,
+    "conspect": "«Pendant» + длительность законченного периода: ils ont travaillé ensemble pendant dix ans."
+   },
+   {
+    "q": "Je ne crois pas qu’il ... réussir ce concours",
+    "options": [
+     "puisses",
+     "puisse",
+     "peut",
+     "peux"
+    ],
+    "correct": 1,
+    "conspect": "«Je ne crois pas que» (отрицание мнения) требует subjonctif: qu’il puisse."
+   },
+   {
+    "q": "Elle ... avec sa soeur il y a dix minutes",
+    "options": [
+     "a sorti",
+     "sort",
+     "est sortie",
+     "est sorti"
+    ],
+    "correct": 2,
+    "conspect": "«Sortir» в passé composé спрягается с être, причастие согласуется с подлежащим: elle est sortie."
+   },
+   {
+    "q": "J’___chercher mon frère à l’aéroport, l’avion ___ du retard",
+    "options": [
+     "allait, avais",
+     "allais, avais",
+     "allait, avait",
+     "allais, avait"
+    ],
+    "correct": 3,
+    "conspect": "Имперфект: j’allais (1-е лицо) — «l’avion avait» (3-е лицо) du retard."
+   },
+   {
+    "q": "Les journalistes ___ le problème de la jeunesse",
+    "options": [
+     "discutons",
+     "discute",
+     "discutez",
+     "discutent"
+    ],
+    "correct": 3,
+    "conspect": "Подлежащее «les journalistes» — 3-е лицо мн. числа: ils discutent."
+   },
+   {
+    "q": "Dans notre ville nous sommes ...",
+    "options": [
+     "douze million",
+     "douze millions",
+     "deuze milion",
+     "douze milions"
+    ],
+    "correct": 1,
+    "conspect": "Числительное «million» — существительное и принимает -s во множественном числе: douze millions."
+   },
+   {
+    "q": "Elle pense ... enfants",
+    "options": [
+     "aux",
+     "du",
+     "des",
+     "à"
+    ],
+    "correct": 0,
+    "conspect": "«Penser à» + существительное: «à + les → aux»: elle pense aux enfants."
+   },
+   {
+    "q": "Choisissez le nom correct: Ma femme est.....",
+    "options": [
+     "traductrice",
+     "serveur",
+     "politicien",
+     "étudiant"
+    ],
+    "correct": 0,
+    "conspect": "«Ma femme» — жен. род, профессия в женском роде: traductrice (переводчица)."
+   },
+   {
+    "q": "Mettez l’article: J’ai fait.....erreurs.",
+    "options": [
+     "l’",
+     "une",
+     "un",
+     "des"
+    ],
+    "correct": 3,
+    "conspect": "Существительное «erreurs» во мн. числе — артикль «des»: j’ai fait des erreurs."
+   },
+   {
+    "q": "Le ciel est si_____ qu'il semble toucher la terre.",
+    "options": [
+     "haute",
+     "basses",
+     "bas",
+     "basse"
+    ],
+    "correct": 2,
+    "conspect": "«Ciel» — существительное мужского рода, ед. число: прилагательное «bas»."
+   },
+   {
+    "q": "Remplacez par le pronom : C’est un homme ... je suis tout à fait sûr. -",
+    "options": [
+     "dont",
+     "en",
+     "y",
+     "ça"
+    ],
+    "correct": 0,
+    "conspect": "Относительное местоимение «dont» заменяет дополнение с «de»: être sûr de quelqu’un → un homme dont je suis sûr."
+   },
+   {
+    "q": "Choisissez la date correcte: Ce château a été construit en mille huit cents quatre-vingts.",
+    "options": [
+     "1842",
+     "1824",
+     "1890",
+     "1880"
+    ],
+    "correct": 3,
+    "conspect": "mille huit cent quatre-vingts = 1880."
+   },
+   {
+    "q": "L`adverbe de l`adjectif « silencieux » est ....",
+    "options": [
+     "silence",
+     "silencieux",
+     "silencement",
+     "silencieusement"
+    ],
+    "correct": 3,
+    "conspect": "Наречие от «silencieux» → женская форма silencieuse + -ment: silencieusement."
+   },
+   {
+    "q": "Hier soir, elle ____ seule.",
+    "options": [
+     "restez",
+     "reste",
+     "est resté",
+     "est restée"
+    ],
+    "correct": 3,
+    "conspect": "«Rester» в passé composé спрягается с être; причастие согласуется с подлежащим «elle»: est restée."
+   },
+   {
+    "q": "Il n’est pas venu chez vous, parce qu’un orage l’_____.",
+    "options": [
+     "avait arrêté",
+     "a arrêté",
+     "t’ arrêtais",
+     "s’arrête"
+    ],
+    "correct": 0,
+    "conspect": "Предшествующее действие в прошлом (orage l’avait arrêté) — plus-que-parfait: avait arrêté."
+   },
+   {
+    "q": "Qu’_____ -vous faire après les cours ?",
+    "options": [
+     "allez",
+     "vont",
+     "allons",
+     "venez"
+    ],
+    "correct": 0,
+    "conspect": "Ближайшее будущее: «Qu’allez-vous faire?» — aller во 2-м лице мн. числа."
+   },
+   {
+    "q": "_____de langues étudié-t-on à votre Université?",
+    "options": [
+     "Que",
+     "Quand",
+     "Combien",
+     "Est-ce que"
+    ],
+    "correct": 2,
+    "conspect": "Вопрос о количестве: «Combien de langues…?» (сколько языков)."
+   },
+   {
+    "q": "Nous avons _____ quelques minutes.",
+    "options": [
+     "attendé",
+     "attend",
+     "attende",
+     "attendu"
+    ],
+    "correct": 3,
+    "conspect": "Passé composé с avoir: nous avons attendu (причастие от attendre)."
+   },
+   {
+    "q": "Les films sont _____ par nos jeunes réalisateurs.",
+    "options": [
+     "tournées",
+     "tournés",
+     "tourner",
+     "tournent"
+    ],
+    "correct": 1,
+    "conspect": "Страдательный залог: les films (муж. род, мн. число) → sont tournés."
+   },
+   {
+    "q": "_____ Max a marqué un but.",
+    "options": [
+     "Joué",
+     "En jouant",
+     "Jouant",
+     "Jouée"
+    ],
+    "correct": 1,
+    "conspect": "Герундий «en jouant»: действие одновременно с главным (играя, Макс забил гол)."
+   },
+   {
+    "q": "On ne peut pas sortir ce week-end car on a beaucoup de choses à_____.",
+    "options": [
+     "fermer",
+     "quitter",
+     "faire",
+     "protester"
+    ],
+    "correct": 2,
+    "conspect": "«Beaucoup de choses à faire» — «à + инфинитив» после существительного (много дел)."
+   },
+   {
+    "q": "Hier elle ____ voir le match de football",
+    "options": [
+     "est allée",
+     "ira",
+     "est allé",
+     "va"
+    ],
+    "correct": 0,
+    "conspect": "«Aller» в passé composé спрягается с être; «elle» → est allée."
+   },
+   {
+    "q": "Elle se réjouit que vous y _____ aussi.",
+    "options": [
+     "allez",
+     "allons",
+     "alliez",
+     "allé"
+    ],
+    "correct": 2,
+    "conspect": "«Se réjouir que» требует subjonctif: que vous alliez (от aller)."
+   },
+   {
+    "q": "Trouvez le verbe au Subjonctif passé : C’est dommage qu’ils (refuser) ... notre proposition.",
+    "options": [
+     "ait réfusé",
+     "réfusais",
+     "ont réfusé",
+     "aient refusé"
+    ],
+    "correct": 3,
+    "conspect": "Subjonctif passé = subjonctif от avoir/être + причастие: qu’ils aient refusé."
+   },
+   {
+    "q": "Où est-ce que tu ach… le café ?",
+    "options": [
+     "-etons",
+     "-etez",
+     "-ète",
+     "ètes"
+    ],
+    "correct": 3,
+    "conspect": "Глагол «acheter» во 2-м лице ед. числа: tu achètes (с открытым è)."
+   },
+   {
+    "q": "Vous réservez __________ à l’hôtel.",
+    "options": [
+     "un batiment",
+     "une douche",
+     "une maison",
+     "une chambre"
+    ],
+    "correct": 3,
+    "conspect": "«Réserver une chambre à l’hôtel» — бронировать номер в гостинице."
+   },
+   {
+    "q": "C’est_____voiture de notre père.",
+    "options": [
+     "la",
+     "les",
+     "un",
+     "le"
+    ],
+    "correct": 0,
+    "conspect": "«Voiture» — существительное женского рода: la voiture de notre père."
+   },
+   {
+    "q": "Nicole a un enfant. Sa fille s’appelle Agathe. Elle est ...",
+    "options": [
+     "généreux, douce",
+     "sérieuse, doux",
+     "créatif, petit",
+     "grande, cultivée"
+    ],
+    "correct": 3,
+    "conspect": "Агата — девочка (fille): прилагательные в женском роде: grande, cultivée."
+   },
+   {
+    "q": "C’est un travail_____me prend beaucoup de temps.",
+    "options": [
+     "quel",
+     "que",
+     "qui",
+     "quelle"
+    ],
+    "correct": 2,
+    "conspect": "Относительное местоимение «qui» — подлежащее придаточного: un travail qui me prend du temps."
+   },
+   {
+    "q": "Trente et un et quarante font soixante et onze.",
+    "options": [
+     "31+14=45",
+     "30+41=71",
+     "31+40=71",
+     "30+40=70"
+    ],
+    "correct": 2,
+    "conspect": "trente et un (31) + quarante (40) = soixante et onze (71)."
+   },
+   {
+    "q": "La mode française est _____ que la mode italienne.",
+    "options": [
+     "meilleure",
+     "mauvaise",
+     "bonne",
+     "mal"
+    ],
+    "correct": 0,
+    "conspect": "Сравнительная степень прилагательного «bon/bonne» — «meilleur/meilleure»: la mode est meilleure que…"
+   },
+   {
+    "q": "Les parents de René Goscinny .... à Paris.",
+    "options": [
+     "Sont rencontrés",
+     "Se sont rencontrés",
+     "Se sont rencontré",
+     "Ont rencontré"
+    ],
+    "correct": 1,
+    "conspect": "Взаимный возвратный глагол в passé composé: se sont rencontrés (être, согласование с подлежащим «les parents»)."
+   },
+   {
+    "q": "J’ai oublié ce que j’_____(apprendre).",
+    "options": [
+     "apprends",
+     "ai appris",
+     "avait appris",
+     "avais appris"
+    ],
+    "correct": 3,
+    "conspect": "Действие, предшествующее другому прошлому, — plus-que-parfait: ce que j’avais appris."
+   },
+   {
+    "q": "Tu_____ en retard si tu marches si lentement.",
+    "options": [
+     "seras",
+     "serai",
+     "sera",
+     "soit"
+    ],
+    "correct": 0,
+    "conspect": "Будущее время (si + présent → futur): tu seras en retard."
+   },
+   {
+    "q": "Le policier lui dit : «Suivez-moi immédiatement au commissariat ».",
+    "options": [
+     "Le policier lui dit suivez-moi.",
+     "Le policier lui dit si il le suive.",
+     "Le policier lui dit de me suivre.",
+     "Le policier lui dit de le suivre."
+    ],
+    "correct": 3,
+    "conspect": "Косвенная речь: приказ передаëтся конструкцией «dire de + инфинитив»: Le policier lui dit de le suivre."
+   },
+   {
+    "q": "Il_____14 heures.",
+    "options": [
+     "soit",
+     "été",
+     "est",
+     "es"
+    ],
+    "correct": 2,
+    "conspect": "Время в французском: «il est quatorze heures» (глагол être, 3-е лицо ед. числа)."
+   },
+   {
+    "q": "_____dans sa chambre, Alice avait peur.",
+    "options": [
+     "entré",
+     "entrant",
+     "en entrant",
+     "entrée"
+    ],
+    "correct": 2,
+    "conspect": "Герундий en + participe présent: en entrant dans sa chambre — «входя в комнату»."
+   },
+   {
+    "q": "On _____ ce samedi.",
+    "options": [
+     "voient",
+     "se voit",
+     "vois",
+     "voit"
+    ],
+    "correct": 1,
+    "conspect": "Возвратный глагол: on se voit ce samedi (on — 3-е лицо ед. числа, «se voir» — видеться)."
+   },
+   {
+    "q": "Le patron lui _____ de vendre sa maison.",
+    "options": [
+     "est interdis",
+     "a interdu",
+     "a interdi",
+     "a interdit"
+    ],
+    "correct": 3,
+    "conspect": "Passé composé от interdire: a interdit (причастие interdit)."
+   },
+   {
+    "q": "Ce dimanche je/ j’ ... les voir.",
+    "options": [
+     "ira",
+     "irai",
+     "va",
+     "vas"
+    ],
+    "correct": 1,
+    "conspect": "Будущее время (ce dimanche): futur simple глагола aller: j’irai."
+   },
+   {
+    "q": "Formez l’impératif : avoir du courage",
+    "options": [
+     "Vous avez du courage!",
+     "Ayant du courage !",
+     "Avez du courage!",
+     "Ayez du courage!"
+    ],
+    "correct": 3,
+    "conspect": "Повелительное наклонение глагола avoir (форма на «vous»): ayez du courage!"
+   },
+   {
+    "q": "Formez l’impératif : Se promener",
+    "options": [
+     "Promenez –vous !",
+     "Promenes !",
+     "Il se promène",
+     "Promène !"
+    ],
+    "correct": 0,
+    "conspect": "Повелительное наклонение возвратного глагола: «Promenez-vous!» (глагол + дефис + местоимение)."
+   }
+  ],
+  "reading": [
+   {
+    "q": "Sa mère n'a pas vu_____________ «Stationnement interdit»",
+    "options": [
+     "la dette",
+     "l’amende",
+     "le rayon",
+     "le panneau"
+    ],
+    "correct": 3,
+    "passage": "LE VOYAGE EN VOITURE\nChaque jour, ma mère m'emmène au collège. On monte en voiture, on attache les ceintures de sécurité et on démarre. Ma mère conduit doucement, elle est très prudente. Elle respecte le code de la route. Sinon, on risque d'avoir un accident ou de renverser un piéton. Mais quand une voiture roule vraiment très lentement devant nous, ma mère la double. Chaque matin, on fait le même trajet: on prend l’avenue Gambetta et on continue tout droit. Ensuite, on s'arrête au feu rouge et on tourne à gauche. On traverse une petite place, tourne à droite et continue jusqu'au collège. A quatre heures de l'après-midi, ma mère vient me chercher après les cours. Avant de rentrer à la maison, on prend une tasse de thé avec un croissant. Parfois, il est difficile de se garer car il n'y a pas de place. Une fois, ma mère n'a pas vu le panneau «Stationnement interdit» et elle a dû payer une amende. Le dimanche, on va à la campagne. Le dimanche, c'est mon père qui conduit. Il aime la vitesse et il prend toujours l’autoroute car sur une autoroute, on peut rouler à 180 kilomètres à l'heure. En France, toutes les autoroutes sont payantes : on paie au péage. Voyager en voiture, c'est très rapide et pratique. Mais il y a quelques inconvénients. Aux heures de pointe, il y a des embouteillages. Ensuite, il faut prendre de l’essence qui coûte assez cher. Puis, si la voiture est en panne, il faut la faire réparer ce qui n'est pas gratuit. Enfin, le voyage en voiture est très risqué. Mais malgré tout ça, à 18 ans, je m'inscrirai à l'autoécole pour avoir le permis de conduire.",
+    "conspect": "В тексте: «ma mère n’a pas vu le panneau “Stationnement interdit”» — мама не заметила знак «Парковка запрещена» и заплатила штраф. Le panneau — дорожный знак; l’amende — штраф."
+   },
+   {
+    "q": "Sa mère peut ___________ une autre voiture roulant lentement",
+    "options": [
+     "acheter",
+     "vendre",
+     "doubler",
+     "garer"
+    ],
+    "correct": 2,
+    "passage": "LE VOYAGE EN VOITURE\nChaque jour, ma mère m'emmène au collège. On monte en voiture, on attache les ceintures de sécurité et on démarre. Ma mère conduit doucement, elle est très prudente. Elle respecte le code de la route. Sinon, on risque d'avoir un accident ou de renverser un piéton. Mais quand une voiture roule vraiment très lentement devant nous, ma mère la double. Chaque matin, on fait le même trajet: on prend l’avenue Gambetta et on continue tout droit. Ensuite, on s'arrête au feu rouge et on tourne à gauche. On traverse une petite place, tourne à droite et continue jusqu'au collège. A quatre heures de l'après-midi, ma mère vient me chercher après les cours. Avant de rentrer à la maison, on prend une tasse de thé avec un croissant. Parfois, il est difficile de se garer car il n'y a pas de place. Une fois, ma mère n'a pas vu le panneau «Stationnement interdit» et elle a dû payer une amende. Le dimanche, on va à la campagne. Le dimanche, c'est mon père qui conduit. Il aime la vitesse et il prend toujours l’autoroute car sur une autoroute, on peut rouler à 180 kilomètres à l'heure. En France, toutes les autoroutes sont payantes : on paie au péage. Voyager en voiture, c'est très rapide et pratique. Mais il y a quelques inconvénients. Aux heures de pointe, il y a des embouteillages. Ensuite, il faut prendre de l’essence qui coûte assez cher. Puis, si la voiture est en panne, il faut la faire réparer ce qui n'est pas gratuit. Enfin, le voyage en voiture est très risqué. Mais malgré tout ça, à 18 ans, je m'inscrirai à l'autoécole pour avoir le permis de conduire.",
+    "conspect": "Мама осторожна, но «quand une voiture roule très lentement devant nous, ma mère la double» — doubler (обгонять)."
+   },
+   {
+    "q": "En conduisant, son père aime _______",
+    "options": [
+     "l’alcool",
+     "le bruit",
+     "la vitesse",
+     "le divertissement"
+    ],
+    "correct": 2,
+    "passage": "LE VOYAGE EN VOITURE\nChaque jour, ma mère m'emmène au collège. On monte en voiture, on attache les ceintures de sécurité et on démarre. Ma mère conduit doucement, elle est très prudente. Elle respecte le code de la route. Sinon, on risque d'avoir un accident ou de renverser un piéton. Mais quand une voiture roule vraiment très lentement devant nous, ma mère la double. Chaque matin, on fait le même trajet: on prend l’avenue Gambetta et on continue tout droit. Ensuite, on s'arrête au feu rouge et on tourne à gauche. On traverse une petite place, tourne à droite et continue jusqu'au collège. A quatre heures de l'après-midi, ma mère vient me chercher après les cours. Avant de rentrer à la maison, on prend une tasse de thé avec un croissant. Parfois, il est difficile de se garer car il n'y a pas de place. Une fois, ma mère n'a pas vu le panneau «Stationnement interdit» et elle a dû payer une amende. Le dimanche, on va à la campagne. Le dimanche, c'est mon père qui conduit. Il aime la vitesse et il prend toujours l’autoroute car sur une autoroute, on peut rouler à 180 kilomètres à l'heure. En France, toutes les autoroutes sont payantes : on paie au péage. Voyager en voiture, c'est très rapide et pratique. Mais il y a quelques inconvénients. Aux heures de pointe, il y a des embouteillages. Ensuite, il faut prendre de l’essence qui coûte assez cher. Puis, si la voiture est en panne, il faut la faire réparer ce qui n'est pas gratuit. Enfin, le voyage en voiture est très risqué. Mais malgré tout ça, à 18 ans, je m'inscrirai à l'autoécole pour avoir le permis de conduire.",
+    "conspect": "Отец любит скорость: «Il aime la vitesse» и ездит по автомагистрали (на ней можно ехать 180 км/ч)."
+   },
+   {
+    "q": "Sa mère vient le chercher à _______",
+    "options": [
+     "9 heures",
+     "3 heures",
+     "4 heures",
+     "2 heures"
+    ],
+    "correct": 2,
+    "passage": "LE VOYAGE EN VOITURE\nChaque jour, ma mère m'emmène au collège. On monte en voiture, on attache les ceintures de sécurité et on démarre. Ma mère conduit doucement, elle est très prudente. Elle respecte le code de la route. Sinon, on risque d'avoir un accident ou de renverser un piéton. Mais quand une voiture roule vraiment très lentement devant nous, ma mère la double. Chaque matin, on fait le même trajet: on prend l’avenue Gambetta et on continue tout droit. Ensuite, on s'arrête au feu rouge et on tourne à gauche. On traverse une petite place, tourne à droite et continue jusqu'au collège. A quatre heures de l'après-midi, ma mère vient me chercher après les cours. Avant de rentrer à la maison, on prend une tasse de thé avec un croissant. Parfois, il est difficile de se garer car il n'y a pas de place. Une fois, ma mère n'a pas vu le panneau «Stationnement interdit» et elle a dû payer une amende. Le dimanche, on va à la campagne. Le dimanche, c'est mon père qui conduit. Il aime la vitesse et il prend toujours l’autoroute car sur une autoroute, on peut rouler à 180 kilomètres à l'heure. En France, toutes les autoroutes sont payantes : on paie au péage. Voyager en voiture, c'est très rapide et pratique. Mais il y a quelques inconvénients. Aux heures de pointe, il y a des embouteillages. Ensuite, il faut prendre de l’essence qui coûte assez cher. Puis, si la voiture est en panne, il faut la faire réparer ce qui n'est pas gratuit. Enfin, le voyage en voiture est très risqué. Mais malgré tout ça, à 18 ans, je m'inscrirai à l'autoécole pour avoir le permis de conduire.",
+    "conspect": "Мама забирает его в 4 часа дня: «A quatre heures de l’après-midi, ma mère vient me chercher»."
+   },
+   {
+    "q": "En France, toutes les _______ sont payantes",
+    "options": [
+     "les avenues",
+     "les rues",
+     "les autoroutes",
+     "les ruelles"
+    ],
+    "correct": 2,
+    "passage": "LE VOYAGE EN VOITURE\nChaque jour, ma mère m'emmène au collège. On monte en voiture, on attache les ceintures de sécurité et on démarre. Ma mère conduit doucement, elle est très prudente. Elle respecte le code de la route. Sinon, on risque d'avoir un accident ou de renverser un piéton. Mais quand une voiture roule vraiment très lentement devant nous, ma mère la double. Chaque matin, on fait le même trajet: on prend l’avenue Gambetta et on continue tout droit. Ensuite, on s'arrête au feu rouge et on tourne à gauche. On traverse une petite place, tourne à droite et continue jusqu'au collège. A quatre heures de l'après-midi, ma mère vient me chercher après les cours. Avant de rentrer à la maison, on prend une tasse de thé avec un croissant. Parfois, il est difficile de se garer car il n'y a pas de place. Une fois, ma mère n'a pas vu le panneau «Stationnement interdit» et elle a dû payer une amende. Le dimanche, on va à la campagne. Le dimanche, c'est mon père qui conduit. Il aime la vitesse et il prend toujours l’autoroute car sur une autoroute, on peut rouler à 180 kilomètres à l'heure. En France, toutes les autoroutes sont payantes : on paie au péage. Voyager en voiture, c'est très rapide et pratique. Mais il y a quelques inconvénients. Aux heures de pointe, il y a des embouteillages. Ensuite, il faut prendre de l’essence qui coûte assez cher. Puis, si la voiture est en panne, il faut la faire réparer ce qui n'est pas gratuit. Enfin, le voyage en voiture est très risqué. Mais malgré tout ça, à 18 ans, je m'inscrirai à l'autoécole pour avoir le permis de conduire.",
+    "conspect": "Во Франции все автомагистрали платные: «toutes les autoroutes sont payantes: on paie au péage»."
+   },
+   {
+    "q": "Son père conduit _______",
+    "options": [
+     "tous les jours",
+     "chaque matin",
+     "chaque jour",
+     "le dimanche"
+    ],
+    "correct": 3,
+    "passage": "LE VOYAGE EN VOITURE\nChaque jour, ma mère m'emmène au collège. On monte en voiture, on attache les ceintures de sécurité et on démarre. Ma mère conduit doucement, elle est très prudente. Elle respecte le code de la route. Sinon, on risque d'avoir un accident ou de renverser un piéton. Mais quand une voiture roule vraiment très lentement devant nous, ma mère la double. Chaque matin, on fait le même trajet: on prend l’avenue Gambetta et on continue tout droit. Ensuite, on s'arrête au feu rouge et on tourne à gauche. On traverse une petite place, tourne à droite et continue jusqu'au collège. A quatre heures de l'après-midi, ma mère vient me chercher après les cours. Avant de rentrer à la maison, on prend une tasse de thé avec un croissant. Parfois, il est difficile de se garer car il n'y a pas de place. Une fois, ma mère n'a pas vu le panneau «Stationnement interdit» et elle a dû payer une amende. Le dimanche, on va à la campagne. Le dimanche, c'est mon père qui conduit. Il aime la vitesse et il prend toujours l’autoroute car sur une autoroute, on peut rouler à 180 kilomètres à l'heure. En France, toutes les autoroutes sont payantes : on paie au péage. Voyager en voiture, c'est très rapide et pratique. Mais il y a quelques inconvénients. Aux heures de pointe, il y a des embouteillages. Ensuite, il faut prendre de l’essence qui coûte assez cher. Puis, si la voiture est en panne, il faut la faire réparer ce qui n'est pas gratuit. Enfin, le voyage en voiture est très risqué. Mais malgré tout ça, à 18 ans, je m'inscrirai à l'autoécole pour avoir le permis de conduire.",
+    "conspect": "За рулëм по воскресеньям — отец: «Le dimanche, c’est mon père qui conduit»."
+   },
+   {
+    "q": "On risque d'avoir un accident ou de renverser _______",
+    "options": [
+     "une piste",
+     "un plomb",
+     "un parachute",
+     "un piéton."
+    ],
+    "correct": 3,
+    "passage": "LE VOYAGE EN VOITURE\nChaque jour, ma mère m'emmène au collège. On monte en voiture, on attache les ceintures de sécurité et on démarre. Ma mère conduit doucement, elle est très prudente. Elle respecte le code de la route. Sinon, on risque d'avoir un accident ou de renverser un piéton. Mais quand une voiture roule vraiment très lentement devant nous, ma mère la double. Chaque matin, on fait le même trajet: on prend l’avenue Gambetta et on continue tout droit. Ensuite, on s'arrête au feu rouge et on tourne à gauche. On traverse une petite place, tourne à droite et continue jusqu'au collège. A quatre heures de l'après-midi, ma mère vient me chercher après les cours. Avant de rentrer à la maison, on prend une tasse de thé avec un croissant. Parfois, il est difficile de se garer car il n'y a pas de place. Une fois, ma mère n'a pas vu le panneau «Stationnement interdit» et elle a dû payer une amende. Le dimanche, on va à la campagne. Le dimanche, c'est mon père qui conduit. Il aime la vitesse et il prend toujours l’autoroute car sur une autoroute, on peut rouler à 180 kilomètres à l'heure. En France, toutes les autoroutes sont payantes : on paie au péage. Voyager en voiture, c'est très rapide et pratique. Mais il y a quelques inconvénients. Aux heures de pointe, il y a des embouteillages. Ensuite, il faut prendre de l’essence qui coûte assez cher. Puis, si la voiture est en panne, il faut la faire réparer ce qui n'est pas gratuit. Enfin, le voyage en voiture est très risqué. Mais malgré tout ça, à 18 ans, je m'inscrirai à l'autoécole pour avoir le permis de conduire.",
+    "conspect": "Мама соблюдает правила: иначе «on risque d’avoir un accident ou de renverser un piéton» (сбить пешехода)."
+   },
+   {
+    "q": "Le dimanche, on va _______",
+    "options": [
+     "au travail",
+     "à l’étranger",
+     "dans les montagnes",
+     "à la campagne"
+    ],
+    "correct": 3,
+    "passage": "LE VOYAGE EN VOITURE\nChaque jour, ma mère m'emmène au collège. On monte en voiture, on attache les ceintures de sécurité et on démarre. Ma mère conduit doucement, elle est très prudente. Elle respecte le code de la route. Sinon, on risque d'avoir un accident ou de renverser un piéton. Mais quand une voiture roule vraiment très lentement devant nous, ma mère la double. Chaque matin, on fait le même trajet: on prend l’avenue Gambetta et on continue tout droit. Ensuite, on s'arrête au feu rouge et on tourne à gauche. On traverse une petite place, tourne à droite et continue jusqu'au collège. A quatre heures de l'après-midi, ma mère vient me chercher après les cours. Avant de rentrer à la maison, on prend une tasse de thé avec un croissant. Parfois, il est difficile de se garer car il n'y a pas de place. Une fois, ma mère n'a pas vu le panneau «Stationnement interdit» et elle a dû payer une amende. Le dimanche, on va à la campagne. Le dimanche, c'est mon père qui conduit. Il aime la vitesse et il prend toujours l’autoroute car sur une autoroute, on peut rouler à 180 kilomètres à l'heure. En France, toutes les autoroutes sont payantes : on paie au péage. Voyager en voiture, c'est très rapide et pratique. Mais il y a quelques inconvénients. Aux heures de pointe, il y a des embouteillages. Ensuite, il faut prendre de l’essence qui coûte assez cher. Puis, si la voiture est en panne, il faut la faire réparer ce qui n'est pas gratuit. Enfin, le voyage en voiture est très risqué. Mais malgré tout ça, à 18 ans, je m'inscrirai à l'autoécole pour avoir le permis de conduire.",
+    "conspect": "По воскресеньям семья едет за город: «Le dimanche, on va à la campagne»."
+   },
+   {
+    "q": "Cette course passe en _______",
+    "options": [
+     "juillet",
+     "mars",
+     "octobre",
+     "mai"
+    ],
+    "correct": 0,
+    "passage": "Le Tour de France\nLe Tour de France est la grande compétition française de cyclisme, et pendant tout le mois de juillet, on ne parle que du Tour de France à la radio et à la télévision françaises. De nombreuses familles partent en vacances pour suivre le Tour de France. Elles mettent chaque jour la tente ou la caravane pour voir passer leurs champions. Jeunes et vieux, hommes, femmes, enfants, tous s’installent au bord des routes, mangent au soleil et dans la poussière pour regarder passer le Tour, leur équipe favorite et le premier du classement général qui porte un maillot jaune. Il y a aussi ceux qui partent avec leur vélo et qui font une partie du trajet à vélo pour se comparer aux champions… C’est une course par équipes; en traversant les montagnes les plus hautes: les Alpes, les Pyrénées. On les appelle «les Géants de la route». Le Tour de France se termine traditionnellement à Paris sur les Champs-Elysées. Le premier Tour de France a été couru en 1903. Le Tour de France n’est pas réservé aux Français: dans les équipes il y a des coureurs de très nombreuses nationalités. Actuellement, les coureurs parcourent environ 3500 km en 20 à 22 étapes de 60 à 240 km. Certaines années, le Tour de France propose aussi une étape à l’étranger, juste de l’autre coté de la frontière…",
+    "conspect": "Тур де Франс проходит в июле: «pendant tout le mois de juillet, on ne parle que du Tour de France»."
+   },
+   {
+    "q": "On appelle des coureurs _______",
+    "options": [
+     "les Géants de la route",
+     "les Géants boxeurs",
+     "les Géants de l’autoroute",
+     "les Géants héros"
+    ],
+    "correct": 0,
+    "passage": "Le Tour de France\nLe Tour de France est la grande compétition française de cyclisme, et pendant tout le mois de juillet, on ne parle que du Tour de France à la radio et à la télévision françaises. De nombreuses familles partent en vacances pour suivre le Tour de France. Elles mettent chaque jour la tente ou la caravane pour voir passer leurs champions. Jeunes et vieux, hommes, femmes, enfants, tous s’installent au bord des routes, mangent au soleil et dans la poussière pour regarder passer le Tour, leur équipe favorite et le premier du classement général qui porte un maillot jaune. Il y a aussi ceux qui partent avec leur vélo et qui font une partie du trajet à vélo pour se comparer aux champions… C’est une course par équipes; en traversant les montagnes les plus hautes: les Alpes, les Pyrénées. On les appelle «les Géants de la route». Le Tour de France se termine traditionnellement à Paris sur les Champs-Elysées. Le premier Tour de France a été couru en 1903. Le Tour de France n’est pas réservé aux Français: dans les équipes il y a des coureurs de très nombreuses nationalités. Actuellement, les coureurs parcourent environ 3500 km en 20 à 22 étapes de 60 à 240 km. Certaines années, le Tour de France propose aussi une étape à l’étranger, juste de l’autre coté de la frontière…",
+    "conspect": "Гонщиков называют «les Géants de la route» — «великанами дорог»: они пересекают самые высокие горы."
+   },
+   {
+    "q": "Les coureurs traversent _______",
+    "options": [
+     "les montagnes les plus hautes",
+     "les plateaux",
+     "les montagnes les plus basses",
+     "les collines"
+    ],
+    "correct": 0,
+    "passage": "Le Tour de France\nLe Tour de France est la grande compétition française de cyclisme, et pendant tout le mois de juillet, on ne parle que du Tour de France à la radio et à la télévision françaises. De nombreuses familles partent en vacances pour suivre le Tour de France. Elles mettent chaque jour la tente ou la caravane pour voir passer leurs champions. Jeunes et vieux, hommes, femmes, enfants, tous s’installent au bord des routes, mangent au soleil et dans la poussière pour regarder passer le Tour, leur équipe favorite et le premier du classement général qui porte un maillot jaune. Il y a aussi ceux qui partent avec leur vélo et qui font une partie du trajet à vélo pour se comparer aux champions… C’est une course par équipes; en traversant les montagnes les plus hautes: les Alpes, les Pyrénées. On les appelle «les Géants de la route». Le Tour de France se termine traditionnellement à Paris sur les Champs-Elysées. Le premier Tour de France a été couru en 1903. Le Tour de France n’est pas réservé aux Français: dans les équipes il y a des coureurs de très nombreuses nationalités. Actuellement, les coureurs parcourent environ 3500 km en 20 à 22 étapes de 60 à 240 km. Certaines années, le Tour de France propose aussi une étape à l’étranger, juste de l’autre coté de la frontière…",
+    "conspect": "Гонщики проезжают через самые высокие горы — Альпы и Пиренеи (les montagnes les plus hautes)."
+   },
+   {
+    "q": "C’est une grande compétition _______",
+    "options": [
+     "française",
+     "allemande",
+     "portugaise",
+     "italienne"
+    ],
+    "correct": 0,
+    "passage": "Le Tour de France\nLe Tour de France est la grande compétition française de cyclisme, et pendant tout le mois de juillet, on ne parle que du Tour de France à la radio et à la télévision françaises. De nombreuses familles partent en vacances pour suivre le Tour de France. Elles mettent chaque jour la tente ou la caravane pour voir passer leurs champions. Jeunes et vieux, hommes, femmes, enfants, tous s’installent au bord des routes, mangent au soleil et dans la poussière pour regarder passer le Tour, leur équipe favorite et le premier du classement général qui porte un maillot jaune. Il y a aussi ceux qui partent avec leur vélo et qui font une partie du trajet à vélo pour se comparer aux champions… C’est une course par équipes; en traversant les montagnes les plus hautes: les Alpes, les Pyrénées. On les appelle «les Géants de la route». Le Tour de France se termine traditionnellement à Paris sur les Champs-Elysées. Le premier Tour de France a été couru en 1903. Le Tour de France n’est pas réservé aux Français: dans les équipes il y a des coureurs de très nombreuses nationalités. Actuellement, les coureurs parcourent environ 3500 km en 20 à 22 étapes de 60 à 240 km. Certaines années, le Tour de France propose aussi une étape à l’étranger, juste de l’autre coté de la frontière…",
+    "conspect": "Тур де Франс — «la grande compétition française de cyclisme» (французская велогонка)."
+   },
+   {
+    "q": "La compétition _________ par étape",
+    "options": [
+     "a mal",
+     "a lieu",
+     "a froid",
+     "a sommeil"
+    ],
+    "correct": 1,
+    "passage": "Le Tour de France\nLe Tour de France est la grande compétition française de cyclisme, et pendant tout le mois de juillet, on ne parle que du Tour de France à la radio et à la télévision françaises. De nombreuses familles partent en vacances pour suivre le Tour de France. Elles mettent chaque jour la tente ou la caravane pour voir passer leurs champions. Jeunes et vieux, hommes, femmes, enfants, tous s’installent au bord des routes, mangent au soleil et dans la poussière pour regarder passer le Tour, leur équipe favorite et le premier du classement général qui porte un maillot jaune. Il y a aussi ceux qui partent avec leur vélo et qui font une partie du trajet à vélo pour se comparer aux champions… C’est une course par équipes; en traversant les montagnes les plus hautes: les Alpes, les Pyrénées. On les appelle «les Géants de la route». Le Tour de France se termine traditionnellement à Paris sur les Champs-Elysées. Le premier Tour de France a été couru en 1903. Le Tour de France n’est pas réservé aux Français: dans les équipes il y a des coureurs de très nombreuses nationalités. Actuellement, les coureurs parcourent environ 3500 km en 20 à 22 étapes de 60 à 240 km. Certaines années, le Tour de France propose aussi une étape à l’étranger, juste de l’autre coté de la frontière…",
+    "conspect": "Гонка проходит этапами: «avoir lieu» — проходить, состояться (la compétition a lieu par étape)."
+   },
+   {
+    "q": "________a lieu par étape",
+    "options": [
+     "Le vainqueur",
+     "Les courses",
+     "La course",
+     "Les champions"
+    ],
+    "correct": 2,
+    "passage": "Le Tour de France\nLe Tour de France est la grande compétition française de cyclisme, et pendant tout le mois de juillet, on ne parle que du Tour de France à la radio et à la télévision françaises. De nombreuses familles partent en vacances pour suivre le Tour de France. Elles mettent chaque jour la tente ou la caravane pour voir passer leurs champions. Jeunes et vieux, hommes, femmes, enfants, tous s’installent au bord des routes, mangent au soleil et dans la poussière pour regarder passer le Tour, leur équipe favorite et le premier du classement général qui porte un maillot jaune. Il y a aussi ceux qui partent avec leur vélo et qui font une partie du trajet à vélo pour se comparer aux champions… C’est une course par équipes; en traversant les montagnes les plus hautes: les Alpes, les Pyrénées. On les appelle «les Géants de la route». Le Tour de France se termine traditionnellement à Paris sur les Champs-Elysées. Le premier Tour de France a été couru en 1903. Le Tour de France n’est pas réservé aux Français: dans les équipes il y a des coureurs de très nombreuses nationalités. Actuellement, les coureurs parcourent environ 3500 km en 20 à 22 étapes de 60 à 240 km. Certaines années, le Tour de France propose aussi une étape à l’étranger, juste de l’autre coté de la frontière…",
+    "conspect": "«La course» (гонка) проходит по этапам: «C’est une course par équipes… en 20 à 22 étapes»."
+   },
+   {
+    "q": "Les familles françaises mettent des ___________pour l’admirer",
+    "options": [
+     "tentes",
+     "tantes",
+     "tasses",
+     "tissus"
+    ],
+    "correct": 0,
+    "passage": "Le Tour de France\nLe Tour de France est la grande compétition française de cyclisme, et pendant tout le mois de juillet, on ne parle que du Tour de France à la radio et à la télévision françaises. De nombreuses familles partent en vacances pour suivre le Tour de France. Elles mettent chaque jour la tente ou la caravane pour voir passer leurs champions. Jeunes et vieux, hommes, femmes, enfants, tous s’installent au bord des routes, mangent au soleil et dans la poussière pour regarder passer le Tour, leur équipe favorite et le premier du classement général qui porte un maillot jaune. Il y a aussi ceux qui partent avec leur vélo et qui font une partie du trajet à vélo pour se comparer aux champions… C’est une course par équipes; en traversant les montagnes les plus hautes: les Alpes, les Pyrénées. On les appelle «les Géants de la route». Le Tour de France se termine traditionnellement à Paris sur les Champs-Elysées. Le premier Tour de France a été couru en 1903. Le Tour de France n’est pas réservé aux Français: dans les équipes il y a des coureurs de très nombreuses nationalités. Actuellement, les coureurs parcourent environ 3500 km en 20 à 22 étapes de 60 à 240 km. Certaines années, le Tour de France propose aussi une étape à l’étranger, juste de l’autre coté de la frontière…",
+    "conspect": "Семьи ставят палатки (des tentes) или караваны, чтобы увидеть гонщиков: «Elles mettent chaque jour la tente ou la caravane»."
+   },
+   {
+    "q": "Parmi des spectateurs, il y a aussi ceux qui veulent_______ à vélo",
+    "options": [
+     "se vanger aux champions",
+     "se disputer aux champions",
+     "se promener avec champions",
+     "se comparer aux champions"
+    ],
+    "correct": 3,
+    "passage": "Le Tour de France\nLe Tour de France est la grande compétition française de cyclisme, et pendant tout le mois de juillet, on ne parle que du Tour de France à la radio et à la télévision françaises. De nombreuses familles partent en vacances pour suivre le Tour de France. Elles mettent chaque jour la tente ou la caravane pour voir passer leurs champions. Jeunes et vieux, hommes, femmes, enfants, tous s’installent au bord des routes, mangent au soleil et dans la poussière pour regarder passer le Tour, leur équipe favorite et le premier du classement général qui porte un maillot jaune. Il y a aussi ceux qui partent avec leur vélo et qui font une partie du trajet à vélo pour se comparer aux champions… C’est une course par équipes; en traversant les montagnes les plus hautes: les Alpes, les Pyrénées. On les appelle «les Géants de la route». Le Tour de France se termine traditionnellement à Paris sur les Champs-Elysées. Le premier Tour de France a été couru en 1903. Le Tour de France n’est pas réservé aux Français: dans les équipes il y a des coureurs de très nombreuses nationalités. Actuellement, les coureurs parcourent environ 3500 km en 20 à 22 étapes de 60 à 240 km. Certaines années, le Tour de France propose aussi une étape à l’étranger, juste de l’autre coté de la frontière…",
+    "conspect": "Некоторые зрители едут часть пути на велосипеде, чтобы сравнить себя с чемпионами: «se comparer aux champions»."
+   },
+   {
+    "q": "Ils s’intéressent aussi à",
+    "options": [
+     "la recherche",
+     "la musique",
+     "la médecine",
+     "la politique"
+    ],
+    "correct": 1,
+    "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
+    "conspect": "Французская молодëжь любит слушать музыку и заниматься спортом («Ils aiment écouter de la musique»). Ответ: «la musique»."
+   },
+   {
+    "q": "En générale, les jeunes suivent … heures de cours au lycée.",
+    "options": [
+     "trente-huit",
+     "trente-six",
+     "trente-sept",
+     "trente-neuf"
+    ],
+    "correct": 3,
+    "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
+    "conspect": "В лицее они «suivent leurs 39 heures de cours» — 39 часов занятий в неделю (trente-neuf)."
+   },
+   {
+    "q": "Ils trouvent aussi le temps pour",
+    "options": [
+     "bavarder",
+     "lire",
+     "critiquer",
+     "disputer"
+    ],
+    "correct": 1,
+    "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
+    "conspect": "Молодëжь любит читать: «La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire»."
+   },
+   {
+    "q": "Les jeunes ne voient presque personne à cause de manque de / d’",
+    "options": [
+     "temps",
+     "capacité",
+     "responsabilité",
+     "envie"
+    ],
+    "correct": 0,
+    "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
+    "conspect": "Работающие студенты почти ни с кем не видятся — им не хватает времени: «Ces jeunes n’ont pas le temps de bavarder avec leurs amis»."
+   },
+   {
+    "q": "Malgré leurs … ils restent gais, pleins de vie, d’énergie et d’optimisme.",
+    "options": [
+     "grossesses",
+     "soucis",
+     "paresses",
+     "orgueils"
+    ],
+    "correct": 1,
+    "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
+    "conspect": "Несмотря на свои проблемы (soucis — заботы), молодëжь остаëтся весëлой и оптимистичной: «Malgré leurs problèmes… ils restent gais»."
+   },
+   {
+    "q": "D’habitude, le Ministère de la jeunesse et des sports organise des chantiers internationaux quand les étudiants sont",
+    "options": [
+     "à l’étranger",
+     "au travail",
+     "en cours",
+     "en vacances"
+    ],
+    "correct": 3,
+    "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
+    "conspect": "Министерство молодëжи и спорта организует международные стройки на каникулах (pendant les vacances)."
+   },
+   {
+    "q": "On organise des forums où les jeunes peuvent obtenir des renseignements nécessaires concernant",
+    "options": [
+     "les besoins financiers",
+     "les besoins psychologiques",
+     "les besoins en formation",
+     "les besoins physiques"
+    ],
+    "correct": 2,
+    "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
+    "conspect": "На форумах молодëжь получает информацию о потребностях в обучении: «obtenir des informations sur les besoins en formation»."
+   },
+   {
+    "q": "Les jeunes Français ont besoin d’argent pour",
+    "options": [
+     "faire des recherches",
+     "vivre normalement",
+     "étudier à l’étranger",
+     "acheter des objets de luxe"
+    ],
+    "correct": 1,
+    "passage": "La vie des jeunes en France\nLa vie des jeunes Français se déroule assez diversement. Les jeunes ont beaucoup d’occupations pour ne pas s’ennuyer. Les jeunes Français passant une grande partie de leur temps à l’école, comme tous les jeunes, aiment se distraire, faire des promenades, faire des projets d’avenir, parler de leurs professeurs, de leurs écoles. Ils aiment écouter de la musique, faire du sport. Beaucoup de jeunes préfèrent le cyclisme, ils aiment faire du vélo, faire du tourisme. Pendant les jours de congé, le soir, après l’école la plupart des jeunes préfèrent rester à la maison regarder la télé. La lecture occupe une place à part dans leur vie. Ils aiment beaucoup lire. En vacances les uns vont à la mer, dans les montagnes, d’autres vont chez leurs grands-parents. Mais de plus en plus sont les jeunes qui travaillent, qui exercent un métier. Il y a des étudiants qui à l’âge de 18 ans cumulent deux métiers. La journée ils suivent leurs 39 heures de cours au lycée. Le soir ils travaillent 15 heures hebdomadaires. Ces jeunes n’ont pas le temps de bavarder avec leurs amis, ils ne voient presque personne. Ils sont toujours pressés. Sur les 27 élèves d’une classe de I-re les 2/3 (deux tiers) travaillent régulièrement. Ils ont besoin d’argent de poche pour exister. Leurs parents n’ont pas les moyens de leur en donner. C’est pourquoi ils travaillent. En France on attire une grande attention à la formation du jeune citoyen du pays. Il y a toutes sortes de forums de lycéens, des étudiants et des employés où ils peuvent s’entretenir avec les entreprises présentes, avec les enseignants et les jeunes diplômés pour obtenir des informations sur les besoins en formation. Pendant les vacances, pour ceux qui ont la possibilité, le Ministère de la jeunesse et des sports organise des chantiers internationaux qui ont pour but de favoriser les échanges et l’amitié entre les jeunes tant sur le plan national que mondial. Malgré leurs problèmes, les jeunes Français restent gais, pleins de vie, d’énergie et d’optimisme.",
+    "conspect": "Деньги на карманные расходы нужны, чтобы жить нормально: «Ils ont besoin d’argent de poche pour exister»."
+   },
+   {
+    "q": "Laure le Poitevin est",
+    "options": [
+     "son frère",
+     "son amie",
+     "son père",
+     "sa mère"
+    ],
+    "correct": 3,
+    "passage": "Guy de Maupassant\nGuy de Maupassant est né à Fécamp le cinq août 1850, fils d'une bourgeoise, Laure le Poitevin et d'un noble, Gustave de Maupassant. La famille s'installe à Paris mais les époux ne s'entendent pas et le garçon n'oubliera jamais les scènes de violence conjugale auxquelles il assiste. Ses parents séparés, l'enfant est élevé à Etretat par sa mère qu'il adore, femme éprise de littérature et amie de Flaubert. Il grandit dans la campagne normande et se lie avec les paysans et les pêcheurs de la région qui lui inspireront plus tard des personnages. A douze ans, il rentre dans l'institution ecclésiastique d'Yvetot (qu'il quittera avec une profonde aversion pour la religion) puis termine ses études au lycée de Rouen. A Paris, il fait des études de droit, interrompues par une mobilisation à Rouen pendant la guerre franco-prussienne. Ensuite, il trouve un emploi au ministère de la Marine puis de l'Instruction publique (1872-1880). Flaubert devient son mentor, le guide dans le journalisme et l'introduit dans le milieu littéraire réaliste et naturaliste : il rencontre Zola, Huysmans, Tourguéniev, Daudet et les frères Goncourt et participe aux Soirées de Médan. Après le succès de « Boule de suif » (1880), Maupassant abandonne son emploi au ministère pour se consacrer à l'écriture. Dès lors, de 1880 à 1890, il publie six romans et plus de trois cents contes et nouvelles. Ses récits sont publiés dans des recueils tels « Les sœurs Rondoli», « Les contes de la bécasse ». Il écrit des chroniques dans des journaux comme Gil Blas », « Le Gaulois » et « Le Figaro », ainsi que des récits de voyage et des correspondances. Vers la fin des années 1880, sa santé physique et morale se dégrade (il est victime d'hallucinations). Vivant reclus, il sombre peu à peu dans la folie et, après une tentative de suicide, il est interné dans la clinique du docteur Blanche où il meurt le six juillet 1893.",
+    "conspect": "Лор ле Пуатвен — мать Мопассана: он «fils d’une bourgeoise, Laure le Poitevin» (воспитывался матерью, которую обожал)."
+   },
+   {
+    "q": "Gustave de Maupassant est",
+    "options": [
+     "son amie",
+     "son frère",
+     "son père",
+     "sa mère"
+    ],
+    "correct": 2,
+    "passage": "Guy de Maupassant\nGuy de Maupassant est né à Fécamp le cinq août 1850, fils d'une bourgeoise, Laure le Poitevin et d'un noble, Gustave de Maupassant. La famille s'installe à Paris mais les époux ne s'entendent pas et le garçon n'oubliera jamais les scènes de violence conjugale auxquelles il assiste. Ses parents séparés, l'enfant est élevé à Etretat par sa mère qu'il adore, femme éprise de littérature et amie de Flaubert. Il grandit dans la campagne normande et se lie avec les paysans et les pêcheurs de la région qui lui inspireront plus tard des personnages. A douze ans, il rentre dans l'institution ecclésiastique d'Yvetot (qu'il quittera avec une profonde aversion pour la religion) puis termine ses études au lycée de Rouen. A Paris, il fait des études de droit, interrompues par une mobilisation à Rouen pendant la guerre franco-prussienne. Ensuite, il trouve un emploi au ministère de la Marine puis de l'Instruction publique (1872-1880). Flaubert devient son mentor, le guide dans le journalisme et l'introduit dans le milieu littéraire réaliste et naturaliste : il rencontre Zola, Huysmans, Tourguéniev, Daudet et les frères Goncourt et participe aux Soirées de Médan. Après le succès de « Boule de suif » (1880), Maupassant abandonne son emploi au ministère pour se consacrer à l'écriture. Dès lors, de 1880 à 1890, il publie six romans et plus de trois cents contes et nouvelles. Ses récits sont publiés dans des recueils tels « Les sœurs Rondoli», « Les contes de la bécasse ». Il écrit des chroniques dans des journaux comme Gil Blas », « Le Gaulois » et « Le Figaro », ainsi que des récits de voyage et des correspondances. Vers la fin des années 1880, sa santé physique et morale se dégrade (il est victime d'hallucinations). Vivant reclus, il sombre peu à peu dans la folie et, après une tentative de suicide, il est interné dans la clinique du docteur Blanche où il meurt le six juillet 1893.",
+    "conspect": "Гюстав де Мопассан — отец писателя: «fils… d’un noble, Gustave de Maupassant»."
+   },
+   {
+    "q": "L’écrivain a vécu la période de la guerre",
+    "options": [
+     "franco-prussienne",
+     "la guerre franco-russe",
+     "de Cent Ans",
+     "deuxième guerre mondiale"
+    ],
+    "correct": 0,
+    "passage": "Guy de Maupassant\nGuy de Maupassant est né à Fécamp le cinq août 1850, fils d'une bourgeoise, Laure le Poitevin et d'un noble, Gustave de Maupassant. La famille s'installe à Paris mais les époux ne s'entendent pas et le garçon n'oubliera jamais les scènes de violence conjugale auxquelles il assiste. Ses parents séparés, l'enfant est élevé à Etretat par sa mère qu'il adore, femme éprise de littérature et amie de Flaubert. Il grandit dans la campagne normande et se lie avec les paysans et les pêcheurs de la région qui lui inspireront plus tard des personnages. A douze ans, il rentre dans l'institution ecclésiastique d'Yvetot (qu'il quittera avec une profonde aversion pour la religion) puis termine ses études au lycée de Rouen. A Paris, il fait des études de droit, interrompues par une mobilisation à Rouen pendant la guerre franco-prussienne. Ensuite, il trouve un emploi au ministère de la Marine puis de l'Instruction publique (1872-1880). Flaubert devient son mentor, le guide dans le journalisme et l'introduit dans le milieu littéraire réaliste et naturaliste : il rencontre Zola, Huysmans, Tourguéniev, Daudet et les frères Goncourt et participe aux Soirées de Médan. Après le succès de « Boule de suif » (1880), Maupassant abandonne son emploi au ministère pour se consacrer à l'écriture. Dès lors, de 1880 à 1890, il publie six romans et plus de trois cents contes et nouvelles. Ses récits sont publiés dans des recueils tels « Les sœurs Rondoli», « Les contes de la bécasse ». Il écrit des chroniques dans des journaux comme Gil Blas », « Le Gaulois » et « Le Figaro », ainsi que des récits de voyage et des correspondances. Vers la fin des années 1880, sa santé physique et morale se dégrade (il est victime d'hallucinations). Vivant reclus, il sombre peu à peu dans la folie et, après une tentative de suicide, il est interné dans la clinique du docteur Blanche où il meurt le six juillet 1893.",
+    "conspect": "Во время франко-прусской войны (1870–1871) Мопассан был мобилизован в Руане."
+   },
+   {
+    "q": "Il est interné dans la clinique du docteur Blanche après",
+    "options": [
+     "ses chroniques dans des journaux",
+     "le divorce de ses parents",
+     "le succès de « Boule de suif »",
+     "une tentative de suicide"
+    ],
+    "correct": 3,
+    "passage": "Guy de Maupassant\nGuy de Maupassant est né à Fécamp le cinq août 1850, fils d'une bourgeoise, Laure le Poitevin et d'un noble, Gustave de Maupassant. La famille s'installe à Paris mais les époux ne s'entendent pas et le garçon n'oubliera jamais les scènes de violence conjugale auxquelles il assiste. Ses parents séparés, l'enfant est élevé à Etretat par sa mère qu'il adore, femme éprise de littérature et amie de Flaubert. Il grandit dans la campagne normande et se lie avec les paysans et les pêcheurs de la région qui lui inspireront plus tard des personnages. A douze ans, il rentre dans l'institution ecclésiastique d'Yvetot (qu'il quittera avec une profonde aversion pour la religion) puis termine ses études au lycée de Rouen. A Paris, il fait des études de droit, interrompues par une mobilisation à Rouen pendant la guerre franco-prussienne. Ensuite, il trouve un emploi au ministère de la Marine puis de l'Instruction publique (1872-1880). Flaubert devient son mentor, le guide dans le journalisme et l'introduit dans le milieu littéraire réaliste et naturaliste : il rencontre Zola, Huysmans, Tourguéniev, Daudet et les frères Goncourt et participe aux Soirées de Médan. Après le succès de « Boule de suif » (1880), Maupassant abandonne son emploi au ministère pour se consacrer à l'écriture. Dès lors, de 1880 à 1890, il publie six romans et plus de trois cents contes et nouvelles. Ses récits sont publiés dans des recueils tels « Les sœurs Rondoli», « Les contes de la bécasse ». Il écrit des chroniques dans des journaux comme Gil Blas », « Le Gaulois » et « Le Figaro », ainsi que des récits de voyage et des correspondances. Vers la fin des années 1880, sa santé physique et morale se dégrade (il est victime d'hallucinations). Vivant reclus, il sombre peu à peu dans la folie et, après une tentative de suicide, il est interné dans la clinique du docteur Blanche où il meurt le six juillet 1893.",
+    "conspect": "Мопассан был помещëн в клинику доктора Бланша после попытки самоубийства («après une tentative de suicide»)."
+   },
+   {
+    "q": "L’écrivain avait un état psychologique",
+    "options": [
+     "idéal",
+     "instable",
+     "magnifique",
+     "stable"
+    ],
+    "correct": 1,
+    "passage": "Guy de Maupassant\nGuy de Maupassant est né à Fécamp le cinq août 1850, fils d'une bourgeoise, Laure le Poitevin et d'un noble, Gustave de Maupassant. La famille s'installe à Paris mais les époux ne s'entendent pas et le garçon n'oubliera jamais les scènes de violence conjugale auxquelles il assiste. Ses parents séparés, l'enfant est élevé à Etretat par sa mère qu'il adore, femme éprise de littérature et amie de Flaubert. Il grandit dans la campagne normande et se lie avec les paysans et les pêcheurs de la région qui lui inspireront plus tard des personnages. A douze ans, il rentre dans l'institution ecclésiastique d'Yvetot (qu'il quittera avec une profonde aversion pour la religion) puis termine ses études au lycée de Rouen. A Paris, il fait des études de droit, interrompues par une mobilisation à Rouen pendant la guerre franco-prussienne. Ensuite, il trouve un emploi au ministère de la Marine puis de l'Instruction publique (1872-1880). Flaubert devient son mentor, le guide dans le journalisme et l'introduit dans le milieu littéraire réaliste et naturaliste : il rencontre Zola, Huysmans, Tourguéniev, Daudet et les frères Goncourt et participe aux Soirées de Médan. Après le succès de « Boule de suif » (1880), Maupassant abandonne son emploi au ministère pour se consacrer à l'écriture. Dès lors, de 1880 à 1890, il publie six romans et plus de trois cents contes et nouvelles. Ses récits sont publiés dans des recueils tels « Les sœurs Rondoli», « Les contes de la bécasse ». Il écrit des chroniques dans des journaux comme Gil Blas », « Le Gaulois » et « Le Figaro », ainsi que des récits de voyage et des correspondances. Vers la fin des années 1880, sa santé physique et morale se dégrade (il est victime d'hallucinations). Vivant reclus, il sombre peu à peu dans la folie et, après une tentative de suicide, il est interné dans la clinique du docteur Blanche où il meurt le six juillet 1893.",
+    "conspect": "К концу 1880-х его физическое и моральное здоровье ухудшилось (галлюцинации, безумие) — состояние нестабильное (instable)."
+   },
+   {
+    "q": "Les personnages de ses oeuvres sont",
+    "options": [
+     "les aventuristes",
+     "les nobles",
+     "les riches",
+     "les paysans"
+    ],
+    "correct": 3,
+    "passage": "Guy de Maupassant\nGuy de Maupassant est né à Fécamp le cinq août 1850, fils d'une bourgeoise, Laure le Poitevin et d'un noble, Gustave de Maupassant. La famille s'installe à Paris mais les époux ne s'entendent pas et le garçon n'oubliera jamais les scènes de violence conjugale auxquelles il assiste. Ses parents séparés, l'enfant est élevé à Etretat par sa mère qu'il adore, femme éprise de littérature et amie de Flaubert. Il grandit dans la campagne normande et se lie avec les paysans et les pêcheurs de la région qui lui inspireront plus tard des personnages. A douze ans, il rentre dans l'institution ecclésiastique d'Yvetot (qu'il quittera avec une profonde aversion pour la religion) puis termine ses études au lycée de Rouen. A Paris, il fait des études de droit, interrompues par une mobilisation à Rouen pendant la guerre franco-prussienne. Ensuite, il trouve un emploi au ministère de la Marine puis de l'Instruction publique (1872-1880). Flaubert devient son mentor, le guide dans le journalisme et l'introduit dans le milieu littéraire réaliste et naturaliste : il rencontre Zola, Huysmans, Tourguéniev, Daudet et les frères Goncourt et participe aux Soirées de Médan. Après le succès de « Boule de suif » (1880), Maupassant abandonne son emploi au ministère pour se consacrer à l'écriture. Dès lors, de 1880 à 1890, il publie six romans et plus de trois cents contes et nouvelles. Ses récits sont publiés dans des recueils tels « Les sœurs Rondoli», « Les contes de la bécasse ». Il écrit des chroniques dans des journaux comme Gil Blas », « Le Gaulois » et « Le Figaro », ainsi que des récits de voyage et des correspondances. Vers la fin des années 1880, sa santé physique et morale se dégrade (il est victime d'hallucinations). Vivant reclus, il sombre peu à peu dans la folie et, après une tentative de suicide, il est interné dans la clinique du docteur Blanche où il meurt le six juillet 1893.",
+    "conspect": "Персонажи его произведений — крестьяне и рыбаки Нормандии: «les paysans et les pêcheurs… lui inspireront des personnages»."
+   },
+   {
+    "q": "Grâce à ... il a connu le milieu littéraire",
+    "options": [
+     "Gustave Flaubert",
+     "Victor Hugo",
+     "Emile Zola",
+     "Alphonse Daudet"
+    ],
+    "correct": 0,
+    "passage": "Guy de Maupassant\nGuy de Maupassant est né à Fécamp le cinq août 1850, fils d'une bourgeoise, Laure le Poitevin et d'un noble, Gustave de Maupassant. La famille s'installe à Paris mais les époux ne s'entendent pas et le garçon n'oubliera jamais les scènes de violence conjugale auxquelles il assiste. Ses parents séparés, l'enfant est élevé à Etretat par sa mère qu'il adore, femme éprise de littérature et amie de Flaubert. Il grandit dans la campagne normande et se lie avec les paysans et les pêcheurs de la région qui lui inspireront plus tard des personnages. A douze ans, il rentre dans l'institution ecclésiastique d'Yvetot (qu'il quittera avec une profonde aversion pour la religion) puis termine ses études au lycée de Rouen. A Paris, il fait des études de droit, interrompues par une mobilisation à Rouen pendant la guerre franco-prussienne. Ensuite, il trouve un emploi au ministère de la Marine puis de l'Instruction publique (1872-1880). Flaubert devient son mentor, le guide dans le journalisme et l'introduit dans le milieu littéraire réaliste et naturaliste : il rencontre Zola, Huysmans, Tourguéniev, Daudet et les frères Goncourt et participe aux Soirées de Médan. Après le succès de « Boule de suif » (1880), Maupassant abandonne son emploi au ministère pour se consacrer à l'écriture. Dès lors, de 1880 à 1890, il publie six romans et plus de trois cents contes et nouvelles. Ses récits sont publiés dans des recueils tels « Les sœurs Rondoli», « Les contes de la bécasse ». Il écrit des chroniques dans des journaux comme Gil Blas », « Le Gaulois » et « Le Figaro », ainsi que des récits de voyage et des correspondances. Vers la fin des années 1880, sa santé physique et morale se dégrade (il est victime d'hallucinations). Vivant reclus, il sombre peu à peu dans la folie et, après une tentative de suicide, il est interné dans la clinique du docteur Blanche où il meurt le six juillet 1893.",
+    "conspect": "Литературную среду ему открыл Гюстав Флобер, друг матери и наставник: «Flaubert devient son mentor… l’introduit dans le milieu littéraire»."
+   },
+   {
+    "q": "Guy de Maupassant souffrait de la maladie",
+    "options": [
+     "morale",
+     "fosse",
+     "imaginaire",
+     "éthique"
+    ],
+    "correct": 0,
+    "passage": "Guy de Maupassant\nGuy de Maupassant est né à Fécamp le cinq août 1850, fils d'une bourgeoise, Laure le Poitevin et d'un noble, Gustave de Maupassant. La famille s'installe à Paris mais les époux ne s'entendent pas et le garçon n'oubliera jamais les scènes de violence conjugale auxquelles il assiste. Ses parents séparés, l'enfant est élevé à Etretat par sa mère qu'il adore, femme éprise de littérature et amie de Flaubert. Il grandit dans la campagne normande et se lie avec les paysans et les pêcheurs de la région qui lui inspireront plus tard des personnages. A douze ans, il rentre dans l'institution ecclésiastique d'Yvetot (qu'il quittera avec une profonde aversion pour la religion) puis termine ses études au lycée de Rouen. A Paris, il fait des études de droit, interrompues par une mobilisation à Rouen pendant la guerre franco-prussienne. Ensuite, il trouve un emploi au ministère de la Marine puis de l'Instruction publique (1872-1880). Flaubert devient son mentor, le guide dans le journalisme et l'introduit dans le milieu littéraire réaliste et naturaliste : il rencontre Zola, Huysmans, Tourguéniev, Daudet et les frères Goncourt et participe aux Soirées de Médan. Après le succès de « Boule de suif » (1880), Maupassant abandonne son emploi au ministère pour se consacrer à l'écriture. Dès lors, de 1880 à 1890, il publie six romans et plus de trois cents contes et nouvelles. Ses récits sont publiés dans des recueils tels « Les sœurs Rondoli», « Les contes de la bécasse ». Il écrit des chroniques dans des journaux comme Gil Blas », « Le Gaulois » et « Le Figaro », ainsi que des récits de voyage et des correspondances. Vers la fin des années 1880, sa santé physique et morale se dégrade (il est victime d'hallucinations). Vivant reclus, il sombre peu à peu dans la folie et, après une tentative de suicide, il est interné dans la clinique du docteur Blanche où il meurt le six juillet 1893.",
+    "conspect": "Под конец жизни у Мопассана «sa santé physique et morale se dégrade» — он страдал душевной (моральной) болезнью."
+   },
+   {
+    "q": "«On le voit attablé devant une place». Le mot «attablé» signifie _____.",
+    "options": [
+     "allongé",
+     "travaillé",
+     "debout",
+     "assis"
+    ],
+    "correct": 3,
+    "passage": "Réné, un professeur\nRené est professeur depuis de longues années. Il est rond,doux, souriant.Dès le matin de bonne heure, il est déjà dehors pour faire ses courses. Il va au marché tout près de chez lui. Tout le monde le connaît et le salue. Il sourit, il répond à tous, il dit bonjour à tous avant de mettre dans son sac de belles salades ou des fruits mûrs. Ensuite il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser. Il sait beaucoup de choses dans tous les domaines. Il travaille le dimanche et même pendant les vacances. Cela l’intéresse. C’est son occupation préférée. On peut dire de lui qu’il est érudit. Il travaille souvent aussi à la Bibliothèque municipale.Là aussi, il connaît tout le monde. On voit qu’il a l’habitude de consulter les fichiers; il ne se trompe pas. C’est un habitué. On le voit de loin, attablé devant une place, toujours la même. Il y a beaucoup de documents devant lui; il regarde, prend des notes, apprend toujours de nouvelles choses qui le passionnent si bien que lorsqu’on le rencontre il dit souvent: «Tu sais,j’ai appris que... » et il a toujours une bonne histoire à vous raconter. Il sait très bien faire la cuisine car il est gourmand. Il aime le bon vin et les bonnes choses. Il aime rire avec des amis, souvent devant un petit café dans un bistro mais aussi au restaurant au cours d’un repas aux chandelles. Il aime beaucoup rencontrer des étrangers.Ils les accueille chez lui mais il voyage beaucoup aussi, si bien qu’il connaît des gens dans le monde entier.Il s’intéresse à l’histoire de sa région mais aussi à celle des civilisations de toute la planète, si bien que l’on peut dire que sa culture est universelle.",
+    "conspect": "В тексте: «On le voit… attablé devant une place» — attablé = assis à la table (assis)."
+   },
+   {
+    "q": "Le synonyme: Le marché est près de chez lui.",
+    "options": [
+     "près de son bureau",
+     "près de la gare",
+     "près de sa maison",
+     "dans le centre ville"
+    ],
+    "correct": 2,
+    "passage": "Réné, un professeur\nRené est professeur depuis de longues années. Il est rond,doux, souriant.Dès le matin de bonne heure, il est déjà dehors pour faire ses courses. Il va au marché tout près de chez lui. Tout le monde le connaît et le salue. Il sourit, il répond à tous, il dit bonjour à tous avant de mettre dans son sac de belles salades ou des fruits mûrs. Ensuite il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser. Il sait beaucoup de choses dans tous les domaines. Il travaille le dimanche et même pendant les vacances. Cela l’intéresse. C’est son occupation préférée. On peut dire de lui qu’il est érudit. Il travaille souvent aussi à la Bibliothèque municipale.Là aussi, il connaît tout le monde. On voit qu’il a l’habitude de consulter les fichiers; il ne se trompe pas. C’est un habitué. On le voit de loin, attablé devant une place, toujours la même. Il y a beaucoup de documents devant lui; il regarde, prend des notes, apprend toujours de nouvelles choses qui le passionnent si bien que lorsqu’on le rencontre il dit souvent: «Tu sais,j’ai appris que... » et il a toujours une bonne histoire à vous raconter. Il sait très bien faire la cuisine car il est gourmand. Il aime le bon vin et les bonnes choses. Il aime rire avec des amis, souvent devant un petit café dans un bistro mais aussi au restaurant au cours d’un repas aux chandelles. Il aime beaucoup rencontrer des étrangers.Ils les accueille chez lui mais il voyage beaucoup aussi, si bien qu’il connaît des gens dans le monde entier.Il s’intéresse à l’histoire de sa région mais aussi à celle des civilisations de toute la planète, si bien que l’on peut dire que sa culture est universelle.",
+    "conspect": "Рынок находится «tout près de chez lui» — рядом с его домом (près de sa maison)."
+   },
+   {
+    "q": "«René est souriant». Le contraire du mot «souriant» est _______",
+    "options": [
+     "solide",
+     "heureux",
+     "mince",
+     "triste"
+    ],
+    "correct": 3,
+    "passage": "Réné, un professeur\nRené est professeur depuis de longues années. Il est rond,doux, souriant.Dès le matin de bonne heure, il est déjà dehors pour faire ses courses. Il va au marché tout près de chez lui. Tout le monde le connaît et le salue. Il sourit, il répond à tous, il dit bonjour à tous avant de mettre dans son sac de belles salades ou des fruits mûrs. Ensuite il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser. Il sait beaucoup de choses dans tous les domaines. Il travaille le dimanche et même pendant les vacances. Cela l’intéresse. C’est son occupation préférée. On peut dire de lui qu’il est érudit. Il travaille souvent aussi à la Bibliothèque municipale.Là aussi, il connaît tout le monde. On voit qu’il a l’habitude de consulter les fichiers; il ne se trompe pas. C’est un habitué. On le voit de loin, attablé devant une place, toujours la même. Il y a beaucoup de documents devant lui; il regarde, prend des notes, apprend toujours de nouvelles choses qui le passionnent si bien que lorsqu’on le rencontre il dit souvent: «Tu sais,j’ai appris que... » et il a toujours une bonne histoire à vous raconter. Il sait très bien faire la cuisine car il est gourmand. Il aime le bon vin et les bonnes choses. Il aime rire avec des amis, souvent devant un petit café dans un bistro mais aussi au restaurant au cours d’un repas aux chandelles. Il aime beaucoup rencontrer des étrangers.Ils les accueille chez lui mais il voyage beaucoup aussi, si bien qu’il connaît des gens dans le monde entier.Il s’intéresse à l’histoire de sa région mais aussi à celle des civilisations de toute la planète, si bien que l’on peut dire que sa culture est universelle.",
+    "conspect": "Рене «rond, doux, souriant». Антоним слова «souriant» (улыбчивый) — «triste» (грустный)."
+   },
+   {
+    "q": "«On peut dire que René est érudit». La définition du mot «érudit» est _______.",
+    "options": [
+     "aimer cuisiner",
+     "s’occuper de l’histoire",
+     "avoir des connaîssances approfondies",
+     "s’intéresser à l’art"
+    ],
+    "correct": 2,
+    "passage": "Réné, un professeur\nRené est professeur depuis de longues années. Il est rond,doux, souriant.Dès le matin de bonne heure, il est déjà dehors pour faire ses courses. Il va au marché tout près de chez lui. Tout le monde le connaît et le salue. Il sourit, il répond à tous, il dit bonjour à tous avant de mettre dans son sac de belles salades ou des fruits mûrs. Ensuite il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser. Il sait beaucoup de choses dans tous les domaines. Il travaille le dimanche et même pendant les vacances. Cela l’intéresse. C’est son occupation préférée. On peut dire de lui qu’il est érudit. Il travaille souvent aussi à la Bibliothèque municipale.Là aussi, il connaît tout le monde. On voit qu’il a l’habitude de consulter les fichiers; il ne se trompe pas. C’est un habitué. On le voit de loin, attablé devant une place, toujours la même. Il y a beaucoup de documents devant lui; il regarde, prend des notes, apprend toujours de nouvelles choses qui le passionnent si bien que lorsqu’on le rencontre il dit souvent: «Tu sais,j’ai appris que... » et il a toujours une bonne histoire à vous raconter. Il sait très bien faire la cuisine car il est gourmand. Il aime le bon vin et les bonnes choses. Il aime rire avec des amis, souvent devant un petit café dans un bistro mais aussi au restaurant au cours d’un repas aux chandelles. Il aime beaucoup rencontrer des étrangers.Ils les accueille chez lui mais il voyage beaucoup aussi, si bien qu’il connaît des gens dans le monde entier.Il s’intéresse à l’histoire de sa région mais aussi à celle des civilisations de toute la planète, si bien que l’on peut dire que sa culture est universelle.",
+    "conspect": "«Érudit» — человек с глубокими знаниями (avoir des connaissances approfondies): «Il sait beaucoup de choses dans tous les domaines»."
+   },
+   {
+    "q": "La culture du professeur est universelle parce qu’il _______.",
+    "options": [
+     "s’intéresse à la civilisation de toute la planète",
+     "s’occupe des recheches scientifiques",
+     "est très compétent dans l’histoire de sa région",
+     "est très sociable et ouvert"
+    ],
+    "correct": 0,
+    "passage": "Réné, un professeur\nRené est professeur depuis de longues années. Il est rond,doux, souriant.Dès le matin de bonne heure, il est déjà dehors pour faire ses courses. Il va au marché tout près de chez lui. Tout le monde le connaît et le salue. Il sourit, il répond à tous, il dit bonjour à tous avant de mettre dans son sac de belles salades ou des fruits mûrs. Ensuite il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser. Il sait beaucoup de choses dans tous les domaines. Il travaille le dimanche et même pendant les vacances. Cela l’intéresse. C’est son occupation préférée. On peut dire de lui qu’il est érudit. Il travaille souvent aussi à la Bibliothèque municipale.Là aussi, il connaît tout le monde. On voit qu’il a l’habitude de consulter les fichiers; il ne se trompe pas. C’est un habitué. On le voit de loin, attablé devant une place, toujours la même. Il y a beaucoup de documents devant lui; il regarde, prend des notes, apprend toujours de nouvelles choses qui le passionnent si bien que lorsqu’on le rencontre il dit souvent: «Tu sais,j’ai appris que... » et il a toujours une bonne histoire à vous raconter. Il sait très bien faire la cuisine car il est gourmand. Il aime le bon vin et les bonnes choses. Il aime rire avec des amis, souvent devant un petit café dans un bistro mais aussi au restaurant au cours d’un repas aux chandelles. Il aime beaucoup rencontrer des étrangers.Ils les accueille chez lui mais il voyage beaucoup aussi, si bien qu’il connaît des gens dans le monde entier.Il s’intéresse à l’histoire de sa région mais aussi à celle des civilisations de toute la planète, si bien que l’on peut dire que sa culture est universelle.",
+    "conspect": "Его культура универсальна, потому что он интересуется историей своего региона и цивилизациями всей планеты: «à celle des civilisations de toute la planète»."
+   },
+   {
+    "q": "Le professeur aime s’amuser avec ses amis c’est pourquoi _______.",
+    "options": [
+     "il sort souvent au restaurant",
+     "décore sa maison",
+     "invite ses voisins",
+     "va à la bibliothèque"
+    ],
+    "correct": 0,
+    "passage": "Réné, un professeur\nRené est professeur depuis de longues années. Il est rond,doux, souriant.Dès le matin de bonne heure, il est déjà dehors pour faire ses courses. Il va au marché tout près de chez lui. Tout le monde le connaît et le salue. Il sourit, il répond à tous, il dit bonjour à tous avant de mettre dans son sac de belles salades ou des fruits mûrs. Ensuite il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser. Il sait beaucoup de choses dans tous les domaines. Il travaille le dimanche et même pendant les vacances. Cela l’intéresse. C’est son occupation préférée. On peut dire de lui qu’il est érudit. Il travaille souvent aussi à la Bibliothèque municipale.Là aussi, il connaît tout le monde. On voit qu’il a l’habitude de consulter les fichiers; il ne se trompe pas. C’est un habitué. On le voit de loin, attablé devant une place, toujours la même. Il y a beaucoup de documents devant lui; il regarde, prend des notes, apprend toujours de nouvelles choses qui le passionnent si bien que lorsqu’on le rencontre il dit souvent: «Tu sais,j’ai appris que... » et il a toujours une bonne histoire à vous raconter. Il sait très bien faire la cuisine car il est gourmand. Il aime le bon vin et les bonnes choses. Il aime rire avec des amis, souvent devant un petit café dans un bistro mais aussi au restaurant au cours d’un repas aux chandelles. Il aime beaucoup rencontrer des étrangers.Ils les accueille chez lui mais il voyage beaucoup aussi, si bien qu’il connaît des gens dans le monde entier.Il s’intéresse à l’histoire de sa région mais aussi à celle des civilisations de toute la planète, si bien que l’on peut dire que sa culture est universelle.",
+    "conspect": "Он любит посмеяться с друзьями за чашкой кофе в бистро, а также в ресторане за ужином при свечах — часто бывает в ресторане."
+   },
+   {
+    "q": "Tous les marchands saluent René de loin parce qu’ils_______.",
+    "options": [
+     "veulent lui vendre leurs fruits",
+     "connaîssent bien ses enfants",
+     "connaîssent bien ses parents",
+     "l’adorent pour son caractère aimable"
+    ],
+    "correct": 3,
+    "passage": "Réné, un professeur\nRené est professeur depuis de longues années. Il est rond,doux, souriant.Dès le matin de bonne heure, il est déjà dehors pour faire ses courses. Il va au marché tout près de chez lui. Tout le monde le connaît et le salue. Il sourit, il répond à tous, il dit bonjour à tous avant de mettre dans son sac de belles salades ou des fruits mûrs. Ensuite il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser. Il sait beaucoup de choses dans tous les domaines. Il travaille le dimanche et même pendant les vacances. Cela l’intéresse. C’est son occupation préférée. On peut dire de lui qu’il est érudit. Il travaille souvent aussi à la Bibliothèque municipale.Là aussi, il connaît tout le monde. On voit qu’il a l’habitude de consulter les fichiers; il ne se trompe pas. C’est un habitué. On le voit de loin, attablé devant une place, toujours la même. Il y a beaucoup de documents devant lui; il regarde, prend des notes, apprend toujours de nouvelles choses qui le passionnent si bien que lorsqu’on le rencontre il dit souvent: «Tu sais,j’ai appris que... » et il a toujours une bonne histoire à vous raconter. Il sait très bien faire la cuisine car il est gourmand. Il aime le bon vin et les bonnes choses. Il aime rire avec des amis, souvent devant un petit café dans un bistro mais aussi au restaurant au cours d’un repas aux chandelles. Il aime beaucoup rencontrer des étrangers.Ils les accueille chez lui mais il voyage beaucoup aussi, si bien qu’il connaît des gens dans le monde entier.Il s’intéresse à l’histoire de sa région mais aussi à celle des civilisations de toute la planète, si bien que l’on peut dire que sa culture est universelle.",
+    "conspect": "Все торговцы его приветствуют, потому что он всем улыбается и отвечает: «Tout le monde le connaît et le salue. Il sourit, il répond à tous» — его любят за доброжелательный характер."
+   },
+   {
+    "q": "René est très intelligent parce qu’il _______.",
+    "options": [
+     "travaille dans ses livres tous les jours",
+     "rencontre beaucoup de gens différents",
+     "parle avec les marchands du quartier",
+     "raconte des histoires amusantes"
+    ],
+    "correct": 0,
+    "passage": "Réné, un professeur\nRené est professeur depuis de longues années. Il est rond,doux, souriant.Dès le matin de bonne heure, il est déjà dehors pour faire ses courses. Il va au marché tout près de chez lui. Tout le monde le connaît et le salue. Il sourit, il répond à tous, il dit bonjour à tous avant de mettre dans son sac de belles salades ou des fruits mûrs. Ensuite il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser. Il sait beaucoup de choses dans tous les domaines. Il travaille le dimanche et même pendant les vacances. Cela l’intéresse. C’est son occupation préférée. On peut dire de lui qu’il est érudit. Il travaille souvent aussi à la Bibliothèque municipale.Là aussi, il connaît tout le monde. On voit qu’il a l’habitude de consulter les fichiers; il ne se trompe pas. C’est un habitué. On le voit de loin, attablé devant une place, toujours la même. Il y a beaucoup de documents devant lui; il regarde, prend des notes, apprend toujours de nouvelles choses qui le passionnent si bien que lorsqu’on le rencontre il dit souvent: «Tu sais,j’ai appris que... » et il a toujours une bonne histoire à vous raconter. Il sait très bien faire la cuisine car il est gourmand. Il aime le bon vin et les bonnes choses. Il aime rire avec des amis, souvent devant un petit café dans un bistro mais aussi au restaurant au cours d’un repas aux chandelles. Il aime beaucoup rencontrer des étrangers.Ils les accueille chez lui mais il voyage beaucoup aussi, si bien qu’il connaît des gens dans le monde entier.Il s’intéresse à l’histoire de sa région mais aussi à celle des civilisations de toute la planète, si bien que l’on peut dire que sa culture est universelle.",
+    "conspect": "Он очень умëн, потому что каждый день работает в своих книгах: «il rentre vite chez lui pour travailler dans ses livres: il lit, il écrit sans se lasser»."
+   },
+   {
+    "q": "Pour le petit déjeuner on peut prendre dans un bistro _____.",
+    "options": [
+     "de la bière ou du coca-cola",
+     "de la viande avec une garniture",
+     "du poisson avec une garniture",
+     "un café noir et des croissants"
+    ],
+    "correct": 3,
+    "passage": "Cafés,bistros et brasseries\nOn parle beaucoup des bistros français car ce sont des lieux très agréables. Tout le monde peut y aller à n’importe quelle heure; dès le matin on peut y prendre son petit-déjeuner,un café noir et des croissants par exemple. On peut y prendre l’apéritif à l’heure du déjeuner ou le thé dans l’après-midi. On a le droit d’y rester sans limite de temps, à condition d’avoir demandé au moins une consommation par personne. On peut y prendre un verre avec des amis mais on peut aussi y travailler.Personne ne vous dira rien. S’il fait beau on peut s’installer au soleil,en terrasse,c’est-à-dire dehors. «Bistro» qui peut s’écrire aussi « bistrot » est un mot très large qui désigne plusieurs types d’établissements différents: un café, un bar, un bar-tabac, un pub, une brasseries. Certains bistros sont plus spécifiquement des brasseries. Autrefois on ne servait que de la bière dans les brasseries mais maintenant dans une brasserie on peut boire du vin ou du coca-cola,manger vite et bien,à la carte, c’est-à-dire en choisissant même un seul plat garni à n’importe quelle heure de la journée. Par exemple une choucroute ou une omelette. On n’est pas obligé de prendre un repas complet. Les grandes villes de France ont souvent des brasseries célèbres par leur décoration typique de la fin du XІX siècle. Des dorures, des glaces, des bois vernis, des peintures murales, des lustres de cristal en font le luxe et le charme. Des écrivains connus qui avaient l’habitude de travailler dans des bistros ont rendu certains cafés célèbres comme par exemple les cafés de Saint-Germain-des-Prés qui étaient dans les années 50, le lieu de rendez-vous des écrivains et artistes (Jean-Paul Sartre,S imone de Beauvoir, Albert Camus, Jacques Prévert, Juliette Greco, Boris Vian, Serge Reggiani, etc).",
+    "conspect": "В бистро с утра можно позавтракать: «un café noir et des croissants par exemple»."
+   },
+   {
+    "q": "Synonyme de l’expression « prendre le repas »:",
+    "options": [
+     "manger",
+     "acheter",
+     "payer",
+     "demander"
+    ],
+    "correct": 0,
+    "passage": "Cafés,bistros et brasseries\nOn parle beaucoup des bistros français car ce sont des lieux très agréables. Tout le monde peut y aller à n’importe quelle heure; dès le matin on peut y prendre son petit-déjeuner,un café noir et des croissants par exemple. On peut y prendre l’apéritif à l’heure du déjeuner ou le thé dans l’après-midi. On a le droit d’y rester sans limite de temps, à condition d’avoir demandé au moins une consommation par personne. On peut y prendre un verre avec des amis mais on peut aussi y travailler.Personne ne vous dira rien. S’il fait beau on peut s’installer au soleil,en terrasse,c’est-à-dire dehors. «Bistro» qui peut s’écrire aussi « bistrot » est un mot très large qui désigne plusieurs types d’établissements différents: un café, un bar, un bar-tabac, un pub, une brasseries. Certains bistros sont plus spécifiquement des brasseries. Autrefois on ne servait que de la bière dans les brasseries mais maintenant dans une brasserie on peut boire du vin ou du coca-cola,manger vite et bien,à la carte, c’est-à-dire en choisissant même un seul plat garni à n’importe quelle heure de la journée. Par exemple une choucroute ou une omelette. On n’est pas obligé de prendre un repas complet. Les grandes villes de France ont souvent des brasseries célèbres par leur décoration typique de la fin du XІX siècle. Des dorures, des glaces, des bois vernis, des peintures murales, des lustres de cristal en font le luxe et le charme. Des écrivains connus qui avaient l’habitude de travailler dans des bistros ont rendu certains cafés célèbres comme par exemple les cafés de Saint-Germain-des-Prés qui étaient dans les années 50, le lieu de rendez-vous des écrivains et artistes (Jean-Paul Sartre,S imone de Beauvoir, Albert Camus, Jacques Prévert, Juliette Greco, Boris Vian, Serge Reggiani, etc).",
+    "conspect": "«Prendre le repas» = «manger» (принимать пищу)."
+   },
+   {
+    "q": "L’adjectif qui convient le mieux dans la phrase: Des bistros français sont des lieux très_____.",
+    "options": [
+     "décevants",
+     "fatigants",
+     "agréables",
+     "tristes"
+    ],
+    "correct": 2,
+    "passage": "Cafés,bistros et brasseries\nOn parle beaucoup des bistros français car ce sont des lieux très agréables. Tout le monde peut y aller à n’importe quelle heure; dès le matin on peut y prendre son petit-déjeuner,un café noir et des croissants par exemple. On peut y prendre l’apéritif à l’heure du déjeuner ou le thé dans l’après-midi. On a le droit d’y rester sans limite de temps, à condition d’avoir demandé au moins une consommation par personne. On peut y prendre un verre avec des amis mais on peut aussi y travailler.Personne ne vous dira rien. S’il fait beau on peut s’installer au soleil,en terrasse,c’est-à-dire dehors. «Bistro» qui peut s’écrire aussi « bistrot » est un mot très large qui désigne plusieurs types d’établissements différents: un café, un bar, un bar-tabac, un pub, une brasseries. Certains bistros sont plus spécifiquement des brasseries. Autrefois on ne servait que de la bière dans les brasseries mais maintenant dans une brasserie on peut boire du vin ou du coca-cola,manger vite et bien,à la carte, c’est-à-dire en choisissant même un seul plat garni à n’importe quelle heure de la journée. Par exemple une choucroute ou une omelette. On n’est pas obligé de prendre un repas complet. Les grandes villes de France ont souvent des brasseries célèbres par leur décoration typique de la fin du XІX siècle. Des dorures, des glaces, des bois vernis, des peintures murales, des lustres de cristal en font le luxe et le charme. Des écrivains connus qui avaient l’habitude de travailler dans des bistros ont rendu certains cafés célèbres comme par exemple les cafés de Saint-Germain-des-Prés qui étaient dans les années 50, le lieu de rendez-vous des écrivains et artistes (Jean-Paul Sartre,S imone de Beauvoir, Albert Camus, Jacques Prévert, Juliette Greco, Boris Vian, Serge Reggiani, etc).",
+    "conspect": "«On parle beaucoup des bistros… ce sont des lieux très agréables» — приятные места."
+   },
+   {
+    "q": "S’il fait beau on vous propose de ________ .",
+    "options": [
+     "d’acheter de l’eau",
+     "vous installer en terrasse",
+     "ne pas prendre un plat chaud",
+     "venir plus tard"
+    ],
+    "correct": 1,
+    "passage": "Cafés,bistros et brasseries\nOn parle beaucoup des bistros français car ce sont des lieux très agréables. Tout le monde peut y aller à n’importe quelle heure; dès le matin on peut y prendre son petit-déjeuner,un café noir et des croissants par exemple. On peut y prendre l’apéritif à l’heure du déjeuner ou le thé dans l’après-midi. On a le droit d’y rester sans limite de temps, à condition d’avoir demandé au moins une consommation par personne. On peut y prendre un verre avec des amis mais on peut aussi y travailler.Personne ne vous dira rien. S’il fait beau on peut s’installer au soleil,en terrasse,c’est-à-dire dehors. «Bistro» qui peut s’écrire aussi « bistrot » est un mot très large qui désigne plusieurs types d’établissements différents: un café, un bar, un bar-tabac, un pub, une brasseries. Certains bistros sont plus spécifiquement des brasseries. Autrefois on ne servait que de la bière dans les brasseries mais maintenant dans une brasserie on peut boire du vin ou du coca-cola,manger vite et bien,à la carte, c’est-à-dire en choisissant même un seul plat garni à n’importe quelle heure de la journée. Par exemple une choucroute ou une omelette. On n’est pas obligé de prendre un repas complet. Les grandes villes de France ont souvent des brasseries célèbres par leur décoration typique de la fin du XІX siècle. Des dorures, des glaces, des bois vernis, des peintures murales, des lustres de cristal en font le luxe et le charme. Des écrivains connus qui avaient l’habitude de travailler dans des bistros ont rendu certains cafés célèbres comme par exemple les cafés de Saint-Germain-des-Prés qui étaient dans les années 50, le lieu de rendez-vous des écrivains et artistes (Jean-Paul Sartre,S imone de Beauvoir, Albert Camus, Jacques Prévert, Juliette Greco, Boris Vian, Serge Reggiani, etc).",
+    "conspect": "В хорошую погоду можно устроиться на солнце, на террасе: «s’installer au soleil, en terrasse, c’est-à-dire dehors»."
+   },
+   {
+    "q": "Manger à la carte c’est-à-dire _______ .",
+    "options": [
+     "choisir un plat et une boisson à l’heure du dîner",
+     "prendre un repas compet à l’heure du déjeuner",
+     "choisir un plat à n’importe quelle heure de la journée",
+     "choisir deux plats à l’heure du dîner"
+    ],
+    "correct": 2,
+    "passage": "Cafés,bistros et brasseries\nOn parle beaucoup des bistros français car ce sont des lieux très agréables. Tout le monde peut y aller à n’importe quelle heure; dès le matin on peut y prendre son petit-déjeuner,un café noir et des croissants par exemple. On peut y prendre l’apéritif à l’heure du déjeuner ou le thé dans l’après-midi. On a le droit d’y rester sans limite de temps, à condition d’avoir demandé au moins une consommation par personne. On peut y prendre un verre avec des amis mais on peut aussi y travailler.Personne ne vous dira rien. S’il fait beau on peut s’installer au soleil,en terrasse,c’est-à-dire dehors. «Bistro» qui peut s’écrire aussi « bistrot » est un mot très large qui désigne plusieurs types d’établissements différents: un café, un bar, un bar-tabac, un pub, une brasseries. Certains bistros sont plus spécifiquement des brasseries. Autrefois on ne servait que de la bière dans les brasseries mais maintenant dans une brasserie on peut boire du vin ou du coca-cola,manger vite et bien,à la carte, c’est-à-dire en choisissant même un seul plat garni à n’importe quelle heure de la journée. Par exemple une choucroute ou une omelette. On n’est pas obligé de prendre un repas complet. Les grandes villes de France ont souvent des brasseries célèbres par leur décoration typique de la fin du XІX siècle. Des dorures, des glaces, des bois vernis, des peintures murales, des lustres de cristal en font le luxe et le charme. Des écrivains connus qui avaient l’habitude de travailler dans des bistros ont rendu certains cafés célèbres comme par exemple les cafés de Saint-Germain-des-Prés qui étaient dans les années 50, le lieu de rendez-vous des écrivains et artistes (Jean-Paul Sartre,S imone de Beauvoir, Albert Camus, Jacques Prévert, Juliette Greco, Boris Vian, Serge Reggiani, etc).",
+    "conspect": "«Manger à la carte» — выбирать одно блюдо в любое время дня: «en choisissant même un seul plat garni à n’importe quelle heure»."
+   },
+   {
+    "q": "Synonyme de l’expression « rendre célèbre »:",
+    "options": [
+     "devenir célèbre",
+     "sortir célèbre",
+     "être célèbre",
+     "faire célèbre"
+    ],
+    "correct": 3,
+    "passage": "Cafés,bistros et brasseries\nOn parle beaucoup des bistros français car ce sont des lieux très agréables. Tout le monde peut y aller à n’importe quelle heure; dès le matin on peut y prendre son petit-déjeuner,un café noir et des croissants par exemple. On peut y prendre l’apéritif à l’heure du déjeuner ou le thé dans l’après-midi. On a le droit d’y rester sans limite de temps, à condition d’avoir demandé au moins une consommation par personne. On peut y prendre un verre avec des amis mais on peut aussi y travailler.Personne ne vous dira rien. S’il fait beau on peut s’installer au soleil,en terrasse,c’est-à-dire dehors. «Bistro» qui peut s’écrire aussi « bistrot » est un mot très large qui désigne plusieurs types d’établissements différents: un café, un bar, un bar-tabac, un pub, une brasseries. Certains bistros sont plus spécifiquement des brasseries. Autrefois on ne servait que de la bière dans les brasseries mais maintenant dans une brasserie on peut boire du vin ou du coca-cola,manger vite et bien,à la carte, c’est-à-dire en choisissant même un seul plat garni à n’importe quelle heure de la journée. Par exemple une choucroute ou une omelette. On n’est pas obligé de prendre un repas complet. Les grandes villes de France ont souvent des brasseries célèbres par leur décoration typique de la fin du XІX siècle. Des dorures, des glaces, des bois vernis, des peintures murales, des lustres de cristal en font le luxe et le charme. Des écrivains connus qui avaient l’habitude de travailler dans des bistros ont rendu certains cafés célèbres comme par exemple les cafés de Saint-Germain-des-Prés qui étaient dans les années 50, le lieu de rendez-vous des écrivains et artistes (Jean-Paul Sartre,S imone de Beauvoir, Albert Camus, Jacques Prévert, Juliette Greco, Boris Vian, Serge Reggiani, etc).",
+    "conspect": "Выражение «rendre célèbre» (сделать знаменитым) синонимично «faire célèbre» — писатели сделали знаменитыми некоторые кафе."
+   },
+   {
+    "q": "Des dorures,des glaces,des bois vernis,des peintures murales .... . C’est la description de la décoration des brasseries célèbres _______ .",
+    "options": [
+     "de la fin du XXième siècle",
+     "du siècle précédent",
+     "de la France d’aujourd’hui",
+     "de la fin du XІX ième siècle"
+    ],
+    "correct": 3,
+    "passage": "Cafés,bistros et brasseries\nOn parle beaucoup des bistros français car ce sont des lieux très agréables. Tout le monde peut y aller à n’importe quelle heure; dès le matin on peut y prendre son petit-déjeuner,un café noir et des croissants par exemple. On peut y prendre l’apéritif à l’heure du déjeuner ou le thé dans l’après-midi. On a le droit d’y rester sans limite de temps, à condition d’avoir demandé au moins une consommation par personne. On peut y prendre un verre avec des amis mais on peut aussi y travailler.Personne ne vous dira rien. S’il fait beau on peut s’installer au soleil,en terrasse,c’est-à-dire dehors. «Bistro» qui peut s’écrire aussi « bistrot » est un mot très large qui désigne plusieurs types d’établissements différents: un café, un bar, un bar-tabac, un pub, une brasseries. Certains bistros sont plus spécifiquement des brasseries. Autrefois on ne servait que de la bière dans les brasseries mais maintenant dans une brasserie on peut boire du vin ou du coca-cola,manger vite et bien,à la carte, c’est-à-dire en choisissant même un seul plat garni à n’importe quelle heure de la journée. Par exemple une choucroute ou une omelette. On n’est pas obligé de prendre un repas complet. Les grandes villes de France ont souvent des brasseries célèbres par leur décoration typique de la fin du XІX siècle. Des dorures, des glaces, des bois vernis, des peintures murales, des lustres de cristal en font le luxe et le charme. Des écrivains connus qui avaient l’habitude de travailler dans des bistros ont rendu certains cafés célèbres comme par exemple les cafés de Saint-Germain-des-Prés qui étaient dans les années 50, le lieu de rendez-vous des écrivains et artistes (Jean-Paul Sartre,S imone de Beauvoir, Albert Camus, Jacques Prévert, Juliette Greco, Boris Vian, Serge Reggiani, etc).",
+    "conspect": "Позолота, зеркала, лакированное дерево, настенная живопись — убранство знаменитых брассери конца XIX века («décoration typique de la fin du XIX siècle»)."
+   },
+   {
+    "q": "Les conséquences de pollution atmosphérique comporte",
+    "options": [
+     "des risques importants pour la politique extérieure",
+     "des guerres réligieuses dans le pays",
+     "des dégâts sociaux et économiques",
+     "les conséquences nuisibles pour la santé"
+    ],
+    "correct": 3,
+    "passage": "Un jardin sur les toits de Beyrouth\nÀ Beyrouth, la capitale du Liban, la pollution de l’air est très élevée. Un architecte envisage la plantation d’arbres sur les toits de la capitale pour assainir l’air de la ville. Comment une ville qui n’a pas beaucoup d’industries peut-elle être aussi polluée ? Les principales responsables, ce sont les nombreuses voitures qui circulent tous les jours. De plus, il y a très peu d’espaces verts qui aideraient les habitants à mieux respirer. Des études sur la qualité de l’air affichent des résultats inquiétants puisque le taux de dioxyde d’azote (NO2) dépasse largement la valeur limite fixée par l’Organisation Mondiale de la Santé (OMS). Parce que cette pollution atmosphérique comporte des risques importants pour la santé, des associations et des spécialistes tentent de trouver des solutions. Comme, par exemple, Wassim Melki, un jeune architecte qui a lancé en 2012 un projet appelé La forêt merveilleuse de Beyrouth (Beirut Wonder Forest). Le principe est très simple : mettre des milliers d’arbres sur les toits des immeubles de Beyrouth ! Il est également économique, car il ne s’agit pas de planter des arbres sur les toits, ce qui coûterait cher, mais de placer des arbres en pot, directement sur les toits. Ce projet a une dimension collaborative intéressante car les arbres seront plantés et entretenus par les habitants de chaque bâtiment, afin de responsabiliser tous les Beyrouthins au problème de la pollution de l’air. Les conséquences positives d’un tel projet seront multiples. La qualité de l’air sera améliorée car on sait qu’un arbre capture 10 Kg de CO2 en moyenne par an. De plus, l’ombre des arbres permettra aux habitations d’avoir une température plus fraîche et ainsi de moins utiliser les systèmes de climatisation, très énergivores. Ce jardin suspendu sur les toits de la capitale libanaise pourrait également avoir des retombées positives sur le comportement des gens. Ils pourraient participer activement et simplement à l’amélioration de leur qualité de vie. L’association essaie depuis maintenant deux ans de convaincre les habitants d’adhérer au projet et l’architecte espère obtenir un soutien de la municipalité pour que cette « forêt merveilleuse » voit bientôt le jour dans le ciel de Beyrouth.",
+    "conspect": "Загрязнение воздуха несëт серьëзные риски для здоровья: «cette pollution atmosphérique comporte des risques importants pour la santé»."
+   },
+   {
+    "q": "Un jeune architecte Wassim Melki propose un projet :",
+    "options": [
+     "Un jardin sur les toits de Beyrouth",
+     "La forêt merveilleuse de Beyrouth",
+     "La forêt merveilleuse sur les toits de Beyrouth",
+     "Le jardin suspendu sur les toits de la capitale libanaise"
+    ],
+    "correct": 1,
+    "passage": "Un jardin sur les toits de Beyrouth\nÀ Beyrouth, la capitale du Liban, la pollution de l’air est très élevée. Un architecte envisage la plantation d’arbres sur les toits de la capitale pour assainir l’air de la ville. Comment une ville qui n’a pas beaucoup d’industries peut-elle être aussi polluée ? Les principales responsables, ce sont les nombreuses voitures qui circulent tous les jours. De plus, il y a très peu d’espaces verts qui aideraient les habitants à mieux respirer. Des études sur la qualité de l’air affichent des résultats inquiétants puisque le taux de dioxyde d’azote (NO2) dépasse largement la valeur limite fixée par l’Organisation Mondiale de la Santé (OMS). Parce que cette pollution atmosphérique comporte des risques importants pour la santé, des associations et des spécialistes tentent de trouver des solutions. Comme, par exemple, Wassim Melki, un jeune architecte qui a lancé en 2012 un projet appelé La forêt merveilleuse de Beyrouth (Beirut Wonder Forest). Le principe est très simple : mettre des milliers d’arbres sur les toits des immeubles de Beyrouth ! Il est également économique, car il ne s’agit pas de planter des arbres sur les toits, ce qui coûterait cher, mais de placer des arbres en pot, directement sur les toits. Ce projet a une dimension collaborative intéressante car les arbres seront plantés et entretenus par les habitants de chaque bâtiment, afin de responsabiliser tous les Beyrouthins au problème de la pollution de l’air. Les conséquences positives d’un tel projet seront multiples. La qualité de l’air sera améliorée car on sait qu’un arbre capture 10 Kg de CO2 en moyenne par an. De plus, l’ombre des arbres permettra aux habitations d’avoir une température plus fraîche et ainsi de moins utiliser les systèmes de climatisation, très énergivores. Ce jardin suspendu sur les toits de la capitale libanaise pourrait également avoir des retombées positives sur le comportement des gens. Ils pourraient participer activement et simplement à l’amélioration de leur qualité de vie. L’association essaie depuis maintenant deux ans de convaincre les habitants d’adhérer au projet et l’architecte espère obtenir un soutien de la municipalité pour que cette « forêt merveilleuse » voit bientôt le jour dans le ciel de Beyrouth.",
+    "conspect": "Молодой архитектор Вассим Мелки в 2012 году запустил проект «La forêt merveilleuse de Beyrouth» (Beirut Wonder Forest)."
+   },
+   {
+    "q": "L’antonyme du mot «polluer» est",
+    "options": [
+     "dépolluer",
+     "dénaturer",
+     "contaminer",
+     "gâter"
+    ],
+    "correct": 0,
+    "passage": "Un jardin sur les toits de Beyrouth\nÀ Beyrouth, la capitale du Liban, la pollution de l’air est très élevée. Un architecte envisage la plantation d’arbres sur les toits de la capitale pour assainir l’air de la ville. Comment une ville qui n’a pas beaucoup d’industries peut-elle être aussi polluée ? Les principales responsables, ce sont les nombreuses voitures qui circulent tous les jours. De plus, il y a très peu d’espaces verts qui aideraient les habitants à mieux respirer. Des études sur la qualité de l’air affichent des résultats inquiétants puisque le taux de dioxyde d’azote (NO2) dépasse largement la valeur limite fixée par l’Organisation Mondiale de la Santé (OMS). Parce que cette pollution atmosphérique comporte des risques importants pour la santé, des associations et des spécialistes tentent de trouver des solutions. Comme, par exemple, Wassim Melki, un jeune architecte qui a lancé en 2012 un projet appelé La forêt merveilleuse de Beyrouth (Beirut Wonder Forest). Le principe est très simple : mettre des milliers d’arbres sur les toits des immeubles de Beyrouth ! Il est également économique, car il ne s’agit pas de planter des arbres sur les toits, ce qui coûterait cher, mais de placer des arbres en pot, directement sur les toits. Ce projet a une dimension collaborative intéressante car les arbres seront plantés et entretenus par les habitants de chaque bâtiment, afin de responsabiliser tous les Beyrouthins au problème de la pollution de l’air. Les conséquences positives d’un tel projet seront multiples. La qualité de l’air sera améliorée car on sait qu’un arbre capture 10 Kg de CO2 en moyenne par an. De plus, l’ombre des arbres permettra aux habitations d’avoir une température plus fraîche et ainsi de moins utiliser les systèmes de climatisation, très énergivores. Ce jardin suspendu sur les toits de la capitale libanaise pourrait également avoir des retombées positives sur le comportement des gens. Ils pourraient participer activement et simplement à l’amélioration de leur qualité de vie. L’association essaie depuis maintenant deux ans de convaincre les habitants d’adhérer au projet et l’architecte espère obtenir un soutien de la municipalité pour que cette « forêt merveilleuse » voit bientôt le jour dans le ciel de Beyrouth.",
+    "conspect": "Антоним глагола «polluer» (загрязнять) — «dépolluer» (очищать)."
+   },
+   {
+    "q": "Le texte...",
+    "options": [
+     "donne un avis sur le métier d’architecte",
+     "soulève les problèmes écologiques d’une ville",
+     "informe sur l’Organisation Mondiale de la Santé",
+     "explique comment lutter contre le chômage"
+    ],
+    "correct": 1,
+    "passage": "Un jardin sur les toits de Beyrouth\nÀ Beyrouth, la capitale du Liban, la pollution de l’air est très élevée. Un architecte envisage la plantation d’arbres sur les toits de la capitale pour assainir l’air de la ville. Comment une ville qui n’a pas beaucoup d’industries peut-elle être aussi polluée ? Les principales responsables, ce sont les nombreuses voitures qui circulent tous les jours. De plus, il y a très peu d’espaces verts qui aideraient les habitants à mieux respirer. Des études sur la qualité de l’air affichent des résultats inquiétants puisque le taux de dioxyde d’azote (NO2) dépasse largement la valeur limite fixée par l’Organisation Mondiale de la Santé (OMS). Parce que cette pollution atmosphérique comporte des risques importants pour la santé, des associations et des spécialistes tentent de trouver des solutions. Comme, par exemple, Wassim Melki, un jeune architecte qui a lancé en 2012 un projet appelé La forêt merveilleuse de Beyrouth (Beirut Wonder Forest). Le principe est très simple : mettre des milliers d’arbres sur les toits des immeubles de Beyrouth ! Il est également économique, car il ne s’agit pas de planter des arbres sur les toits, ce qui coûterait cher, mais de placer des arbres en pot, directement sur les toits. Ce projet a une dimension collaborative intéressante car les arbres seront plantés et entretenus par les habitants de chaque bâtiment, afin de responsabiliser tous les Beyrouthins au problème de la pollution de l’air. Les conséquences positives d’un tel projet seront multiples. La qualité de l’air sera améliorée car on sait qu’un arbre capture 10 Kg de CO2 en moyenne par an. De plus, l’ombre des arbres permettra aux habitations d’avoir une température plus fraîche et ainsi de moins utiliser les systèmes de climatisation, très énergivores. Ce jardin suspendu sur les toits de la capitale libanaise pourrait également avoir des retombées positives sur le comportement des gens. Ils pourraient participer activement et simplement à l’amélioration de leur qualité de vie. L’association essaie depuis maintenant deux ans de convaincre les habitants d’adhérer au projet et l’architecte espère obtenir un soutien de la municipalité pour que cette « forêt merveilleuse » voit bientôt le jour dans le ciel de Beyrouth.",
+    "conspect": "Текст поднимает экологические проблемы города: загрязнение воздуха Бейрута и решение — деревья на крышах."
+   },
+   {
+    "q": "Le synonyme du mot «conséquence» est",
+    "options": [
+     "opposition",
+     "obstacle",
+     "essence",
+     "effet"
+    ],
+    "correct": 3,
+    "passage": "Un jardin sur les toits de Beyrouth\nÀ Beyrouth, la capitale du Liban, la pollution de l’air est très élevée. Un architecte envisage la plantation d’arbres sur les toits de la capitale pour assainir l’air de la ville. Comment une ville qui n’a pas beaucoup d’industries peut-elle être aussi polluée ? Les principales responsables, ce sont les nombreuses voitures qui circulent tous les jours. De plus, il y a très peu d’espaces verts qui aideraient les habitants à mieux respirer. Des études sur la qualité de l’air affichent des résultats inquiétants puisque le taux de dioxyde d’azote (NO2) dépasse largement la valeur limite fixée par l’Organisation Mondiale de la Santé (OMS). Parce que cette pollution atmosphérique comporte des risques importants pour la santé, des associations et des spécialistes tentent de trouver des solutions. Comme, par exemple, Wassim Melki, un jeune architecte qui a lancé en 2012 un projet appelé La forêt merveilleuse de Beyrouth (Beirut Wonder Forest). Le principe est très simple : mettre des milliers d’arbres sur les toits des immeubles de Beyrouth ! Il est également économique, car il ne s’agit pas de planter des arbres sur les toits, ce qui coûterait cher, mais de placer des arbres en pot, directement sur les toits. Ce projet a une dimension collaborative intéressante car les arbres seront plantés et entretenus par les habitants de chaque bâtiment, afin de responsabiliser tous les Beyrouthins au problème de la pollution de l’air. Les conséquences positives d’un tel projet seront multiples. La qualité de l’air sera améliorée car on sait qu’un arbre capture 10 Kg de CO2 en moyenne par an. De plus, l’ombre des arbres permettra aux habitations d’avoir une température plus fraîche et ainsi de moins utiliser les systèmes de climatisation, très énergivores. Ce jardin suspendu sur les toits de la capitale libanaise pourrait également avoir des retombées positives sur le comportement des gens. Ils pourraient participer activement et simplement à l’amélioration de leur qualité de vie. L’association essaie depuis maintenant deux ans de convaincre les habitants d’adhérer au projet et l’architecte espère obtenir un soutien de la municipalité pour que cette « forêt merveilleuse » voit bientôt le jour dans le ciel de Beyrouth.",
+    "conspect": "«Conséquence» (следствие, последствие) — синоним «effet»."
+   },
+   {
+    "q": "L’objectif principal du projet «La foret merveilleuse » est de",
+    "options": [
+     "soutenir les participants du projet",
+     "planter des arbres sur les toits",
+     "mettre des milliers d’arbres devant les bâtiments",
+     "placer des arbres en pot, directement sur les toits"
+    ],
+    "correct": 3,
+    "passage": "Un jardin sur les toits de Beyrouth\nÀ Beyrouth, la capitale du Liban, la pollution de l’air est très élevée. Un architecte envisage la plantation d’arbres sur les toits de la capitale pour assainir l’air de la ville. Comment une ville qui n’a pas beaucoup d’industries peut-elle être aussi polluée ? Les principales responsables, ce sont les nombreuses voitures qui circulent tous les jours. De plus, il y a très peu d’espaces verts qui aideraient les habitants à mieux respirer. Des études sur la qualité de l’air affichent des résultats inquiétants puisque le taux de dioxyde d’azote (NO2) dépasse largement la valeur limite fixée par l’Organisation Mondiale de la Santé (OMS). Parce que cette pollution atmosphérique comporte des risques importants pour la santé, des associations et des spécialistes tentent de trouver des solutions. Comme, par exemple, Wassim Melki, un jeune architecte qui a lancé en 2012 un projet appelé La forêt merveilleuse de Beyrouth (Beirut Wonder Forest). Le principe est très simple : mettre des milliers d’arbres sur les toits des immeubles de Beyrouth ! Il est également économique, car il ne s’agit pas de planter des arbres sur les toits, ce qui coûterait cher, mais de placer des arbres en pot, directement sur les toits. Ce projet a une dimension collaborative intéressante car les arbres seront plantés et entretenus par les habitants de chaque bâtiment, afin de responsabiliser tous les Beyrouthins au problème de la pollution de l’air. Les conséquences positives d’un tel projet seront multiples. La qualité de l’air sera améliorée car on sait qu’un arbre capture 10 Kg de CO2 en moyenne par an. De plus, l’ombre des arbres permettra aux habitations d’avoir une température plus fraîche et ainsi de moins utiliser les systèmes de climatisation, très énergivores. Ce jardin suspendu sur les toits de la capitale libanaise pourrait également avoir des retombées positives sur le comportement des gens. Ils pourraient participer activement et simplement à l’amélioration de leur qualité de vie. L’association essaie depuis maintenant deux ans de convaincre les habitants d’adhérer au projet et l’architecte espère obtenir un soutien de la municipalité pour que cette « forêt merveilleuse » voit bientôt le jour dans le ciel de Beyrouth.",
+    "conspect": "Идея проекта проста: ставить деревья в горшках прямо на крышах — это дешевле, чем сажать их в грунт."
+   },
+   {
+    "q": "Il est véritable que...",
+    "options": [
+     "grâce à ce projet, les gens peuvent trouver du travail",
+     "les systèmes de la climatisation sont grands consommateurs d’énergie",
+     "le jardin sur les toits ne changera que le comportement des habitants",
+     "à Beyrouth, il y a beaucoup d’espaces verts"
+    ],
+    "correct": 1,
+    "passage": "Un jardin sur les toits de Beyrouth\nÀ Beyrouth, la capitale du Liban, la pollution de l’air est très élevée. Un architecte envisage la plantation d’arbres sur les toits de la capitale pour assainir l’air de la ville. Comment une ville qui n’a pas beaucoup d’industries peut-elle être aussi polluée ? Les principales responsables, ce sont les nombreuses voitures qui circulent tous les jours. De plus, il y a très peu d’espaces verts qui aideraient les habitants à mieux respirer. Des études sur la qualité de l’air affichent des résultats inquiétants puisque le taux de dioxyde d’azote (NO2) dépasse largement la valeur limite fixée par l’Organisation Mondiale de la Santé (OMS). Parce que cette pollution atmosphérique comporte des risques importants pour la santé, des associations et des spécialistes tentent de trouver des solutions. Comme, par exemple, Wassim Melki, un jeune architecte qui a lancé en 2012 un projet appelé La forêt merveilleuse de Beyrouth (Beirut Wonder Forest). Le principe est très simple : mettre des milliers d’arbres sur les toits des immeubles de Beyrouth ! Il est également économique, car il ne s’agit pas de planter des arbres sur les toits, ce qui coûterait cher, mais de placer des arbres en pot, directement sur les toits. Ce projet a une dimension collaborative intéressante car les arbres seront plantés et entretenus par les habitants de chaque bâtiment, afin de responsabiliser tous les Beyrouthins au problème de la pollution de l’air. Les conséquences positives d’un tel projet seront multiples. La qualité de l’air sera améliorée car on sait qu’un arbre capture 10 Kg de CO2 en moyenne par an. De plus, l’ombre des arbres permettra aux habitations d’avoir une température plus fraîche et ainsi de moins utiliser les systèmes de climatisation, très énergivores. Ce jardin suspendu sur les toits de la capitale libanaise pourrait également avoir des retombées positives sur le comportement des gens. Ils pourraient participer activement et simplement à l’amélioration de leur qualité de vie. L’association essaie depuis maintenant deux ans de convaincre les habitants d’adhérer au projet et l’architecte espère obtenir un soutien de la municipalité pour que cette « forêt merveilleuse » voit bientôt le jour dans le ciel de Beyrouth.",
+    "conspect": "В тексте: тень деревьев позволит меньше пользоваться системами кондиционирования, «très énergivores» — очень энергоëмкими."
+   },
+   {
+    "q": "Le mot «energivores» signifie",
+    "options": [
+     "qui consomme beaucoup d’énergie",
+     "qui consomme peu d’énergie",
+     "qui économise de l’énergie",
+     "qui s’occupe de l’énergie"
+    ],
+    "correct": 0,
+    "passage": "Un jardin sur les toits de Beyrouth\nÀ Beyrouth, la capitale du Liban, la pollution de l’air est très élevée. Un architecte envisage la plantation d’arbres sur les toits de la capitale pour assainir l’air de la ville. Comment une ville qui n’a pas beaucoup d’industries peut-elle être aussi polluée ? Les principales responsables, ce sont les nombreuses voitures qui circulent tous les jours. De plus, il y a très peu d’espaces verts qui aideraient les habitants à mieux respirer. Des études sur la qualité de l’air affichent des résultats inquiétants puisque le taux de dioxyde d’azote (NO2) dépasse largement la valeur limite fixée par l’Organisation Mondiale de la Santé (OMS). Parce que cette pollution atmosphérique comporte des risques importants pour la santé, des associations et des spécialistes tentent de trouver des solutions. Comme, par exemple, Wassim Melki, un jeune architecte qui a lancé en 2012 un projet appelé La forêt merveilleuse de Beyrouth (Beirut Wonder Forest). Le principe est très simple : mettre des milliers d’arbres sur les toits des immeubles de Beyrouth ! Il est également économique, car il ne s’agit pas de planter des arbres sur les toits, ce qui coûterait cher, mais de placer des arbres en pot, directement sur les toits. Ce projet a une dimension collaborative intéressante car les arbres seront plantés et entretenus par les habitants de chaque bâtiment, afin de responsabiliser tous les Beyrouthins au problème de la pollution de l’air. Les conséquences positives d’un tel projet seront multiples. La qualité de l’air sera améliorée car on sait qu’un arbre capture 10 Kg de CO2 en moyenne par an. De plus, l’ombre des arbres permettra aux habitations d’avoir une température plus fraîche et ainsi de moins utiliser les systèmes de climatisation, très énergivores. Ce jardin suspendu sur les toits de la capitale libanaise pourrait également avoir des retombées positives sur le comportement des gens. Ils pourraient participer activement et simplement à l’amélioration de leur qualité de vie. L’association essaie depuis maintenant deux ans de convaincre les habitants d’adhérer au projet et l’architecte espère obtenir un soutien de la municipalité pour que cette « forêt merveilleuse » voit bientôt le jour dans le ciel de Beyrouth.",
+    "conspect": "«Énergivore» — прилагательное: потребляющий много энергии (qui consomme beaucoup d’énergie)."
+   },
+   {
+    "q": "Les logements pas trop chers se trouvent _____",
+    "options": [
+     "près de la gare",
+     "dans le centre-ville",
+     "dans les petites rues",
+     "en banlieue"
+    ],
+    "correct": 3,
+    "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
+    "conspect": "Недорогое жильë находят только в пригороде: «Il fallait toujours aller en banlieue et les banlieues étaient bien loin»."
+   },
+   {
+    "q": "Le métro de Paris a _____",
+    "options": [
+     "fait peur à Farida",
+     "plu à Farida",
+     "étonné Farida",
+     "fait plaisir à Farida"
+    ],
+    "correct": 0,
+    "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
+    "conspect": "Метро напугало Фариду: «Les longs couloirs… ont fait peur à la petite Farida»."
+   },
+   {
+    "q": "Synonyme du mot: La famille recherchait longtemps un logement.",
+    "options": [
+     "emploi",
+     "lieu",
+     "travail",
+     "appartement"
+    ],
+    "correct": 3,
+    "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
+    "conspect": "«Un logement» (жильë) — по смыслу близко к «appartement» (квартира); семья долго искала жильë."
+   },
+   {
+    "q": "Le synonyme: La famille n’a pas su prendre les bonnes correspondances.",
+    "options": [
+     "prendre le bus",
+     "trouver la bonne station",
+     "changer de bus",
+     "descendre du bus"
+    ],
+    "correct": 2,
+    "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
+    "conspect": "«Prendre les bonnes correspondances» — делать правильные пересадки (changer de bus)."
+   },
+   {
+    "q": "Farida imaginait la France comme un pays _____",
+    "options": [
+     "pauvre",
+     "triste",
+     "difficile",
+     "riche"
+    ],
+    "correct": 3,
+    "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
+    "conspect": "Фарида представляла Францию богатой страной: «un pays où tout le monde était riche… dans des maisons très hautes et très belles»."
+   },
+   {
+    "q": "Le synonyme: Le métro a fait peur à Farida.",
+    "options": [
+     "a reçu",
+     "a découragé",
+     "a amusé",
+     "a étonné"
+    ],
+    "correct": 1,
+    "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
+    "conspect": "«Faire peur» = «décourager, effrayer»; в тестовом варианте — «a découragé»."
+   },
+   {
+    "q": "Le père était très triste parce qu’ ______",
+    "options": [
+     "il faisait beau à Paris",
+     "il ne pouvait pas trouver un logement",
+     "il a loué un hôtel triste",
+     "il avait faim"
+    ],
+    "correct": 1,
+    "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
+    "conspect": "Отец был очень грустным, потому что не мог найти жильë: «Il n’a rien trouvé» (ни работы, ни жилья)."
+   },
+   {
+    "q": "D’abord la famille est venue à ______.",
+    "options": [
+     "Lyon",
+     "Paris",
+     "Nice",
+     "Marseille"
+    ],
+    "correct": 3,
+    "passage": "Farida, une jeune algérienne en France\nFarida est Algérienne.Ses parents sont arrivés en France il y a dix ans. Quand ils l’ont amenée à Paris, elle était petite mais elle se souvient bien de ses premières impressions. Ses parents disaient toujours «Ici en Algérie, la vie est trop difficile.Nous devons partir en France.Tout sera plus facile là-bas.Il y a du travail pour tous. On pourra trouver un meilleur logement.» Dans sa petite tête, Farida voyait la France comme un pays où tout le monde était riche dans des maisons très hautes et très belles, où la vie serait moins dure. Quand leur bateau est arrivé à Marseille son père a cherché tout de suite un travail et un logement. Il n’a rien trouvé. Avec tous leurs bagages ils ont pris un train à la gare de Marseille. Ils sont arrivés à Paris un jour où il pleuvait très fort et il faisait vraiment froid.La première nuit, ils sont allés dans l’hôtel le moins cher près de la gare de Lyon. C’était un hôtel bien triste. Ils pensaient rester deux ou trois jours en attendant de trouver un logement. En réalité la recherche d’un logement pas trop cher a été très difficile. Il fallait toujours aller en banlieue et les banlieues étaient bien loin. Où était le soleil de l’Algérie? Farida, dans sa petite tête, se demandait si bien dans ce pays le soleil existait encore. Le premier jour ils ont marché.Mais les distances étaient trop longues. Le second jour ils ont pris un autobus, mais ils n’ont pas su prendre les bonnes correspondances. Au bout de trois jours finalement ils ont pris le métro. Les longs couloirs où tout le monde marchaient sans se voir et sans parler ont fait peur à la petite Farida.Elle tenait bien fort la main de sa maman car elle ne voulait pas se perdre.",
+    "conspect": "Корабль пришëл в Марсель: «Quand leur bateau est arrivé à Marseille», затем семья поехала в Париж на поезде."
+   }
+  ]
+ }
+}
