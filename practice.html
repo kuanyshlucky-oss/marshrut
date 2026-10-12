@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Практика · Английский — JetisHub</title>
+<meta name="robots" content="noindex">
+<script>
+  (function () {
+    var t = 'light';
+    try { t = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<style>
+  :root{
+    --bg:#FBFBFA; --surface:#FFFFFF; --ink:#1D1D1F; --ink-soft:#55555B; --line:rgba(29,29,31,.12);
+    --accent:#0A6CC9; --accent-on:#FFFFFF; --beige:#B08D46;
+    --ok:#12803F; --ok-bg:rgba(18,128,63,.10); --bad:#CF2F35; --bad-bg:rgba(207,47,53,.09);
+    --kp-g:#12803F; --kp-r:#CF2F35; --kp-o:#C2620A; --kp-p:#6E3FD0;
+    --kp-g-bg:rgba(18,128,63,.10); --kp-r-bg:rgba(207,47,53,.09); --kp-o-bg:rgba(194,98,10,.10); --kp-p-bg:rgba(110,63,208,.09);
+  }
+  html[data-theme="dark"]{
+    --bg:#0A0A0B; --surface:#161618; --ink:#F5F5F7; --ink-soft:#A8A8B0; --line:rgba(255,255,255,.12);
+    --accent:#4DA3FF; --accent-on:#08131F; --beige:#D9B676;
+    --ok:#55D68F; --ok-bg:rgba(85,214,143,.13); --bad:#FF8587; --bad-bg:rgba(255,133,135,.12);
+    --kp-g:#55D68F; --kp-r:#FF8587; --kp-o:#FFB067; --kp-p:#BDA4FF;
+    --kp-g-bg:rgba(85,214,143,.13); --kp-r-bg:rgba(255,133,135,.12); --kp-o-bg:rgba(255,176,103,.13); --kp-p-bg:rgba(189,164,255,.13);
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; }
+  a{ color:var(--accent); }
+  .wrap{ max-width:880px; margin:0 auto; padding:20px 16px 64px; }
+  .top{ display:flex; align-items:center; gap:12px; justify-content:space-between; margin-bottom:8px; }
+  .top a.back{ text-decoration:none; font-size:14px; color:var(--ink-soft); }
+  .theme{ border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; padding:6px 12px; cursor:pointer; font-size:13px; }
+  h1{ font-size:clamp(28px,5vw,40px); line-height:1.15; margin:14px 0 6px; letter-spacing:-.02em; }
+  h1 mark{ background:linear-gradient(transparent 62%, rgba(255,214,0,.55) 62%); color:inherit; }
+  .lead{ color:var(--ink-soft); margin:0 0 22px; max-width:620px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+  .unit{ display:block; text-align:left; width:100%; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px; cursor:pointer; color:inherit; font:inherit; transition:transform .15s, border-color .15s; }
+  .unit:hover:not([disabled]){ transform:translateY(-2px); border-color:var(--accent); }
+  .unit[disabled]{ opacity:.5; cursor:default; }
+  .unit .n{ font-size:12px; color:var(--ink-soft); letter-spacing:.06em; }
+  .unit .t{ font-weight:700; margin:4px 0 2px; }
+  .unit .r{ font-size:13px; color:var(--ink-soft); }
+  .bar{ height:6px; border-radius:99px; background:var(--line); margin-top:12px; overflow:hidden; }
+  .bar i{ display:block; height:100%; background:var(--accent); border-radius:99px; transition:width .3s; }
+  .bar.ok i{ background:var(--ok); }
+  .meta{ font-size:12px; color:var(--ink-soft); margin-top:6px; }
+  .tabs{ display:flex; gap:8px; margin:14px 0 18px; flex-wrap:wrap; }
+  .tab{ border:1px solid var(--line); background:var(--surface); color:var(--ink); padding:8px 16px; border-radius:999px; cursor:pointer; font:inherit; font-size:14px; }
+  .tab.on{ background:var(--accent); color:var(--accent-on); border-color:var(--accent); }
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:24px 26px; box-shadow:0 12px 32px -18px rgba(0,0,0,.25); }
+  .rev-conspect-h{ margin:24px 0 10px; padding:6px 12px; border-left:4px solid var(--accent); border-radius:0 10px 10px 0; background:rgba(10,108,201,.07); font-size:17px; }
+  .rev-conspect-h:first-child{ margin-top:0; }
+  .rev-conspect-h:nth-of-type(4n+2){ border-left-color:var(--kp-g); background:var(--kp-g-bg); }
+  .rev-conspect-h:nth-of-type(4n+3){ border-left-color:var(--kp-o); background:var(--kp-o-bg); }
+  .rev-conspect-h:nth-of-type(4n+4){ border-left-color:var(--kp-p); background:var(--kp-p-bg); }
+  .card p{ margin:0 0 12px; }
+  .rev-conspect-list{ margin:0 0 12px; padding:0; list-style:none; }
+  .rev-conspect-list li{ position:relative; padding-left:18px; margin-bottom:8px; }
+  .rev-conspect-list li::before{ content:''; position:absolute; left:2px; top:10px; width:5px; height:5px; border-radius:50%; background:var(--accent); }
+  .kp-term{ color:var(--accent); font-weight:600; }
+  .kp-c{ font-weight:600; border-radius:6px; padding:0 4px; }
+  .kp-c-g{ color:var(--kp-g); background:var(--kp-g-bg); } .kp-c-r{ color:var(--kp-r); background:var(--kp-r-bg); }
+  .kp-c-o{ color:var(--kp-o); background:var(--kp-o-bg); } .kp-c-p{ color:var(--kp-p); background:var(--kp-p-bg); }
+  .kp-c-b{ color:var(--accent); background:rgba(10,108,201,.09); }
+  .kp-callout{ margin:14px 0 4px; padding:12px 16px; border-left:3px solid var(--accent); background:rgba(10,108,201,.07); border-radius:0 12px 12px 0; font-weight:500; }
+  .kp-tip{ border-left-color:var(--kp-g); background:var(--kp-g-bg); } .kp-warn{ border-left-color:var(--kp-r); background:var(--kp-r-bg); } .kp-ex{ border-left-color:var(--kp-p); background:var(--kp-p-bg); }
+  .kp-tip::before{ content:'Совет · '; color:var(--kp-g); font-weight:700; } .kp-warn::before{ content:'Ловушка · '; color:var(--kp-r); font-weight:700; } .kp-ex::before{ content:'Пример · '; color:var(--kp-p); font-weight:700; }
+  .kp-table-wrap{ overflow-x:auto; margin:10px 0 16px; border:1px solid var(--line); border-radius:12px; }
+  .kp-table{ border-collapse:collapse; width:100%; font-size:14px; }
+  .kp-table td,.kp-table th{ padding:9px 14px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line); }
+  .kp-table tr:last-child td{ border-bottom:0; }
+  .kp-table th{ background:rgba(10,108,201,.10); color:var(--accent); }
+  .kp-table td:first-child{ font-weight:600; }
+  .kp-table tr:nth-child(even) td{ background:rgba(128,128,128,.05); }
+  /* упражнения */
+  .prog{ display:flex; align-items:center; gap:12px; margin-bottom:14px; font-size:14px; color:var(--ink-soft); }
+  .prog .bar{ flex:1; margin:0; }
+  .q{ font-size:20px; font-weight:600; margin:6px 0 16px; line-height:1.4; }
+  .gapq{ display:inline-block; min-width:110px; border-bottom:2px solid var(--accent); text-align:center; padding:0 6px; color:var(--accent); }
+  .opts{ display:grid; gap:10px; }
+  .opt{ text-align:left; background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:12px 16px; font:inherit; color:inherit; cursor:pointer; transition:border-color .12s, background .12s; }
+  .opt:hover:not(:disabled){ border-color:var(--accent); }
+  .opt:disabled{ cursor:default; }
+  .opt.ok{ border-color:var(--ok); background:var(--ok-bg); }
+  .opt.bad{ border-color:var(--bad); background:var(--bad-bg); }
+  .gaprow{ display:flex; gap:10px; flex-wrap:wrap; }
+  .gaprow input{ flex:1; min-width:200px; font:inherit; padding:12px 14px; border-radius:12px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); }
+  .gaprow input:focus{ outline:none; border-color:var(--accent); }
+  .gaprow input.ok{ border-color:var(--ok); background:var(--ok-bg); } .gaprow input.bad{ border-color:var(--bad); background:var(--bad-bg); }
+  .btn{ border:0; background:var(--accent); color:var(--accent-on); padding:12px 22px; border-radius:12px; font:inherit; font-weight:600; cursor:pointer; }
+  .btn.ghost{ background:transparent; color:var(--ink); border:1px solid var(--line); }
+  .btn:disabled{ opacity:.5; cursor:default; }
+  .fb{ margin-top:16px; padding:14px 16px; border-radius:12px; font-size:15px; }
+  .fb.ok{ background:var(--ok-bg); border-left:4px solid var(--ok); } .fb.bad{ background:var(--bad-bg); border-left:4px solid var(--bad); }
+  .fb b{ display:block; margin-bottom:2px; }
+  .actions{ display:flex; gap:10px; margin-top:18px; justify-content:space-between; flex-wrap:wrap; }
+  .score{ text-align:center; padding:12px 0; }
+  .score .big{ font-size:56px; font-weight:800; line-height:1; letter-spacing:-.03em; }
+  .score .big.ok{ color:var(--ok); } .score .big.mid{ color:var(--kp-o); } .score .big.low{ color:var(--bad); }
+  .review{ margin:18px 0 0; padding:0; list-style:none; text-align:left; }
+  .review li{ padding:10px 0; border-top:1px solid var(--line); font-size:14px; }
+  .review .y{ color:var(--ok); font-weight:700; } .review .n{ color:var(--bad); font-weight:700; }
+  .hint{ font-size:12px; color:var(--ink-soft); text-align:center; margin-top:22px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="back" id="back" href="cabinet.html">← В кабинет</a>
+    <button class="theme" id="theme" type="button">Тема</button>
+  </div>
+  <div id="app"></div>
+  <p class="hint">Прогресс хранится в этом браузере. Задания написаны для практики и не являются вопросами настоящего НЦТ.</p>
+</div>
+<script src="practice-data-en.js"></script>
+<script src="practice-data-en-2.js"></script>
+<script>
+(function () {
+  var D = window.PRACTICE_EN;
+  var app = document.getElementById('app');
+  var KEY = 'practice-en-v1';
+  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+
+  /* разметка конспекта (та же, что formatConspectText на сайте) */
+  function fmt(text) {
+    var inl = function (x) { return esc(x).replace(/\*\*(.+?)\*\*/g, '<strong class="kp-term">$1</strong>').replace(/\{\{([grobp]):(.+?)\}\}/g, '<span class="kp-c kp-c-$1">$2</span>'); };
+    var blocks = [], list = null, table = null;
+    String(text).split('\n').forEach(function (line) {
+      var t = line.trim();
+      if (!t) { list = null; table = null; return; }
+      if (t.charAt(0) === '|') {
+        list = null;
+        if (/^\|[-\s|:]+\|?$/.test(t)) { if (table) table.head = true; return; }
+        if (!table) { table = { rows: [], head: false }; blocks.push({ table: table }); }
+        table.rows.push(t.replace(/^\||\|$/g, '').split('|').map(function (c) { return c.trim(); }));
+        return;
+      }
+      table = null;
+      if (t.indexOf('## ') === 0) { list = null; blocks.push({ h: t.slice(3).trim() }); }
+      else if (/^>[+!?] /.test(t)) { list = null; blocks.push({ q: t.slice(3).trim(), kind: { '+': 'tip', '!': 'warn', '?': 'ex' }[t.charAt(1)] }); }
+      else if (t.indexOf('> ') === 0) { list = null; blocks.push({ q: t.slice(2).trim() }); }
+      else if (t.charAt(0) === '•') { if (!list) { list = []; blocks.push({ list: list }); } list.push(t.slice(1).trim()); }
+      else { list = null; blocks.push({ p: t }); }
+    });
+    return blocks.map(function (b) {
+      if (b.h) return '<h4 class="rev-conspect-h">' + esc(b.h) + '</h4>';
+      if (b.q) return '<p class="kp-callout' + (b.kind ? ' kp-' + b.kind : '') + '">' + inl(b.q) + '</p>';
+      if (b.table) return '<div class="kp-table-wrap"><table class="kp-table">' + b.table.rows.map(function (r, i) {
+        var tag = b.table.head && i === 0 ? 'th' : 'td';
+        return '<tr>' + r.map(function (c) { return '<' + tag + '>' + inl(c) + '</' + tag + '>'; }).join('') + '</tr>';
+      }).join('') + '</table></div>';
+      if (b.list) return '<ul class="rev-conspect-list">' + b.list.map(function (i) { return '<li>' + inl(i) + '</li>'; }).join('') + '</ul>';
+      return '<p>' + inl(b.p) + '</p>';
+    }).join('');
+  }
+
+  var norm = function (s) { return String(s).toLowerCase().replace(/[’`´]/g, "'").replace(/\s+/g, ' ').trim().replace(/[.!?]$/, ''); };
+
+  /* ---------- список юнитов ---------- */
+  function home() {
+    var st = load();
+    document.getElementById('back').textContent = '← В кабинет';
+    app.innerHTML =
+      '<h1>One unit a week.<br><mark>Checked instantly.</mark></h1>' +
+      '<p class="lead">Практика английской грамматики: теория с примерами, затем упражнения — каждый ответ проверяется сразу, с объяснением.</p>' +
+      '<div class="grid">' +
+      D.units.map(function (u) {
+        var s = st[u.id] || {};
+        var pct = s.best != null ? Math.round(s.best / u.ex.length * 100) : 0;
+        return '<button class="unit" data-id="' + u.id + '"><div class="n">UNIT ' + String(u.n).padStart(2, '0') + '</div><div class="t">' + esc(u.title) + '</div><div class="r">' + esc(u.ru) + '</div>' +
+          '<div class="bar' + (pct >= 80 ? ' ok' : '') + '"><i style="width:' + pct + '%"></i></div>' +
+          '<div class="meta">' + (s.best != null ? 'Лучший результат: ' + s.best + '/' + u.ex.length + ' · попыток ' + (s.tries || 1) : u.ex.length + ' упражнений') + '</div></button>';
+      }).join('') +
+      D.soon.map(function (u) {
+        return '<button class="unit" disabled><div class="n">UNIT ' + String(u.n).padStart(2, '0') + '</div><div class="t">' + esc(u.title) + '</div><div class="r">' + esc(u.ru) + '</div><div class="meta">Скоро</div></button>';
+      }).join('') + '</div>';
+    app.querySelectorAll('.unit[data-id]').forEach(function (b) { b.addEventListener('click', function () { location.hash = '#' + b.dataset.id; }); });
+  }
+
+  /* ---------- юнит ---------- */
+  function unitView(u, tab) {
+    document.getElementById('back').textContent = '← Все юниты';
+    app.innerHTML = '<h1>Unit ' + String(u.n).padStart(2, '0') + ' · ' + esc(u.title) + '</h1><p class="lead">' + esc(u.ru) + '</p>' +
+      '<div class="tabs"><button class="tab' + (tab === 'theory' ? ' on' : '') + '" data-tab="theory">Теория</button><button class="tab' + (tab === 'ex' ? ' on' : '') + '" data-tab="ex">Упражнения (' + u.ex.length + ')</button></div><div id="body"></div>';
+    app.querySelectorAll('.tab').forEach(function (b) { b.addEventListener('click', function () { unitView(u, b.dataset.tab); }); });
+    var body = document.getElementById('body');
+    if (tab === 'theory') {
+      body.innerHTML = '<div class="card">' + fmt(u.theory) + '</div><div class="actions"><span></span><button class="btn" id="go">К упражнениям →</button></div>';
+      document.getElementById('go').addEventListener('click', function () { unitView(u, 'ex'); });
+    } else runExercises(u, body);
+  }
+
+  function runExercises(u, body) {
+    var i = 0, results = [];
+    function render() {
+      var e = u.ex[i];
+      var pct = Math.round(i / u.ex.length * 100);
+      var head = '<div class="prog"><span>' + (i + 1) + ' / ' + u.ex.length + '</span><div class="bar"><i style="width:' + pct + '%"></i></div><span>верно: ' + results.filter(Boolean).length + '</span></div>';
+      var qhtml = esc(e.q).replace('___', '<span class="gapq">&nbsp;&nbsp;&nbsp;&nbsp;</span>');
+      var inner;
+      if (e.t === 'mcq') {
+        inner = '<div class="q">' + qhtml + '</div><div class="opts">' + e.o.map(function (o, k) { return '<button class="opt" data-k="' + k + '">' + esc(o) + '</button>'; }).join('') + '</div>';
+      } else {
+        inner = '<div class="q">' + qhtml + '</div><div class="gaprow"><input id="gap" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Введите ответ"><button class="btn" id="chk">Проверить</button></div>';
+      }
+      body.innerHTML = '<div class="card">' + head + inner + '<div id="fb"></div><div class="actions"><button class="btn ghost" id="prev"' + (i ? '' : ' disabled') + '>← Назад</button><button class="btn" id="next" disabled>' + (i === u.ex.length - 1 ? 'Результат' : 'Дальше →') + '</button></div></div>';
+      var done = false;
+      function show(ok, extra) {
+        done = true; results[i] = ok;
+        document.getElementById('fb').innerHTML = '<div class="fb ' + (ok ? 'ok' : 'bad') + '"><b>' + (ok ? 'Верно!' : 'Неверно') + (extra || '') + '</b>' + esc(e.why) + '</div>';
+        var nx = document.getElementById('next'); nx.disabled = false; nx.focus();
+      }
+      if (e.t === 'mcq') {
+        body.querySelectorAll('.opt').forEach(function (b) {
+          b.addEventListener('click', function () {
+            if (done) return;
+            var k = Number(b.dataset.k), ok = k === e.a;
+            body.querySelectorAll('.opt').forEach(function (x) { x.disabled = true; if (Number(x.dataset.k) === e.a) x.classList.add('ok'); });
+            if (!ok) b.classList.add('bad');
+            show(ok, ok ? '' : ' — правильный ответ: ' + e.o[e.a]);
+          });
+        });
+      } else {
+        var inp = document.getElementById('gap'), chk = document.getElementById('chk');
+        var check = function () {
+          if (done || !inp.value.trim()) return;
+          var ok = e.a.some(function (a) { return norm(a) === norm(inp.value); });
+          inp.disabled = true; chk.disabled = true; inp.classList.add(ok ? 'ok' : 'bad');
+          show(ok, ok ? '' : ' — правильный ответ: ' + e.a[0]);
+        };
+        chk.addEventListener('click', check);
+        inp.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') check(); });
+        inp.focus();
+      }
+      document.getElementById('prev').addEventListener('click', function () { if (i) { i--; render(); } });
+      document.getElementById('next').addEventListener('click', function () { if (!done) return; if (i < u.ex.length - 1) { i++; render(); } else finish(); });
+    }
+    function finish() {
+      var right = results.filter(Boolean).length, total = u.ex.length, pct = Math.round(right / total * 100);
+      var st = load(), s = st[u.id] || { tries: 0 };
+      s.tries = (s.tries || 0) + 1; s.last = right; s.best = Math.max(s.best || 0, right); st[u.id] = s; save(st);
+      var cls = pct >= 80 ? 'ok' : pct >= 50 ? 'mid' : 'low';
+      var wrong = u.ex.map(function (e, k) { return { e: e, k: k }; }).filter(function (x) { return !results[x.k]; });
+      body.innerHTML = '<div class="card"><div class="score"><div class="big ' + cls + '">' + right + '/' + total + '</div><p>' + pct + '% · ' + (pct >= 80 ? 'Отлично! Юнит освоен.' : pct >= 50 ? 'Неплохо — повторите теорию и ошибки.' : 'Стоит перечитать теорию и пройти ещё раз.') + '</p></div>' +
+        (wrong.length ? '<h4 class="rev-conspect-h">Работа над ошибками</h4><ul class="review">' + wrong.map(function (x) {
+          var ans = x.e.t === 'mcq' ? x.e.o[x.e.a] : x.e.a[0];
+          return '<li><span class="n">' + (x.k + 1) + '.</span> ' + esc(x.e.q) + '<br><span class="y">→ ' + esc(ans) + '</span> · ' + esc(x.e.why) + '</li>';
+        }).join('') + '</ul>' : '<p style="text-align:center">Без ошибок.</p>') +
+        '<div class="actions"><button class="btn ghost" id="th">Теория</button><button class="btn" id="again">Пройти ещё раз</button></div></div>';
+      document.getElementById('th').addEventListener('click', function () { unitView(u, 'theory'); });
+      document.getElementById('again').addEventListener('click', function () { unitView(u, 'ex'); });
+    }
+    render();
+  }
+
+  function route() {
+    var id = location.hash.replace('#', '');
+    var u = D.units.find(function (x) { return x.id === id; });
+    if (u) unitView(u, 'theory'); else home();
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('back').addEventListener('click', function (e) {
+    if (location.hash) { e.preventDefault(); location.hash = ''; }
+  });
+  document.getElementById('theme').addEventListener('click', function () {
+    var n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', n);
+    try { localStorage.setItem('theme', n); } catch (e) {}
+  });
+  window.addEventListener('hashchange', route);
+  route();
+})();
+</script>
+</body>
+</html>

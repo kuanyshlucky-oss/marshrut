@@ -3651,10 +3651,19 @@ function renderTestAccessCards() {
 // друг с другом и не зависят от доступа к конкретному направлению).
 // Деление на подразделы (Педагогика / Психология, Критическое / Аналитическое
 // мышление и т.д.) происходит уже внутри konspekty.html через переключатель.
+// Есть ли у пользователя английский как общий иностранный язык: нет у тех, чьи направления сдают французский
+// (FRENCH_LANG_CODES) или только два профильных предмета (PROFILE_ONLY_CODES); без выданного доступа — есть.
+function userHasEnglish(access) {
+  return access.length === 0 || access.some(c => !FRENCH_LANG_CODES.has(c) && !PROFILE_ONLY_CODES.has(c));
+}
+
 function renderConspectsLibrary() {
   const wrap = document.getElementById('konspektySection');
   if (!wrap) return; // раздел есть только на cabinet.html
   const user = API.getCurrentUser();
+  // Карточка «Практика · Английский» — только там, где есть английский.
+  const practice = document.getElementById('practiceCard');
+  if (practice) practice.classList.toggle('hidden', !user || !userHasEnglish(user.access || []));
   if (!user) { wrap.classList.add('hidden'); return; }
   const access = user.access || [];
   // Общие конспекты (ТГО, английский) не показываем тем, у кого доступ только к
@@ -3663,7 +3672,7 @@ function renderConspectsLibrary() {
   // Французский (общий иностранный язык M019) заменяет английский: тем, у кого доступ только к таким направлениям,
   // английский не показываем, французский — показываем только им (и тем, у кого есть и такие, и обычные направления).
   const hasFrench = access.some(c => FRENCH_LANG_CODES.has(c));
-  const hasEnglish = access.length === 0 || access.some(c => !FRENCH_LANG_CODES.has(c) && !PROFILE_ONLY_CODES.has(c));
+  const hasEnglish = userHasEnglish(access);
   const common = profileOnlyUser ? [] : Object.entries(COMMON_CONSPECTS)
     .filter(([code]) => code === 'french' ? hasFrench : code === 'english' ? hasEnglish : true)
     .map(([code, lib]) => ({ code, lib }));

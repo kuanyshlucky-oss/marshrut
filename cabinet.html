@@ -162,6 +162,13 @@ ym(113595199, "init", {clickmap:true, trackLinks:true, accurateTrackBounce:true}
         <div class="dash-stack">
           <div id="testCtaSection"><!-- injected by script.js: карточка(и) «Пройти тест» — по одной на каждое направление с выданным доступом, либо ссылка на общий каталог, если доступ ещё не выдан --></div>
 
+          <!-- Практика по английской грамматике: 12 юнитов, проверка ответов сразу. Показывается скриптом (renderConspectsLibrary) только там, где есть английский -->
+          <a class="dash-card konspekty-card hidden" id="practiceCard" href="practice.html">
+            <h3>Практика · Английский язык</h3>
+            <p>Грамматика — 12 юнитов: теория и упражнения с мгновенной проверкой.</p>
+            <span class="konspekty-card-arrow" aria-hidden="true">→</span>
+          </a>
+
           <div class="konspekty-section hidden" id="konspektySection"><!-- injected by script.js: раздел «Конспекты», виден только при выданном доступе --></div>
 
           <!-- Прогресс подготовки: сколько баллов не хватает до порога КТ и какие темы чаще всего подводят.
@@ -273,6 +280,6 @@ ym(113595199, "init", {clickmap:true, trackLinks:true, accurateTrackBounce:true}
 </div>
 
 <script src="i18n.js?v=13"></script>
-<script src="script.min.js?v=39"></script>
+<script src="script.min.js?v=40"></script>
 </body>
 </html>
