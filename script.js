@@ -5359,6 +5359,20 @@ const PROGRESS_CONSPECT_ALIASES = {
   },
 };
 
+// Темы общих предметов в «Прогрессе подготовки» → ближайший конспект общей библиотеки [код, раздел, номер темы].
+// ТГО: темы программы НЦТ сопоставлены темам курса «Критическое / Аналитическое мышление»;
+// английский: Listening и Reading — «Темы и лексика», «Тесты» (грамматика и лексика) — «Грамматика».
+const PROGRESS_COMMON_CONSPECTS = Object.fromEntries(Object.entries({
+  'Логические задачи и построение выводов': ['tgo', 'analiticheskoe', 2],
+  'Анализ и интерпретация текста': ['tgo', 'analiticheskoe', 1],
+  'Числовые последовательности и закономерности': ['tgo', 'kriticheskoe', 1],
+  'Работа с таблицами, графиками и диаграммами': ['tgo', 'kriticheskoe', 2],
+  'Пространственное и абстрактное мышление': ['tgo', 'kriticheskoe', 1],
+  'Listening — 16 вопросов: аудирование коротких диалогов и объявлений': ['english', 'themes', 0],
+  'Reading — 16 вопросов: чтение и понимание академических текстов': ['english', 'themes', 0],
+  'Тесты — 18 вопросов: грамматика и лексика': ['english', 'grammar', 0],
+}).map(([t, v]) => [t.toLowerCase(), v]));
+
 // Ссылка на тему в библиотеке конспектов этого направления (или '' — если такой темы там нет).
 // Сначала точное совпадение названия, затем соответствие из PROGRESS_CONSPECT_ALIASES,
 // затем совпадение первой фразы названия (в конспекте название темы бывает длиннее).
@@ -5367,6 +5381,9 @@ function progressConspectHref(code, topic) {
   if (!lib || !topic) return '';
   const first = t => t.split('.')[0].trim();
   const key = progressTopicKey(code, topic);
+  // Общие предметы (ТГО, английский) — в общей библиотеке COMMON_CONSPECTS: тема прогресса → раздел и тема конспекта.
+  const common = PROGRESS_COMMON_CONSPECTS[key];
+  if (common) return `konspekty.html?code=${common[0]}&section=${common[1]}&topic=${common[2]}`;
   const aliasKey = progressNorm((PROGRESS_CONSPECT_ALIASES[code] || {})[topic] || '');
   const tests = [
     t => t === key,
