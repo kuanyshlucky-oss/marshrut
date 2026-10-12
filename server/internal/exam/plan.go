@@ -160,6 +160,35 @@ func cycle(r Shuffler, pool []item, n int) []item {
 	return out
 }
 
+// pickDistinctAudio берёт n вопросов аудирования так, чтобы записи (файлы) не повторялись, пока в пуле
+// хватает разных файлов; если файлов меньше n, остаток добирается из оставшихся вопросов.
+func pickDistinctAudio(r Shuffler, pool []item, n int) []item {
+	if len(pool) == 0 || n <= 0 {
+		return nil
+	}
+	sh := shuffled(r, pool)
+	used := map[string]bool{}
+	taken := make([]bool, len(sh))
+	var out []item
+	for i, it := range sh {
+		file, _, _ := strings.Cut(it.q.Audio, "?")
+		if len(out) < n && !used[file] {
+			used[file] = true
+			taken[i] = true
+			out = append(out, it)
+		}
+	}
+	for i, it := range sh {
+		if len(out) >= n {
+			break
+		}
+		if !taken[i] {
+			out = append(out, it)
+		}
+	}
+	return out
+}
+
 func withStage(items []item, stage string) []item {
 	for i := range items {
 		items[i].stage = stage
@@ -186,7 +215,12 @@ func cycleStaged(r Shuffler, stages []stagePool, n int) []item {
 		if i < rem {
 			take++
 		}
-		items := withStage(cycle(r, s.pool, take), s.name)
+		var items []item
+		if s.name == "listening" {
+			items = withStage(pickDistinctAudio(r, s.pool, take), s.name)
+		} else {
+			items = withStage(cycle(r, s.pool, take), s.name)
+		}
 		if s.name == "listening" {
 			items = groupByAudio(items)
 		}

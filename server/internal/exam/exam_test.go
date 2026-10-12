@@ -616,3 +616,43 @@ func TestFrenchListeningTracksUseDistinctFiles(t *testing.T) {
 		}
 	}
 }
+
+func TestListeningRecordingsDoNotRepeat(t *testing.T) {
+	s := svc(t)
+	for _, code := range []string{"M019", "M107"} {
+		for seed := uint64(1); seed <= 80; seed++ {
+			for _, typ := range []string{"profile", "nauchped"} {
+				p, err := BuildKT(s, seeded(seed), typ, code, "ru", "en")
+				if err != nil {
+					t.Fatal(err)
+				}
+				files, ids := map[string]int{}, map[string]bool{}
+				n := 0
+				for _, r := range p.Refs {
+					if r.Block != "lang" || r.Stage != "listening" {
+						continue
+					}
+					b, _ := s.Bank(r.Bank)
+					f, _, _ := strings.Cut(b.Questions[r.Idx].Audio, "?")
+					files[f]++
+					key := r.Bank + "/" + string(rune(r.Idx))
+					if ids[key] {
+						t.Fatalf("%s %s seed %d: вопрос аудирования повторяется", code, typ, seed)
+					}
+					ids[key] = true
+					n++
+				}
+				want := 4 // профильный тип: 4 записи по одному вопросу
+				if typ == "nauchped" {
+					want = 2 // полное КТ: 2 записи по 8 вопросов
+					if n != 16 {
+						t.Fatalf("%s %s seed %d: вопросов аудирования %d", code, typ, seed, n)
+					}
+				}
+				if len(files) != want {
+					t.Fatalf("%s %s seed %d: разных записей %d, нужно %d (%v)", code, typ, seed, len(files), want, files)
+				}
+			}
+		}
+	}
+}
