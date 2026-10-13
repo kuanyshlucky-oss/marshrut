@@ -1,0 +1,306 @@
+{
+  "title": "M019 (английский язык): Профессионально-ориентированный иностранный язык — вариант 1 RU",
+  "note": "score 2 = подтверждён полный балл; score 1 = ответ дал 1 балл (ключ неполный). Не подключено к сайту.",
+  "questions": [
+    {
+      "q": "The importance of English is often seen as allowing access to",
+      "options": [
+        "undervaluation of other qualifications",
+        "educational perspectives",
+        "the international business",
+        "global markets",
+        "reduction in the salary",
+        "degradation of self-esteem"
+      ],
+      "correct": [
+        1,
+        2,
+        3
+      ],
+      "score": 2
+    },
+    {
+      "q": "Most technologies described as ‘new media’ are",
+      "options": [
+        "digital",
+        "informal",
+        "conventional",
+        "mathematical",
+        "statistical",
+        "suitable",
+        "cardinal",
+        "geometric"
+      ],
+      "correct": [
+        0
+      ],
+      "score": 2
+    },
+    {
+      "q": "A slow economy means fewer house sales and fewer house sales means an even slower economy – it is a(n)",
+      "options": [
+        "downfall",
+        "disaster",
+        "social divisions",
+        "vicious circle",
+        "unemployment rate",
+        "status",
+        "sense of security"
+      ],
+      "correct": [
+        3
+      ],
+      "score": 2
+    },
+    {
+      "q": "A group of editors, usually at a print publication, who dictate the tone and direction that the publication's editorials will take",
+      "options": [
+        "Leading article",
+        "Columnists",
+        "The Blog",
+        "The Editorial board",
+        "The Academic council",
+        "Periodicals",
+        "Reporters"
+      ],
+      "correct": [
+        3
+      ],
+      "score": 2
+    },
+    {
+      "q": "International nongovernmental organizations operate",
+      "options": [
+        "internationally",
+        "categorically",
+        "totally",
+        "solely",
+        "in a certain country only",
+        "partly",
+        "globally",
+        "locally"
+      ],
+      "correct": [
+        0,
+        6
+      ],
+      "score": 2
+    },
+    {
+      "q": "Eliminating hunger is thus one of the most fundamental challenges facing humanity. The word ‘eliminate’ closest in meaning to",
+      "options": [
+        "to remove or get rid of",
+        "to light or to illume",
+        "to waste or to run out",
+        "to retain or recall",
+        "to illuminate",
+        "to kill"
+      ],
+      "correct": [
+        0
+      ],
+      "score": 2
+    },
+    {
+      "q": "Glenn Doman is the founder of The Institutes for the Achievement of Human Potential and his methods are aimed at helping parents to discover the vast potential in their child. ‘Vast potential’ is closest in meaning to",
+      "options": [
+        "strengths",
+        "weak points",
+        "vulnerabilities",
+        "weaknesses",
+        "power",
+        "strong sides",
+        "difficulties"
+      ],
+      "correct": [
+        0,
+        4,
+        5
+      ],
+      "score": 1
+    },
+    {
+      "q": "It’s one of the most serious challenges facing humanity. The ‘facing’ could be replaced with",
+      "options": [
+        "running",
+        "encountering",
+        "meeting",
+        "regretting",
+        "smiling",
+        "avoiding"
+      ],
+      "correct": [
+        1,
+        2
+      ],
+      "score": 1
+    },
+    {
+      "q": "Some students need to have a quite space to themselves and if there are too many distractions they can’t",
+      "options": [
+        "confuse",
+        "concentrate",
+        "assume",
+        "study",
+        "believe",
+        "agree",
+        "collect"
+      ],
+      "correct": [
+        1,
+        6
+      ],
+      "score": 1
+    },
+    {
+      "q": "Some advantages of global education",
+      "options": [
+        "contribution toward fortifying global industries",
+        "misunderstanding between various nations",
+        "interconnection of worldwide and national teaching methods",
+        "discouraging young people for successful futures",
+        "the development of multicultural awareness",
+        "inequality in education between male and female students"
+      ],
+      "correct": [
+        0,
+        2,
+        4
+      ],
+      "score": 2
+    },
+    {
+      "q": "Researchers believe there may be a ‘critical period’ (lasting roughly from infancy until puberty) during which language acquisition is",
+      "options": [
+        "enduring",
+        "active",
+        "effortless",
+        "assiduous",
+        "stubborn",
+        "determined"
+      ],
+      "correct": [
+        1,
+        2
+      ],
+      "score": 1
+    },
+    {
+      "q": "News is any new information or information on current events which is presented by",
+      "options": [
+        "books",
+        "research journals",
+        "broadcast",
+        "letters",
+        "Internet",
+        "print"
+      ],
+      "correct": [
+        2,
+        4,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "People moving across national borders",
+      "options": [
+        "immigrant",
+        "dealers",
+        "residents",
+        "states",
+        "citizen",
+        "refugee"
+      ],
+      "correct": [
+        0,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "Members of the royal family are not allowed",
+      "options": [
+        "to take part in military service",
+        "publicly express their opinion on political matters",
+        "to go out without hats",
+        "to wear beautiful clothes",
+        "to shake hands with people outside",
+        "to vote during the elections"
+      ],
+      "correct": [
+        1,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "Starting a new business requires",
+      "options": [
+        "business plan",
+        "investment",
+        "perspectives",
+        "friends",
+        "procedure",
+        "policy"
+      ],
+      "correct": [
+        0,
+        1
+      ],
+      "score": 2
+    },
+    {
+      "q": "All over the world child labor is major",
+      "options": [
+        "concern",
+        "alarm",
+        "difficulty",
+        "worry",
+        "focus",
+        "uncertainty",
+        "inquiry"
+      ],
+      "correct": [
+        0,
+        3
+      ],
+      "score": 1
+    },
+    {
+      "q": "Most students who study abroad return with a(n)",
+      "options": [
+        "inevitable disappointment of cultural values",
+        "a better understanding of themselves",
+        "foreign language proficiency",
+        "low self-esteem and discouragement",
+        "broadened worldview",
+        "unwillingness not to contribute to own institution"
+      ],
+      "correct": [
+        1,
+        2,
+        4
+      ],
+      "score": 2
+    },
+    {
+      "q": "As well as recognizing the fundamental rights of individuals, some human rights instruments recognize the rights of",
+      "options": [
+        "giant companies",
+        "clusters",
+        "western people",
+        "vulnerable groups",
+        "minorities",
+        "sport teams",
+        "specific groups"
+      ],
+      "correct": [
+        3,
+        4,
+        6
+      ],
+      "score": 2
+    }
+  ]
+}
