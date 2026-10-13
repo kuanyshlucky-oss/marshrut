@@ -5524,7 +5524,9 @@ function renderProgress() {
 
   document.getElementById('progTabs').innerHTML = codeList.map(code => {
     const d = findDirection(code);
-    const label = d ? `${d.code} · ${d.name}` : code;
+    // Общие тесты (английский/ТГО) без выданного направления идут под служебным кодом COMMON_TEST_CODE — направлением его не называем.
+    const commonOnly = code === COMMON_TEST_CODE && !(user.access || []).includes(code);
+    const label = commonOnly ? 'Общие предметы · Английский и ТГО' : d ? `${d.code} · ${d.name}` : code;
     return `<button class="prog-tab ${code === progressActiveCode ? 'is-active' : ''}" data-code="${code}">${esc(label)}</button>`;
   }).join('');
   document.querySelectorAll('#progTabs .prog-tab').forEach(b => b.addEventListener('click', () => {
