@@ -146,13 +146,31 @@ func shuffled(r Shuffler, in []item) []item {
 	return out
 }
 
+// distinctFirst — стабильно переносит в конец вопросы, чей текст (вместе с отрывком и аудио) уже встретился
+// раньше: в одном тесте не должны подряд идти два вопроса с одной формулировкой, пока хватает разных.
+func distinctFirst(in []item) []item {
+	seen := make(map[string]bool, len(in))
+	out := make([]item, 0, len(in))
+	var dup []item
+	for _, it := range in {
+		k := strings.ToLower(strings.TrimSpace(it.q.Q)) + "\x00" + it.q.Passage + "\x00" + it.q.Audio
+		if seen[k] {
+			dup = append(dup, it)
+			continue
+		}
+		seen[k] = true
+		out = append(out, it)
+	}
+	return append(out, dup...)
+}
+
 // cycle — n вопросов из пула: пул перемешивается, затем берётся n подряд, с
 // повтором цикла, если n больше пула (kt.js: ktCycle).
 func cycle(r Shuffler, pool []item, n int) []item {
 	if len(pool) == 0 || n <= 0 {
 		return nil
 	}
-	sh := shuffled(r, pool)
+	sh := distinctFirst(shuffled(r, pool))
 	out := make([]item, n)
 	for i := range out {
 		out[i] = sh[i%len(sh)]
@@ -356,6 +374,18 @@ func BuildSubject(svc *content.Service, r Shuffler, code, contentLang, section s
 		}
 	}
 	r.Shuffle(len(all), func(i, j int) { all[i], all[j] = all[j], all[i] })
+	{
+		its := make([]item, len(all))
+		for i, l := range all {
+			its[i] = l.it
+		}
+		ord := distinctFirst(its)
+		pos := make(map[*content.Question]int, len(ord))
+		for i, it := range ord {
+			pos[it.q] = i
+		}
+		sort.SliceStable(all, func(i, j int) bool { return pos[all[i].it.q] < pos[all[j].it.q] })
+	}
 	if len(all) > QuizMaxQuestions {
 		all = all[:QuizMaxQuestions]
 	}
