@@ -124,7 +124,7 @@
   // (см. has-token в style.css — до этого прятался только #authZone на cabinet.html).
   if (localStorage.getItem('marshrut_token')) document.documentElement.classList.add('has-token');
 </script>
-<link rel="stylesheet" href="style.min.css?v=11">
+<link rel="stylesheet" href="style.min.css?v=12">
 <!-- Yandex.Metrika counter -->
 <script>
 (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -238,6 +238,25 @@ ym(113595199, "init", {clickmap:true, trackLinks:true, accurateTrackBounce:true}
         <p class="eyebrow" data-i18n="catalog.eyebrow">Каталог</p>
         <h2 data-i18n="catalog.title">Направления магистратуры</h2>
         <p class="result-count" id="statsCount">147 групп</p>
+      </div>
+
+      <div class="common-tests" id="commonTests">
+        <a class="test-cta-card" href="index.html?commonTest=logic">
+          <div class="test-cta-text">
+            <p class="test-cta-eyebrow">Общий предмет</p>
+            <h3>Тест по ТГО</h3>
+            <p>Критическое и аналитическое мышление — доступно сразу после регистрации.</p>
+          </div>
+          <span class="test-cta-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="test-cta-card" href="index.html?commonTest=lang">
+          <div class="test-cta-text">
+            <p class="test-cta-eyebrow">Общий предмет</p>
+            <h3>Тест по английскому языку</h3>
+            <p>Аудирование, грамматика и чтение — доступно сразу после регистрации.</p>
+          </div>
+          <span class="test-cta-arrow" aria-hidden="true">→</span>
+        </a>
       </div>
 
       <div class="kcat-tiles" id="catTiles"><!-- категории injected by script.js --></div>
