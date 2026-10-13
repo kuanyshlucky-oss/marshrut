@@ -3612,20 +3612,6 @@ function renderTestAccessCards() {
   const user = API.getCurrentUser();
   const access = (user && user.access) || [];
 
-  // Английский и ТГО открыты с момента регистрации — отдельные карточки, не зависящие от направлений.
-  const commonCards = [
-    ...(userHasEnglish(access) ? [{ section: 'lang', name: 'Английский язык' }] : []),
-    ...(access.length > 0 && access.every(c => PROFILE_ONLY_CODES.has(c)) ? [] : [{ section: 'logic', name: 'ТГО' }]),
-  ].map(c => `
-    <a class="test-cta-card" href="index.html?commonTest=${c.section}">
-      <div class="test-cta-text">
-        <p class="test-cta-eyebrow">${I18N.t('testCta.eyebrow')}</p>
-        <h3>${I18N.t('testCta.title')} — ${c.name}</h3>
-        <p>${I18N.t('testCta.text')}</p>
-      </div>
-      <span class="test-cta-arrow" aria-hidden="true">→</span>
-    </a>`).join('');
-
   const cards = access.map(code => {
     const gopCode = CONTENT_TO_GOP[code] || code;
     const g = KT_STATS_GROUPS.find(x => x.code === gopCode);
@@ -3636,8 +3622,8 @@ function renderTestAccessCards() {
   }).filter(Boolean);
 
   if (!cards.length) {
-    wrap.innerHTML = commonCards + `
-      <a class="test-cta-card" href="index.html#catalog">
+    wrap.innerHTML = `
+      <a class="test-cta-card" href="index.html?commonPick=1">
         <div class="test-cta-text">
           <p class="test-cta-eyebrow">${I18N.t('testCta.eyebrow')}</p>
           <h3>${I18N.t('testCta.title')}</h3>
@@ -3649,7 +3635,7 @@ function renderTestAccessCards() {
     return;
   }
 
-  wrap.innerHTML = commonCards + cards.map(c => `
+  wrap.innerHTML = cards.map(c => `
     <a class="test-cta-card" href="${c.href}">
       <div class="test-cta-text">
         <p class="test-cta-eyebrow">${esc(c.code)} · ${I18N.t('testCta.eyebrow')}</p>
@@ -4757,8 +4743,8 @@ async function startQuiz(code) {
 // как на настоящем КТ: 2 общих (Английский, ТГО) + 2 профильных. Общие секции
 // не требуют выданного доступа (как и в симуляции КТ) — только вход в аккаунт;
 // доступ проверяется отдельно, только при выборе профильного предмета.
-function showSubjectPicker(code) {
-  const d = findDirection(code);
+function showSubjectPicker(code, commonOnly) {
+  const d = commonOnly ? null : findDirection(code);
   const profileOnly = PROFILE_ONLY_CODES.has(code);
   const subj = (typeof KT_SUBJECT_NAMES !== 'undefined' && KT_SUBJECT_NAMES[code])
     || { subj1: 'Профильный предмет №1', subj2: 'Профильный предмет №2' };
@@ -4766,12 +4752,12 @@ function showSubjectPicker(code) {
   body.innerHTML = `
     <p class="eyebrow">${d ? d.code + ' · ' : ''}Пройти тест</p>
     <h3 class="modal-title">Выберите предмет</h3>
-    <p class="modal-lead">${profileOnly ? 'Тест состоит из 2 профильных предметов — потренируйтесь по каждому отдельно.' : 'Тест состоит из 4 предметов, как на настоящем КТ — потренируйтесь по каждому отдельно.'}</p>
+    <p class="modal-lead">${commonOnly ? 'Английский и ТГО доступны сразу после регистрации.' : profileOnly ? 'Тест состоит из 2 профильных предметов — потренируйтесь по каждому отдельно.' : 'Тест состоит из 4 предметов, как на настоящем КТ — потренируйтесь по каждому отдельно.'}</p>
     <div class="kt-type-cards">
       ${profileOnly ? '' : `<button class="kt-type-card" data-subject="lang"><span class="kt-type-name">${FRENCH_LANG_CODES.has(code) ? 'Французский' : 'Английский'}</span></button>
       <button class="kt-type-card" data-subject="logic"><span class="kt-type-name">ТГО</span></button>`}
-      <button class="kt-type-card" data-subject="subj1"><span class="kt-type-name">${subj.subj1}</span></button>
-      <button class="kt-type-card" data-subject="subj2"><span class="kt-type-name">${subj.subj2}</span></button>
+      ${commonOnly ? '' : `<button class="kt-type-card" data-subject="subj1"><span class="kt-type-name">${subj.subj1}</span></button>
+      <button class="kt-type-card" data-subject="subj2"><span class="kt-type-name">${subj.subj2}</span></button>`}
     </div>
   `;
   body.querySelectorAll('[data-subject]').forEach(btn => btn.addEventListener('click', () => {
@@ -6349,6 +6335,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // общий тест по предмету из кабинета: index.html?commonTest=lang|logic (английский / ТГО)
+  if (qs.get('commonPick') && document.getElementById('subjectModal') && requireAuth()) showSubjectPicker(COMMON_TEST_CODE, true);
   const commonTest = qs.get('commonTest');
   if ((commonTest === 'lang' || commonTest === 'logic') && document.getElementById('testPage') && requireAuth()) {
     beginQuizSection(COMMON_TEST_CODE, commonTest);

@@ -1827,4 +1827,3 @@ html[data-theme="dark"] .math-question-image{
 .frac-n{ padding:0 .18em .08em; }
 .frac-d{ padding:.08em .18em 0; border-top:1.2px solid currentColor; align-self:stretch; }
 
-.common-tests{ display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px; margin-bottom:24px; }
