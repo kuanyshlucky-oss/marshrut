@@ -1,0 +1,311 @@
+{
+  "title": "M019 (английский язык): Проф.-ориентированный иностранный язык — вариант 3 RU",
+  "note": "score 2 = полный балл; score 1 = ключ неполный (одна ошибка). Вопросы с 0 не включены. Не подключено к сайту.",
+  "questions": [
+    {
+      "q": "Because of war millions of people have fled. The word ‘fled’ closest in meaning to",
+      "options": [
+        "fly",
+        "left",
+        "found",
+        "fought",
+        "flew",
+        "lived",
+        "died"
+      ],
+      "correct": [
+        1
+      ],
+      "score": 2
+    },
+    {
+      "q": "A celebration of the longest day of summer in the UK, surrounded by mythical tales of fairies and supernatural visitors",
+      "options": [
+        "May Day",
+        "Easter",
+        "Burns’s Night",
+        "Women’s Day",
+        "The longest Day",
+        "St David’s Day",
+        "Midsummer’s Day",
+        "Pancake Day, or Shrove Tuesday"
+      ],
+      "correct": [
+        6
+      ],
+      "score": 2
+    },
+    {
+      "q": "Effective management of global issues requires",
+      "options": [
+        "adequate allocation of resources",
+        "effective international cooperation",
+        "participation of children in labor market",
+        "substantial financial funding",
+        "dominance or superpower countries",
+        "undermining the role of minorities"
+      ],
+      "correct": [
+        0,
+        1,
+        3
+      ],
+      "score": 2
+    },
+    {
+      "q": "Countries need to ensure access to health services. The word ‘ensure’ could be replaced with",
+      "options": [
+        "open",
+        "close",
+        "gain",
+        "supply",
+        "get",
+        "provide",
+        "deny"
+      ],
+      "correct": [
+        3,
+        5
+      ],
+      "score": 1
+    },
+    {
+      "q": "The increase in violence among young people may be a consequence of",
+      "options": [
+        "over-protective parenting",
+        "not attending classes regularly",
+        "reading books of horror genre",
+        "playing video games containing violent actions",
+        "gender and age disparity at schools",
+        "watching too much violence on TV"
+      ],
+      "correct": [
+        0,
+        3,
+        5
+      ],
+      "score": 1
+    },
+    {
+      "q": "Pre-service English teachers are expected to be knowledgeable of",
+      "options": [
+        "English language and literature",
+        "Drawing and painting",
+        "Infrastructure and logistics",
+        "Methodology of foreign language teaching",
+        "Public relations",
+        "Tourism industry",
+        "History of international relations"
+      ],
+      "correct": [
+        0,
+        3
+      ],
+      "score": 2
+    },
+    {
+      "q": "They have invested so much time and energy in this project",
+      "options": [
+        "besides the project didn’t require them",
+        "as they have put great effort every single day",
+        "though they trust them very much",
+        "since people do not have trust in them",
+        "for as long as they work together as a team",
+        "that everyone expects them to succeed"
+      ],
+      "correct": [
+        1,
+        5
+      ],
+      "score": 1
+    },
+    {
+      "q": "Culture and its heritage reflect and shape",
+      "options": [
+        "beliefs",
+        "significances",
+        "principles",
+        "assessments",
+        "ideals",
+        "values",
+        "aspirations"
+      ],
+      "correct": [
+        0,
+        5,
+        6
+      ],
+      "score": 2
+    },
+    {
+      "q": "As Nelson Mandela quoted the most powerful weapon which you can use to change the world is",
+      "options": [
+        "nuclear weapon",
+        "technology",
+        "education",
+        "money",
+        "globalization",
+        "friends",
+        "family",
+        "guns"
+      ],
+      "correct": [
+        2
+      ],
+      "score": 2
+    },
+    {
+      "q": "From the academic perspective, many students struggle to find",
+      "options": [
+        "loyal friends",
+        "relevant literature",
+        "mutual understanding",
+        "the best university",
+        "a research topic",
+        "financial resources"
+      ],
+      "correct": [
+        1,
+        4
+      ],
+      "score": 1
+    },
+    {
+      "q": "It is generally accepted that a field internship provides students with",
+      "options": [
+        "theoretical knowledge",
+        "classroom resources",
+        "professional opportunities",
+        "firsthand experience",
+        "personal growth",
+        "full professional training"
+      ],
+      "correct": [
+        2,
+        3
+      ],
+      "score": 1
+    },
+    {
+      "q": "Some benefits of internships for students",
+      "options": [
+        "makes it harder to go from being a student to starting a job",
+        "covers up students all living expenses when they are studying",
+        "increases the possibility of finding work at reputable companies",
+        "possibility of handling all your personal costs",
+        "ensures workplace creativity and adaptability",
+        "the list of potential job offers will be reduced"
+      ],
+      "correct": [
+        2,
+        4
+      ],
+      "score": 2
+    },
+    {
+      "q": "The world is a convenient place to live in because of technological advancements. Synonym of ‘convenient’",
+      "options": [
+        "necessary",
+        "suitable",
+        "useful",
+        "close",
+        "competitive",
+        "fitting",
+        "favorable"
+      ],
+      "correct": [
+        1,
+        6
+      ],
+      "score": 1
+    },
+    {
+      "q": "New media can be characterized by the variegated use of",
+      "options": [
+        "screen",
+        "sounds",
+        "tables",
+        "percentage",
+        "charts",
+        "diagrams",
+        "images",
+        "words"
+      ],
+      "correct": [
+        1,
+        6,
+        7
+      ],
+      "score": 2
+    },
+    {
+      "q": "After the earthquake the majority of the local inhabitants had to",
+      "options": [
+        "give up the setting",
+        "surrender the positions",
+        "move to safer locations",
+        "abandon their houses",
+        "throw away their homes",
+        "leave their places",
+        "abdicate the lands"
+      ],
+      "correct": [
+        2,
+        3,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "Sometimes children feel bewildered. ‘Bewildered’ means",
+      "options": [
+        "confused",
+        "amazed",
+        "amused",
+        "complicated",
+        "mistaken",
+        "surprised",
+        "disorganized",
+        "happy"
+      ],
+      "correct": [
+        0,
+        5
+      ],
+      "score": 1
+    },
+    {
+      "q": "The advancement of technology has made access to information quicker. The word ‘advancement’ could be replaced with",
+      "options": [
+        "innovation",
+        "expansion",
+        "information",
+        "contraction",
+        "communication",
+        "improvement"
+      ],
+      "correct": [
+        0,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "In order to improve the standard of living in the city poorer inner-city areas need facilities such as",
+      "options": [
+        "parks",
+        "community centers",
+        "agricultural zones",
+        "motorways",
+        "children’s play areas",
+        "farmlands"
+      ],
+      "correct": [
+        0,
+        1,
+        4
+      ],
+      "score": 2
+    }
+  ]
+}
