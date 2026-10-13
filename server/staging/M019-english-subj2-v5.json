@@ -1,0 +1,341 @@
+{
+  "title": "M019 (английский язык): Проф.-ориентированный иностранный язык — вариант 5 RU",
+  "note": "score 2 = полный балл; score 1 = ключ неполный (одна ошибка). Не подключено к сайту.",
+  "questions": [
+    {
+      "q": "While technology has made communication easier, it has also reduced the need for",
+      "options": [
+        "international relations",
+        "educational collaboration",
+        "political uncertainty",
+        "social interaction",
+        "interpersonal contact",
+        "cultural awareness"
+      ],
+      "correct": [
+        3,
+        4
+      ],
+      "score": 2
+    },
+    {
+      "q": "The most popular types of sports in the UK",
+      "options": [
+        "handball",
+        "football",
+        "cricket",
+        "cycling",
+        "pudding and rice",
+        "volleyball",
+        "race"
+      ],
+      "correct": [
+        1,
+        2
+      ],
+      "score": 2
+    },
+    {
+      "q": "Cyberbullying is becoming the _______ form of bullying these days",
+      "options": [
+        "prevalent",
+        "widespread",
+        "common",
+        "private",
+        "mutual",
+        "privileged",
+        "restricted"
+      ],
+      "correct": [
+        0,
+        1,
+        2
+      ],
+      "score": 2
+    },
+    {
+      "q": "The _______ level of education is to blame for the poor quality of the workforce",
+      "options": [
+        "suitable",
+        "deficient",
+        "scarce",
+        "inadequate",
+        "acceptable",
+        "insufficient",
+        "low",
+        "appropriate"
+      ],
+      "correct": [
+        3,
+        5,
+        6
+      ],
+      "score": 2
+    },
+    {
+      "q": "Some teens are burning themselves out before they graduate ___ high school",
+      "options": [
+        "in",
+        "-",
+        "from",
+        "out",
+        "with",
+        "after"
+      ],
+      "correct": [
+        2
+      ],
+      "score": 2
+    },
+    {
+      "q": "The United Nations (UN) plays a significant role in",
+      "options": [
+        "Ignoring global conflicts",
+        "Providing military support to member states",
+        "Limiting access to international aid",
+        "Promoting human rights and social justice",
+        "Expanding cultural hegemony",
+        "Fostering social and economic inequality",
+        "Encouraging political oppression",
+        "Propagating environmental degradation"
+      ],
+      "correct": [
+        3
+      ],
+      "score": 2
+    },
+    {
+      "q": "When it comes to negative impact of social media, it can expose your teen to __________, and so much more",
+      "options": [
+        "prestigious jobs",
+        "good education",
+        "make a progress",
+        "unique opportunities",
+        "cyberbullying",
+        "online predators",
+        "financial funding"
+      ],
+      "correct": [
+        4,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "The principles of international co-operation based on ___________",
+      "options": [
+        "partnership",
+        "implementation",
+        "introduction",
+        "true partnership",
+        "recognition",
+        "mutual support",
+        "salary"
+      ],
+      "correct": [
+        0,
+        3,
+        5
+      ],
+      "score": 1
+    },
+    {
+      "q": "To maintain continuous progress and ensure high standards in integrated learning, a constructive _________ mechanism is essential",
+      "options": [
+        "practice",
+        "reward",
+        "comment",
+        "advice",
+        "success",
+        "criticism",
+        "progress",
+        "feedback"
+      ],
+      "correct": [
+        7
+      ],
+      "score": 2
+    },
+    {
+      "q": "The followings are potential benefits of educational globalization",
+      "options": [
+        "Promotion of innovation and creativity in education",
+        "Enhancement of cultural exclusivity",
+        "Expansion of educational barriers",
+        "Preservation of cultural homogeneity",
+        "Limitation of cross-cultural understanding",
+        "Reinforcement of nationalistic ideologies",
+        "Restriction of educational opportunities for non-English speakers"
+      ],
+      "correct": [
+        0
+      ],
+      "score": 1
+    },
+    {
+      "q": "Someone who has applied for protection in another country but has not yet received a decision on their claim",
+      "options": [
+        "a citizen",
+        "a permanent resident",
+        "a lawyer",
+        "an asylum seeker",
+        "a student",
+        "an ambassador"
+      ],
+      "correct": [
+        3
+      ],
+      "score": 2
+    },
+    {
+      "q": "Technology can help students _______  their aim",
+      "options": [
+        "fail",
+        "apply",
+        "complete",
+        "trust",
+        "achieve",
+        "accomplish",
+        "neglect"
+      ],
+      "correct": [
+        4,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "Over time, individuals learn to filter and …. environmental influences",
+      "options": [
+        "adopt",
+        "refuse",
+        "dismiss",
+        "figure out",
+        "interpret",
+        "argue",
+        "mislead"
+      ],
+      "correct": [
+        2,
+        4
+      ],
+      "score": 1
+    },
+    {
+      "q": "Advanced technology in education makes the teaching process ______",
+      "options": [
+        "interesting",
+        "difficult",
+        "boring",
+        "effective",
+        "tedious",
+        "tiring"
+      ],
+      "correct": [
+        0,
+        3
+      ],
+      "score": 2
+    },
+    {
+      "q": "Globalization impact education by",
+      "options": [
+        "promoting uniformity and standardization in curricula worldwide",
+        "discouraging international collaboration in education",
+        "enforcing rigid national educational policies",
+        "fostering interconnectedness and adaptability to global trends and developments",
+        "limiting access to educational resources and opportunities",
+        "facilitating the exchange of ideas, knowledge, and technology across borders"
+      ],
+      "correct": [
+        3,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "The Human Rights Council is tasked with strengthening the ______of human rights",
+      "options": [
+        "establishment",
+        "damage",
+        "safety",
+        "protection",
+        "guard",
+        "commitment",
+        "colaboration",
+        "promotion"
+      ],
+      "correct": [
+        3,
+        7
+      ],
+      "score": 2
+    },
+    {
+      "q": "When it comes to the development of a child, heredity encompasses _________ passed down from parents to children",
+      "options": [
+        "traits",
+        "money",
+        "assets",
+        "qualities",
+        "condition",
+        "will"
+      ],
+      "correct": [
+        0,
+        3
+      ],
+      "score": 2
+    },
+    {
+      "q": "In the rapidly changing knowledge economy, workers must constantly acquire new ______",
+      "options": [
+        "supports",
+        "knowledge",
+        "assistances",
+        "challengs",
+        "skills",
+        "cleverness"
+      ],
+      "correct": [
+        1,
+        4
+      ],
+      "score": 2
+    },
+    {
+      "q": "In many countries, especially in the UK asking someone directly about their income, status, weight, or age is frequently regarded as",
+      "options": [
+        "polite",
+        "normal",
+        "applicable",
+        "appropriate",
+        "rude",
+        "usual",
+        "adequate",
+        "acceptable"
+      ],
+      "correct": [
+        4
+      ],
+      "score": 2
+    },
+    {
+      "q": "An internal migration occurs when a person or family",
+      "options": [
+        "relocates within the same country",
+        "commutes from one city to another for employment",
+        "crosses international borders",
+        "seeks asylum in a neighboring country",
+        "moves to a different state within their country for a better climate",
+        "moves from country to another",
+        "studies in a foreign country for their entire degree program"
+      ],
+      "correct": [
+        0,
+        4
+      ],
+      "score": 1
+    }
+  ]
+}
