@@ -1,0 +1,347 @@
+{
+  "title": "M019 (английский язык): Проф.-ориентированный иностранный язык — вариант 6 RU",
+  "note": "score 2 = полный балл; score 1 = ключ неполный (одна ошибка). Не подключено к сайту.",
+  "questions": [
+    {
+      "q": "Traditional media includes",
+      "options": [
+        "CD-ROMs",
+        "websites",
+        "radio",
+        "TV",
+        "Internet",
+        "computer multimedia",
+        "paper-based publications",
+        "computer games"
+      ],
+      "correct": [
+        2,
+        3,
+        6
+      ],
+      "score": 2
+    },
+    {
+      "q": "The values of national cultural heritage should be",
+      "options": [
+        "promoted",
+        "protected",
+        "purchased",
+        "applied",
+        "exported",
+        "preserved"
+      ],
+      "correct": [
+        0,
+        1,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "What the teachers could not notice about Einstein at school was his",
+      "options": [
+        "brains",
+        "braininess",
+        "brilliance",
+        "radiance",
+        "perception",
+        "brilliancy"
+      ],
+      "correct": [
+        2,
+        5
+      ],
+      "score": 1
+    },
+    {
+      "q": "Close to 193 million people were experiencing acute food insecurity in 2021. The ‘experiencing’ could be replaced with",
+      "options": [
+        "feeling",
+        "suffering",
+        "undergoing",
+        "practicing",
+        "experimenting",
+        "going through"
+      ],
+      "correct": [
+        1,
+        2,
+        5
+      ],
+      "score": 1
+    },
+    {
+      "q": "Student academic mobility",
+      "options": [
+        "is useful for individual development",
+        "contributes to students’ employability",
+        "causes competition in mobile communication",
+        "enhances languages competences",
+        "enables students to be more mobile",
+        "restricts freedom of movement"
+      ],
+      "correct": [
+        0,
+        1,
+        3
+      ],
+      "score": 2
+    },
+    {
+      "q": "Video games contribute to children education, they can help develop",
+      "options": [
+        "sense of spatial intelligence",
+        "decision-making skills",
+        "cases of addiction",
+        "control the content",
+        "physical abilities",
+        "problem-solving skills"
+      ],
+      "correct": [
+        0,
+        1,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "According to UNICEF, sadly to say that across the globe millions of children",
+      "options": [
+        "enrolled in primary education",
+        "are forced to work",
+        "participate in laborious activities",
+        "finish school successfully",
+        "are used in industry",
+        "successfully complete secondary education"
+      ],
+      "correct": [
+        1,
+        4
+      ],
+      "score": 1
+    },
+    {
+      "q": "In a spoken language, communication units are words, in a sign language these units are",
+      "options": [
+        "gestures",
+        "sentences",
+        "arguments",
+        "ideas",
+        "sounds",
+        "words"
+      ],
+      "correct": [
+        0
+      ],
+      "score": 2
+    },
+    {
+      "q": "In the UK before the1800s when turkey was not available, traditionally, the main meal was roast",
+      "options": [
+        "beef",
+        "cheese",
+        "pork",
+        "goose",
+        "lamb",
+        "fish"
+      ],
+      "correct": [
+        0
+      ],
+      "score": 1
+    },
+    {
+      "q": "The Prime Minister’s speech caused a lot of",
+      "options": [
+        "furious",
+        "dissatisfaction",
+        "hunger",
+        "satisfied",
+        "dissatisfied",
+        "anger",
+        "angry"
+      ],
+      "correct": [
+        1,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "Globalization is now happening at a remarkable pace due to technological",
+      "options": [
+        "restricts",
+        "developments",
+        "expansions",
+        "declines",
+        "limits",
+        "spreads",
+        "advances",
+        "increases"
+      ],
+      "correct": [
+        1,
+        6
+      ],
+      "score": 1
+    },
+    {
+      "q": "Equality in education is something that all nations and societies",
+      "options": [
+        "keep ignoring",
+        "attempt to achieve",
+        "have for sure",
+        "disregarded",
+        "make every effort",
+        "strive for",
+        "pass over",
+        "neglect"
+      ],
+      "correct": [
+        1,
+        5
+      ],
+      "score": 1
+    },
+    {
+      "q": "Kazakhstan has quickly become a regional economic powerhouse thanks to its",
+      "options": [
+        "healthcare system and staff",
+        "top educational institutions",
+        "improved business environment",
+        "macroeconomic stability",
+        "vast energy and mineral resources",
+        "participation in eco-friendly campaigns",
+        "neighboring countries"
+      ],
+      "correct": [
+        2,
+        3,
+        4
+      ],
+      "score": 2
+    },
+    {
+      "q": "Talks that someone gives in order to teach people about a particular subject, usually at a university or college",
+      "options": [
+        "lectures",
+        "speeches",
+        "instructions",
+        "sermons",
+        "debates",
+        "addresses",
+        "orations"
+      ],
+      "correct": [
+        0
+      ],
+      "score": 2
+    },
+    {
+      "q": "The speed of knowledge transmission could be ensured through",
+      "options": [
+        "institutions",
+        "information technology",
+        "effective facilities",
+        "outdated techniques",
+        "national programs",
+        "innovative methods",
+        "public institutions",
+        "the society"
+      ],
+      "correct": [
+        1,
+        5
+      ],
+      "score": 1
+    },
+    {
+      "q": "Common downsides of urbanization: many rural migrants",
+      "options": [
+        "cannot afford adequate housing",
+        "are found in jail",
+        "adapt so easily",
+        "move to capitals only",
+        "fail to find a decent job",
+        "are provided free accommodation"
+      ],
+      "correct": [
+        0,
+        4
+      ],
+      "score": 2
+    },
+    {
+      "q": "A company’s most senior managers usually work in its",
+      "options": [
+        "technical support",
+        "top building",
+        "head office",
+        "headquarters",
+        "open-plan offices",
+        "trade union",
+        "complex",
+        "administration"
+      ],
+      "correct": [
+        2,
+        3
+      ],
+      "score": 2
+    },
+    {
+      "q": "It is believed that children are withering now under high rates of",
+      "options": [
+        "luck",
+        "progress",
+        "depression",
+        "happiness",
+        "wealth",
+        "stability",
+        "calmness",
+        "anxiety"
+      ],
+      "correct": [
+        2,
+        7
+      ],
+      "score": 2
+    },
+    {
+      "q": "In only a few short decades, technological innovation has _________ every aspect of human\nexistence",
+      "options": [
+        "refined",
+        "refrained",
+        "changed",
+        "educated",
+        "transformed",
+        "altered",
+        "cultivated",
+        "rejeted"
+      ],
+      "correct": [
+        2,
+        4,
+        5
+      ],
+      "score": 2
+    },
+    {
+      "q": "Teachers who believe homework helps students learn better",
+      "options": [
+        "are advised to encourage students to read books",
+        "although think they should study independently",
+        "and assist them in acquiring a second language faster",
+        "which is what many parents and education specialists think",
+        "because more practice increases students’ confidence",
+        "should design exercises according to their students’ needs"
+      ],
+      "correct": [
+        4,
+        5
+      ],
+      "score": 1
+    }
+  ]
+}

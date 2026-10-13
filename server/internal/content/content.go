@@ -26,6 +26,7 @@ var dataFS embed.FS
 // отображения в админке, на доступ не влияет.
 var gopCodeByDirection = map[string]string{
 	"7M01": "M001",
+	"M019E": "M019",
 }
 
 // minQuestionsForAdmin — направления с банком вопросов меньше этого порога
