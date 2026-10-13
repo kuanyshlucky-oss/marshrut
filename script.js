@@ -3636,6 +3636,10 @@ function renderTestAccessCards() {
   const cards = access.map(code => {
     const gopCode = CONTENT_TO_GOP[code] || (code === 'M019E' ? 'M019' : code);
     const g = KT_STATS_GROUPS.find(x => x.code === gopCode);
+    if (g && (code === 'M019' || code === 'M019E')) {
+      const en = code === 'M019E';
+      return { href: `index.html?openGop=M019&variant=${code}`, code: g.code, name: `${g.name} (${en ? 'английский' : 'французский'} язык)` };
+    }
     if (g) return { href: `index.html?openGop=${encodeURIComponent(gopCode)}`, code: g.code, name: g.name };
     const d = DIRECTIONS.find(x => x.code === code);
     if (d) return { href: `index.html?openDir=${encodeURIComponent(code)}`, code: d.code, name: d.name };
@@ -4257,12 +4261,19 @@ function openGopGroup(code) {
    отдельный банк вопросов не подготовлен. */
 // Код контента, который открывает карточка ГОП: у M019 есть два теста — французский (M019) и английский (M019E);
 // если выдан доступ только к английскому, группа открывается с английскими предметами и тестом M019E.
+let gopM019Variant = null; // 'M019' | 'M019E' — выбранный вариант, если у пользователя доступ к обоим
+function gopHasBothM019() {
+  const u = (typeof API !== 'undefined' && API.getCurrentUser && API.getCurrentUser()) || null;
+  const acc = (u && u.access) || [];
+  return acc.includes('M019') && acc.includes('M019E');
+}
 function gopContentCode(code) {
   const base = GOP_DIRECTION_MAP[code] || code;
   if (code === 'M019') {
     const u = (typeof API !== 'undefined' && API.getCurrentUser && API.getCurrentUser()) || null;
     const acc = (u && u.access) || [];
     if (acc.includes('M019E') && !acc.includes('M019')) return 'M019E';
+    if (acc.includes('M019E') && acc.includes('M019') && gopM019Variant === 'M019E') return 'M019E';
   }
   return base;
 }
@@ -4286,6 +4297,10 @@ function renderGopModalView(code) {
     <p class="eyebrow">${g.code} · Магистратура</p>
     <h3 class="modal-title">${esc(g.name)}</h3>
     <p class="modal-lead">${I18N.t('gop.lead')}</p>
+    ${code === 'M019' && gopHasBothM019() ? `<div class="kt-type-cards" id="m019Switch" style="margin-bottom:16px">
+      <button class="kt-type-card${gopContentCode(code) === 'M019' ? ' is-active' : ''}" data-m019-variant="M019"><span class="kt-type-name">Французский язык</span></button>
+      <button class="kt-type-card${gopContentCode(code) === 'M019E' ? ' is-active' : ''}" data-m019-variant="M019E"><span class="kt-type-name">Английский язык</span></button>
+    </div>` : ''}
     <ul class="subject-list">
       ${subjects.map(s => `
         <li>
@@ -4305,6 +4320,7 @@ function renderGopModalView(code) {
     <button class="btn btn-primary btn-block" id="gopTestBtn">${I18N.t('gop.testBtn')}</button>
     ${GOP_DIRECTION_MAP[code] ? `<button class="btn btn-ghost btn-block" id="gopKTBtn" style="margin-top:10px">${I18N.t(PROFILE_ONLY_CODES.has(code) ? 'gop.ktBtnProfile2' : 'gop.ktBtn')}</button>` : ''}
   `;
+  body.querySelectorAll('[data-m019-variant]').forEach(btn => btn.addEventListener('click', () => { gopM019Variant = btn.dataset.m019Variant; renderGopModalView(code); }));
   body.querySelectorAll('[data-open-gop-subject]').forEach(btn => btn.addEventListener('click', () => renderGopSubjectView(code, btn.dataset.openGopSubject)));
   // Без готового банка по направлению «Пройти тест» всё равно открывает пикер
   // предметов — общие (язык, ТГО) в нём полностью рабочие; профильные там же
@@ -5101,7 +5117,7 @@ function reviewItemHtml(q, ua, i, code) {
   }).join('');
   const why = q.explanations ? '' : (q.why
     ? `<div class="rev-why"><b>Почему:</b> ${esc(q.why)}</div>`
-    : `<div class="rev-why"><b>Правильный ответ:</b> ${esc(q.options[correctSet[0]])}</div>`);
+    : `<div class="rev-why"><b>${correctSet.length > 1 ? 'Правильные ответы' : 'Правильный ответ'}:</b> ${correctSet.map(i => esc(q.options[i])).join('; ')}</div>`);
   // Кнопка «Конспекты» — отдельный подробный разбор вопроса (не привязан к тому,
   // ответил ли пользователь верно), раскрывается по клику, изолирован своей карточкой.
   const conspectBody = q.conspectImage
@@ -6372,6 +6388,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // то же самое, но для карточки ГОП (147 групп, напр. M123): index.html?openGop=M123
   const openGopCode = qs.get('openGop');
+  if (qs.get('variant') === 'M019' || qs.get('variant') === 'M019E') gopM019Variant = qs.get('variant');
   if (openGopCode && document.getElementById('dirModal') && KT_STATS_GROUPS.find(g => g.code === openGopCode)) {
     openGopGroup(openGopCode);
   }
