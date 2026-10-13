@@ -1010,99 +1010,15 @@ const LIBRARY_CONSPECTS = {
         title: "Профессионально-ориентированный иностранный язык (французский язык)",
         text: true,
         topics: [
-          { title: "Развитие личности ребенка в современном мире", body:
-`## Мотивация и развитие ребёнка (la motivation, le développement)
-• **La motivation** — ensemble des facteurs poussant à l’action: совокупность факторов, побуждающих к действию.
-• **Причины потери мотивации в обучении:** не чувствовать себя в безопасности (ne pas se sentir en sécurité), не доверять себе (manquer de confiance), скука (l’ennui). Мотивируют: удовольствие, творчество, уверенность в себе.
-• **Как мотивировать себя педагогу:** создать профессиональную сеть (se créer un réseau professionnel), обмениваться с коллегами (échanger avec des collègues), экспериментировать (expérimenter).
-• **Стратегии заинтересовать учеников:** utiliser les interactions, varier les technologies.
-## Факторы воспитания в семье
-• **Негативно влияют:** les menaces, la suppression de l’indépendance. **Положительно:** l’amour, le soutien, les soins, la chaleur, le bonheur.
-• Рисование у детей старше 2 лет развивает **l’attention, la persévérance, la concentration**.
-• Эмоции: Il est aux anges, Il déborde de bonheur — очень радостен; Il a le cafard, Il est déprimé — грустен.
-## Молодёжь
-• **Актуальные проблемы:** le chômage (безработица), la violence, l’anxiété, la dépression.
-• **Качества молодёжи:** терпимость к различиям (tolérante envers les différences), владение технологиями (habile avec la technologie), критический ум (l’esprit critique).
-• **Волонтёрство (le bénévolat):** помощь в социальных центрах, защита животных, бесплатные уроки.
-• В 18 лет французы получают водительские права: un permis de conduire.
-> Запомните: потеря мотивации — небезопасность, неуверенность, скука; проблемы молодёжи — безработица, насилие, тревожность, депрессия.`},
+          { title: "Развитие личности ребенка в современном мире", body: "## Мотивация и развитие ребёнка\n| Понятие | Содержание |\n|---|---|\n| {{p:La motivation}} | ensemble des facteurs poussant à l’action — совокупность факторов, побуждающих к действию |\n| {{r:Потеря мотивации}} | {{r:ne pas se sentir en sécurité}} (не чувствовать себя в безопасности), {{r:manquer de confiance}} (не доверять себе), {{r:l’ennui}} (скука) |\n| {{g:Что мотивирует}} | удовольствие, творчество, уверенность в себе |\n| Как мотивировать себя педагогу | {{b:se créer un réseau professionnel}}, {{b:échanger avec des collègues}}, {{b:expérimenter}} |\n| Как заинтересовать учеников | {{b:utiliser les interactions}}, {{b:varier les technologies}} |\n\n## Факторы воспитания в семье\n| Влияние | Слова |\n|---|---|\n| {{r:Негативное}} | {{r:les menaces}}, {{r:la suppression de l’indépendance}} |\n| {{g:Положительное}} | {{g:l’amour, le soutien, les soins, la chaleur, le bonheur}} |\n• Рисование у детей старше 2 лет развивает {{b:l’attention, la persévérance, la concentration}}.\n| Эмоция | Выражения |\n|---|---|\n| {{g:Радость}} | {{g:Il est aux anges}}, {{g:Il déborde de bonheur}} — очень радостен |\n| {{r:Грусть}} | {{r:Il a le cafard}}, {{r:Il est déprimé}} |\n\n## Молодёжь\n| Тема | Слова |\n|---|---|\n| {{r:Проблемы}} | {{r:le chômage}} (безработица), {{r:la violence}}, {{r:l’anxiété}}, {{r:la dépression}} |\n| {{g:Качества}} | {{g:tolérante envers les différences}}, {{g:habile avec la technologie}}, {{g:l’esprit critique}} |\n| {{b:Волонтёрство}} (le bénévolat) | помощь в социальных центрах, защита животных, бесплатные уроки |\n• В 18 лет французы получают водительские права: {{p:un permis de conduire}}.\n>+ Потеря мотивации — {{g:небезопасность, неуверенность, скука}}; проблемы молодёжи — {{g:безработица, насилие, тревожность, депрессия}}." },
 
-          { title: "Социальные и глобальные вызовы современного общества и защита прав человека", body:
-`## Права человека (les droits de l’homme)
-• **10 декабря 1948 г.** принята **Всеобщая декларация прав человека** (la Déclaration universelle des droits de l’homme).
-• **Декларация прав человека и гражданина 1789 г.** содержит **17 статей**; естественные и неотъемлемые права: la liberté, la propriété, la sûreté, la résistance à l’oppression.
-• **Les droits inaliénables** — неотъемлемые права: их нельзя ни отнять, ни передать.
-• **L’égalité** — отсутствие дискриминации, принцип равных прав всех людей.
-• **Международный уголовный суд** судит за **génocides, crimes contre l’humanité, crimes de guerre**.
-• **Réfugié** — беженец: покинул страну из-за массового насилия (violence généralisée), вооружённого конфликта (conflit armé), нарушения прав человека (violation des droits humains).
-## Дети и ЮНИСЕФ
-• **UNICEF** защищает права детей (les droits des enfants), улучшает условия их жизни.
-• **Конвенция о правах ребёнка:** право на имя (un nom) с рождения; **droits civils** — право на жизнь, имя, гражданство; государства поощряют сотрудничество в области образования (de l’éducation); ребёнок растёт в семье в атмосфере счастья, понимания, любви.
-• **Les Restos du cœur** — ассоциация бесплатной раздачи (distribuer) еды нуждающимся.
-## Социальные вызовы
-• **Гражданство Франции:** по происхождению — droit du sang, по месту рождения — droit du sol; по территориальной связи в тесте — de résidence.
-• **Иммиграция (l’immigration)** во Францию в основном из Африки.
-• **Sécurité sociale:** ветви maladie, famille, vieillesse; глаголы: comporte, inclut, comprend.
-## Экология
-• **Ископаемые энергии:** le gaz, le charbon, le pétrole. **Возобновляемые:** solaire, de l’eau, du vent.
-• **Les démarches écologiques:** prendre soin de la planète, réduire au maximum sa production de déchets, faire attention à son mode de consommation. **Le recyclage** сокращает отходы.
-• **Effet de serre** — термин датируется 1823 г. (по тесту), связывают с Жозефом Фурье; термин **«écologie»** ввёл Эрнст Геккель (греческий язык); первый **«Jour de la Terre»** — 1970 г.; фраза Жака Ширака: «Notre maison brûle et nous regardons ailleurs».
-> Запомните: ВДПЧ — 1948; Декларация 1789 — 17 статей; МУС — геноцид, преступления против человечности, военные преступления; экология — Геккель, парниковый эффект — Фурье.`},
+          { title: "Социальные и глобальные вызовы современного общества и защита прав человека", body: "## Права человека (les droits de l’homme)\n| Документ / понятие | Суть |\n|---|---|\n| {{b:Всеобщая декларация прав человека}} | принята {{g:10 декабря 1948}} (la Déclaration universelle des droits de l’homme) |\n| {{b:Декларация прав человека и гражданина}} | {{g:1789 г.}}, {{g:17 статей}}; естественные права: {{b:la liberté, la propriété, la sûreté, la résistance à l’oppression}} |\n| {{p:Les droits inaliénables}} | неотъемлемые права: нельзя отнять и передать |\n| {{p:L’égalité}} | отсутствие дискриминации, равные права всех |\n| {{p:Международный уголовный суд}} | судит за {{r:génocides, crimes contre l’humanité, crimes de guerre}} |\n| {{p:Réfugié}} | беженец: покинул страну из-за {{r:violence généralisée}}, {{r:conflit armé}}, {{r:violation des droits humains}} |\n\n## Дети и ЮНИСЕФ\n| Организация / документ | Суть |\n|---|---|\n| {{b:UNICEF}} | защищает права детей (les droits des enfants), улучшает условия их жизни |\n| {{b:Конвенция о правах ребёнка}} | право на имя (un nom) с рождения; {{b:droits civils}} — жизнь, имя, гражданство; сотрудничество в области образования; ребёнок растёт в семье в атмосфере счастья, понимания, любви |\n| {{b:Les Restos du cœur}} | ассоциация бесплатной раздачи еды нуждающимся |\n\n## Социальные вызовы\n| Тема | Суть |\n|---|---|\n| {{b:Гражданство Франции}} | по происхождению — {{g:droit du sang}}, по месту рождения — {{g:droit du sol}}; по территориальной связи в тесте — {{g:de résidence}} |\n| {{b:Иммиграция}} (l’immigration) | во Францию в основном из Африки |\n| {{b:Sécurité sociale}} | ветви: {{g:maladie, famille, vieillesse}}; глаголы comporte, inclut, comprend |\n\n## Экология\n| Источник энергии | Примеры |\n|---|---|\n| {{r:Ископаемые}} | {{r:le gaz, le charbon, le pétrole}} |\n| {{g:Возобновляемые}} | {{g:solaire, de l’eau, du vent}} |\n• {{p:Les démarches écologiques}}: prendre soin de la planète, réduire au maximum ses déchets, faire attention à son mode de consommation. {{g:Le recyclage}} сокращает отходы.\n| Факт | Значение |\n|---|---|\n| {{b:Effet de serre}} | термин датируется {{g:1823}}, связывают с {{p:Жозефом Фурье}} |\n| {{b:«Écologie»}} | термин ввёл {{p:Эрнст Геккель}} (греческий язык) |\n| {{b:Jour de la Terre}} | первый — {{g:1970}} |\n| Цитата Жака Ширака | «Notre maison brûle et nous regardons ailleurs» |\n>+ ВДПЧ — 1948; Декларация 1789 — 17 статей; МУС — геноцид, преступления против человечности, военные преступления; экология — Геккель, парниковый эффект — Фурье." },
 
-          { title: "Современные тенденции развития образования в мире и в Республике Казахстан", body:
-`## Образование Франции
-• **Система образования централизована** (le système éducatif est centralisé).
-• **Три уровня:** primaire, secondaire, supérieur.
-• **По бюджету:** les écoles publiques et privées.
-• **Высшее образование:** les universités et les grandes écoles.
-## Международное сотрудничество
-• **Les doubles diplômes** — программа, совместно разрабатываемая и ведущаяся двумя (и более) учреждениями разных стран.
-• **L’espace Schengen** — территория государств Шенгенской конвенции: контроль на общих границах отменён, свободное передвижение.
-• **Ambassadeur** — посол, представляет страну за границей.
-## Работа и карьера
-• **Le Code du travail** — Трудовой кодекс; **le salaire** — зарплата; **un emploi, un travail, un boulot** — работа; **job, boulot** — синонимы слова «travail».
-• **Une société, une firme** — синонимы слова «une entreprise».
-• **Une lettre de motivation** — мотивационное письмо для отклика на вакансию.
-• **Renvoyer, licencier, virer** — уволить.
-> Запомните: во Франции три уровня образования, система централизована; зарплата — le salaire; письмо при поиске работы — lettre de motivation.`},
+          { title: "Современные тенденции развития образования в мире и в Республике Казахстан", body: "## Образование Франции\n| Параметр | Суть |\n|---|---|\n| Организация | {{g:централизована}} (le système éducatif est centralisé) |\n| Три уровня | {{g:primaire, secondaire, supérieur}} |\n| По бюджету | {{b:les écoles publiques}} et {{b:privées}} |\n| Высшее образование | {{b:les universités}} et {{b:les grandes écoles}} |\n\n## Международное сотрудничество\n| Понятие | Определение |\n|---|---|\n| {{p:Les doubles diplômes}} | программа, совместно разрабатываемая и ведущаяся двумя и более учреждениями разных стран |\n| {{p:L’espace Schengen}} | территория государств Шенгенской конвенции: контроль на общих границах отменён, свободное передвижение |\n| {{p:Ambassadeur}} | посол, представляет страну за границей |\n\n## Работа и карьера\n| Слово | Значение |\n|---|---|\n| {{b:Le Code du travail}} | Трудовой кодекс |\n| {{b:Le salaire}} | зарплата |\n| {{b:Un emploi, un travail, un boulot}} | работа (job, boulot — синонимы travail) |\n| {{b:Une société, une firme}} | синонимы {{b:une entreprise}} |\n| {{b:Une lettre de motivation}} | мотивационное письмо для отклика на вакансию |\n| {{r:Renvoyer, licencier, virer}} | {{r:уволить}} |\n>+ Во Франции три уровня образования, система централизована; зарплата — le salaire; письмо при поиске работы — lettre de motivation." },
 
-          { title: "Культура и современный мир", body:
-`## Культура и межкультурная коммуникация
-• **La culture** — комплекс традиций (traditions), символов (symboles), знаний (connaissances), ценностей.
-• **Препятствия межкультурной коммуникации:** la discrimination, les préjugés, le stéréotype. **Le préjugé** бывает négatif и positif.
-• **Для хорошей межкультурной коммуникации** нужны la maîtrise de la langue и les connaissances; межкультурный собеседник — la tolérance, le respect, l’ouverture.
-• **Компетентность** — умение успешно общаться (de communiquer) через культурные различия.
-• **Коллективистские общества:** la solidarité, l’unisson, l’accord. **Индивидуалистические:** la responsabilité individuelle, l’ambition personnelle, l’autonomie.
-• Обращение к незнакомым: **Madame, Monsieur**.
-## Традиции и праздники Франции
-• **Девиз республики:** liberté, égalité, fraternité.
-• **14 июля** — la fête nationale, день взятия Бастилии. **Гражданские праздники:** 14 июля, 1 Мая. **1 Мая** дарят ландыши (le muguet) — la fête du Travail.
-• **Религиозные:** Noël (25 декабря), Pâques, Toussaint, Assomption, Ascension.
-• **1 апреля** — день розыгрышей и ложных новостей.
-• **Départements d’outre-mer (DOM):** la Guadeloupe, la Martinique, la Réunion.
-• **Май 1968** — восстания молодёжи (se sont passées). **Срок президентского мандата** с 2002 г. — 5 лет (pour 5 ans).
-• **Le premier ministre** — глава правительства. **Louis XIV:** «L’État, c’est moi». **Jeanne d’Arc** — l’héroïne de la guerre de Cent Ans; **Charlemagne** — император, создал школы; **Victor Hugo** отстаивал свободу прессы; **братья Люмьер** (Louis и Auguste) изобрели кино в **1895**.
-> Запомните: 14 июля — Бастилия; 1 Мая — ландыши; братья Люмьер — 1895; 1 апреля — день розыгрышей.`},
+          { title: "Культура и современный мир", body: "## Культура и межкультурная коммуникация\n• {{p:La culture}} — комплекс {{b:traditions, symboles, connaissances, valeurs}}.\n| Тема | Содержание |\n|---|---|\n| {{r:Препятствия}} | {{r:la discrimination, les préjugés, le stéréotype}}; le préjugé бывает {{b:négatif}} и {{b:positif}} |\n| {{g:Для хорошего диалога}} | {{g:la maîtrise de la langue}} и {{g:les connaissances}}; собеседник — la tolérance, le respect, l’ouverture |\n| {{p:Компетентность}} | умение успешно общаться (de communiquer) через культурные различия |\n| {{b:Коллективистские общества}} | {{b:la solidarité, l’unisson, l’accord}} |\n| {{b:Индивидуалистические}} | {{b:la responsabilité individuelle, l’ambition personnelle, l’autonomie}} |\n• Обращение к незнакомым: {{p:Madame, Monsieur}}.\n\n## Традиции и праздники Франции\n| Праздник / факт | Суть |\n|---|---|\n| {{b:Девиз республики}} | {{g:liberté, égalité, fraternité}} |\n| {{b:14 июля}} | {{g:la fête nationale}}, день взятия Бастилии |\n| {{b:1 Мая}} | la fête du Travail, дарят {{g:le muguet}} (ландыш) |\n| {{b:1 апреля}} | день розыгрышей и ложных новостей |\n| {{b:Гражданские праздники}} | 14 июля, 1 Мая |\n| {{b:Религиозные}} | Noël (25 декабря), Pâques, Toussaint, Assomption, Ascension |\n| {{b:Départements d’outre-mer (DOM)}} | la Guadeloupe, la Martinique, la Réunion |\n| {{b:Май 1968}} | восстания молодёжи |\n| {{b:Срок мандата президента}} | с 2002 г. — {{g:5 лет}} |\n\n## История и люди\n| Имя / факт | Суть |\n|---|---|\n| {{p:Louis XIV}} | «L’État, c’est moi» |\n| {{p:Jeanne d’Arc}} | l’héroïne de la guerre de Cent Ans |\n| {{p:Charlemagne}} | император, создал школы |\n| {{p:Victor Hugo}} | отстаивал свободу прессы |\n| {{p:Братья Люмьер}} (Louis и Auguste) | изобрели кино в {{g:1895}} |\n| {{p:Le premier ministre}} | глава правительства |\n>+ 14 июля — Бастилия; 1 Мая — ландыши; Люмьеры — 1895; 1 апреля — розыгрыши." },
 
-          { title: "Средства массовой информации и технологии", body:
-`## Пресса (la presse)
-• **L’hebdomadaire** — еженедельник; le quotidien — ежедневная; le mensuel — ежемесячная.
-• **Национальные ежедневные издания:** Le Monde, Libération, Le Parisien. **Региональная пресса:** Ouest-France, Midi Libre. «Marie Claire», «Vogue», «Paris Match» — журналы.
-• **Издания бывают** nationales, internationales, régionales.
-• **Charlie Hebdo** — журнал, ставший жертвой теракта в Париже в **2015** г. из-за карикатур на религию.
-• **Рубрики газеты:** politique, culture, faits divers.
-• **Le canard** — «утка», ложная новость распространяемая второсортными газетами.
-## Радио и ТВ
-• **Радио вещает:** sur les ondes moyennes, ondes courtes, modulation de fréquence.
-• **Les débats** — телепередачи, где интеллектуалы или политики обсуждают проблему.
-## Коммуникация
-• **Коммуникация (la communication)** — транзакционный процесс, придание значения сообщениям; находится на стыке лингвистики, социологии, философии.
-• **Невербальные коды:** les gestes, les postures, les mimiques.
-• **Контекст коммуникации:** участники, временные и пространственные рамки, цель взаимодействия.
-• **Средства в Интернете:** les blogs, les réseaux sociaux, les forums. **Les gadgets** облегчили жизнь детей.
-## Электронное обучение
-• **E-learning:** гибкость (la flexibilité), доступ везде и всегда, разные устройства. Обучение **en ligne** — без физического присутствия преподавателя.
-> Запомните: l’hebdomadaire — раз в неделю; Charlie Hebdo — теракт 2015; радио — средние, короткие волны и FM; e-learning — гибкость и доступность.`},
+          { title: "Средства массовой информации и технологии", body: "## Пресса (la presse)\n| Понятие | Суть |\n|---|---|\n| {{b:Le quotidien}} | ежедневная |\n| {{b:L’hebdomadaire}} | еженедельник |\n| {{b:Le mensuel}} | ежемесячная |\n| Национальные ежедневные издания | {{g:Le Monde, Libération, Le Parisien}} |\n| Региональная пресса | {{g:Ouest-France, Midi Libre}} |\n| Журналы | Marie Claire, Vogue, Paris Match |\n| Издания бывают | {{b:nationales, internationales, régionales}} |\n| {{r:Charlie Hebdo}} | журнал, жертва теракта в Париже в {{r:2015}} из-за карикатур на религию |\n| Рубрики | politique, culture, faits divers |\n| {{r:Le canard}} | «утка», ложная новость от второсортных газет |\n\n## Радио и ТВ\n| Понятие | Суть |\n|---|---|\n| Радио вещает | {{b:sur les ondes moyennes, ondes courtes, modulation de fréquence}} |\n| {{b:Les débats}} | телепередачи, где интеллектуалы или политики обсуждают проблему |\n\n## Коммуникация\n| Понятие | Суть |\n|---|---|\n| {{p:La communication}} | транзакционный процесс, придание значения сообщениям; на стыке лингвистики, социологии, философии |\n| {{b:Невербальные коды}} | {{g:les gestes, les postures, les mimiques}} |\n| {{b:Контекст коммуникации}} | участники, временные и пространственные рамки, цель взаимодействия |\n| {{b:Средства в Интернете}} | {{g:les blogs, les réseaux sociaux, les forums}}; les gadgets облегчили жизнь детей |\n\n## Электронное обучение\n| E-learning | Суть |\n|---|---|\n| Преимущества | {{g:la flexibilité}}, доступ везде и всегда, разные устройства |\n| {{b:En ligne}} | обучение без физического присутствия преподавателя |\n>+ L’hebdomadaire — раз в неделю; Charlie Hebdo — теракт 2015; радио — средние, короткие волны и FM; e-learning — гибкость и доступность." },
         ],
       },
     ],
