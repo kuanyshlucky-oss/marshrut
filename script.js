@@ -3603,11 +3603,28 @@ const COMMON_CONSPECTS = {
 // контента, отображаемым на ГОП через CONTENT_TO_GOP (7M01 → M001), либо кодом
 // направления из старого каталога DIRECTIONS. Без выданного доступа — одна
 // карточка-приглашение в общий каталог, как раньше.
+// Направление-носитель для общих тестов (английский/ТГО берутся из общих банков, код нужен только серверу).
+const COMMON_TEST_CODE = '7M01';
+
 function renderTestAccessCards() {
   const wrap = document.getElementById('testCtaSection');
   if (!wrap) return; // раздел есть только на cabinet.html
   const user = API.getCurrentUser();
   const access = (user && user.access) || [];
+
+  // Английский и ТГО открыты с момента регистрации — отдельные карточки, не зависящие от направлений.
+  const commonCards = [
+    ...(userHasEnglish(access) ? [{ section: 'lang', name: 'Английский язык' }] : []),
+    ...(access.length > 0 && access.every(c => PROFILE_ONLY_CODES.has(c)) ? [] : [{ section: 'logic', name: 'ТГО' }]),
+  ].map(c => `
+    <a class="test-cta-card" href="index.html?commonTest=${c.section}">
+      <div class="test-cta-text">
+        <p class="test-cta-eyebrow">${I18N.t('testCta.eyebrow')}</p>
+        <h3>${I18N.t('testCta.title')} — ${c.name}</h3>
+        <p>${I18N.t('testCta.text')}</p>
+      </div>
+      <span class="test-cta-arrow" aria-hidden="true">→</span>
+    </a>`).join('');
 
   const cards = access.map(code => {
     const gopCode = CONTENT_TO_GOP[code] || code;
@@ -3619,7 +3636,7 @@ function renderTestAccessCards() {
   }).filter(Boolean);
 
   if (!cards.length) {
-    wrap.innerHTML = `
+    wrap.innerHTML = commonCards + `
       <a class="test-cta-card" href="index.html#catalog">
         <div class="test-cta-text">
           <p class="test-cta-eyebrow">${I18N.t('testCta.eyebrow')}</p>
@@ -3632,7 +3649,7 @@ function renderTestAccessCards() {
     return;
   }
 
-  wrap.innerHTML = cards.map(c => `
+  wrap.innerHTML = commonCards + cards.map(c => `
     <a class="test-cta-card" href="${c.href}">
       <div class="test-cta-text">
         <p class="test-cta-eyebrow">${esc(c.code)} · ${I18N.t('testCta.eyebrow')}</p>
@@ -4784,7 +4801,7 @@ async function beginQuizSection(code, section) {
   activeQuiz = { attemptId: att.id, code, section, qIndex: 0, answers: new Array(att.questions.length).fill(null), pool: att.questions, result: null };
 
   document.getElementById('testTitle').textContent = title;
-  document.getElementById('testSub').textContent = d ? `${d.code} · ${d.name}` : '';
+  document.getElementById('testSub').textContent = code === COMMON_TEST_CODE && (section === 'lang' || section === 'logic') ? '' : d ? `${d.code} · ${d.name}` : '';
   document.getElementById('testRun').classList.remove('hidden');
   document.getElementById('testResult').classList.add('hidden');
   document.getElementById('dirModal').classList.add('hidden');
@@ -6329,6 +6346,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const openGopCode = qs.get('openGop');
   if (openGopCode && document.getElementById('dirModal') && KT_STATS_GROUPS.find(g => g.code === openGopCode)) {
     openGopGroup(openGopCode);
+  }
+
+  // общий тест по предмету из кабинета: index.html?commonTest=lang|logic (английский / ТГО)
+  const commonTest = qs.get('commonTest');
+  if ((commonTest === 'lang' || commonTest === 'logic') && document.getElementById('testPage') && requireAuth()) {
+    beginQuizSection(COMMON_TEST_CODE, commonTest);
   }
 });
 
