@@ -1825,6 +1825,158 @@
     ],
     "conspect": "В аудио Стив Уиллс снимался именно в фильме «Call» — важно точно сопоставить имя актёра с конкретным фильмом среди нескольких, упомянутых в обзорной передаче.",
     "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why is nurse Carla calling the patients?",
+    "options": [
+     "To cancel their appointments",
+     "To ask them to pay a bill",
+     "To help them prepare for their appointment",
+     "To introduce a new doctor"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Отмены приёма в записи нет: пациентов по-прежнему ждут во вторник.",
+     "О счёте или оплате в записи ничего не говорится.",
+     "Верно! Карла говорит: «I am calling to help you prepare for your appointment next week».",
+     "О новом враче в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-clinic-prep-talk-gb.mp3",
+    "conspect": "Цель звонка обычно называется в самом начале записи: ищите фразу I am calling to... / I'm calling about...",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why does Carla remind everyone again about the items to bring?",
+    "options": [
+     "Because the clinic has changed its address",
+     "Because many patients have been forgetting important items",
+     "Because the appointment has been moved",
+     "Because the receptionist is new"
+    ],
+    "correct": 1,
+    "explanations": [
+     "О смене адреса клиники в записи не говорится.",
+     "Верно! Она объясняет: «Many patients have been forgetting important items lately, which is why I am reminding everyone again».",
+     "Приём не перенесён: Карла подтверждает вторник, десять часов.",
+     "О новом администраторе в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-clinic-prep-talk-gb.mp3",
+    "conspect": "Причина после слов which is why / because: Карла напоминает о вещах, потому что пациенты часто их забывают.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What should the patient do with recent blood test results from another doctor?",
+    "options": [
+     "Bring those papers to the appointment",
+     "Send them to the clinic by post",
+     "Show them to the receptionist at home",
+     "Throw them away"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В записи: «If you have recent blood test results from another doctor, bring those papers too».",
+     "Об отправке результатов почтой в записи не говорится.",
+     "Показывать результаты администратору дома невозможно; нужно принести бумаги с собой.",
+     "Выбрасывать результаты нельзя: их просят принести."
+    ],
+    "audio": "assets/listening-en/audio-clinic-prep-talk-gb.mp3",
+    "conspect": "If you have... + повелительное наклонение (bring those papers) — условие и инструкция для пациента.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why are patients asked to wear loose clothes?",
+    "options": [
+     "Because the clinic is very warm",
+     "Because tight clothes are not allowed in the building",
+     "Because patients must change in the car park",
+     "They are easy to remove, and the examination may take longer than expected"
+    ],
+    "correct": 3,
+    "explanations": [
+     "О тепле в клинике в записи не говорится.",
+     "О запрете узкой одежды в здании в записи не говорится.",
+     "Переодеваться на парковке не нужно: парковка названа в другом контексте (она далеко от входа).",
+     "Верно! В записи: «loose clothes that are easy to remove because the examination may take longer than expected»."
+    ],
+    "audio": "assets/listening-en/audio-clinic-prep-talk-gb.mp3",
+    "conspect": "Причина вводится словом because: loose clothes are easy to remove, and the examination may take longer.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why should patients bring an umbrella if it rains on Tuesday?",
+    "options": [
+     "Because the waiting room has no roof",
+     "Because the clinic has no windows",
+     "Because the car park is quite far from the main door",
+     "Because the nurse will wait outside"
+    ],
+    "correct": 2,
+    "explanations": [
+     "О крыше зала ожидания в записи не говорится.",
+     "Об отсутствии окон в записи не говорится.",
+     "Верно! В записи: «bring an umbrella because the car park is quite far from the main door».",
+     "О том, что медсестра ждёт на улице, в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-clinic-prep-talk-gb.mp3",
+    "conspect": "Слово quite в сочетании с far означает «довольно далеко»: объясняет, почему зонт нужен.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why should patients not bring any valuables to the clinic?",
+    "options": [
+     "Because valuables are not allowed in the car park",
+     "There is no secure place to keep them",
+     "Because the receptionist must scan them",
+     "Because the doctor does not like them"
+    ],
+    "correct": 1,
+    "explanations": [
+     "О запрете ценных вещей на парковке в записи не говорится.",
+     "Верно! В записи: «Do not bring any valuables because we do not have a secure place for them».",
+     "Сканировать нужно страховую карту, а не ценные вещи.",
+     "Мнение врача о ценных вещах в записи не обсуждается."
+    ],
+    "audio": "assets/listening-en/audio-clinic-prep-talk-gb.mp3",
+    "conspect": "valuables — ценные вещи (деньги, украшения); secure place — безопасное место для хранения.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What may happen if a patient arrives late?",
+    "options": [
+     "The appointment may have to be rescheduled",
+     "The patient will be asked to pay extra",
+     "The doctor will visit the patient at home",
+     "The examination will be shorter"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Карла предупреждает: «If you arrive late, we may have to reschedule».",
+     "О дополнительной оплате в записи не говорится.",
+     "О визите врача на дом в записи не говорится.",
+     "О сокращении обследования при опоздании в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-clinic-prep-talk-gb.mp3",
+    "conspect": "reschedule — перенести на другое время. Конструкция may have to означает «возможно, придётся».",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What does Carla suggest to avoid being late?",
+    "options": [
+     "Arriving at the clinic the day before",
+     "Phoning the clinic every hour",
+     "Asking a friend to drive",
+     "Setting an alarm the night before"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Приезжать в клинику за день до приёма Карла не предлагает.",
+     "Звонить каждый час она не просит: звонить нужно, только если что-то изменится.",
+     "О помощи друга с вождением в записи не говорится.",
+     "Верно! В записи: «set an alarm the night before»."
+    ],
+    "audio": "assets/listening-en/audio-clinic-prep-talk-gb.mp3",
+    "conspect": "set an alarm — «поставить будильник»; the night before — «накануне вечером».",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
    }
   ],
   "grammar": [

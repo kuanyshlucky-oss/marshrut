@@ -1,0 +1,4 @@
+audio-clinic-prep-talk-gb.mp3 - "Clinic Prep Talk" (B1, 1:17, British accent), Speecher.org
+  https://speecher.org/ru/english/listening/clinic-prep-talk
+  (c) Speecher.org; used with the owners' permission (confirmed by the site owner on 2026-10-15; keep the written confirmation).
+  The 8 questions in common/lang-en.json for this track were written separately.
