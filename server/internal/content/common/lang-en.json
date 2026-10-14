@@ -1977,6 +1977,158 @@
     "audio": "assets/listening-en/audio-clinic-prep-talk-gb.mp3",
     "conspect": "set an alarm — «поставить будильник»; the night before — «накануне вечером».",
     "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Who is speaking in the announcement?",
+    "options": [
+     "A ticket seller at the ticket office",
+     "A train driver on platform four",
+     "The station master at Central Station",
+     "A police officer at the station"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Продавец билетов — это другой человек: в кассу сумку лишь сдали.",
+     "Машинист в записи не упоминается.",
+     "Верно! Говорящий представляется: «This is Alan, the station master at Central Station».",
+     "О полицейском в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-lost-property-alert-gb.mp3",
+    "conspect": "В начале объявления говорящий обычно называет себя и свою должность: This is... speaking.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Where was the brown leather bag handed in this morning?",
+    "options": [
+     "At the lost property office",
+     "At the ticket office",
+     "At the police station",
+     "At platform one"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Бюро находок упоминается позже: туда нужно прийти владельцу.",
+     "Верно! В записи: «a brown leather bag was handed in at the ticket office».",
+     "О полицейском участке в записи не говорится.",
+     "У платформы один находится бюро находок, а сумку сдали в кассе."
+    ],
+    "audio": "assets/listening-en/audio-lost-property-alert-gb.mp3",
+    "conspect": "hand in — «сдавать, передавать»: the bag was handed in = сумку сдали.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Where did the person find the bag?",
+    "options": [
+     "On platform four",
+     "On platform one",
+     "In the ticket office",
+     "On a train"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В записи: «sitting alone on platform four».",
+     "Платформа один — место бюро находок, а не находки.",
+     "В кассу сумку лишь сдали, найдена она была на платформе.",
+     "О поезде как месте находки в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-lost-property-alert-gb.mp3",
+    "conspect": "Различайте два места: где вещь нашли (platform four) и куда её сдали (the ticket office).",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Which detail helps to identify the bag?",
+    "options": [
+     "A red label on the front of the bag",
+     "A broken zip at the top of the bag",
+     "A dirty stain on the bottom of the bag",
+     "A small tear on the left side near the handle"
+    ],
+    "correct": 3,
+    "explanations": [
+     "О красной бирке в записи не говорится.",
+     "О сломанной молнии в записи не говорится.",
+     "О пятне на дне сумки в записи не говорится.",
+     "Верно! В записи: «a small tear on the left side near the handle»."
+    ],
+    "audio": "assets/listening-en/audio-lost-property-alert-gb.mp3",
+    "conspect": "Приметы вещи описывают словами tear (разрыв), left side (левая сторона), near the handle (рядом с ручкой).",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Where is the lost property office?",
+    "options": [
+     "Next to platform four",
+     "Behind the ticket office",
+     "Next to platform one",
+     "Opposite the main entrance"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Платформа четыре — место, где нашли сумку.",
+     "О месте за кассой в записи не говорится.",
+     "Верно! В записи: «the lost property office next to platform one».",
+     "О месте напротив главного входа в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-lost-property-alert-gb.mp3",
+    "conspect": "next to — «рядом с, возле». Следите за номером платформы: в записи платформы один и четыре означают разное.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What must the owner do in the lost property office?",
+    "options": [
+     "Pay a small fee and sign a short form",
+     "Describe the bag in detail and show identification",
+     "Sign a long contract with the station master",
+     "Bring a witness who has seen the bag"
+    ],
+    "correct": 1,
+    "explanations": [
+     "О плате в записи не говорится.",
+     "Верно! В записи: «describe the bag in detail and ... show us some identification».",
+     "О контракте в записи не говорится.",
+     "О свидетеле в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-lost-property-alert-gb.mp3",
+    "conspect": "identification — документ, удостоверяющий личность; describe in detail — описать подробно.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "How long will the station keep the bag?",
+    "options": [
+     "For seven days",
+     "For one day",
+     "For two weeks",
+     "For one month"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В записи: «We will keep the bag here for the next seven days».",
+     "Один день — слишком мало: по записи сумка хранится семь дней.",
+     "Две недели — в записи называется другой срок.",
+     "Один месяц — в записи называется другой срок."
+    ],
+    "audio": "assets/listening-en/audio-lost-property-alert-gb.mp3",
+    "conspect": "for + период времени отвечает на вопрос «как долго»: for the next seven days.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What will happen to the bag after that time?",
+    "options": [
+     "It will be given to the person who found it",
+     "It will be thrown away if nobody calls the station",
+     "It will be sold in the station shop to raise money",
+     "It will be sent to the central lost property warehouse in the city"
+    ],
+    "correct": 3,
+    "explanations": [
+     "О передаче сумки нашедшему в записи не говорится.",
+     "О выбрасывании сумки в записи не говорится.",
+     "О продаже сумки на станции в записи не говорится.",
+     "Верно! В записи: «we will have to send it to the central lost property warehouse in the city»."
+    ],
+    "audio": "assets/listening-en/audio-lost-property-alert-gb.mp3",
+    "conspect": "after that time — «по истечении этого срока»: после семи дней сумку отправят на центральный склад.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
    }
   ],
   "grammar": [
