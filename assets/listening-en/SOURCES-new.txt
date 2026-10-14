@@ -7,3 +7,9 @@ audio-lost-property-alert-gb.mp3 - "Lost Property Alert" (B1, 1:31, British acce
   https://speecher.org/ru/english/listening/lost-property-alert
   (c) Speecher.org; used with the owners' permission (confirmed by the site owner; keep the written confirmation).
   The 8 questions in common/lang-en.json for this track were written separately.
+
+Speecher.org (c), British accent, used with the owners' permission (keep the written confirmation). Questions written separately.
+audio-hotel-breakfast-call-gb.mp3       "Hotel Breakfast Call" (B2)       https://speecher.org/ru/english/listening/hotel-breakfast-call
+audio-return-policy-call-gb.mp3         "Return Policy Call" (B2)         https://speecher.org/ru/english/listening/return-policy-call
+audio-library-membership-talk-gb.mp3    "Library Membership Talk" (B2)    https://speecher.org/ru/english/listening/library-membership-talk
+audio-cat-care-instructions-gb.mp3      "Cat Care Instructions" (B2)      https://speecher.org/ru/english/listening/cat-care-instructions

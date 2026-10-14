@@ -2129,6 +2129,614 @@
     "audio": "assets/listening-en/audio-lost-property-alert-gb.mp3",
     "conspect": "after that time — «по истечении этого срока»: после семи дней сумку отправят на центральный склад.",
     "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why is Alex explaining the breakfast and checkout arrangements?",
+    "options": [
+     "The restaurant is being repaired this week",
+     "There have been several late departures recently",
+     "A new manager has started working here",
+     "The hotel prices have just changed"
+    ],
+    "correct": 1,
+    "explanations": [
+     "О ремонте ресторана в записи не говорится.",
+     "Верно! В записи: «because we have had several late departures recently».",
+     "О новом управляющем в записи не говорится.",
+     "Об изменении цен в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-hotel-breakfast-call-gb.mp3",
+    "conspect": "because вводит причину: Алекс объясняет правила, потому что гости часто задерживаются при выезде.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Where is breakfast served?",
+    "options": [
+     "In the Garden Room on the ground floor",
+     "In the restaurant on the first floor",
+     "In the bar next to the reception",
+     "In the guests' own rooms only"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В записи: «served every morning ... in the Garden Room on the ground floor».",
+     "Ресторан на первом этаже в записи не упоминается.",
+     "О баре у стойки регистрации в записи не говорится.",
+     "Завтрак подают в зале, а в номер его приносят только по заказу."
+    ],
+    "audio": "assets/listening-en/audio-hotel-breakfast-call-gb.mp3",
+    "conspect": "ground floor — первый этаж (в британском английском), first floor — второй этаж.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "By what time must guests order breakfast to their room?",
+    "options": [
+     "Before eight o'clock the same morning",
+     "Before ten o'clock on the day before",
+     "Before eleven o'clock at night",
+     "Before nine o'clock the previous evening"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Восемь часов утра — время начала доставки, а не срок заказа.",
+     "Десять часов — время закрытия завтрака, а не срок заказа.",
+     "Одиннадцать часов вечера в записи не называется.",
+     "Верно! В записи: «let us know before nine o'clock the previous evening»."
+    ],
+    "audio": "assets/listening-en/audio-hotel-breakfast-call-gb.mp3",
+    "conspect": "the previous evening — «накануне вечером». Не путайте срок заказа (до 9 вечера) со временем доставки (8–9 утра).",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why did the hotel turn away three guests yesterday?",
+    "options": [
+     "They had not booked a table in advance",
+     "They wanted breakfast in their rooms",
+     "They arrived after the closing time of breakfast",
+     "They came on the wrong day"
+    ],
+    "correct": 2,
+    "explanations": [
+     "О брони стола в записи не говорится.",
+     "О завтраке в номер в этом эпизоде не говорится.",
+     "Верно! В записи: «we had to turn away three guests who arrived after ten».",
+     "О неправильном дне в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-hotel-breakfast-call-gb.mp3",
+    "conspect": "turn away — «не пустить, отказать»; after ten — после десяти, то есть после закрытия.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What is the latest time for checkout?",
+    "options": [
+     "Ten o'clock",
+     "Eleven o'clock",
+     "Noon",
+     "Half past three"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Десять часов — время закрытия завтрака.",
+     "Верно! В записи: «Checkout must be completed by eleven o'clock at the latest».",
+     "В полдень в номера заселяются новые гости.",
+     "Половина четвёртого — время, до которого хранят багаж."
+    ],
+    "audio": "assets/listening-en/audio-hotel-breakfast-call-gb.mp3",
+    "conspect": "at the latest — «не позднее»: самый поздний срок для выезда.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Where can guests leave their luggage if their flight is late in the day?",
+    "options": [
+     "Behind the reception counter",
+     "In the Garden Room",
+     "In the guest's own room",
+     "In the hotel car park"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В записи: «store your luggage behind the reception counter until half past three».",
+     "Garden Room — зал для завтрака.",
+     "Номер нужно освободить к одиннадцати.",
+     "Об автостоянке в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-hotel-breakfast-call-gb.mp3",
+    "conspect": "store luggage — «хранить багаж»; behind the counter — «за стойкой».",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why can't the hotel offer a late checkout today?",
+    "options": [
+     "Because the receptionist is busy",
+     "Because the rooms are being painted",
+     "Because the guest has not paid yet",
+     "Because the hotel is fully booked"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Занятость администратора в записи не называется причиной.",
+     "О покраске номеров в записи не говорится.",
+     "Об отсутствии оплаты в записи не говорится.",
+     "Верно! В записи: «we cannot offer it today because the hotel is fully booked»."
+    ],
+    "audio": "assets/listening-en/audio-hotel-breakfast-call-gb.mp3",
+    "conspect": "fully booked — «всё занято». Новым гостям номера нужны в полдень (new arrivals at noon).",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Which extra services have been added to the bill?",
+    "options": [
+     "The restaurant and the taxi service",
+     "The car parking and the minibar",
+     "The minibar and the laundry service",
+     "A late checkout fee and the laundry"
+    ],
+    "correct": 2,
+    "explanations": [
+     "О ресторане и такси в записи не говорится.",
+     "О парковке в записи не говорится.",
+     "Верно! В записи: «used the minibar twice and the laundry service once so those charges have been added».",
+     "Поздний выезд сегодня невозможен, поэтому такой платы нет."
+    ],
+    "audio": "assets/listening-en/audio-hotel-breakfast-call-gb.mp3",
+    "conspect": "charges — «платежи, начисления»; the minibar — мини-бар в номере.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What problem does the customer have with the jacket?",
+    "options": [
+     "It has a tear in the sleeve",
+     "It is the wrong colour",
+     "It does not fit quite right",
+     "It was delivered too late"
+    ],
+    "correct": 2,
+    "explanations": [
+     "О дырке на рукаве в записи не говорится.",
+     "О неправильном цвете в записи не говорится.",
+     "Верно! В записи: «you have decided it does not fit quite right».",
+     "О поздней доставке в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-return-policy-call-gb.mp3",
+    "conspect": "fit — «подходить по размеру»: it doesn't fit — «не подходит по размеру».",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "How long is the standard return window?",
+    "options": [
+     "Fourteen days from the purchase date",
+     "Thirty days from the purchase date",
+     "Sixty days after delivery",
+     "One week after the purchase"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Четырнадцатого октября куртку купили, а срок возврата другой.",
+     "Верно! В записи: «standard return window lasts for thirty days from the purchase date».",
+     "Шестьдесят дней в записи не называются.",
+     "Одна неделя в записи не называется."
+    ],
+    "audio": "assets/listening-en/audio-return-policy-call-gb.mp3",
+    "conspect": "Не путайте дату покупки (14 октября) и срок возврата (30 дней).",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "How many days does the customer still have to return the jacket?",
+    "options": [
+     "Sixteen days",
+     "Fourteen days",
+     "Thirty days",
+     "Three to five days"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В записи: «you still have sixteen days left to bring it back».",
+     "Четырнадцатое — дата покупки, а не количество дней.",
+     "Тридцать дней — полный срок возврата, часть уже прошла.",
+     "Три–пять рабочих дней — срок возврата денег на карту."
+    ],
+    "audio": "assets/listening-en/audio-return-policy-call-gb.mp3",
+    "conspect": "В числах легко запутаться: отвечайте на вопрос, о чём именно спрашивают (сколько осталось дней).",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What must be true for the customer to receive a full refund?",
+    "options": [
+     "The customer must have the original receipt",
+     "The customer must buy another jacket",
+     "The jacket must be returned in person",
+     "The jacket has not been worn outside and has its tags"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Чек можно восстановить: система хранит цифровую запись покупки.",
+     "Покупать другую куртку не требуется.",
+     "Куртку можно вернуть и по почте.",
+     "Верно! В записи: «If the jacket has not been worn outside and still has all its tags attached, we will refund the full ... pounds»."
+    ],
+    "audio": "assets/listening-en/audio-return-policy-call-gb.mp3",
+    "conspect": "Условие полного возврата: не носили на улице + на месте все бирки.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "How long does a refund usually take to appear on the card?",
+    "options": [
+     "Twenty-four hours",
+     "Sixteen days",
+     "Three to five working days",
+     "Thirty days"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Двадцать четыре часа — срок обработки посылки, а не возврата денег.",
+     "Шестнадцать дней — остаток срока возврата.",
+     "Верно! В записи: «within three to five working days after we receive the item».",
+     "Тридцать дней — полный срок возврата товара."
+    ],
+    "audio": "assets/listening-en/audio-return-policy-call-gb.mp3",
+    "conspect": "Срок обработки посылки (24 hours) и срок поступления денег (3–5 working days) — разные вещи.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What can the shop offer if the tags have been removed?",
+    "options": [
+     "A full refund to the credit card",
+     "An exchange for a different size or a store credit",
+     "A free jacket from another shop",
+     "A discount on the next order"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Полный возврат возможен только при бирках и неношеной вещи.",
+     "Верно! В записи: «we would exchange it for a different size or give you a store credit for the same amount».",
+     "О бесплатной куртке в записи не говорится.",
+     "О скидке на следующий заказ в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-return-policy-call-gb.mp3",
+    "conspect": "store credit — «магазинный кредит» (деньги на счёт в магазине), exchange — обмен.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "How can the shop find the purchase if the receipt is lost?",
+    "options": [
+     "By using the card number or the surname and date",
+     "By looking at the paper receipt copy",
+     "By asking a friend who was there",
+     "By checking the jacket's tags"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В записи: «we can locate your transaction using the card number ... or even just your surname and the date».",
+     "Бумажная копия чека в записи не упоминается: используется цифровая запись.",
+     "О друге в записи не говорится.",
+     "Бирки нужны для возврата, но не для поиска покупки."
+    ],
+    "audio": "assets/listening-en/audio-return-policy-call-gb.mp3",
+    "conspect": "locate a transaction — «найти операцию, покупку»; digital record — электронная запись.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What should the customer include in the parcel if posting the jacket?",
+    "options": [
+     "The original credit card used for the purchase",
+     "A copy of an identification document",
+     "A letter from the bank about the payment",
+     "A short note with the order number and the choice of refund or exchange"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Кредитную карту отправлять не нужно.",
+     "Документ, удостоверяющий личность, просят в магазине, а не в посылке.",
+     "О письме из банка в записи не говорится.",
+     "Верно! В записи: «include a short note with your order number ... and say whether you want a refund or an exchange»."
+    ],
+    "audio": "assets/listening-en/audio-return-policy-call-gb.mp3",
+    "conspect": "include — «вкладывать, включать»; whether you want... or... — «хотите ли вы... или...».",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What must new members do before they can take books home?",
+    "options": [
+     "Pay an annual fee in cash at the desk",
+     "Take a short reading test at the desk",
+     "Bring a letter from a teacher or employer",
+     "Complete a short form and show proof of address"
+    ],
+    "correct": 3,
+    "explanations": [
+     "О годовом взносе в записи не говорится.",
+     "О тесте на чтение в записи не говорится.",
+     "О письме от учителя в записи не говорится.",
+     "Верно! В записи: «complete the short form ... and show us proof of address»."
+    ],
+    "audio": "assets/listening-en/audio-library-membership-talk-gb.mp3",
+    "conspect": "proof of address — документ, подтверждающий адрес (например, счёт за услуги).",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "How many books can a member borrow at the same time?",
+    "options": [
+     "Six",
+     "Four",
+     "Eight",
+     "Twelve"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Шесть — другое число.",
+     "Четыре — другое число.",
+     "Верно! В записи: «borrow up to eight books for three weeks at a time».",
+     "Двенадцать — другое число."
+    ],
+    "audio": "assets/listening-en/audio-library-membership-talk-gb.mp3",
+    "conspect": "up to — «до»: максимум восемь книг, не обязательно ровно восемь.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "How long can members keep the books?",
+    "options": [
+     "For two weeks",
+     "For three weeks",
+     "For one month",
+     "For ten days"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Две недели — в записи называется другой срок.",
+     "Верно! В записи: «for three weeks at a time» и продление ещё на три недели.",
+     "Один месяц — в записи называется другой срок.",
+     "Десять дней — в записи называется другой срок."
+    ],
+    "audio": "assets/listening-en/audio-library-membership-talk-gb.mp3",
+    "conspect": "for + период времени отвечает на вопрос «как долго»: for three weeks.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "How can members renew their books?",
+    "options": [
+     "By phone or online, once, before the due date",
+     "By visiting the library every week",
+     "Only by sending a letter",
+     "By asking a friend to return them"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В записи: «renew them once by phone or online before the due date».",
+     "Ходить в библиотеку каждую неделю не требуется.",
+     "Письмо в записи не упоминается.",
+     "О друге, который вернёт книги, в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-library-membership-talk-gb.mp3",
+    "conspect": "renew — «продлить»; due date — «срок возврата»; once — «один раз».",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why did the library introduce a small fine?",
+    "options": [
+     "The library needed money for new books",
+     "Some members had lost their cards",
+     "The library was closed on Sundays",
+     "Many people forgot to bring the books back on time"
+    ],
+    "correct": 3,
+    "explanations": [
+     "О нехватке денег на книги в записи не говорится.",
+     "Потеря карт в записи как причина не названа.",
+     "О закрытой по воскресеньям библиотеке в записи не говорится.",
+     "Верно! В записи: «many people forgot to bring the books back on time so we introduced a small fine»."
+    ],
+    "audio": "assets/listening-en/audio-library-membership-talk-gb.mp3",
+    "conspect": "so вводит следствие: люди забывали возвращать книги, поэтому ввели штраф.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Which members find audio books especially popular?",
+    "options": [
+     "Members who live far from the library",
+     "Members who are students",
+     "Members who travel a lot",
+     "Members who are over sixty"
+    ],
+    "correct": 2,
+    "explanations": [
+     "О членах, живущих далеко, в записи не говорится.",
+     "О студентах в записи не говорится.",
+     "Верно! В записи: «especially popular with members who travel a lot».",
+     "О возрасте членов в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-library-membership-talk-gb.mp3",
+    "conspect": "especially popular with... — «особенно популярны у...».",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "What can a member do if the library is closed when they need to return a book?",
+    "options": [
+     "Take it back the next month",
+     "Put it in the outside returns box",
+     "Post it to the senior librarian",
+     "Leave it with a neighbour"
+    ],
+    "correct": 1,
+    "explanations": [
+     "О возврате в следующем месяце в записи не говорится; есть штраф за опоздание.",
+     "Верно! В записи: «we have an outside returns box that is emptied every morning at nine o'clock».",
+     "Отправка почтой в записи не упоминается.",
+     "О соседе в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-library-membership-talk-gb.mp3",
+    "conspect": "returns box — ящик для возврата книг, обычно снаружи здания.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why do several members prefer to renew online?",
+    "options": [
+     "It saves them a journey, and the website is open all day",
+     "The online system is cheaper than phoning",
+     "They do not need a library card online",
+     "The library website offers free books"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В записи: «prefer to renew online because it saves them a journey and the website is available twenty four hours a day».",
+     "О цене звонка в записи не говорится.",
+     "О карте при онлайн-продлении в записи не говорится.",
+     "О бесплатных книгах на сайте в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-library-membership-talk-gb.mp3",
+    "conspect": "save a journey — «сэкономить поездку»; twenty-four hours a day — круглосуточно.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why is Alex phoning?",
+    "options": [
+     "To give instructions for looking after the cat",
+     "To say that the flight has been cancelled",
+     "To order food for the cat online",
+     "To book an appointment at the vet"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В записи: «important instructions for you about looking after my cat while I am away».",
+     "Об отмене рейса в записи не говорится.",
+     "О заказе еды онлайн в записи не говорится.",
+     "О записи к ветеринару в записи не говорится: номер оставлен на экстренный случай."
+    ],
+    "audio": "assets/listening-en/audio-cat-care-instructions-gb.mp3",
+    "conspect": "Цель звонка обычно называется в начале: calling with instructions about...",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "At what times should the cat be fed today?",
+    "options": [
+     "At nine o'clock and at noon",
+     "At two o'clock and at eight o'clock",
+     "At half past seven and at ten o'clock",
+     "At half past twelve and at six o'clock"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Девять утра и полдень в записи не называются.",
+     "Два часа и восемь вечера в записи не называются.",
+     "Полвосьмого и десять часов в записи не называются.",
+     "Верно! В записи: «the first one should be at half past twelve and the second at six o'clock this evening»."
+    ],
+    "audio": "assets/listening-en/audio-cat-care-instructions-gb.mp3",
+    "conspect": "half past twelve — 12:30. Следите за цифрами и временем суток.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "How much dry food should the cat get each time?",
+    "options": [
+     "A full bowl",
+     "One tin",
+     "Half a bowl",
+     "Two spoons"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Полная миска в записи не называется.",
+     "Банка (tin) — это влажный корм, а сегодня он уже был.",
+     "Верно! В записи: «put half a bowl in her blue feeding dish each time».",
+     "Две ложки в записи не называются."
+    ],
+    "audio": "assets/listening-en/audio-cat-care-instructions-gb.mp3",
+    "conspect": "half a bowl — «пол-миски»; each time — «каждый раз».",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Where is the bag of dry food?",
+    "options": [
+     "In the cupboard by the door",
+     "On the kitchen counter next to the water dish",
+     "On the fridge door",
+     "Next to the living room window"
+    ],
+    "correct": 1,
+    "explanations": [
+     "О шкафе у двери в записи не говорится.",
+     "Верно! В записи: «a full bag ... on the kitchen counter next to her water dish».",
+     "На дверце холодильника лежит номер ветеринара.",
+     "У окна лежит любимая щётка кошки."
+    ],
+    "audio": "assets/listening-en/audio-cat-care-instructions-gb.mp3",
+    "conspect": "Предметы запоминайте вместе с местом: bag — kitchen counter; vet number — fridge door; brush — by the window.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why does the cat not need another tin of wet food today?",
+    "options": [
+     "She has already had her wet food treat for the day",
+     "The tin is empty",
+     "She does not like it",
+     "The vet said she should not eat it"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В записи: «She has already had her wet food treat for the day so there is no need to open another tin until tomorrow».",
+     "О пустой банке в записи не говорится.",
+     "О том, что кошка не любит корм, в записи не говорится.",
+     "О совете ветеринара в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-cat-care-instructions-gb.mp3",
+    "conspect": "no need to... — «нет необходимости»; until tomorrow — «до завтра».",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Where does the cat like to sit and watch the birds?",
+    "options": [
+     "On the kitchen counter",
+     "In the garden by the gate",
+     "On the sofa near the fridge",
+     "On the wide windowsill in the living room"
+    ],
+    "correct": 3,
+    "explanations": [
+     "На кухонной стойке лежит корм, а не сидит кошка.",
+     "Калитка упоминается в другом контексте.",
+     "О диване у холодильника в записи не говорится.",
+     "Верно! В записи: «let her sit on the wide windowsill in the living room where she likes to watch the birds»."
+    ],
+    "audio": "assets/listening-en/audio-cat-care-instructions-gb.mp3",
+    "conspect": "windowsill — «подоконник»; to watch the birds — наблюдать за птицами.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Where is the emergency vet number?",
+    "options": [
+     "On the kitchen counter",
+     "By the window",
+     "On the fridge door",
+     "In the cat's blue dish"
+    ],
+    "correct": 2,
+    "explanations": [
+     "На кухонной стойке лежит пакет корма.",
+     "У окна лежит любимая щётка кошки.",
+     "Верно! В записи: «I have left the emergency vet number on the fridge door».",
+     "В голубой миске корм, а не номер."
+    ],
+    "audio": "assets/listening-en/audio-cat-care-instructions-gb.mp3",
+    "conspect": "emergency — «экстренный случай»; fridge door — дверца холодильника.",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
+   },
+   {
+    "q": "Why should the person close the side gate?",
+    "options": [
+     "The neighbours' dog might come in",
+     "The cat once slipped out and was hard to find",
+     "The gate makes a noise at night",
+     "The cat is afraid of the garden"
+    ],
+    "correct": 1,
+    "explanations": [
+     "О соседской собаке в записи не говорится.",
+     "Верно! В записи: «close the side gate ... because she once slipped out last summer and it took me hours to find her».",
+     "О шуме калитки в записи не говорится.",
+     "О страхе кошки перед садом в записи не говорится."
+    ],
+    "audio": "assets/listening-en/audio-cat-care-instructions-gb.mp3",
+    "conspect": "slip out — «выскользнуть, убежать»; it took me hours — «у меня ушли часы».",
+    "topic": "Listening — 16 вопросов: аудирование коротких диалогов и объявлений"
    }
   ],
   "grammar": [
