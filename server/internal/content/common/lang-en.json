@@ -3771,6 +3771,1176 @@
     ],
     "conspect": "Устойчивая конструкция «it is (high) time + Past Simple» выражает значение «пора бы уже сделать что-то» (хотя формально грамматика прошедшего времени, смысл — про настоящее/будущее обязательство): it is high time you faced your responsibilities.",
     "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "There are three ___ playing in the garden.",
+    "options": [
+     "childs",
+     "children",
+     "childrens",
+     "child"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«childs» — такой формы нет: у слова child особое множественное число.",
+     "Верно! Child — исключение: множественное число образуется не через -s, а как children.",
+     "«childrens» — children уже стоит во множественном числе, окончание -s не добавляется.",
+     "«child» — единственное число, а после three нужно множественное."
+    ],
+    "conspect": "Исключения во множественном числе: child → children, man → men, woman → women, foot → feet, tooth → teeth, mouse → mice, person → people.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "She hurt both of her ___ while playing football.",
+    "options": [
+     "feet",
+     "foots",
+     "foot",
+     "feets"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Foot — исключение: множественное число feet (both of her feet).",
+     "«foots» — правильной формы с -s у этого слова нет.",
+     "«foot» — единственное число, а после both of her нужно множественное.",
+     "«feets» — такой формы нет: feet уже множественное число."
+    ],
+    "conspect": "foot → feet, tooth → teeth, goose → geese: у этих существительных меняется корневая гласная.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Could you give me some ___ about the train times?",
+    "options": [
+     "informations",
+     "an information",
+     "a information",
+     "information"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«informations» — information не имеет формы множественного числа.",
+     "«an information» — неисчисляемое существительное не употребляется с a/an.",
+     "«a information» — неисчисляемое существительное не употребляется с a/an.",
+     "Верно! Information — неисчисляемое существительное: у него нет множественного числа и артикля a/an."
+    ],
+    "conspect": "Неисчисляемые существительные: information, advice, news, knowledge, furniture, luggage, money. Без a/an и без -s; вместо этого — some, a piece of.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "How ___ sugar do you take in your coffee?",
+    "options": [
+     "many",
+     "few",
+     "much",
+     "a few"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«many» используется с исчисляемыми существительными (How many books?).",
+     "«few» не образует вопрос о количестве с How и подходит для исчисляемых существительных.",
+     "Верно! Sugar — неисчисляемое существительное, поэтому вопрос о количестве начинается с How much.",
+     "«a few» подходит для исчисляемых существительных и не образует вопрос с How."
+    ],
+    "conspect": "How much + неисчисляемое (How much water?); How many + исчисляемое во мн. числе (How many students?).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Anna is my sister. This is ___ room.",
+    "options": [
+     "Annas",
+     "Anna's",
+     "Annas'",
+     "Anna"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«Annas» — без апострофа нет значения принадлежности.",
+     "Верно! Притяжательный падеж единственного числа образуется добавлением 's: Anna's room.",
+     "«Annas'» — апостроф после s ставится только у существительных во множественном числе.",
+     "«Anna» — без 's нет значения принадлежности («комната Анны»)."
+    ],
+    "conspect": "Притяжательный падеж: единственное число — 's (the teacher's book); множественное на -s — только апостроф (the teachers' room).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "The ___ toys are all over the floor.",
+    "options": [
+     "children's",
+     "childrens",
+     "childrens'",
+     "childs'"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Children — множественное число без окончания -s, поэтому принадлежность выражается через 's: children's toys.",
+     "«childrens» — нет апострофа, и children уже множественное число.",
+     "«childrens'» — так не пишут: после слова children ставится 's, а не s'.",
+     "«childs'» — такой формы слова нет."
+    ],
+    "conspect": "Если множественное число не оканчивается на -s (men, women, children, people), притяжательный падеж образуется через 's: men's shoes, women's rights.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "___ Nile is the longest river in Africa.",
+    "options": [
+     "A",
+     "An",
+     "no article",
+     "The"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«A» — неопределённый артикль не употребляется с названием реки.",
+     "«An» — неопределённый артикль не употребляется с названием реки.",
+     "Без артикля названия рек не употребляются.",
+     "Верно! Названия рек употребляются с определённым артиклем: the Nile, the Volga, the Irtysh."
+    ],
+    "conspect": "С определённым артиклем: реки (the Nile), океаны и моря (the Pacific), горные цепи (the Alps), пустыни (the Sahara).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "I usually have ___ breakfast at eight o'clock.",
+    "options": [
+     "a",
+     "an",
+     "no article",
+     "the"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«a» — с названием приёма пищи в общем смысле неопределённый артикль не используется.",
+     "«an» — артикль не нужен, к тому же breakfast начинается с согласного звука.",
+     "Верно! Перед названиями приёмов пищи (breakfast, lunch, dinner) артикль не нужен, если нет уточнения.",
+     "«the» нужен только при уточнении (the breakfast we had yesterday), а здесь речь о привычке."
+    ],
+    "conspect": "Нулевой артикль: перед названиями приёмов пищи (have breakfast), языками (speak English), видами спорта (play football).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "She plays ___ guitar very well.",
+    "options": [
+     "a",
+     "the",
+     "an",
+     "no article"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«a» — после play с инструментом принято употреблять the.",
+     "Верно! С названиями музыкальных инструментов после play употребляется the: play the guitar, play the piano.",
+     "«an» — неопределённый артикль, к тому же guitar начинается с согласного звука.",
+     "Для музыкальных инструментов артикль the обязателен (в отличие от видов спорта: play tennis)."
+    ],
+    "conspect": "play the + музыкальный инструмент (play the violin); play + вид спорта без артикля (play chess, play football).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "He is ___ university student from Astana.",
+    "options": [
+     "a",
+     "an",
+     "the",
+     "no article"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Слово university начинается со звука /j/ (согласный), поэтому нужен артикль a: a university.",
+     "«an» ставится перед гласным ЗВУКОМ, а university начинается со звука /juː/.",
+     "«the» — определённый артикль не подходит: студент упоминается впервые.",
+     "Исчисляемое существительное в единственном числе не употребляется без артикля."
+    ],
+    "conspect": "Выбор a/an зависит от ЗВУКА, а не от буквы: a university, a European, a one-way ticket, но an hour, an honest man.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "This exam was ___ than I expected.",
+    "options": [
+     "more easy",
+     "easyer",
+     "the easiest",
+     "easier"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«more easy» — прилагательные на -y образуют сравнительную степень с помощью -er.",
+     "«easyer» — при добавлении -er буква y меняется на i.",
+     "«the easiest» — превосходная степень, а в предложении есть сравнение (than).",
+     "Верно! Двусложное прилагательное на -y образует степень сравнения заменой y на i: easy → easier."
+    ],
+    "conspect": "Сравнительная степень: короткие прилагательные + -er (taller); на -y → -ier (easier, happier); длинные — more + прилагательное (more difficult).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "She is ___ student in our group.",
+    "options": [
+     "more diligent",
+     "most diligent",
+     "the most diligent",
+     "the more diligent"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«more diligent» — сравнительная степень, но речь идёт о лучшей среди всей группы.",
+     "«most diligent» — перед превосходной степенью нужен артикль the.",
+     "Верно! Для превосходной степени многосложных прилагательных используется the most + прилагательное.",
+     "«the more diligent» — так говорят при сравнении двух, а в группе их много."
+    ],
+    "conspect": "Превосходная степень: the + -est (the tallest) или the most + длинное прилагательное (the most interesting).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "The lecture was so ___ that many students fell asleep.",
+    "options": [
+     "bored",
+     "boring",
+     "bore",
+     "boredom"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«bored» описывает человека, который испытывает скуку, а не лекцию.",
+     "Верно! Прилагательное на -ing описывает то, что вызывает чувство (скучная лекция).",
+     "«bore» — глагол или существительное, а после was so нужно прилагательное.",
+     "«boredom» — существительное «скука», а нужно прилагательное."
+    ],
+    "conspect": "-ing описывает причину эмоции (boring lecture, interesting book); -ed — состояние человека (bored student, interested reader).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "I was really ___ by the results of the test.",
+    "options": [
+     "surprised",
+     "surprising",
+     "surprise",
+     "surprisingly"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Прилагательное на -ed описывает чувство человека: I was surprised.",
+     "«surprising» описывает то, что вызывает удивление (surprising results), а не человека.",
+     "«surprise» — существительное или глагол, а после was ... by нужно причастие.",
+     "«surprisingly» — наречие, оно не подходит после was."
+    ],
+    "conspect": "I was surprised / bored / excited (чувство человека); the results were surprising / boring / exciting (свойство предмета).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "I bought ___ yesterday.",
+    "options": [
+     "a blue small nice bag",
+     "a small nice blue bag",
+     "a nice blue small bag",
+     "a nice small blue bag"
+    ],
+    "correct": 3,
+    "explanations": [
+     "В таком порядке цвет стоит перед размером и мнением, а это нарушает норму.",
+     "Мнение (nice) обычно стоит раньше размера: nice small, а не small nice.",
+     "Размер (small) должен стоять перед цветом (blue).",
+     "Верно! Порядок прилагательных: мнение (nice) → размер (small) → цвет (blue) → существительное."
+    ],
+    "conspect": "Порядок прилагательных: мнение → размер → возраст → форма → цвет → происхождение → материал (a lovely old wooden table).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "He cut ___ while he was cooking dinner.",
+    "options": [
+     "him",
+     "his",
+     "himself",
+     "herself"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«him» — личное местоимение указывало бы на другого человека.",
+     "«his» — притяжательное местоимение, а здесь нужен объект действия.",
+     "Верно! Действие направлено на самого подлежащего, поэтому нужно возвратное местоимение himself.",
+     "«herself» не согласуется с подлежащим he."
+    ],
+    "conspect": "Возвратные местоимения: myself, yourself, himself, herself, itself, ourselves, yourselves, themselves — когда действие возвращается к подлежащему.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Is this pen ___ or yours?",
+    "options": [
+     "my",
+     "mine",
+     "me",
+     "myself"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«my» — зависимая форма, после неё обязательно существительное.",
+     "Верно! Mine — абсолютная форма притяжательного местоимения (употребляется без существительного).",
+     "«me» — объектная форма, а нужно притяжательное местоимение.",
+     "«myself» — возвратное местоимение и здесь не подходит."
+    ],
+    "conspect": "Зависимые формы: my, your, his, her + существительное; абсолютные: mine, yours, his, hers — без существительного.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Excuse me, is ___ seat taken?",
+    "options": [
+     "this",
+     "these",
+     "those",
+     "them"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Seat — единственное число, и указывается на предмет рядом: this seat.",
+     "«these» — множественное число (these seats).",
+     "«those» — множественное число (those seats).",
+     "«them» — личное местоимение, оно не стоит перед существительным."
+    ],
+    "conspect": "this / these — близко (этот / эти); that / those — далеко (тот / те). this и that — единственное число, these и those — множественное.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Look at ___ birds over there!",
+    "options": [
+     "that",
+     "this",
+     "these",
+     "those"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«that» — единственное число, а birds — множественное.",
+     "«this» — единственное число и значение «рядом».",
+     "«these» — множественное число, но указывает на близкие предметы, а в предложении сказано over there.",
+     "Верно! Birds — множественное число, и они далеко (over there): those birds."
+    ],
+    "conspect": "Далеко и мн. число — those; рядом и мн. число — these.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "The woman ___ lives next door is a doctor.",
+    "options": [
+     "which",
+     "whose",
+     "who",
+     "whom"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«which» употребляется для предметов и животных, а не для людей.",
+     "«whose» выражает принадлежность и не подходит к смыслу.",
+     "Верно! Who — относительное местоимение для людей в роли подлежащего.",
+     "«whom» — форма дополнения; здесь слово является подлежащим."
+    ],
+    "conspect": "who — для людей (подлежащее); whom — для людей (дополнение); which — для предметов; that — для людей и предметов; whose — принадлежность.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "This is the book ___ I told you about.",
+    "options": [
+     "who",
+     "that",
+     "whose",
+     "what"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«who» относится к людям, а book — предмет.",
+     "Верно! That — относительное местоимение для предметов; в этом предложении оно служит дополнением.",
+     "«whose» выражает принадлежность и не подходит по смыслу.",
+     "«what» не используется как относительное местоимение после существительного."
+    ],
+    "conspect": "В определительных придаточных предложениях для предметов используются which или that: the book (which / that) I read.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "___ bag is this? It's not mine.",
+    "options": [
+     "Whose",
+     "Who's",
+     "Who",
+     "Whom"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Whose спрашивает о принадлежности: «Чья это сумка?»",
+     "«Who's» — сокращение от who is или who has, а в вопросе о принадлежности так не пишут.",
+     "«Who» — «кто», этот вопрос о человеке, а не о принадлежности.",
+     "«Whom» — форма дополнения («кого»)."
+    ],
+    "conspect": "Whose + существительное — вопрос о принадлежности (Whose pen is this?). Who's = who is.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "I haven't got ___ money left.",
+    "options": [
+     "some",
+     "no",
+     "none",
+     "any"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«some» употребляется в утвердительных и вежливых предложениях, но не в отрицании.",
+     "«no» уже содержит отрицание, а в предложении есть haven't — получилось бы двойное отрицание.",
+     "«none» употребляется без существительного и не подходит перед money.",
+     "Верно! В отрицательном предложении употребляется any: haven't got any money."
+    ],
+    "conspect": "any — в отрицаниях и вопросах (I don't have any questions); some — в утверждениях и предложениях (Would you like some tea?).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Would you like ___ tea?",
+    "options": [
+     "any",
+     "no",
+     "some",
+     "none"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«any» используется в отрицаниях и обычных вопросах, но не в вежливом предложении.",
+     "«no» не подходит по смыслу вопроса.",
+     "Верно! В предложении-предложении (Would you like...?) употребляется some.",
+     "«none» не используется перед существительным."
+    ],
+    "conspect": "В вежливых предложениях и просьбах (Would you like some...? Can I have some...?) используется some, а не any.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "There are ___ days in a leap year.",
+    "options": [
+     "three hundreds and sixty-six",
+     "three hundred and sixty-six",
+     "three hundred sixty-sixth",
+     "three hundreds sixty-six"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«three hundreds» — после числительного hundred остаётся без окончания.",
+     "Верно! Hundred после числительного не принимает -s: three hundred; между сотнями и десятками обычно ставится and.",
+     "«sixty-sixth» — это порядковое числительное, а нужно количественное.",
+     "«three hundreds» — после числительного hundred остаётся без окончания."
+    ],
+    "conspect": "Hundred, thousand, million после числительного не принимают -s (three hundred, two thousand); с -s они употребляются в значении «сотни, тысячи».",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "The population of the city is about ___ people.",
+    "options": [
+     "two hundred thousand",
+     "two hundreds thousand",
+     "two hundred thousands",
+     "two hundreds thousands"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Hundred и thousand после числительного не принимают -s: two hundred thousand.",
+     "«hundreds» — после числительного two слово hundred не принимает -s.",
+     "«thousands» — после числительного слово thousand не принимает -s.",
+     "Оба слова здесь не принимают -s."
+    ],
+    "conspect": "Если перед hundred / thousand / million стоит числительное, они остаются в единственном числе: five million, ten thousand.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Her birthday is on the ___ of May.",
+    "options": [
+     "five",
+     "fiveth",
+     "the five",
+     "fifth"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«five» — количественное числительное, а для даты нужно порядковое.",
+     "«fiveth» — такой формы нет: порядковое числительное от five — fifth.",
+     "«the five» — перед of May уже стоит the, а форма остаётся количественной.",
+     "Верно! Даты читаются порядковыми числительными: the fifth of May."
+    ],
+    "conspect": "Порядковые числительные: first, second, third, fourth, fifth, ninth, twelfth. Даты читаются так: May the fifth / the fifth of May.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "This is the ___ time I have visited London.",
+    "options": [
+     "two",
+     "twice",
+     "second",
+     "twoth"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«two» — количественное числительное, и перед time в значении «в который раз» нужно порядковое.",
+     "«twice» — наречие «дважды», а здесь нужна форма прилагательного.",
+     "Верно! Перед существительным time в таком значении используется порядковое числительное second.",
+     "«twoth» — такой формы нет: порядковое числительное от two — second."
+    ],
+    "conspect": "the first / the second / the third time — порядковые числительные в значении «который по счёту раз».",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "I ate three ___ of the pizza.",
+    "options": [
+     "quarter",
+     "quarters",
+     "quarts",
+     "fourth"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«quarter» — при числителе больше одного слово принимает множественное число.",
+     "Верно! Дробь образуется числителем (three) и порядковым числительным: three quarters; при числителе больше единицы дробь принимает -s.",
+     "«quarts» — это мера объёма (кварта), а не часть целого.",
+     "«fourth» — порядковое числительное в единственном числе; для 3/4 нужна форма three quarters."
+    ],
+    "conspect": "Дроби: 1/2 — a half; 1/3 — a third; 1/4 — a quarter; 3/4 — three quarters; 2/3 — two thirds.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Two thirds of the students in our group ___ girls.",
+    "options": [
+     "are",
+     "is",
+     "was",
+     "be"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Students — множественное число, поэтому глагол стоит во множественном числе: are.",
+     "«is» — единственное число, а students — множественное.",
+     "«was» — прошедшее время и единственное число, а контекст — настоящее.",
+     "«be» — неличная форма, а в предложении нужна личная форма глагола."
+    ],
+    "conspect": "Глагол согласуется с существительным после of: two thirds of the students are; two thirds of the money is.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Look! It ___ outside.",
+    "options": [
+     "rains",
+     "rained",
+     "has rain",
+     "is raining"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«rains» — Present Simple выражает привычку или факт, а не действие в момент речи.",
+     "«rained» — Past Simple, а контекст указывает на настоящее.",
+     "«has rain» — неверная форма глагола.",
+     "Верно! Слово Look! указывает на действие в момент речи — Present Continuous."
+    ],
+    "conspect": "Present Continuous (am/is/are + V-ing) — действие происходит сейчас: Look! Listen! at the moment, now.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "I ___ in this company since 2019.",
+    "options": [
+     "work",
+     "am working",
+     "have worked",
+     "worked"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«work» — Present Simple не сочетается с since + год.",
+     "«am working» — Present Continuous не сочетается с since + год.",
+     "Верно! Since указывает на период от прошлого до настоящего — Present Perfect.",
+     "«worked» — Past Simple не связывает прошлое с настоящим."
+    ],
+    "conspect": "Present Perfect (have/has + V3) + for / since: I have lived here for ten years / since 2015.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "When I arrived at the station, the train ___ already.",
+    "options": [
+     "left",
+     "had left",
+     "has left",
+     "was leaving"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«left» — Past Simple не показывает, что действие произошло раньше.",
+     "Верно! Из двух прошлых действий первым произошло отправление поезда, поэтому используется Past Perfect.",
+     "«has left» — Present Perfect относится к настоящему.",
+     "«was leaving» — Past Continuous означает процесс, но не завершённое раньше действие."
+    ],
+    "conspect": "Past Perfect (had + V3) — действие, завершившееся до другого прошлого действия: When I came, he had gone.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "While she ___ dinner, the phone rang.",
+    "options": [
+     "was cooking",
+     "cooked",
+     "has cooked",
+     "cooks"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Процесс в прошлом, который был прерван другим действием, выражается Past Continuous.",
+     "«cooked» — Past Simple не передаёт длительный процесс.",
+     "«has cooked» — Present Perfect не подходит к прошедшему времени.",
+     "«cooks» — Present Simple не подходит к рассказу в прошлом."
+    ],
+    "conspect": "Past Continuous (was/were + V-ing) — длительное действие в прошлом, которое прервало другое: I was reading when he called.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "I ___ him yesterday at the library.",
+    "options": [
+     "have seen",
+     "had seen",
+     "see",
+     "saw"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«have seen» — Present Perfect не употребляется с указанием времени в прошлом (yesterday).",
+     "«had seen» — Past Perfect не подходит, когда нет другого прошлого действия.",
+     "«see» — Present Simple не подходит к прошлому.",
+     "Верно! Слово yesterday требует Past Simple."
+    ],
+    "conspect": "Past Simple — с yesterday, last week, in 2010, ago. Present Perfect — без указания времени: I have seen this film.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Have you ever ___ sushi?",
+    "options": [
+     "ate",
+     "eat",
+     "eaten",
+     "eating"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«ate» — вторая форма (Past Simple), а после have нужна третья.",
+     "«eat» — инфинитив, а после have нужна третья форма.",
+     "Верно! После have в Present Perfect нужна третья форма глагола: eat — ate — eaten.",
+     "«eating» — форма на -ing не образует Present Perfect."
+    ],
+    "conspect": "Present Perfect: have/has + V3. Неправильные глаголы: eat–ate–eaten, go–went–gone, write–wrote–written.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "By next June she ___ her degree.",
+    "options": [
+     "will finish",
+     "will have finished",
+     "has finished",
+     "is finishing"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«will finish» — Future Simple не подчёркивает завершённость к моменту.",
+     "Верно! By next June указывает на действие, которое завершится к определённому моменту в будущем — Future Perfect.",
+     "«has finished» — Present Perfect относится к настоящему.",
+     "«is finishing» — Present Continuous не подходит к такому будущему."
+    ],
+    "conspect": "Future Perfect (will have + V3) — действие завершится до определённого момента в будущем: by 5 o'clock, by next year.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Look at those dark clouds! It ___ rain.",
+    "options": [
+     "is going to",
+     "would",
+     "has to",
+     "is"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Предсказание по очевидным признакам (тёмные тучи) выражается конструкцией be going to.",
+     "«would» — форма условного наклонения или будущего в прошедшем, а не предсказание о ближайшем будущем.",
+     "«has to» выражает необходимость («должен»), а не предсказание.",
+     "«is» без going to не образует будущее время."
+    ],
+    "conspect": "be going to — намерение или предсказание по очевидным признакам; will — спонтанное решение, мнение, обещание.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "If it rains tomorrow, we ___ at home.",
+    "options": [
+     "would stay",
+     "stayed",
+     "stay",
+     "will stay"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«would stay» относится ко второму типу условных предложений.",
+     "«stayed» — Past Simple, а в главной части первого типа нужен will.",
+     "«stay» — без will нет значения будущего в главной части.",
+     "Верно! В условном предложении первого типа главная часть содержит will + инфинитив."
+    ],
+    "conspect": "Условные предложения I типа: If + Present Simple, will + инфинитив (If it rains, we will stay).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "The report ___ by the manager yesterday.",
+    "options": [
+     "wrote",
+     "has written",
+     "was written",
+     "is written"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«wrote» — активная форма, а подлежащее report не может писать.",
+     "«has written» — активная форма Present Perfect.",
+     "Верно! Действие совершил менеджер, а отчёт — объект: Past Simple Passive (was + V3).",
+     "«is written» — Present Simple Passive, а в предложении есть yesterday."
+    ],
+    "conspect": "Passive Voice: be + V3. Past Simple Passive — was/were written; Present Simple Passive — is/are written.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "English ___ all over the world.",
+    "options": [
+     "speaks",
+     "is spoken",
+     "is speaking",
+     "spoke"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«speaks» — активная форма, а язык сам не говорит.",
+     "Верно! Подлежащее English не совершает действие, поэтому нужен Present Simple Passive: is spoken.",
+     "«is speaking» — Present Continuous, а не пассив.",
+     "«spoke» — активная форма в прошедшем времени."
+    ],
+    "conspect": "Present Simple Passive: am/is/are + V3 (English is spoken in many countries).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "You ___ wear a seat belt in the car. It's the law.",
+    "options": [
+     "must",
+     "may",
+     "might",
+     "can"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Must выражает обязанность и обязательное требование.",
+     "«may» выражает разрешение или возможность, а не обязанность.",
+     "«might» выражает слабую возможность.",
+     "«can» выражает способность или разрешение."
+    ],
+    "conspect": "must — обязанность (You must stop); should — совет; can — способность; may — разрешение или возможность.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "___ I borrow your dictionary, please?",
+    "options": [
+     "Must",
+     "Ought",
+     "Will",
+     "May"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«Must» выражает обязанность, а не просьбу о разрешении.",
+     "«Ought» требует to и выражает совет.",
+     "«Will» выражает просьбу к собеседнику, а не запрос разрешения.",
+     "Верно! May — вежливая форма при просьбе о разрешении."
+    ],
+    "conspect": "Просьба о разрешении: Can I...? (разг.), Could I...? / May I...? (вежливо).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "She decided ___ a new job.",
+    "options": [
+     "looking for",
+     "look for",
+     "to look for",
+     "to looking for"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«looking for» — после decide герундий не используется.",
+     "«look for» — инфинитив без to употребляется после модальных глаголов, а не после decide.",
+     "Верно! После decide употребляется инфинитив с to.",
+     "«to looking for» — после to употребляется инфинитив."
+    ],
+    "conspect": "Глаголы + to-инфинитив: decide, want, hope, plan, promise, manage, refuse (She decided to leave).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "I'd rather ___ at home tonight.",
+    "options": [
+     "to stay",
+     "stay",
+     "staying",
+     "stayed"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«to stay» — после would rather частица to не нужна.",
+     "Верно! После would rather употребляется инфинитив без to.",
+     "«staying» — герундий здесь не используется.",
+     "«stayed» — в таком значении Past Simple употребляется после would rather + другое подлежащее."
+    ],
+    "conspect": "Инфинитив без to: после модальных глаголов, would rather, had better, let, make (You'd better go).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "He is very good at ___ complex problems.",
+    "options": [
+     "solving",
+     "solve",
+     "to solve",
+     "solved"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! После предлога at употребляется герундий.",
+     "«solve» — после предлога нужна форма на -ing.",
+     "«to solve» — после предлога at инфинитив не употребляется.",
+     "«solved» — причастие прошедшего времени не подходит."
+    ],
+    "conspect": "После предлогов — герундий: interested in learning, good at swimming, afraid of flying.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "She avoided ___ the question.",
+    "options": [
+     "to answer",
+     "answer",
+     "answered",
+     "answering"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«to answer» — после avoid инфинитив не употребляется.",
+     "«answer» — после avoid нужна форма на -ing.",
+     "«answered» — причастие прошедшего времени здесь не подходит.",
+     "Верно! После avoid употребляется герундий."
+    ],
+    "conspect": "Глаголы + герундий: avoid, enjoy, finish, suggest, keep, mind, give up (He enjoys reading).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "The students ___ in the hall are first-year undergraduates.",
+    "options": [
+     "sit",
+     "to sit",
+     "sitting",
+     "sitted"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«sit» — инфинитив не согласуется с существительным students.",
+     "«to sit» — инфинитив не используется в таком определении.",
+     "Верно! Причастие настоящего времени (sitting) заменяет придаточное предложение: students who are sitting.",
+     "«sitted» — такой формы нет: глагол sit — sat — sat."
+    ],
+    "conspect": "Participle I (V-ing) может заменять придаточное: the girl standing there = the girl who is standing there.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "The ___ window was repaired yesterday.",
+    "options": [
+     "breaking",
+     "broken",
+     "break",
+     "broke"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«breaking» — причастие настоящего времени означает «ломающее».",
+     "Верно! Причастие прошедшего времени broken передаёт значение «сломанное».",
+     "«break» — глагол в начальной форме.",
+     "«broke» — форма Past Simple и не используется перед существительным."
+    ],
+    "conspect": "Participle II (V3) в роли определения — результат действия: a broken window, a closed door, a written report.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "She speaks English very ___.",
+    "options": [
+     "fluently",
+     "fluent",
+     "fluency",
+     "fluential"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Наречие образуется от прилагательного с помощью суффикса -ly: fluent → fluently.",
+     "«fluent» — прилагательное, а глагол определяется наречием.",
+     "«fluency» — существительное «беглость».",
+     "«fluential» — такого слова нет."
+    ],
+    "conspect": "Наречия образуются от прилагательных с помощью -ly: quick → quickly, careful → carefully, fluent → fluently.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "He worked ___ to pass the exam.",
+    "options": [
+     "hardly",
+     "harder",
+     "hardness",
+     "hard"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«hardly» означает «едва ли, почти не» (hardly worked — почти не работал).",
+     "«harder» — сравнительная степень, а сравнения в предложении нет.",
+     "«hardness» — существительное «твёрдость».",
+     "Верно! Hard — наречие без окончания: worked hard значит «упорно работал»."
+    ],
+    "conspect": "Наречия-исключения: hard — hard (упорно), hardly (едва); late — late (поздно), lately (недавно); fast — fast.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "I ___ visit my grandparents on Sundays.",
+    "options": [
+     "am usually",
+     "usually am",
+     "usually",
+     "usually to"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«am usually» — лишний вспомогательный глагол am перед смысловым глаголом.",
+     "«usually am» — лишний глагол am.",
+     "Верно! Наречие частоты стоит перед смысловым глаголом: I usually visit.",
+     "«usually to» — после наречия не ставится to."
+    ],
+    "conspect": "Наречия частоты (always, usually, often, never) стоят перед смысловым глаголом и после глагола to be: I often read; She is never late.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Which sentence is correct?",
+    "options": [
+     "He plays well football.",
+     "He plays football well.",
+     "He well plays football.",
+     "Well he plays football."
+    ],
+    "correct": 1,
+    "explanations": [
+     "Наречие well нельзя ставить между глаголом и дополнением.",
+     "Верно! Наречие образа действия обычно ставится после прямого дополнения: plays football well.",
+     "Наречие well перед глаголом в таком значении не используется.",
+     "Наречие well в начале предложения не подходит по смыслу и порядку слов."
+    ],
+    "conspect": "Порядок слов: подлежащее + глагол + дополнение + наречие образа действия (She speaks English fluently).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "She is afraid ___ spiders.",
+    "options": [
+     "of",
+     "from",
+     "at",
+     "with"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Прилагательное afraid употребляется с предлогом of.",
+     "«from» — с прилагательным afraid не употребляется.",
+     "«at» — с прилагательным afraid не употребляется.",
+     "«with» — с прилагательным afraid не употребляется."
+    ],
+    "conspect": "Прилагательное + предлог: afraid of, good at, interested in, different from, proud of, tired of.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "He is very interested ___ history.",
+    "options": [
+     "on",
+     "at",
+     "for",
+     "in"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«on» — с прилагательным interested не употребляется.",
+     "«at» — с прилагательным interested не употребляется.",
+     "«for» — с прилагательным interested не употребляется.",
+     "Верно! Прилагательное interested употребляется с предлогом in."
+    ],
+    "conspect": "interested in, keen on, fond of, capable of, responsible for, similar to — предлоги закреплены за словом.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "The exam starts ___ ten o'clock.",
+    "options": [
+     "in",
+     "on",
+     "at",
+     "by"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«in» употребляется с месяцами, годами и частями дня (in May, in the morning).",
+     "«on» употребляется с днями недели и датами (on Monday).",
+     "Верно! С точным временем суток употребляется at: at ten o'clock.",
+     "«by» означает «к определённому моменту», а не точное время."
+    ],
+    "conspect": "at — точное время (at 5 o'clock); on — день и дата (on Monday, on 5 May); in — месяц, год, сезон, часть суток (in July, in 2025, in the morning).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "She was born ___ 12 March.",
+    "options": [
+     "in",
+     "on",
+     "at",
+     "by"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«in» употребляется с месяцем без числа (in March).",
+     "Верно! С конкретной датой употребляется on.",
+     "«at» употребляется с точным временем (at noon).",
+     "«by» означает «к моменту», а не «в день»."
+    ],
+    "conspect": "on + дата и день недели (on 12 March, on Friday); in + месяц (in March).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "She has lived here ___ 2015.",
+    "options": [
+     "since",
+     "for",
+     "from",
+     "at"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Since используется с точкой отсчёта во времени (с 2015 года).",
+     "«for» используется с длительностью (for ten years), а не с годом начала.",
+     "«from» употребляется с to/until и не образует Present Perfect.",
+     "«at» не используется с годом в таком значении."
+    ],
+    "conspect": "since + момент начала (since 2015, since Monday); for + период (for three years, for two hours).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "He has been waiting ___ two hours.",
+    "options": [
+     "since",
+     "during",
+     "from",
+     "for"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«since» используется с моментом начала, а не с длительностью.",
+     "«during» употребляется с существительным (during the lecture), а не с числительным.",
+     "«from» не употребляется с длительностью в Present Perfect Continuous.",
+     "Верно! For используется с периодом времени (two hours)."
+    ],
+    "conspect": "for + длительность (for two hours); since + момент (since 8 o'clock); during + событие (during the war).",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "I wish I ___ more free time.",
+    "options": [
+     "have",
+     "would have",
+     "had",
+     "has"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«have» — Present Simple не выражает нереальное желание в настоящем.",
+     "«would have» — после wish о настоящем так не говорят.",
+     "Верно! После wish в сослагательном значении (о настоящем) употребляется Past Simple: I wish I had.",
+     "«has» — форма третьего лица, а подлежащее I."
+    ],
+    "conspect": "Сослагательное наклонение: I wish + Past Simple (о настоящем) — I wish I knew; I wish + Past Perfect (о прошлом) — I wish I had known.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "Which sentence is in the imperative mood?",
+    "options": [
+     "He closes the door.",
+     "Close the door, please.",
+     "I would close the door.",
+     "The door was closed."
+    ],
+    "correct": 1,
+    "explanations": [
+     "«He closes the door» — изъявительное наклонение (констатация факта).",
+     "Верно! Повелительное наклонение выражает приказ или просьбу и начинается с глагола без подлежащего.",
+     "«I would close the door» — сослагательное наклонение.",
+     "«The door was closed» — изъявительное наклонение, пассив."
+    ],
+    "conspect": "Наклонения: изъявительное (Indicative) — факт; повелительное (Imperative) — приказ, просьба; сослагательное (Subjunctive) — нереальность, желание.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "If I had known about the party, I ___ you.",
+    "options": [
+     "would have told",
+     "would tell",
+     "will tell",
+     "told"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Условное предложение III типа (нереальное в прошлом): If + Past Perfect, would have + V3.",
+     "«would tell» — относится ко II типу (нереальное в настоящем).",
+     "«will tell» — относится к I типу (реальное будущее).",
+     "«told» — Past Simple не образует главную часть условного предложения."
+    ],
+    "conspect": "Conditional III: If + had + V3, would have + V3 — If I had studied, I would have passed.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "If I ___ you, I would start preparing earlier.",
+    "options": [
+     "am",
+     "will be",
+     "have been",
+     "were"
+    ],
+    "correct": 3,
+    "explanations": [
+     "«am» — Present Simple не подходит для нереального условия.",
+     "«will be» — будущее время не используется после if.",
+     "«have been» — Present Perfect не образует условное предложение II типа.",
+     "Верно! В условном предложении II типа после if используется Past Simple, и для всех лиц применяется форма were."
+    ],
+    "conspect": "Conditional II: If + Past Simple, would + инфинитив — If I were you, I would study harder.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "A synonym of the word «big» is ___.",
+    "options": [
+     "tiny",
+     "narrow",
+     "large",
+     "weak"
+    ],
+    "correct": 2,
+    "explanations": [
+     "«tiny» — антоним («крошечный»).",
+     "«narrow» означает «узкий».",
+     "Верно! Large — синоним слова big («большой»).",
+     "«weak» означает «слабый»."
+    ],
+    "conspect": "Синонимы: big — large, huge; small — little, tiny; begin — start; help — assist; important — significant.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
+   },
+   {
+    "q": "An antonym of the word «increase» is ___.",
+    "options": [
+     "grow",
+     "decrease",
+     "expand",
+     "raise"
+    ],
+    "correct": 1,
+    "explanations": [
+     "«grow» — синоним («расти»).",
+     "Верно! Decrease («уменьшаться») — антоним слова increase («увеличиваться»).",
+     "«expand» — синоним («расширяться»).",
+     "«raise» — близкое по смыслу слово («повышать»)."
+    ],
+    "conspect": "Антонимы: increase — decrease; advantage — disadvantage; accept — reject; strong — weak; success — failure.",
+    "topic": "Тесты — 18 вопросов: грамматика и лексика"
    }
   ],
   "reading": [
@@ -5596,6 +6766,918 @@
      "неверно — просто «Road» не является точным названием из текста."
     ],
     "conspect": "В тексте: «My road is called Maple Road» — название собственной улицы автора указано прямо, в отличие от Main street (другой улицы с магазинами) или Knick-Knack (названия магазина).",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Where does Aigerim live now?",
+    "options": [
+     "In Shymkent",
+     "In Aktobe",
+     "In a small town",
+     "In Almaty"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Шымкент — это место, возле которого находится её родной город, а сейчас она живёт в другом месте.",
+     "Актобе — родной город Дины, а не Айгерим.",
+     "Маленький городок рядом с Шымкентом — её родной город, а не нынешнее место жительства.",
+     "Верно! В тексте: «now I live in Almaty»."
+    ],
+    "passage": "My first week at university\nMy name is Aigerim and I am eighteen years old. I come from a small town near Shymkent, but now I live in Almaty and study economics at a university. In the first week I met a lot of new people. My roommate is called Dina. She is from Aktobe and she loves music. We share a small room in the student hostel. It has two beds, a table and a window with a nice view of the mountains.\nClasses start at nine o'clock in the morning. On Mondays I have maths and English, and on Tuesdays I have history and statistics. I like English best because our teacher, Mr Brown, is very friendly and he makes the lessons interesting. After classes I usually have lunch in the university canteen. Lunch there is cheap, but the soup is not very tasty. In the evenings I do my homework in the library because it is quiet there.\nAt weekends I like to go to the park with Dina. Sometimes we go to the mountains with other students. Next week I want to join the university chess club.",
+    "conspect": "Ищите в тексте слово now: оно отличает нынешнее место жительства (now I live in Almaty) от места, откуда человек родом (I come from).",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What does Aigerim study?",
+    "options": [
+     "History",
+     "English",
+     "Economics",
+     "Music"
+    ],
+    "correct": 2,
+    "explanations": [
+     "История — это только один из её предметов по вторникам.",
+     "Английский — один из предметов, а не специальность.",
+     "Верно! В тексте: «study economics at a university».",
+     "Музыку любит Дина, а Айгерим изучает не её."
+    ],
+    "passage": "My first week at university\nMy name is Aigerim and I am eighteen years old. I come from a small town near Shymkent, but now I live in Almaty and study economics at a university. In the first week I met a lot of new people. My roommate is called Dina. She is from Aktobe and she loves music. We share a small room in the student hostel. It has two beds, a table and a window with a nice view of the mountains.\nClasses start at nine o'clock in the morning. On Mondays I have maths and English, and on Tuesdays I have history and statistics. I like English best because our teacher, Mr Brown, is very friendly and he makes the lessons interesting. After classes I usually have lunch in the university canteen. Lunch there is cheap, but the soup is not very tasty. In the evenings I do my homework in the library because it is quiet there.\nAt weekends I like to go to the park with Dina. Sometimes we go to the mountains with other students. Next week I want to join the university chess club.",
+    "conspect": "Специальность (study economics) и учебные предметы (I have maths and English) — разные вещи: не путайте их при ответе.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Who is Dina?",
+    "options": [
+     "Her teacher",
+     "Her roommate",
+     "Her sister",
+     "Her classmate from Shymkent"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Учителя зовут Mr Brown.",
+     "Верно! В тексте: «My roommate is called Dina».",
+     "О сестре в тексте ничего не говорится.",
+     "Дина родом из Актобе, а не из Шымкента, и в тексте она названа соседкой по комнате."
+    ],
+    "passage": "My first week at university\nMy name is Aigerim and I am eighteen years old. I come from a small town near Shymkent, but now I live in Almaty and study economics at a university. In the first week I met a lot of new people. My roommate is called Dina. She is from Aktobe and she loves music. We share a small room in the student hostel. It has two beds, a table and a window with a nice view of the mountains.\nClasses start at nine o'clock in the morning. On Mondays I have maths and English, and on Tuesdays I have history and statistics. I like English best because our teacher, Mr Brown, is very friendly and he makes the lessons interesting. After classes I usually have lunch in the university canteen. Lunch there is cheap, but the soup is not very tasty. In the evenings I do my homework in the library because it is quiet there.\nAt weekends I like to go to the park with Dina. Sometimes we go to the mountains with other students. Next week I want to join the university chess club.",
+    "conspect": "roommate — человек, с которым вы делите комнату.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What time do classes start?",
+    "options": [
+     "At nine o'clock",
+     "At eight o'clock",
+     "At ten o'clock",
+     "At noon"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В тексте: «Classes start at nine o'clock in the morning».",
+     "В 8 часов занятия не начинаются.",
+     "В 10 часов занятия не начинаются.",
+     "Полдень — это время ланча, а не начала занятий."
+    ],
+    "passage": "My first week at university\nMy name is Aigerim and I am eighteen years old. I come from a small town near Shymkent, but now I live in Almaty and study economics at a university. In the first week I met a lot of new people. My roommate is called Dina. She is from Aktobe and she loves music. We share a small room in the student hostel. It has two beds, a table and a window with a nice view of the mountains.\nClasses start at nine o'clock in the morning. On Mondays I have maths and English, and on Tuesdays I have history and statistics. I like English best because our teacher, Mr Brown, is very friendly and he makes the lessons interesting. After classes I usually have lunch in the university canteen. Lunch there is cheap, but the soup is not very tasty. In the evenings I do my homework in the library because it is quiet there.\nAt weekends I like to go to the park with Dina. Sometimes we go to the mountains with other students. Next week I want to join the university chess club.",
+    "conspect": "Для вопросов о времени ищите числа и слова o'clock, a.m., p.m.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Why does Aigerim like English best?",
+    "options": [
+     "Because the lessons are very short",
+     "Because she wants to live in London",
+     "Because it is the easiest subject",
+     "Because the teacher is friendly and makes the lessons interesting"
+    ],
+    "correct": 3,
+    "explanations": [
+     "О длине уроков в тексте ничего не сказано.",
+     "О желании жить в Лондоне в тексте ничего нет.",
+     "Лёгкость предмета в тексте не упоминается.",
+     "Верно! В тексте: «our teacher, Mr Brown, is very friendly and he makes the lessons interesting»."
+    ],
+    "passage": "My first week at university\nMy name is Aigerim and I am eighteen years old. I come from a small town near Shymkent, but now I live in Almaty and study economics at a university. In the first week I met a lot of new people. My roommate is called Dina. She is from Aktobe and she loves music. We share a small room in the student hostel. It has two beds, a table and a window with a nice view of the mountains.\nClasses start at nine o'clock in the morning. On Mondays I have maths and English, and on Tuesdays I have history and statistics. I like English best because our teacher, Mr Brown, is very friendly and he makes the lessons interesting. After classes I usually have lunch in the university canteen. Lunch there is cheap, but the soup is not very tasty. In the evenings I do my homework in the library because it is quiet there.\nAt weekends I like to go to the park with Dina. Sometimes we go to the mountains with other students. Next week I want to join the university chess club.",
+    "conspect": "Причину обычно вводят слова because, as, so. Выбирайте вариант, который прямо подтверждён текстом.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What does Aigerim think about the soup in the canteen?",
+    "options": [
+     "It is very tasty",
+     "It is too expensive",
+     "It is not very tasty",
+     "It is always cold"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Это противоположно тексту: суп невкусный.",
+     "Дорогим в столовой назван не суп: сказано, что обед дешёвый (cheap).",
+     "Верно! В тексте: «the soup is not very tasty».",
+     "О температуре супа в тексте ничего не говорится."
+    ],
+    "passage": "My first week at university\nMy name is Aigerim and I am eighteen years old. I come from a small town near Shymkent, but now I live in Almaty and study economics at a university. In the first week I met a lot of new people. My roommate is called Dina. She is from Aktobe and she loves music. We share a small room in the student hostel. It has two beds, a table and a window with a nice view of the mountains.\nClasses start at nine o'clock in the morning. On Mondays I have maths and English, and on Tuesdays I have history and statistics. I like English best because our teacher, Mr Brown, is very friendly and he makes the lessons interesting. After classes I usually have lunch in the university canteen. Lunch there is cheap, but the soup is not very tasty. In the evenings I do my homework in the library because it is quiet there.\nAt weekends I like to go to the park with Dina. Sometimes we go to the mountains with other students. Next week I want to join the university chess club.",
+    "conspect": "Обращайте внимание на отрицание not very + прилагательное: оно меняет смысл на противоположный.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Why does Aigerim do her homework in the library?",
+    "options": [
+     "Because Dina works there",
+     "Because it is quiet there",
+     "Because it is near the hostel",
+     "Because it is open all night"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Дина в библиотеке не упомянута.",
+     "Верно! В тексте: «I do my homework in the library because it is quiet there».",
+     "Расположение библиотеки относительно общежития в тексте не указано.",
+     "Часы работы библиотеки в тексте не названы."
+    ],
+    "passage": "My first week at university\nMy name is Aigerim and I am eighteen years old. I come from a small town near Shymkent, but now I live in Almaty and study economics at a university. In the first week I met a lot of new people. My roommate is called Dina. She is from Aktobe and she loves music. We share a small room in the student hostel. It has two beds, a table and a window with a nice view of the mountains.\nClasses start at nine o'clock in the morning. On Mondays I have maths and English, and on Tuesdays I have history and statistics. I like English best because our teacher, Mr Brown, is very friendly and he makes the lessons interesting. After classes I usually have lunch in the university canteen. Lunch there is cheap, but the soup is not very tasty. In the evenings I do my homework in the library because it is quiet there.\nAt weekends I like to go to the park with Dina. Sometimes we go to the mountains with other students. Next week I want to join the university chess club.",
+    "conspect": "Слово because сразу указывает на причину: найдите его и прочитайте следующую часть предложения.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What does Aigerim want to do next week?",
+    "options": [
+     "Join the university chess club",
+     "Visit her family in Shymkent",
+     "Change her room",
+     "Go to the mountains"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В тексте: «Next week I want to join the university chess club».",
+     "О поездке домой в тексте не говорится.",
+     "О смене комнаты в тексте не говорится.",
+     "В горы они ходят иногда по выходным, а не на следующей неделе."
+    ],
+    "passage": "My first week at university\nMy name is Aigerim and I am eighteen years old. I come from a small town near Shymkent, but now I live in Almaty and study economics at a university. In the first week I met a lot of new people. My roommate is called Dina. She is from Aktobe and she loves music. We share a small room in the student hostel. It has two beds, a table and a window with a nice view of the mountains.\nClasses start at nine o'clock in the morning. On Mondays I have maths and English, and on Tuesdays I have history and statistics. I like English best because our teacher, Mr Brown, is very friendly and he makes the lessons interesting. After classes I usually have lunch in the university canteen. Lunch there is cheap, but the soup is not very tasty. In the evenings I do my homework in the library because it is quiet there.\nAt weekends I like to go to the park with Dina. Sometimes we go to the mountains with other students. Next week I want to join the university chess club.",
+    "conspect": "Слова next week, tomorrow, in the future указывают на планы: ищите их в конце текста.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Which city is the capital of Kazakhstan according to the text?",
+    "options": [
+     "Almaty",
+     "Shymkent",
+     "Karaganda",
+     "Astana"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Алматы в тексте назван самым большим городом, а не столицей.",
+     "Шымкент в тексте не упоминается.",
+     "Караганда в тексте не упоминается.",
+     "Верно! В тексте: «The capital city is Astana»."
+    ],
+    "passage": "Kazakhstan at a glance\nKazakhstan is a big country in Central Asia. It is the ninth-largest country in the world, but only about twenty million people live there, so there is a lot of open space. The capital city is Astana, and the largest city is Almaty.\nMost of the country is flat. In the centre and the north there is the steppe — a huge area of grass without trees. In the south-east there are high mountains, and there are many lakes, for example Lake Balkhash. The weather is continental: winters are long and very cold, and summers are hot and dry.\nThe state language is Kazakh, and Russian is also widely used. People are famous for their hospitality. When guests come, families usually offer tea, bread and sweets, and often a big dinner. One of the most popular national holidays is Nauryz, which people celebrate in March. It marks the beginning of spring. On this day people wear traditional clothes, cook special food and go to big street festivals. A traditional musical instrument is the dombra, and many children learn to play it at school.",
+    "conspect": "Столица (capital city) и самый большой город (largest city) могут быть разными городами — читайте формулировку внимательно.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Why is there a lot of open space in Kazakhstan?",
+    "options": [
+     "Because the country is very small",
+     "Because most people have moved abroad",
+     "Because the country is large but few people live there",
+     "Because cities are empty in winter"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Страна названа большой (ninth-largest), а не маленькой.",
+     "О переезде людей за границу в тексте ничего нет.",
+     "Верно! В тексте сказано, что страна большая, но там живёт всего около двадцати миллионов человек.",
+     "О пустых городах зимой в тексте ничего нет."
+    ],
+    "passage": "Kazakhstan at a glance\nKazakhstan is a big country in Central Asia. It is the ninth-largest country in the world, but only about twenty million people live there, so there is a lot of open space. The capital city is Astana, and the largest city is Almaty.\nMost of the country is flat. In the centre and the north there is the steppe — a huge area of grass without trees. In the south-east there are high mountains, and there are many lakes, for example Lake Balkhash. The weather is continental: winters are long and very cold, and summers are hot and dry.\nThe state language is Kazakh, and Russian is also widely used. People are famous for their hospitality. When guests come, families usually offer tea, bread and sweets, and often a big dinner. One of the most popular national holidays is Nauryz, which people celebrate in March. It marks the beginning of spring. On this day people wear traditional clothes, cook special food and go to big street festivals. A traditional musical instrument is the dombra, and many children learn to play it at school.",
+    "conspect": "Причину часто нужно вывести из двух фактов: площадь страны большая + население небольшое = много свободного пространства.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is the steppe?",
+    "options": [
+     "A high mountain region",
+     "A huge area of grass without trees",
+     "A big lake in the south",
+     "A large city in the north"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Горы расположены на юго-востоке и названы отдельно.",
+     "Верно! В тексте: «the steppe — a huge area of grass without trees».",
+     "Озеро Балхаш названо озером, а не степью.",
+     "Степь — это тип местности, а не город."
+    ],
+    "passage": "Kazakhstan at a glance\nKazakhstan is a big country in Central Asia. It is the ninth-largest country in the world, but only about twenty million people live there, so there is a lot of open space. The capital city is Astana, and the largest city is Almaty.\nMost of the country is flat. In the centre and the north there is the steppe — a huge area of grass without trees. In the south-east there are high mountains, and there are many lakes, for example Lake Balkhash. The weather is continental: winters are long and very cold, and summers are hot and dry.\nThe state language is Kazakh, and Russian is also widely used. People are famous for their hospitality. When guests come, families usually offer tea, bread and sweets, and often a big dinner. One of the most popular national holidays is Nauryz, which people celebrate in March. It marks the beginning of spring. On this day people wear traditional clothes, cook special food and go to big street festivals. A traditional musical instrument is the dombra, and many children learn to play it at school.",
+    "conspect": "Определение слова часто стоит после тире или запятой: ищите пояснение рядом с незнакомым словом.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is the weather like in summer?",
+    "options": [
+     "Hot and dry",
+     "Cool and rainy",
+     "Warm and snowy",
+     "Cold and windy"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В тексте: «summers are hot and dry».",
+     "Это противоположно тексту: летом жарко и сухо.",
+     "Снег летом не упоминается.",
+     "Холодным и ветреным в тексте названа зима, а не лето, причём о ветре не говорится."
+    ],
+    "passage": "Kazakhstan at a glance\nKazakhstan is a big country in Central Asia. It is the ninth-largest country in the world, but only about twenty million people live there, so there is a lot of open space. The capital city is Astana, and the largest city is Almaty.\nMost of the country is flat. In the centre and the north there is the steppe — a huge area of grass without trees. In the south-east there are high mountains, and there are many lakes, for example Lake Balkhash. The weather is continental: winters are long and very cold, and summers are hot and dry.\nThe state language is Kazakh, and Russian is also widely used. People are famous for their hospitality. When guests come, families usually offer tea, bread and sweets, and often a big dinner. One of the most popular national holidays is Nauryz, which people celebrate in March. It marks the beginning of spring. On this day people wear traditional clothes, cook special food and go to big street festivals. A traditional musical instrument is the dombra, and many children learn to play it at school.",
+    "conspect": "Для вопросов о погоде ищите слова winter, summer, hot, cold, dry, rainy и сопоставляйте с нужным сезоном.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Which statement about languages is true?",
+    "options": [
+     "Only Russian is spoken in the country",
+     "English is the state language",
+     "Kazakh is used only at school",
+     "Kazakh is the state language and Russian is also widely used"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Это противоречит тексту: государственный язык — казахский.",
+     "Об английском как государственном языке в тексте ничего нет.",
+     "Употребление казахского только в школе в тексте не утверждается.",
+     "Верно! В тексте: «The state language is Kazakh, and Russian is also widely used»."
+    ],
+    "passage": "Kazakhstan at a glance\nKazakhstan is a big country in Central Asia. It is the ninth-largest country in the world, but only about twenty million people live there, so there is a lot of open space. The capital city is Astana, and the largest city is Almaty.\nMost of the country is flat. In the centre and the north there is the steppe — a huge area of grass without trees. In the south-east there are high mountains, and there are many lakes, for example Lake Balkhash. The weather is continental: winters are long and very cold, and summers are hot and dry.\nThe state language is Kazakh, and Russian is also widely used. People are famous for their hospitality. When guests come, families usually offer tea, bread and sweets, and often a big dinner. One of the most popular national holidays is Nauryz, which people celebrate in March. It marks the beginning of spring. On this day people wear traditional clothes, cook special food and go to big street festivals. A traditional musical instrument is the dombra, and many children learn to play it at school.",
+    "conspect": "В заданиях True/False подозрительны слова only, never, always: проверяйте, нет ли их в тексте.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What do families usually offer to guests?",
+    "options": [
+     "Only fruit",
+     "Only coffee",
+     "Tea, bread and sweets, and often a big dinner",
+     "Nothing special"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Фрукты в тексте не названы.",
+     "Кофе в тексте не упоминается.",
+     "Верно! В тексте: «families usually offer tea, bread and sweets, and often a big dinner».",
+     "В тексте сказано, что люди известны гостеприимством, то есть угощение обязательно."
+    ],
+    "passage": "Kazakhstan at a glance\nKazakhstan is a big country in Central Asia. It is the ninth-largest country in the world, but only about twenty million people live there, so there is a lot of open space. The capital city is Astana, and the largest city is Almaty.\nMost of the country is flat. In the centre and the north there is the steppe — a huge area of grass without trees. In the south-east there are high mountains, and there are many lakes, for example Lake Balkhash. The weather is continental: winters are long and very cold, and summers are hot and dry.\nThe state language is Kazakh, and Russian is also widely used. People are famous for their hospitality. When guests come, families usually offer tea, bread and sweets, and often a big dinner. One of the most popular national holidays is Nauryz, which people celebrate in March. It marks the beginning of spring. On this day people wear traditional clothes, cook special food and go to big street festivals. A traditional musical instrument is the dombra, and many children learn to play it at school.",
+    "conspect": "Обратите внимание на слова usually и often: они показывают типичную ситуацию, а не единичный случай.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What does Nauryz mark?",
+    "options": [
+     "The end of the school year",
+     "The beginning of spring",
+     "The New Year in January",
+     "The harvest"
+    ],
+    "correct": 1,
+    "explanations": [
+     "О конце учебного года в тексте не говорится.",
+     "Верно! В тексте: «It marks the beginning of spring».",
+     "Науруз отмечают в марте, а не в январе.",
+     "Об урожае в тексте не говорится."
+    ],
+    "passage": "Kazakhstan at a glance\nKazakhstan is a big country in Central Asia. It is the ninth-largest country in the world, but only about twenty million people live there, so there is a lot of open space. The capital city is Astana, and the largest city is Almaty.\nMost of the country is flat. In the centre and the north there is the steppe — a huge area of grass without trees. In the south-east there are high mountains, and there are many lakes, for example Lake Balkhash. The weather is continental: winters are long and very cold, and summers are hot and dry.\nThe state language is Kazakh, and Russian is also widely used. People are famous for their hospitality. When guests come, families usually offer tea, bread and sweets, and often a big dinner. One of the most popular national holidays is Nauryz, which people celebrate in March. It marks the beginning of spring. On this day people wear traditional clothes, cook special food and go to big street festivals. A traditional musical instrument is the dombra, and many children learn to play it at school.",
+    "conspect": "mark в значении «отмечать, знаменовать»: Nauryz marks the beginning of spring.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is the main idea of the text?",
+    "options": [
+     "It gives general information about the geography, climate and traditions of Kazakhstan",
+     "It tells the history of the city of Astana",
+     "It gives advice to tourists visiting Almaty",
+     "It describes climate problems in Central Asia"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Текст кратко рассказывает о географии, климате, языках и традициях Казахстана.",
+     "История Астаны в тексте не рассматривается.",
+     "Советов туристам в тексте нет.",
+     "Проблемы климата в тексте не обсуждаются."
+    ],
+    "passage": "Kazakhstan at a glance\nKazakhstan is a big country in Central Asia. It is the ninth-largest country in the world, but only about twenty million people live there, so there is a lot of open space. The capital city is Astana, and the largest city is Almaty.\nMost of the country is flat. In the centre and the north there is the steppe — a huge area of grass without trees. In the south-east there are high mountains, and there are many lakes, for example Lake Balkhash. The weather is continental: winters are long and very cold, and summers are hot and dry.\nThe state language is Kazakh, and Russian is also widely used. People are famous for their hospitality. When guests come, families usually offer tea, bread and sweets, and often a big dinner. One of the most popular national holidays is Nauryz, which people celebrate in March. It marks the beginning of spring. On this day people wear traditional clothes, cook special food and go to big street festivals. A traditional musical instrument is the dombra, and many children learn to play it at school.",
+    "conspect": "Главная идея охватывает весь текст, а не одну деталь. Проверьте, что вариант объединяет все абзацы.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "How old is Madina Seitova?",
+    "options": [
+     "27",
+     "31",
+     "35",
+     "29"
+    ],
+    "correct": 3,
+    "explanations": [
+     "27 лет — в тексте такого числа нет.",
+     "31 год — в тексте такого числа нет.",
+     "35 лет — в тексте такого числа нет.",
+     "Верно! В тексте: «Madina Seitova is 29 years old»."
+    ],
+    "passage": "A day in the life of a young scientist\nMadina Seitova is 29 years old and works as a researcher at a university laboratory. She studies the quality of water in rivers and lakes. People often think that scientists spend all day in white coats looking at test tubes, but Madina says her job is much more varied.\nHer day usually starts at 7.30 with a long walk to the university, because she believes it helps her think clearly. At 8.30 she checks her emails and reads new scientific articles. Twice a week she goes out of the city with two students to collect water samples. This part of the job is her favourite, although it can be tiring, especially in cold weather. Back in the laboratory she tests the samples and enters the results into a computer.\nIn the afternoon Madina often teaches. She is giving a course for second-year students on environmental science. \"Students ask difficult questions,\" she says, \"and sometimes I have to admit that I don't know the answer. Then we look for it together.\" She finishes work at about six, but when an important experiment is running she sometimes stays until late at night.\nIn her free time Madina plays the piano and goes hiking. She hopes that her research will help local authorities to keep rivers cleaner. \"Science is slow,\" she says, \"but small results can change a lot.\"",
+    "conspect": "Числа, имена и даты — самые простые детали: находите их прямым поиском по тексту.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What does Madina study?",
+    "options": [
+     "Air pollution in cities",
+     "Plants in the mountains",
+     "The quality of water in rivers and lakes",
+     "Animals in the steppe"
+    ],
+    "correct": 2,
+    "explanations": [
+     "О загрязнении воздуха в тексте не говорится.",
+     "О растениях в горах в тексте не говорится.",
+     "Верно! В тексте: «She studies the quality of water in rivers and lakes».",
+     "О животных в степи в тексте не говорится."
+    ],
+    "passage": "A day in the life of a young scientist\nMadina Seitova is 29 years old and works as a researcher at a university laboratory. She studies the quality of water in rivers and lakes. People often think that scientists spend all day in white coats looking at test tubes, but Madina says her job is much more varied.\nHer day usually starts at 7.30 with a long walk to the university, because she believes it helps her think clearly. At 8.30 she checks her emails and reads new scientific articles. Twice a week she goes out of the city with two students to collect water samples. This part of the job is her favourite, although it can be tiring, especially in cold weather. Back in the laboratory she tests the samples and enters the results into a computer.\nIn the afternoon Madina often teaches. She is giving a course for second-year students on environmental science. \"Students ask difficult questions,\" she says, \"and sometimes I have to admit that I don't know the answer. Then we look for it together.\" She finishes work at about six, but when an important experiment is running she sometimes stays until late at night.\nIn her free time Madina plays the piano and goes hiking. She hopes that her research will help local authorities to keep rivers cleaner. \"Science is slow,\" she says, \"but small results can change a lot.\"",
+    "conspect": "Вопрос о теме работы обычно связан с первым абзацем текста.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Why does Madina walk to the university?",
+    "options": [
+     "The bus is too expensive",
+     "She believes it helps her think clearly",
+     "She lives next to the university",
+     "She has no car"
+    ],
+    "correct": 1,
+    "explanations": [
+     "О цене автобуса в тексте не говорится.",
+     "Верно! В тексте: «a long walk to the university, because she believes it helps her think clearly».",
+     "В тексте сказано, что прогулка длинная (long), значит, она живёт не рядом.",
+     "О машине в тексте не говорится."
+    ],
+    "passage": "A day in the life of a young scientist\nMadina Seitova is 29 years old and works as a researcher at a university laboratory. She studies the quality of water in rivers and lakes. People often think that scientists spend all day in white coats looking at test tubes, but Madina says her job is much more varied.\nHer day usually starts at 7.30 with a long walk to the university, because she believes it helps her think clearly. At 8.30 she checks her emails and reads new scientific articles. Twice a week she goes out of the city with two students to collect water samples. This part of the job is her favourite, although it can be tiring, especially in cold weather. Back in the laboratory she tests the samples and enters the results into a computer.\nIn the afternoon Madina often teaches. She is giving a course for second-year students on environmental science. \"Students ask difficult questions,\" she says, \"and sometimes I have to admit that I don't know the answer. Then we look for it together.\" She finishes work at about six, but when an important experiment is running she sometimes stays until late at night.\nIn her free time Madina plays the piano and goes hiking. She hopes that her research will help local authorities to keep rivers cleaner. \"Science is slow,\" she says, \"but small results can change a lot.\"",
+    "conspect": "Слово because вводит причину. Сравните её с вариантами, отбросив те, о которых в тексте нет упоминаний.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Which part of her job does Madina like best?",
+    "options": [
+     "Collecting water samples outside the city",
+     "Teaching second-year students",
+     "Reading scientific articles",
+     "Entering results into a computer"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В тексте: «This part of the job is her favourite» — речь о выездах за образцами воды.",
+     "О преподавании она не говорит, что оно любимое.",
+     "Чтение статей — это часть утренних дел, но не любимая.",
+     "Ввод результатов — рутинная работа, о любимой части речь не идёт."
+    ],
+    "passage": "A day in the life of a young scientist\nMadina Seitova is 29 years old and works as a researcher at a university laboratory. She studies the quality of water in rivers and lakes. People often think that scientists spend all day in white coats looking at test tubes, but Madina says her job is much more varied.\nHer day usually starts at 7.30 with a long walk to the university, because she believes it helps her think clearly. At 8.30 she checks her emails and reads new scientific articles. Twice a week she goes out of the city with two students to collect water samples. This part of the job is her favourite, although it can be tiring, especially in cold weather. Back in the laboratory she tests the samples and enters the results into a computer.\nIn the afternoon Madina often teaches. She is giving a course for second-year students on environmental science. \"Students ask difficult questions,\" she says, \"and sometimes I have to admit that I don't know the answer. Then we look for it together.\" She finishes work at about six, but when an important experiment is running she sometimes stays until late at night.\nIn her free time Madina plays the piano and goes hiking. She hopes that her research will help local authorities to keep rivers cleaner. \"Science is slow,\" she says, \"but small results can change a lot.\"",
+    "conspect": "Слова favourite, like best, enjoy указывают на ответ: находите их и смотрите на предшествующее предложение.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What does the word «varied» mean in the first paragraph?",
+    "options": [
+     "Boring and repetitive",
+     "Dangerous and difficult",
+     "Well paid",
+     "Including many different activities"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Это значение противоположно: «varied» — не однообразная.",
+     "Опасность работы в тексте не обсуждается.",
+     "О зарплате в тексте не говорится.",
+     "Верно! «Varied» значит «разнообразный»: работа включает прогулки, поездки, лабораторию и преподавание."
+    ],
+    "passage": "A day in the life of a young scientist\nMadina Seitova is 29 years old and works as a researcher at a university laboratory. She studies the quality of water in rivers and lakes. People often think that scientists spend all day in white coats looking at test tubes, but Madina says her job is much more varied.\nHer day usually starts at 7.30 with a long walk to the university, because she believes it helps her think clearly. At 8.30 she checks her emails and reads new scientific articles. Twice a week she goes out of the city with two students to collect water samples. This part of the job is her favourite, although it can be tiring, especially in cold weather. Back in the laboratory she tests the samples and enters the results into a computer.\nIn the afternoon Madina often teaches. She is giving a course for second-year students on environmental science. \"Students ask difficult questions,\" she says, \"and sometimes I have to admit that I don't know the answer. Then we look for it together.\" She finishes work at about six, but when an important experiment is running she sometimes stays until late at night.\nIn her free time Madina plays the piano and goes hiking. She hopes that her research will help local authorities to keep rivers cleaner. \"Science is slow,\" she says, \"but small results can change a lot.\"",
+    "conspect": "Значение слова по контексту: смотрите на противопоставление (People often think... but... much more varied).",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What does Madina do when students ask a question she cannot answer?",
+    "options": [
+     "She refuses to discuss the question",
+     "She gives them a wrong answer",
+     "She admits it and they look for the answer together",
+     "She changes the topic"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Отказа обсуждать вопрос в тексте нет.",
+     "Неверного ответа она не даёт: она признаёт, что не знает.",
+     "Верно! В тексте: «I have to admit that I don't know the answer. Then we look for it together».",
+     "О смене темы в тексте не говорится."
+    ],
+    "passage": "A day in the life of a young scientist\nMadina Seitova is 29 years old and works as a researcher at a university laboratory. She studies the quality of water in rivers and lakes. People often think that scientists spend all day in white coats looking at test tubes, but Madina says her job is much more varied.\nHer day usually starts at 7.30 with a long walk to the university, because she believes it helps her think clearly. At 8.30 she checks her emails and reads new scientific articles. Twice a week she goes out of the city with two students to collect water samples. This part of the job is her favourite, although it can be tiring, especially in cold weather. Back in the laboratory she tests the samples and enters the results into a computer.\nIn the afternoon Madina often teaches. She is giving a course for second-year students on environmental science. \"Students ask difficult questions,\" she says, \"and sometimes I have to admit that I don't know the answer. Then we look for it together.\" She finishes work at about six, but when an important experiment is running she sometimes stays until late at night.\nIn her free time Madina plays the piano and goes hiking. She hopes that her research will help local authorities to keep rivers cleaner. \"Science is slow,\" she says, \"but small results can change a lot.\"",
+    "conspect": "admit — «признавать». Фраза I have to admit that... показывает честное признание.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Which statement is NOT true according to the text?",
+    "options": [
+     "She goes out of the city twice a week",
+     "She never works in the evening",
+     "She teaches second-year students",
+     "She plays the piano in her free time"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Это утверждение верно: «Twice a week she goes out of the city».",
+     "Верно! Это утверждение неверно: когда идёт важный эксперимент, она иногда остаётся работать до поздней ночи.",
+     "Это утверждение верно: она ведёт курс для студентов второго курса.",
+     "Это утверждение верно: в свободное время она играет на пианино."
+    ],
+    "passage": "A day in the life of a young scientist\nMadina Seitova is 29 years old and works as a researcher at a university laboratory. She studies the quality of water in rivers and lakes. People often think that scientists spend all day in white coats looking at test tubes, but Madina says her job is much more varied.\nHer day usually starts at 7.30 with a long walk to the university, because she believes it helps her think clearly. At 8.30 she checks her emails and reads new scientific articles. Twice a week she goes out of the city with two students to collect water samples. This part of the job is her favourite, although it can be tiring, especially in cold weather. Back in the laboratory she tests the samples and enters the results into a computer.\nIn the afternoon Madina often teaches. She is giving a course for second-year students on environmental science. \"Students ask difficult questions,\" she says, \"and sometimes I have to admit that I don't know the answer. Then we look for it together.\" She finishes work at about six, but when an important experiment is running she sometimes stays until late at night.\nIn her free time Madina plays the piano and goes hiking. She hopes that her research will help local authorities to keep rivers cleaner. \"Science is slow,\" she says, \"but small results can change a lot.\"",
+    "conspect": "В вопросах NOT true ищите вариант, который противоречит тексту. Слова never, always, only часто делают утверждение неверным.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is the main idea of the text?",
+    "options": [
+     "It describes the varied work of a young scientist and her hopes",
+     "It explains how to become a professor",
+     "It warns about the dangers of laboratory work",
+     "It tells the history of water research"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Текст рассказывает о рабочем дне молодого учёного и её надеждах на исследования.",
+     "О пути в профессора в тексте не говорится.",
+     "Об опасности лабораторной работы в тексте не говорится.",
+     "Об истории исследований воды в тексте не говорится."
+    ],
+    "passage": "A day in the life of a young scientist\nMadina Seitova is 29 years old and works as a researcher at a university laboratory. She studies the quality of water in rivers and lakes. People often think that scientists spend all day in white coats looking at test tubes, but Madina says her job is much more varied.\nHer day usually starts at 7.30 with a long walk to the university, because she believes it helps her think clearly. At 8.30 she checks her emails and reads new scientific articles. Twice a week she goes out of the city with two students to collect water samples. This part of the job is her favourite, although it can be tiring, especially in cold weather. Back in the laboratory she tests the samples and enters the results into a computer.\nIn the afternoon Madina often teaches. She is giving a course for second-year students on environmental science. \"Students ask difficult questions,\" she says, \"and sometimes I have to admit that I don't know the answer. Then we look for it together.\" She finishes work at about six, but when an important experiment is running she sometimes stays until late at night.\nIn her free time Madina plays the piano and goes hiking. She hopes that her research will help local authorities to keep rivers cleaner. \"Science is slow,\" she says, \"but small results can change a lot.\"",
+    "conspect": "Главная идея должна подходить ко всем абзацам: распорядок дня, преподавание, хобби, надежды.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is the capital of Australia?",
+    "options": [
+     "Sydney",
+     "Melbourne",
+     "Perth",
+     "Canberra"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Сидней — самый большой город, но не столица: текст прямо исправляет это заблуждение.",
+     "Мельбурн в тексте не упоминается.",
+     "Перт в тексте не упоминается.",
+     "Верно! В тексте: «in fact it is Canberra»."
+    ],
+    "passage": "Australia: a land of contrasts\nMany people think that the capital of Australia is Sydney, but in fact it is Canberra, a planned city built in the early twentieth century. Sydney is the largest city and is famous for its Opera House and its harbour bridge.\nAustralia is the only country that is also a continent. Its landscape is full of contrasts. The centre of the country, called the Outback, is dry and almost empty, with huge red deserts, and the temperature in summer can be above forty degrees. In the east and the south, however, the climate is much milder, and this is where most people live — mainly in big cities near the coast. Because Australia is in the Southern Hemisphere, the seasons are the opposite of those in Europe or Kazakhstan: summer begins in December, and Christmas is often celebrated on the beach.\nThe country is also known for its unique wildlife. Kangaroos, koalas and many other animals live only in Australia. Off the north-east coast lies the Great Barrier Reef, the largest coral reef system in the world. It attracts millions of tourists every year, but scientists are worried because rising sea temperatures damage the coral.\nAboriginal people lived in Australia for tens of thousands of years before Europeans arrived in the late eighteenth century. Today their art and traditions are an important part of Australian culture. English is the main language, and sport — particularly cricket and swimming — plays a big role in everyday life.",
+    "conspect": "Конструкция Many people think..., but in fact... указывает, что правильный ответ — вторая часть.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is Sydney famous for?",
+    "options": [
+     "The Great Barrier Reef",
+     "Its red deserts",
+     "Its Opera House and harbour bridge",
+     "The national parliament"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Большой Барьерный риф находится у северо-восточного побережья, а не в Сиднее.",
+     "Красные пустыни находятся в центре страны (Outback).",
+     "Верно! В тексте: «famous for its Opera House and its harbour bridge».",
+     "О парламенте в тексте не говорится."
+    ],
+    "passage": "Australia: a land of contrasts\nMany people think that the capital of Australia is Sydney, but in fact it is Canberra, a planned city built in the early twentieth century. Sydney is the largest city and is famous for its Opera House and its harbour bridge.\nAustralia is the only country that is also a continent. Its landscape is full of contrasts. The centre of the country, called the Outback, is dry and almost empty, with huge red deserts, and the temperature in summer can be above forty degrees. In the east and the south, however, the climate is much milder, and this is where most people live — mainly in big cities near the coast. Because Australia is in the Southern Hemisphere, the seasons are the opposite of those in Europe or Kazakhstan: summer begins in December, and Christmas is often celebrated on the beach.\nThe country is also known for its unique wildlife. Kangaroos, koalas and many other animals live only in Australia. Off the north-east coast lies the Great Barrier Reef, the largest coral reef system in the world. It attracts millions of tourists every year, but scientists are worried because rising sea temperatures damage the coral.\nAboriginal people lived in Australia for tens of thousands of years before Europeans arrived in the late eighteenth century. Today their art and traditions are an important part of Australian culture. English is the main language, and sport — particularly cricket and swimming — plays a big role in everyday life.",
+    "conspect": "be famous for — «быть известным чем-либо».",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is the Outback like?",
+    "options": [
+     "Green and rainy",
+     "Dry and almost empty",
+     "Crowded and noisy",
+     "Cold and snowy"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Это противоположно тексту: Outback сухой.",
+     "Верно! В тексте: «the Outback, is dry and almost empty».",
+     "Outback почти пустой, а не многолюдный.",
+     "О снеге и холоде в Outback не говорится, там жарко."
+    ],
+    "passage": "Australia: a land of contrasts\nMany people think that the capital of Australia is Sydney, but in fact it is Canberra, a planned city built in the early twentieth century. Sydney is the largest city and is famous for its Opera House and its harbour bridge.\nAustralia is the only country that is also a continent. Its landscape is full of contrasts. The centre of the country, called the Outback, is dry and almost empty, with huge red deserts, and the temperature in summer can be above forty degrees. In the east and the south, however, the climate is much milder, and this is where most people live — mainly in big cities near the coast. Because Australia is in the Southern Hemisphere, the seasons are the opposite of those in Europe or Kazakhstan: summer begins in December, and Christmas is often celebrated on the beach.\nThe country is also known for its unique wildlife. Kangaroos, koalas and many other animals live only in Australia. Off the north-east coast lies the Great Barrier Reef, the largest coral reef system in the world. It attracts millions of tourists every year, but scientists are worried because rising sea temperatures damage the coral.\nAboriginal people lived in Australia for tens of thousands of years before Europeans arrived in the late eighteenth century. Today their art and traditions are an important part of Australian culture. English is the main language, and sport — particularly cricket and swimming — plays a big role in everyday life.",
+    "conspect": "Названия регионов (the Outback) часто сопровождаются пояснением в том же предложении.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Why do Australians often celebrate Christmas on the beach?",
+    "options": [
+     "Because summer begins in December in the Southern Hemisphere",
+     "Because they prefer the sea to the mountains",
+     "Because winters are warm in Europe",
+     "Because it is an old European tradition"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Текст объясняет: Австралия в Южном полушарии, сезоны противоположны, и лето начинается в декабре.",
+     "Предпочтения моря перед горами в тексте не названы как причина.",
+     "О зимах в Европе говорится лишь, что сезоны противоположны, но не как причина.",
+     "Традиция не европейская: причина в климате и времени года."
+    ],
+    "passage": "Australia: a land of contrasts\nMany people think that the capital of Australia is Sydney, but in fact it is Canberra, a planned city built in the early twentieth century. Sydney is the largest city and is famous for its Opera House and its harbour bridge.\nAustralia is the only country that is also a continent. Its landscape is full of contrasts. The centre of the country, called the Outback, is dry and almost empty, with huge red deserts, and the temperature in summer can be above forty degrees. In the east and the south, however, the climate is much milder, and this is where most people live — mainly in big cities near the coast. Because Australia is in the Southern Hemisphere, the seasons are the opposite of those in Europe or Kazakhstan: summer begins in December, and Christmas is often celebrated on the beach.\nThe country is also known for its unique wildlife. Kangaroos, koalas and many other animals live only in Australia. Off the north-east coast lies the Great Barrier Reef, the largest coral reef system in the world. It attracts millions of tourists every year, but scientists are worried because rising sea temperatures damage the coral.\nAboriginal people lived in Australia for tens of thousands of years before Europeans arrived in the late eighteenth century. Today their art and traditions are an important part of Australian culture. English is the main language, and sport — particularly cricket and swimming — plays a big role in everyday life.",
+    "conspect": "Причину нужно связать из нескольких предложений: Southern Hemisphere → seasons opposite → summer in December → Christmas on the beach.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Why are scientists worried about the Great Barrier Reef?",
+    "options": [
+     "There are too few tourists",
+     "The water is too deep",
+     "Large ships have stopped visiting",
+     "Rising sea temperatures damage the coral"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Туристов много (millions), а не мало.",
+     "О глубине воды в тексте не говорится.",
+     "О кораблях в тексте не говорится.",
+     "Верно! В тексте: «scientists are worried because rising sea temperatures damage the coral»."
+    ],
+    "passage": "Australia: a land of contrasts\nMany people think that the capital of Australia is Sydney, but in fact it is Canberra, a planned city built in the early twentieth century. Sydney is the largest city and is famous for its Opera House and its harbour bridge.\nAustralia is the only country that is also a continent. Its landscape is full of contrasts. The centre of the country, called the Outback, is dry and almost empty, with huge red deserts, and the temperature in summer can be above forty degrees. In the east and the south, however, the climate is much milder, and this is where most people live — mainly in big cities near the coast. Because Australia is in the Southern Hemisphere, the seasons are the opposite of those in Europe or Kazakhstan: summer begins in December, and Christmas is often celebrated on the beach.\nThe country is also known for its unique wildlife. Kangaroos, koalas and many other animals live only in Australia. Off the north-east coast lies the Great Barrier Reef, the largest coral reef system in the world. It attracts millions of tourists every year, but scientists are worried because rising sea temperatures damage the coral.\nAboriginal people lived in Australia for tens of thousands of years before Europeans arrived in the late eighteenth century. Today their art and traditions are an important part of Australian culture. English is the main language, and sport — particularly cricket and swimming — plays a big role in everyday life.",
+    "conspect": "Слова worried because вводят причину беспокойства: ответ стоит сразу после because.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What does the word «unique» mean in the text?",
+    "options": [
+     "Very old",
+     "Dangerous",
+     "Found only in one place",
+     "Extremely popular"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Возраст животных в тексте не обсуждается.",
+     "Об опасности животных в тексте не говорится.",
+     "Верно! «Unique wildlife» — уникальная живая природа; далее поясняется: животные живут только в Австралии (live only in Australia).",
+     "Популярность — другое значение; здесь речь об уникальности."
+    ],
+    "passage": "Australia: a land of contrasts\nMany people think that the capital of Australia is Sydney, but in fact it is Canberra, a planned city built in the early twentieth century. Sydney is the largest city and is famous for its Opera House and its harbour bridge.\nAustralia is the only country that is also a continent. Its landscape is full of contrasts. The centre of the country, called the Outback, is dry and almost empty, with huge red deserts, and the temperature in summer can be above forty degrees. In the east and the south, however, the climate is much milder, and this is where most people live — mainly in big cities near the coast. Because Australia is in the Southern Hemisphere, the seasons are the opposite of those in Europe or Kazakhstan: summer begins in December, and Christmas is often celebrated on the beach.\nThe country is also known for its unique wildlife. Kangaroos, koalas and many other animals live only in Australia. Off the north-east coast lies the Great Barrier Reef, the largest coral reef system in the world. It attracts millions of tourists every year, but scientists are worried because rising sea temperatures damage the coral.\nAboriginal people lived in Australia for tens of thousands of years before Europeans arrived in the late eighteenth century. Today their art and traditions are an important part of Australian culture. English is the main language, and sport — particularly cricket and swimming — plays a big role in everyday life.",
+    "conspect": "Значение слова подсказывает следующее предложение: unique wildlife → live only in Australia.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Which statement is true according to the text?",
+    "options": [
+     "Most Australians live in the Outback",
+     "Most Australians live in big cities near the coast",
+     "Canberra is the largest city",
+     "Aboriginal people arrived after the Europeans"
+    ],
+    "correct": 1,
+    "explanations": [
+     "В Outback почти никто не живёт: он «almost empty».",
+     "Верно! В тексте: «this is where most people live — mainly in big cities near the coast».",
+     "Самый большой город — Сидней, а не Канберра.",
+     "Аборигены жили в Австралии десятки тысяч лет до прибытия европейцев."
+    ],
+    "passage": "Australia: a land of contrasts\nMany people think that the capital of Australia is Sydney, but in fact it is Canberra, a planned city built in the early twentieth century. Sydney is the largest city and is famous for its Opera House and its harbour bridge.\nAustralia is the only country that is also a continent. Its landscape is full of contrasts. The centre of the country, called the Outback, is dry and almost empty, with huge red deserts, and the temperature in summer can be above forty degrees. In the east and the south, however, the climate is much milder, and this is where most people live — mainly in big cities near the coast. Because Australia is in the Southern Hemisphere, the seasons are the opposite of those in Europe or Kazakhstan: summer begins in December, and Christmas is often celebrated on the beach.\nThe country is also known for its unique wildlife. Kangaroos, koalas and many other animals live only in Australia. Off the north-east coast lies the Great Barrier Reef, the largest coral reef system in the world. It attracts millions of tourists every year, but scientists are worried because rising sea temperatures damage the coral.\nAboriginal people lived in Australia for tens of thousands of years before Europeans arrived in the late eighteenth century. Today their art and traditions are an important part of Australian culture. English is the main language, and sport — particularly cricket and swimming — plays a big role in everyday life.",
+    "conspect": "В заданиях True/False сверяйте каждое утверждение с конкретным предложением текста.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is the main idea of the text?",
+    "options": [
+     "Australia is a country of contrasts in nature, climate and culture",
+     "Australia has the best sports in the world",
+     "The Great Barrier Reef is in danger",
+     "Europeans discovered Australia in the eighteenth century"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Заголовок и содержание показывают контрасты: города и Outback, климат, дикая природа, культура.",
+     "О «лучших» видах спорта в тексте не говорится.",
+     "Риф — лишь одна из деталей.",
+     "Прибытие европейцев — лишь одна из деталей."
+    ],
+    "passage": "Australia: a land of contrasts\nMany people think that the capital of Australia is Sydney, but in fact it is Canberra, a planned city built in the early twentieth century. Sydney is the largest city and is famous for its Opera House and its harbour bridge.\nAustralia is the only country that is also a continent. Its landscape is full of contrasts. The centre of the country, called the Outback, is dry and almost empty, with huge red deserts, and the temperature in summer can be above forty degrees. In the east and the south, however, the climate is much milder, and this is where most people live — mainly in big cities near the coast. Because Australia is in the Southern Hemisphere, the seasons are the opposite of those in Europe or Kazakhstan: summer begins in December, and Christmas is often celebrated on the beach.\nThe country is also known for its unique wildlife. Kangaroos, koalas and many other animals live only in Australia. Off the north-east coast lies the Great Barrier Reef, the largest coral reef system in the world. It attracts millions of tourists every year, but scientists are worried because rising sea temperatures damage the coral.\nAboriginal people lived in Australia for tens of thousands of years before Europeans arrived in the late eighteenth century. Today their art and traditions are an important part of Australian culture. English is the main language, and sport — particularly cricket and swimming — plays a big role in everyday life.",
+    "conspect": "Заголовок (a land of contrasts) почти всегда подсказывает главную идею.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "How has online education changed over the past decade?",
+    "options": [
+     "It has become less popular",
+     "It has disappeared from universities",
+     "It has replaced all traditional lectures",
+     "It has become a normal part of university life"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Это противоречит тексту: онлайн-образование стало обычным.",
+     "Это противоречит тексту: оно не исчезло.",
+     "В тексте нет утверждения, что оно заменило все традиционные лекции.",
+     "Верно! В тексте: «changed from an interesting experiment into a normal part of university life»."
+    ],
+    "passage": "Learning online: opportunities and challenges\nOver the past decade online education has changed from an interesting experiment into a normal part of university life. Today students can watch lectures recorded by professors in other countries, take exams on a computer and discuss ideas with classmates they have never met in person.\nThe advantages are obvious. First, online courses give students flexibility: they can study at any time and in any place, which is especially valuable for people who work or have families. Second, they are often cheaper than traditional courses, because students do not have to pay for accommodation or travel. Third, they open access to knowledge: a student from a small town can follow the same course as someone studying in a capital city.\nHowever, online learning also has serious disadvantages. Many students find it difficult to stay motivated without a teacher in the classroom and a fixed timetable. According to some surveys, fewer than half of the people who start a free online course actually finish it. Others complain about loneliness, because they miss the everyday contact with classmates. Moreover, not everyone has a fast internet connection or a quiet place to work, so online education can increase inequality instead of reducing it.\nExperts therefore suggest a combined approach, sometimes called blended learning. Students attend some classes in person and complete the rest online. This model keeps the human contact that many learners need, while using the flexibility of technology. As one professor put it, \"Technology should support good teaching, not replace it.\"",
+    "conspect": "Конструкция changed from... into... показывает направление изменения: из эксперимента — в обычную часть жизни.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Which of the following is NOT mentioned as an advantage of online courses?",
+    "options": [
+     "Flexibility in time and place",
+     "Lower cost",
+     "Higher exam grades",
+     "Access to knowledge for students from small towns"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Гибкость названа первым преимуществом.",
+     "Меньшая стоимость названа вторым преимуществом.",
+     "Верно! Об оценках на экзаменах как преимуществе в тексте не говорится.",
+     "Доступ к знаниям для студентов из небольших городов назван третьим преимуществом."
+    ],
+    "passage": "Learning online: opportunities and challenges\nOver the past decade online education has changed from an interesting experiment into a normal part of university life. Today students can watch lectures recorded by professors in other countries, take exams on a computer and discuss ideas with classmates they have never met in person.\nThe advantages are obvious. First, online courses give students flexibility: they can study at any time and in any place, which is especially valuable for people who work or have families. Second, they are often cheaper than traditional courses, because students do not have to pay for accommodation or travel. Third, they open access to knowledge: a student from a small town can follow the same course as someone studying in a capital city.\nHowever, online learning also has serious disadvantages. Many students find it difficult to stay motivated without a teacher in the classroom and a fixed timetable. According to some surveys, fewer than half of the people who start a free online course actually finish it. Others complain about loneliness, because they miss the everyday contact with classmates. Moreover, not everyone has a fast internet connection or a quiet place to work, so online education can increase inequality instead of reducing it.\nExperts therefore suggest a combined approach, sometimes called blended learning. Students attend some classes in person and complete the rest online. This model keeps the human contact that many learners need, while using the flexibility of technology. As one professor put it, \"Technology should support good teaching, not replace it.\"",
+    "conspect": "В вопросах NOT mentioned сверяйте каждый вариант с текстом и выбирайте тот, которого в тексте нет.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Why are online courses often cheaper than traditional courses?",
+    "options": [
+     "Teachers work without payment",
+     "Students do not have to pay for accommodation or travel",
+     "There are no exams",
+     "All books are free"
+    ],
+    "correct": 1,
+    "explanations": [
+     "О бесплатной работе преподавателей в тексте не говорится.",
+     "Верно! В тексте: «students do not have to pay for accommodation or travel».",
+     "Об отсутствии экзаменов в тексте не говорится, наоборот, экзамены сдают на компьютере.",
+     "О бесплатных книгах в тексте не говорится."
+    ],
+    "passage": "Learning online: opportunities and challenges\nOver the past decade online education has changed from an interesting experiment into a normal part of university life. Today students can watch lectures recorded by professors in other countries, take exams on a computer and discuss ideas with classmates they have never met in person.\nThe advantages are obvious. First, online courses give students flexibility: they can study at any time and in any place, which is especially valuable for people who work or have families. Second, they are often cheaper than traditional courses, because students do not have to pay for accommodation or travel. Third, they open access to knowledge: a student from a small town can follow the same course as someone studying in a capital city.\nHowever, online learning also has serious disadvantages. Many students find it difficult to stay motivated without a teacher in the classroom and a fixed timetable. According to some surveys, fewer than half of the people who start a free online course actually finish it. Others complain about loneliness, because they miss the everyday contact with classmates. Moreover, not everyone has a fast internet connection or a quiet place to work, so online education can increase inequality instead of reducing it.\nExperts therefore suggest a combined approach, sometimes called blended learning. Students attend some classes in person and complete the rest online. This model keeps the human contact that many learners need, while using the flexibility of technology. As one professor put it, \"Technology should support good teaching, not replace it.\"",
+    "conspect": "Причину снижения цены ищите после слова because: в тексте она связана с жильём и поездками.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What problem do many students face with online learning?",
+    "options": [
+     "It is difficult to stay motivated without a teacher and a fixed timetable",
+     "They have too many classmates",
+     "They cannot choose their courses",
+     "They have no exams"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В тексте: «Many students find it difficult to stay motivated without a teacher in the classroom and a fixed timetable».",
+     "Проблема в том, что одногруппников им не хватает, а не слишком много.",
+     "О невозможности выбирать курсы в тексте не говорится.",
+     "Экзамены есть: их сдают на компьютере."
+    ],
+    "passage": "Learning online: opportunities and challenges\nOver the past decade online education has changed from an interesting experiment into a normal part of university life. Today students can watch lectures recorded by professors in other countries, take exams on a computer and discuss ideas with classmates they have never met in person.\nThe advantages are obvious. First, online courses give students flexibility: they can study at any time and in any place, which is especially valuable for people who work or have families. Second, they are often cheaper than traditional courses, because students do not have to pay for accommodation or travel. Third, they open access to knowledge: a student from a small town can follow the same course as someone studying in a capital city.\nHowever, online learning also has serious disadvantages. Many students find it difficult to stay motivated without a teacher in the classroom and a fixed timetable. According to some surveys, fewer than half of the people who start a free online course actually finish it. Others complain about loneliness, because they miss the everyday contact with classmates. Moreover, not everyone has a fast internet connection or a quiet place to work, so online education can increase inequality instead of reducing it.\nExperts therefore suggest a combined approach, sometimes called blended learning. Students attend some classes in person and complete the rest online. This model keeps the human contact that many learners need, while using the flexibility of technology. As one professor put it, \"Technology should support good teaching, not replace it.\"",
+    "conspect": "Слова disadvantages, difficult, complain указывают на проблемы: читайте абзац после however.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "According to some surveys, what happens to many people who start a free online course?",
+    "options": [
+     "Most of them finish it successfully",
+     "All of them pay for it later",
+     "Nobody finishes it",
+     "Fewer than half of them finish it"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Это противоположно тексту: меньше половины заканчивают курс.",
+     "Об оплате позднее в тексте не говорится.",
+     "Это слишком категорично: часть людей курс заканчивает.",
+     "Верно! В тексте: «fewer than half of the people who start a free online course actually finish it»."
+    ],
+    "passage": "Learning online: opportunities and challenges\nOver the past decade online education has changed from an interesting experiment into a normal part of university life. Today students can watch lectures recorded by professors in other countries, take exams on a computer and discuss ideas with classmates they have never met in person.\nThe advantages are obvious. First, online courses give students flexibility: they can study at any time and in any place, which is especially valuable for people who work or have families. Second, they are often cheaper than traditional courses, because students do not have to pay for accommodation or travel. Third, they open access to knowledge: a student from a small town can follow the same course as someone studying in a capital city.\nHowever, online learning also has serious disadvantages. Many students find it difficult to stay motivated without a teacher in the classroom and a fixed timetable. According to some surveys, fewer than half of the people who start a free online course actually finish it. Others complain about loneliness, because they miss the everyday contact with classmates. Moreover, not everyone has a fast internet connection or a quiet place to work, so online education can increase inequality instead of reducing it.\nExperts therefore suggest a combined approach, sometimes called blended learning. Students attend some classes in person and complete the rest online. This model keeps the human contact that many learners need, while using the flexibility of technology. As one professor put it, \"Technology should support good teaching, not replace it.\"",
+    "conspect": "fewer than half — «меньше половины». Слова nobody, all, everyone в вариантах — чаще всего слишком категоричны.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What does the word «inequality» mean in the third paragraph?",
+    "options": [
+     "A situation in which all students have the same chances",
+     "A type of exam",
+     "A situation in which some people have more opportunities than others",
+     "A cheap form of education"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Это определение равенства — противоположное значение.",
+     "Inequality не является видом экзамена.",
+     "Верно! Inequality — неравенство: у одних людей больше возможностей (быстрый интернет, тихое место), чем у других.",
+     "Inequality не означает дешёвое образование."
+    ],
+    "passage": "Learning online: opportunities and challenges\nOver the past decade online education has changed from an interesting experiment into a normal part of university life. Today students can watch lectures recorded by professors in other countries, take exams on a computer and discuss ideas with classmates they have never met in person.\nThe advantages are obvious. First, online courses give students flexibility: they can study at any time and in any place, which is especially valuable for people who work or have families. Second, they are often cheaper than traditional courses, because students do not have to pay for accommodation or travel. Third, they open access to knowledge: a student from a small town can follow the same course as someone studying in a capital city.\nHowever, online learning also has serious disadvantages. Many students find it difficult to stay motivated without a teacher in the classroom and a fixed timetable. According to some surveys, fewer than half of the people who start a free online course actually finish it. Others complain about loneliness, because they miss the everyday contact with classmates. Moreover, not everyone has a fast internet connection or a quiet place to work, so online education can increase inequality instead of reducing it.\nExperts therefore suggest a combined approach, sometimes called blended learning. Students attend some classes in person and complete the rest online. This model keeps the human contact that many learners need, while using the flexibility of technology. As one professor put it, \"Technology should support good teaching, not replace it.\"",
+    "conspect": "Приставка in- часто даёт отрицание: equality (равенство) → inequality (неравенство).",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is «blended learning»?",
+    "options": [
+     "Studying only online in a group",
+     "A combination of classes in person and online study",
+     "Passing exams without lectures",
+     "Studying in groups of mixed ages"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Только онлайн-обучение — не смешанное.",
+     "Верно! В тексте: «Students attend some classes in person and complete the rest online».",
+     "Об экзаменах без лекций в тексте не говорится.",
+     "Возраст групп в тексте не упоминается."
+    ],
+    "passage": "Learning online: opportunities and challenges\nOver the past decade online education has changed from an interesting experiment into a normal part of university life. Today students can watch lectures recorded by professors in other countries, take exams on a computer and discuss ideas with classmates they have never met in person.\nThe advantages are obvious. First, online courses give students flexibility: they can study at any time and in any place, which is especially valuable for people who work or have families. Second, they are often cheaper than traditional courses, because students do not have to pay for accommodation or travel. Third, they open access to knowledge: a student from a small town can follow the same course as someone studying in a capital city.\nHowever, online learning also has serious disadvantages. Many students find it difficult to stay motivated without a teacher in the classroom and a fixed timetable. According to some surveys, fewer than half of the people who start a free online course actually finish it. Others complain about loneliness, because they miss the everyday contact with classmates. Moreover, not everyone has a fast internet connection or a quiet place to work, so online education can increase inequality instead of reducing it.\nExperts therefore suggest a combined approach, sometimes called blended learning. Students attend some classes in person and complete the rest online. This model keeps the human contact that many learners need, while using the flexibility of technology. As one professor put it, \"Technology should support good teaching, not replace it.\"",
+    "conspect": "Термин после слов called, known as, so-called обычно объясняется в следующем предложении.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is the author's main conclusion?",
+    "options": [
+     "Online education has both advantages and problems, so a combined approach is best",
+     "Online education is always better than traditional education",
+     "Traditional education is much better than online education",
+     "Online education is too expensive for most students"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Автор перечисляет преимущества и проблемы и приходит к выводу о смешанном обучении.",
+     "В тексте нет утверждения, что онлайн-образование всегда лучше.",
+     "В тексте нет утверждения, что традиционное образование намного лучше.",
+     "Дороговизна онлайн-обучения в тексте не называется: наоборот, оно часто дешевле."
+    ],
+    "passage": "Learning online: opportunities and challenges\nOver the past decade online education has changed from an interesting experiment into a normal part of university life. Today students can watch lectures recorded by professors in other countries, take exams on a computer and discuss ideas with classmates they have never met in person.\nThe advantages are obvious. First, online courses give students flexibility: they can study at any time and in any place, which is especially valuable for people who work or have families. Second, they are often cheaper than traditional courses, because students do not have to pay for accommodation or travel. Third, they open access to knowledge: a student from a small town can follow the same course as someone studying in a capital city.\nHowever, online learning also has serious disadvantages. Many students find it difficult to stay motivated without a teacher in the classroom and a fixed timetable. According to some surveys, fewer than half of the people who start a free online course actually finish it. Others complain about loneliness, because they miss the everyday contact with classmates. Moreover, not everyone has a fast internet connection or a quiet place to work, so online education can increase inequality instead of reducing it.\nExperts therefore suggest a combined approach, sometimes called blended learning. Students attend some classes in person and complete the rest online. This model keeps the human contact that many learners need, while using the flexibility of technology. As one professor put it, \"Technology should support good teaching, not replace it.\"",
+    "conspect": "Вывод автора обычно содержится в последнем абзаце (therefore, as one professor put it).",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is the capital of Canada according to the text?",
+    "options": [
+     "Toronto",
+     "Montreal",
+     "Vancouver",
+     "Ottawa"
+    ],
+    "correct": 3,
+    "explanations": [
+     "Торонто текст прямо исключает как столицу.",
+     "Монреаль текст прямо исключает как столицу.",
+     "Ванкувер упомянут как большой город, но не как столица.",
+     "Верно! В тексте: «its capital is Ottawa, not Toronto or Montreal»."
+    ],
+    "passage": "Canada: two languages, many cultures\nCanada is the second-largest country in the world by area, yet its population is only around forty million, and most people live within a few hundred kilometres of the southern border with the United States. The country consists of ten provinces and three territories, and its capital is Ottawa, not Toronto or Montreal, as visitors often assume.\nCanada has two official languages: English and French. The French language is especially strong in the province of Quebec, where it is the first language of most people and where road signs, advertisements and public services are primarily in French. Many Canadians in other provinces study French at school, and government documents are published in both languages. Not everybody is happy with this system, however. Some critics argue that it is expensive, while others fear that French may gradually lose its place in North America.\nCanada is also one of the most multicultural societies in the world. More than one in five Canadians was born in another country, and in big cities such as Toronto and Vancouver dozens of languages are spoken in the streets. Since the 1970s the government has officially supported multiculturalism, encouraging immigrants to keep their traditions while becoming part of the wider society. The country's Indigenous peoples — the First Nations, the Inuit and the Métis — have lived there for thousands of years, and in recent decades Canadians have made a serious effort to recognise the injustice of the past and protect Indigenous languages and rights.\nDespite its cold winters, Canada attracts visitors with its national parks, lakes and mountains. The maple leaf on the national flag has become one of the best-known symbols of the country, and ice hockey is a national passion.",
+    "conspect": "Конструкция X, not Y прямо указывает правильный вариант (X) и неверный (Y).",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Where do most Canadians live?",
+    "options": [
+     "In the cold Arctic north",
+     "In the centre of the country",
+     "Within a few hundred kilometres of the southern border",
+     "Only on the east coast"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Это противоположно тексту: северные районы малонаселены.",
+     "О центре страны в тексте не говорится.",
+     "Верно! В тексте: «most people live within a few hundred kilometres of the southern border with the United States».",
+     "Слово only делает вариант слишком категоричным; в тексте нет такого утверждения."
+    ],
+    "passage": "Canada: two languages, many cultures\nCanada is the second-largest country in the world by area, yet its population is only around forty million, and most people live within a few hundred kilometres of the southern border with the United States. The country consists of ten provinces and three territories, and its capital is Ottawa, not Toronto or Montreal, as visitors often assume.\nCanada has two official languages: English and French. The French language is especially strong in the province of Quebec, where it is the first language of most people and where road signs, advertisements and public services are primarily in French. Many Canadians in other provinces study French at school, and government documents are published in both languages. Not everybody is happy with this system, however. Some critics argue that it is expensive, while others fear that French may gradually lose its place in North America.\nCanada is also one of the most multicultural societies in the world. More than one in five Canadians was born in another country, and in big cities such as Toronto and Vancouver dozens of languages are spoken in the streets. Since the 1970s the government has officially supported multiculturalism, encouraging immigrants to keep their traditions while becoming part of the wider society. The country's Indigenous peoples — the First Nations, the Inuit and the Métis — have lived there for thousands of years, and in recent decades Canadians have made a serious effort to recognise the injustice of the past and protect Indigenous languages and rights.\nDespite its cold winters, Canada attracts visitors with its national parks, lakes and mountains. The maple leaf on the national flag has become one of the best-known symbols of the country, and ice hockey is a national passion.",
+    "conspect": "within a few hundred kilometres — «в нескольких сотнях километров».",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "How is Canada divided administratively?",
+    "options": [
+     "Into three provinces and ten territories",
+     "Into ten provinces and three territories",
+     "Into fifty states",
+     "Into twelve provinces"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Числа перепутаны: в тексте десять провинций и три территории.",
+     "Верно! В тексте: «ten provinces and three territories».",
+     "Пятьдесят штатов — деление США, а не Канады.",
+     "Двенадцать провинций — в тексте названо другое число."
+    ],
+    "passage": "Canada: two languages, many cultures\nCanada is the second-largest country in the world by area, yet its population is only around forty million, and most people live within a few hundred kilometres of the southern border with the United States. The country consists of ten provinces and three territories, and its capital is Ottawa, not Toronto or Montreal, as visitors often assume.\nCanada has two official languages: English and French. The French language is especially strong in the province of Quebec, where it is the first language of most people and where road signs, advertisements and public services are primarily in French. Many Canadians in other provinces study French at school, and government documents are published in both languages. Not everybody is happy with this system, however. Some critics argue that it is expensive, while others fear that French may gradually lose its place in North America.\nCanada is also one of the most multicultural societies in the world. More than one in five Canadians was born in another country, and in big cities such as Toronto and Vancouver dozens of languages are spoken in the streets. Since the 1970s the government has officially supported multiculturalism, encouraging immigrants to keep their traditions while becoming part of the wider society. The country's Indigenous peoples — the First Nations, the Inuit and the Métis — have lived there for thousands of years, and in recent decades Canadians have made a serious effort to recognise the injustice of the past and protect Indigenous languages and rights.\nDespite its cold winters, Canada attracts visitors with its national parks, lakes and mountains. The maple leaf on the national flag has become one of the best-known symbols of the country, and ice hockey is a national passion.",
+    "conspect": "В заданиях с числами проверяйте порядок: ten provinces and three territories — не наоборот.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is true about French in Quebec?",
+    "options": [
+     "It is the first language of most people and is used in public services",
+     "It is forbidden in schools",
+     "It is used only in the family",
+     "It is spoken only by tourists"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! В тексте: «it is the first language of most people» и «public services are primarily in French».",
+     "О запрете французского в школах в тексте не говорится.",
+     "Французский используется в рекламе, на дорожных знаках и в государственных услугах, а не только в семье.",
+     "Французский — родной язык большинства жителей, а не язык туристов."
+    ],
+    "passage": "Canada: two languages, many cultures\nCanada is the second-largest country in the world by area, yet its population is only around forty million, and most people live within a few hundred kilometres of the southern border with the United States. The country consists of ten provinces and three territories, and its capital is Ottawa, not Toronto or Montreal, as visitors often assume.\nCanada has two official languages: English and French. The French language is especially strong in the province of Quebec, where it is the first language of most people and where road signs, advertisements and public services are primarily in French. Many Canadians in other provinces study French at school, and government documents are published in both languages. Not everybody is happy with this system, however. Some critics argue that it is expensive, while others fear that French may gradually lose its place in North America.\nCanada is also one of the most multicultural societies in the world. More than one in five Canadians was born in another country, and in big cities such as Toronto and Vancouver dozens of languages are spoken in the streets. Since the 1970s the government has officially supported multiculturalism, encouraging immigrants to keep their traditions while becoming part of the wider society. The country's Indigenous peoples — the First Nations, the Inuit and the Métis — have lived there for thousands of years, and in recent decades Canadians have made a serious effort to recognise the injustice of the past and protect Indigenous languages and rights.\nDespite its cold winters, Canada attracts visitors with its national parks, lakes and mountains. The maple leaf on the national flag has become one of the best-known symbols of the country, and ice hockey is a national passion.",
+    "conspect": "primarily — «главным образом»; first language — «родной язык».",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "Which criticism of the two-language system is mentioned in the text?",
+    "options": [
+     "It is too difficult for children",
+     "It divides the country into two parts",
+     "It forbids immigrants to speak other languages",
+     "It is expensive"
+    ],
+    "correct": 3,
+    "explanations": [
+     "О трудности для детей в тексте не говорится.",
+     "О разделении страны на две части в тексте не говорится.",
+     "О запрете других языков иммигрантам в тексте не говорится; наоборот, поддерживается мультикультурализм.",
+     "Верно! В тексте: «Some critics argue that it is expensive»."
+    ],
+    "passage": "Canada: two languages, many cultures\nCanada is the second-largest country in the world by area, yet its population is only around forty million, and most people live within a few hundred kilometres of the southern border with the United States. The country consists of ten provinces and three territories, and its capital is Ottawa, not Toronto or Montreal, as visitors often assume.\nCanada has two official languages: English and French. The French language is especially strong in the province of Quebec, where it is the first language of most people and where road signs, advertisements and public services are primarily in French. Many Canadians in other provinces study French at school, and government documents are published in both languages. Not everybody is happy with this system, however. Some critics argue that it is expensive, while others fear that French may gradually lose its place in North America.\nCanada is also one of the most multicultural societies in the world. More than one in five Canadians was born in another country, and in big cities such as Toronto and Vancouver dozens of languages are spoken in the streets. Since the 1970s the government has officially supported multiculturalism, encouraging immigrants to keep their traditions while becoming part of the wider society. The country's Indigenous peoples — the First Nations, the Inuit and the Métis — have lived there for thousands of years, and in recent decades Canadians have made a serious effort to recognise the injustice of the past and protect Indigenous languages and rights.\nDespite its cold winters, Canada attracts visitors with its national parks, lakes and mountains. The maple leaf on the national flag has become one of the best-known symbols of the country, and ice hockey is a national passion.",
+    "conspect": "critics argue that... вводит критику; рядом ещё одна точка зрения (others fear...).",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What does the word «multicultural» mean in the text?",
+    "options": [
+     "Having a very cold climate",
+     "Speaking only two languages",
+     "Consisting of people from many different cultures",
+     "Having a strong government"
+    ],
+    "correct": 2,
+    "explanations": [
+     "Климат не определяет значение слова multicultural.",
+     "Двуязычие — это про официальные языки, а multicultural шире.",
+     "Верно! Далее текст поясняет: более одного из пяти канадцев родились в другой стране, а на улицах звучат десятки языков.",
+     "Сила правительства не связана со значением слова."
+    ],
+    "passage": "Canada: two languages, many cultures\nCanada is the second-largest country in the world by area, yet its population is only around forty million, and most people live within a few hundred kilometres of the southern border with the United States. The country consists of ten provinces and three territories, and its capital is Ottawa, not Toronto or Montreal, as visitors often assume.\nCanada has two official languages: English and French. The French language is especially strong in the province of Quebec, where it is the first language of most people and where road signs, advertisements and public services are primarily in French. Many Canadians in other provinces study French at school, and government documents are published in both languages. Not everybody is happy with this system, however. Some critics argue that it is expensive, while others fear that French may gradually lose its place in North America.\nCanada is also one of the most multicultural societies in the world. More than one in five Canadians was born in another country, and in big cities such as Toronto and Vancouver dozens of languages are spoken in the streets. Since the 1970s the government has officially supported multiculturalism, encouraging immigrants to keep their traditions while becoming part of the wider society. The country's Indigenous peoples — the First Nations, the Inuit and the Métis — have lived there for thousands of years, and in recent decades Canadians have made a serious effort to recognise the injustice of the past and protect Indigenous languages and rights.\nDespite its cold winters, Canada attracts visitors with its national parks, lakes and mountains. The maple leaf on the national flag has become one of the best-known symbols of the country, and ice hockey is a national passion.",
+    "conspect": "multi- означает «много»: multicultural — «многокультурный», multilingual — «многоязычный».",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What does the government's policy of multiculturalism encourage immigrants to do?",
+    "options": [
+     "Forget their traditions",
+     "Keep their traditions while becoming part of the wider society",
+     "Live separately in their own regions",
+     "Speak only English in public"
+    ],
+    "correct": 1,
+    "explanations": [
+     "Это противоположно тексту: традиции сохраняются.",
+     "Верно! В тексте: «encouraging immigrants to keep their traditions while becoming part of the wider society».",
+     "В тексте говорится о включении в общество, а не об обособлении.",
+     "Использовать только английский язык в тексте не предписывается."
+    ],
+    "passage": "Canada: two languages, many cultures\nCanada is the second-largest country in the world by area, yet its population is only around forty million, and most people live within a few hundred kilometres of the southern border with the United States. The country consists of ten provinces and three territories, and its capital is Ottawa, not Toronto or Montreal, as visitors often assume.\nCanada has two official languages: English and French. The French language is especially strong in the province of Quebec, where it is the first language of most people and where road signs, advertisements and public services are primarily in French. Many Canadians in other provinces study French at school, and government documents are published in both languages. Not everybody is happy with this system, however. Some critics argue that it is expensive, while others fear that French may gradually lose its place in North America.\nCanada is also one of the most multicultural societies in the world. More than one in five Canadians was born in another country, and in big cities such as Toronto and Vancouver dozens of languages are spoken in the streets. Since the 1970s the government has officially supported multiculturalism, encouraging immigrants to keep their traditions while becoming part of the wider society. The country's Indigenous peoples — the First Nations, the Inuit and the Métis — have lived there for thousands of years, and in recent decades Canadians have made a serious effort to recognise the injustice of the past and protect Indigenous languages and rights.\nDespite its cold winters, Canada attracts visitors with its national parks, lakes and mountains. The maple leaf on the national flag has become one of the best-known symbols of the country, and ice hockey is a national passion.",
+    "conspect": "while + V-ing показывает два действия одновременно: сохранять традиции и становиться частью общества.",
+    "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
+   },
+   {
+    "q": "What is the main idea of the text?",
+    "options": [
+     "Canada is a large country with linguistic and cultural diversity",
+     "Canada is the coldest country in the world",
+     "Quebec wants to become an independent state",
+     "Ice hockey is the most popular sport in North America"
+    ],
+    "correct": 0,
+    "explanations": [
+     "Верно! Текст рассказывает о двух официальных языках, мультикультурализме и коренных народах Канады.",
+     "Холод упомянут лишь в последнем абзаце как одна из деталей.",
+     "О независимости Квебека в тексте не говорится.",
+     "Хоккей назван лишь в конце как национальная страсть, и о Северной Америке в целом речь не идёт."
+    ],
+    "passage": "Canada: two languages, many cultures\nCanada is the second-largest country in the world by area, yet its population is only around forty million, and most people live within a few hundred kilometres of the southern border with the United States. The country consists of ten provinces and three territories, and its capital is Ottawa, not Toronto or Montreal, as visitors often assume.\nCanada has two official languages: English and French. The French language is especially strong in the province of Quebec, where it is the first language of most people and where road signs, advertisements and public services are primarily in French. Many Canadians in other provinces study French at school, and government documents are published in both languages. Not everybody is happy with this system, however. Some critics argue that it is expensive, while others fear that French may gradually lose its place in North America.\nCanada is also one of the most multicultural societies in the world. More than one in five Canadians was born in another country, and in big cities such as Toronto and Vancouver dozens of languages are spoken in the streets. Since the 1970s the government has officially supported multiculturalism, encouraging immigrants to keep their traditions while becoming part of the wider society. The country's Indigenous peoples — the First Nations, the Inuit and the Métis — have lived there for thousands of years, and in recent decades Canadians have made a serious effort to recognise the injustice of the past and protect Indigenous languages and rights.\nDespite its cold winters, Canada attracts visitors with its national parks, lakes and mountains. The maple leaf on the national flag has become one of the best-known symbols of the country, and ice hockey is a national passion.",
+    "conspect": "Главная идея объединяет большую часть текста: здесь — языки и культуры.",
     "topic": "Reading — 16 вопросов: чтение и понимание академических текстов"
    }
   ]
