@@ -130,7 +130,9 @@ const (
 )
 
 // frenchLang — направления, у которых общий иностранный язык — французский (клиент: FRENCH_LANG_CODES).
-var frenchLang = map[string]bool{"M019": true}
+// Сейчас пусто: у M019 общий язык — английский (профильный остаётся французским). Банки c/lang-fr/* и вся
+// французская логика сохранены; чтобы вернуть общий французский, верните сюда "M019" и в script.js — в FRENCH_LANG_CODES.
+var frenchLang = map[string]bool{}
 
 // FrenchLang — сдаётся ли у направления французский вместо английского.
 func FrenchLang(code string) bool { return frenchLang[code] }

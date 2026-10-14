@@ -41,8 +41,10 @@ const COMMON_SUBJECTS = [
   },
 ];
 
-/* У этих направлений общий иностранный язык — французский (на сервере content.FrenchLang). */
-const FRENCH_LANG_CODES = new Set(['M019']);
+/* У этих направлений общий иностранный язык — французский (на сервере content.FrenchLang).
+   Сейчас пусто: у M019 общий язык — английский (профильный остаётся французским). Чтобы вернуть общий
+   французский, добавьте 'M019' сюда и в content.frenchLang, а в GOP_SUBJECTS.M019 — COMMON_SUBJECTS_FR. */
+const FRENCH_LANG_CODES = new Set([]);
 // Темы общего французского (прогресс подготовки) — названия совпадают с темами библиотеки COMMON_CONSPECTS.french.
 const FRENCH_LANG_TOPICS = [
   "Артикли и слияния",
@@ -2097,7 +2099,8 @@ const GOP_SUBJECTS = {
   // Темы — из официальных спецификаций НЦТ: «Педагогика» (20 тем, 30 заданий) и «Профессионально-ориентированный
   // иностранный язык (французский язык)» (5 тем, 20 заданий, 50 мин). Совпадают с полем topic вопросов M019.json.
   M019: [
-    ...COMMON_SUBJECTS_FR.map(x => x.id === 'lang' ? { ...x, topics: FRENCH_LANG_TOPICS } : x),
+    // общий язык — английский; чтобы вернуть французский: ...COMMON_SUBJECTS_FR.map(x => x.id === 'lang' ? { ...x, topics: FRENCH_LANG_TOPICS } : x),
+    ...COMMON_SUBJECTS,
     { id: 'p1', title: 'Педагогика', sub: 'профессия педагога, методология, воспитание и обучение, ЦПП, технологии', kind: 'profile', topics: [
       "Приоритетная роль образования в современных условиях",
       "Общая характеристика педагогической профессии и деятельности",
@@ -3400,7 +3403,10 @@ function computeProgressForCode(code, user) {
   const subjectTests = results.filter(r => !isKt(r))
     .map(r => ({ score: r.score, total: r.total, date: r.date, pct: r.total ? Math.round((r.score / r.total) * 100) : 0, label: progressSectionLabel(code, r.section) }));
 
-  const stats = (user.topicStats || []).filter(t => t.code === code);
+  // Темы общего французского не показываем там, где общий язык теперь английский (у M019 остались от прежних попыток).
+  const frTopics = new Set(FRENCH_LANG_TOPICS.map(progressNorm));
+  const stats = (user.topicStats || []).filter(t => t.code === code
+    && !(t.section === 'lang' && !FRENCH_LANG_CODES.has(code) && frTopics.has(progressNorm(t.topic))));
   const gopCode = (typeof CONTENT_TO_GOP !== 'undefined' && CONTENT_TO_GOP[code]) || code;
   const gop = GOP_SUBJECTS[gopCode] || [];
   const specFor = s => {

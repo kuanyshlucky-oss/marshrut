@@ -556,65 +556,34 @@ func TestBuildKTProfileOnly(t *testing.T) {
 	}
 }
 
-func TestFrenchLangDirection(t *testing.T) {
+// Общий язык M019 — английский (content.frenchLang пуст); французский сохранён в коде на потом.
+func TestM019GeneralLangIsEnglish(t *testing.T) {
 	s := svc(t)
-	// КТ M019: иностранный язык — французский, банки c/lang-fr/*
 	for _, typeID := range []string{"profile", "nauchped"} {
 		p, err := BuildKT(s, seeded(5), typeID, "M019", "ru", "en")
 		if err != nil {
 			t.Fatal(typeID, err)
 		}
-		if p.Lang != "fr" {
-			t.Fatalf("%s: lang = %q, want fr", typeID, p.Lang)
+		if p.Lang != "en" {
+			t.Fatalf("%s: lang = %q, want en", typeID, p.Lang)
 		}
 		for _, r := range p.Refs {
-			if r.Block == "lang" && !strings.HasPrefix(r.Bank, "c/lang-fr/") {
+			if r.Block == "lang" && !strings.HasPrefix(r.Bank, "c/lang-en/") {
 				t.Fatalf("%s: вопрос блока lang из банка %s", typeID, r.Bank)
 			}
 		}
-		blocks := countBy(p.Refs, func(r Ref) string { return r.Block })
-		if typeID == "nauchped" && (blocks["lang"] != 50 || blocks["logic"] != 30 || blocks["subj1"] != 30 || blocks["subj2"] != 20) {
-			t.Fatalf("блоки: %v", blocks)
-		}
-		if typeID == "profile" && blocks["lang"] != 10 {
-			t.Fatalf("блоки: %v", blocks)
-		}
-	}
-	// другие направления остаются на английском
-	p, err := BuildKT(s, seeded(5), "profile", "M107", "ru", "en")
-	if err != nil || p.Lang != "en" {
-		t.Fatalf("M107: %v lang=%q", err, p.Lang)
 	}
 	sp, err := BuildSubject(s, seeded(5), "M019", "ru", "lang")
-	if err != nil || !strings.Contains(sp.Title, "Французский") {
+	if err != nil || strings.Contains(sp.Title, "Французский") {
 		t.Fatalf("subject lang: %v title=%q", err, sp.Title)
 	}
-	if _, err := BuildKT(s, seeded(5), "profile", "M107", "ru", "fr"); err != ErrBadLanguage {
-		t.Fatalf("fr для M107 должен быть отклонён, err=%v", err)
+	if _, err := BuildKT(s, seeded(5), "profile", "M019", "ru", "fr"); err != ErrBadLanguage {
+		t.Fatalf("fr для M019 должен быть отклонён, err=%v", err)
 	}
 }
 
 func TestFrenchListeningTracksUseDistinctFiles(t *testing.T) {
-	s := svc(t)
-	for seed := uint64(1); seed <= 60; seed++ {
-		p, err := BuildKT(s, seeded(seed), "nauchped", "M019", "ru", "fr")
-		if err != nil {
-			t.Fatal(err)
-		}
-		files := map[string]bool{}
-		n := 0
-		for _, r := range p.Refs {
-			if r.Block == "lang" && r.Stage == "listening" {
-				b, _ := s.Bank(r.Bank)
-				f, _, _ := strings.Cut(b.Questions[r.Idx].Audio, "?")
-				files[f] = true
-				n++
-			}
-		}
-		if n != 16 || len(files) != 2 {
-			t.Fatalf("seed %d: вопросов %d, разных файлов %d (нужно 16 и 2)", seed, n, len(files))
-		}
-	}
+	t.Skip("общий французский временно отключён (content.frenchLang пуст); вернуть вместе с M019 в frenchLang")
 }
 
 func TestListeningRecordingsDoNotRepeat(t *testing.T) {
@@ -679,8 +648,8 @@ func TestProgressTopicsOfCommonSubjects(t *testing.T) {
 	for _, q := range logicB.Questions {
 		wantLogic[q.Topic] = true
 	}
-	if len(wantLang["M107"]) != 3 || len(wantLang["M019"]) != 22 || len(wantLogic) != 5 {
-		t.Fatalf("число тем: en %d, fr %d, тго %d (ожидалось 3, 22, 5)", len(wantLang["M107"]), len(wantLang["M019"]), len(wantLogic))
+	if len(wantLang["M107"]) != 3 || len(wantLang["M019"]) != 3 || len(wantLogic) != 5 {
+		t.Fatalf("число тем: M107 %d, M019 %d, тго %d (ожидалось 3, 3, 5; общий язык M019 — английский)", len(wantLang["M107"]), len(wantLang["M019"]), len(wantLogic))
 	}
 	for code, want := range wantLang {
 		plans := map[string]*Plan{}
