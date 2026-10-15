@@ -158,6 +158,7 @@ type accessBody struct {
 	UserID   int64  `json:"user_id"`
 	Code     string `json:"code"`
 	Language string `json:"language"`
+	Days     int    `json:"days"` // срок доступа в днях; 0 — бессрочно
 }
 
 func decodeAccess(w http.ResponseWriter, r *http.Request) (accessBody, string, bool) {
@@ -179,11 +180,16 @@ func (s *Server) handleAdminGrantAccess(w http.ResponseWriter, r *http.Request) 
 		writeError(w, http.StatusBadRequest, "Такого теста на этом языке не существует")
 		return
 	}
-	if err := s.store.GrantAccess(r.Context(), b.UserID, b.Code, lang); err != nil {
+	if b.Days < 0 || b.Days > 3650 {
+		writeError(w, http.StatusBadRequest, "Некорректный срок")
+		return
+	}
+	exp := expiryFromDays(b.Days)
+	if err := s.store.GrantAccessUntil(r.Context(), b.UserID, b.Code, lang, exp); err != nil {
 		s.dbError(w, r, "выдача доступа", err)
 		return
 	}
-	s.audit(r, "grant_access", b.Code+" ("+lang+")", "user_id="+strconv.FormatInt(b.UserID, 10))
+	s.audit(r, "grant_access", b.Code+" ("+lang+")", "user_id="+strconv.FormatInt(b.UserID, 10)+" until="+exp)
 	writeJSON(w, http.StatusOK, map[string]bool{"ok": true})
 }
 

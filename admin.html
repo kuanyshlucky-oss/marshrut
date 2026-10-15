@@ -196,7 +196,7 @@
   .search-wrap input{ padding-left:34px; margin-bottom:0; }
 
   .collapse-panel{ overflow:hidden; max-height:0; transition:max-height .25s ease; }
-  .collapse-panel.is-open{ max-height:1000px; }
+  .collapse-panel.is-open{ max-height:2600px; }
   .collapse-inner{ padding-top:18px; border-top:1px solid var(--line); margin-top:18px; }
 
 
@@ -230,6 +230,30 @@
   .trend{ background:var(--surface-2); border-radius:14px; padding:12px 14px; }
   .trend svg{ width:100%; height:90px; display:block; }
 
+  /* Админ-функции v2 */
+  textarea{ width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:inherit; background:var(--surface); color:var(--ink); resize:vertical; margin-bottom:10px; }
+  textarea:focus, select.fld:focus{ outline:2px solid var(--accent); outline-offset:1px; }
+  select.fld{ padding:9px 12px; border:1px solid var(--line); border-radius:8px; font-size:13px; font-family:inherit; background:var(--surface); color:var(--ink); margin:0 0 14px; width:100%; }
+  .filters select.fld, .card-head-actions select.fld, .bulkbar select.fld{ width:auto; margin:0; padding:7px 10px; border-radius:999px; font-size:12px; }
+  .rowchk{ width:auto !important; margin:0 !important; cursor:pointer; accent-color:var(--accent); }
+  tr.is-blocked{ opacity:.6; }
+  .user-cell[data-open]{ cursor:pointer; }
+  .user-cell[data-open]:hover span:first-of-type{ text-decoration:underline; }
+  .bulkbar{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:var(--accent-soft); border:1px solid var(--line); border-radius:14px; padding:10px 14px; margin-bottom:12px; font-size:13px; }
+  .bulkbar b{ font-size:15px; }
+  .access-chip-exp{ font-size:10px; opacity:.85; }
+  .access-chip.access-chip-expired{ background:var(--warn-soft); color:var(--warn); }
+  .um-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:12px; }
+  .um-btns{ display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 10px; }
+  .um-box{ background:var(--surface-2); border-radius:14px; padding:14px 16px; margin-bottom:6px; }
+  .um-box input[type=date]{ margin-bottom:8px; }
+  .chk{ display:flex; align-items:center; gap:8px; text-transform:none; font-size:14px; color:var(--ink); letter-spacing:0; margin:0 0 14px; cursor:pointer; }
+  .chk input{ width:auto; margin:0; }
+  .bars{ display:flex; align-items:flex-end; gap:3px; height:110px; }
+  .bars .b{ flex:1; background:var(--accent); border-radius:3px 3px 0 0; min-height:2px; opacity:.85; position:relative; }
+  .bars .b:hover{ opacity:1; }
+  .bars-x{ display:flex; justify-content:space-between; color:var(--soft); font-size:11px; margin-top:6px; }
+  @media (max-width:640px){ .um-grid{ grid-template-columns:1fr; } }
   @media (max-width:640px){
     .wrap{ padding:24px 16px 56px; }
     .top-row{ flex-direction:column; }
@@ -303,6 +327,8 @@
   <div class="tabs" role="tablist">
     <button class="tab-btn is-active" data-tab="users" role="tab">Пользователи</button>
     <button class="tab-btn" data-tab="stats" role="tab">Статистика</button>
+    <button class="tab-btn" data-tab="analytics" role="tab">Аналитика</button>
+    <button class="tab-btn" data-tab="content" role="tab">Контент</button>
     <button class="tab-btn" data-tab="audit" role="tab">Журнал действий</button>
   </div>
 
@@ -316,6 +342,14 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             <input id="userSearch" type="text" placeholder="Поиск: имя, логин, телефон, город…">
           </div>
+          <select class="fld" id="grantDays" title="Срок новых доступов" aria-label="Срок новых доступов">
+            <option value="0">Доступ: бессрочно</option>
+            <option value="30">Доступ: 30 дней</option>
+            <option value="90">Доступ: 90 дней</option>
+            <option value="180">Доступ: 180 дней</option>
+            <option value="365">Доступ: 365 дней</option>
+          </select>
+          <button class="btn-ghost btn-sm" id="exportUsersBtn" title="Скачать список пользователей в CSV">CSV</button>
           <button class="btn-ghost btn-sm" id="toggleCreateBtn">+ Новый аккаунт</button>
           <button class="btn-ghost btn-sm" id="reloadBtn" title="Обновить">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
@@ -343,11 +377,35 @@
           <button class="btn-primary" id="createBtn">Сгенерировать аккаунт</button>
           <div id="cred" class="cred hidden"></div>
           <p id="createMsg" class="msg"></p>
+          <div class="sub-title">Массовое создание</div>
+          <div class="row">
+            <div><label for="bCount">Количество (1–100)</label><input id="bCount" type="number" min="1" max="100" value="10"></div>
+            <div><label for="bPrefix">Префикс логина (необязательно)</label><input id="bPrefix" type="text" placeholder="например, grp1-" maxlength="20"></div>
+          </div>
+          <button class="btn-primary" id="bulkCreateBtn">Создать пачку</button>
+          <div id="bulkResult" class="hidden">
+            <div class="um-btns" style="margin-top:14px">
+              <button class="btn-ghost btn-sm" id="bulkCsvBtn">Скачать CSV</button>
+              <button class="btn-ghost btn-sm" id="bulkCopyBtn">Копировать всё</button>
+              <span class="muted">⚠ Пароли показаны один раз — сохраните файл.</span>
+            </div>
+            <div class="table-scroll table-scroll-v" style="max-height:300px"><table style="min-width:420px">
+              <thead><tr><th>#</th><th>Логин</th><th>Пароль</th></tr></thead><tbody id="bulkRows"></tbody></table></div>
+          </div>
         </div>
       </div>
 
+      <div class="bulkbar hidden" id="bulkBar">
+        <span><b id="bulkCount">0</b> выбрано</span>
+        <select class="fld" id="bulkDir" aria-label="Направление"></select>
+        <select class="fld" id="bulkLang" aria-label="Язык"><option value="ru">RU</option><option value="kk">KZ</option></select>
+        <button class="btn-primary btn-sm" id="bulkGrant">Выдать доступ</button>
+        <button class="btn-del" id="bulkRevoke">Отозвать</button>
+        <button class="btn-ghost btn-sm" id="bulkClear">Сбросить выбор</button>
+      </div>
       <div class="table-scroll"><table>
         <thead><tr>
+          <th style="width:28px"><input type="checkbox" id="selAll" class="rowchk" aria-label="Выбрать всех"></th>
           <th class="sortable" data-sort="id">ID <span class="arrow">↕</span></th>
           <th class="sortable" data-sort="email">Логин (email) <span class="arrow">↕</span></th>
           <th class="sortable" data-sort="city">Город <span class="arrow">↕</span></th>
@@ -387,6 +445,7 @@
             <option value="30">30 дней</option>
           </select>
           <button class="btn-ghost btn-sm" id="resReloadBtn">Обновить</button>
+          <button class="btn-ghost btn-sm" id="exportResBtn" title="Скачать результаты в CSV">CSV</button>
         </div>
       </div>
       <div class="kpis" id="kpis"></div>
@@ -410,6 +469,67 @@
     </div>
   </div>
   <div class="modal-bg hidden" id="userModal"><div class="modal" id="userModalBody"></div></div>
+
+  <!-- Аналитика -->
+  <div class="tab-panel" id="tab-analytics">
+    <div class="card">
+      <div class="card-head"><h2>Активность</h2></div>
+      <div class="sub-title" style="margin-top:0">Попытки по дням <span class="muted">(последние 30 дней)</span></div>
+      <div class="trend" id="dailyChart"></div>
+      <div class="sub-title">Давно не активны <span class="muted">(7+ дней или ни разу не входили)</span></div>
+      <div class="table-scroll table-scroll-v"><table>
+        <thead><tr><th>Пользователь</th><th>Последняя активность</th><th>Дней</th><th>Доступов</th></tr></thead>
+        <tbody id="inactiveRows"></tbody>
+      </table></div>
+      <div id="inactiveEmpty" class="state-block hidden"><span class="t">Все активны 🎉</span></div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <h2>Сложные вопросы</h2>
+        <button class="btn-ghost btn-sm" id="hardLoadBtn">Загрузить</button>
+      </div>
+      <p class="muted" id="hardInfo">Вопросы, на которые чаще всего отвечают неверно (по сданным попыткам, минимум 3 ответа). Нажмите «Загрузить».</p>
+      <div class="table-scroll table-scroll-v"><table>
+        <thead><tr><th>Вопрос</th><th>Банк</th><th>Ошибок</th><th>Ответов</th><th></th></tr></thead>
+        <tbody id="hardRows"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- Контент -->
+  <div class="tab-panel" id="tab-content">
+    <div class="card">
+      <div class="card-head"><h2>Сообщение для пользователей</h2></div>
+      <label for="bnText">Текст баннера (виден на сайте всем)</label>
+      <textarea id="bnText" rows="2" maxlength="400" placeholder="Например: обновили вариант M019 — загляните в тесты"></textarea>
+      <div class="row">
+        <div><label for="bnKind">Тип</label><select class="fld" id="bnKind"><option value="info">Информация</option><option value="warn">Важное</option></select></div>
+        <div style="display:flex;align-items:flex-end"><label class="chk"><input type="checkbox" id="bnActive"> Показывать на сайте</label></div>
+      </div>
+      <button class="btn-primary" id="bnSave">Сохранить</button>
+      <p id="bnMsg" class="msg"></p>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <h2>Вопросы с ошибками <span class="count">(<span id="flagCount">0</span>)</span></h2>
+        <label class="chk" style="margin:0"><input type="checkbox" id="flagsAll"> показывать решённые</label>
+      </div>
+      <div class="table-scroll table-scroll-v"><table>
+        <thead><tr><th>Вопрос</th><th>Заметка</th><th>Когда</th><th>Статус</th><th></th></tr></thead>
+        <tbody id="flagRows"></tbody>
+      </table></div>
+      <div id="flagEmpty" class="state-block hidden"><span class="t">Помеченных вопросов нет. Помечать можно в «Аналитика → Сложные вопросы».</span></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h2>Банки вопросов <span class="count">(<span id="bankCount">0</span>)</span></h2>
+        <div class="search-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="bankSearch" type="text" placeholder="Поиск банка…"></div>
+      </div>
+      <div class="table-scroll table-scroll-v"><table>
+        <thead><tr><th>Банк</th><th>Вопросов</th><th>Тем</th><th>С конспектом</th><th>С разбором</th></tr></thead>
+        <tbody id="bankRows"></tbody>
+      </table></div>
+    </div>
+  </div>
 
   <!-- Журнал -->
   <div class="tab-panel" id="tab-audit">
@@ -436,6 +556,26 @@ const API_BASE = 'https://marshrut-9c5z.onrender.com';
 const KEY = 'marshrut_admin_key';
 const $ = id => document.getElementById(id);
 
+/* ---------- Утилиты v2 ---------- */
+const todayStr = () => new Date().toISOString().slice(0,10);
+function fmtD(d){ if(!d) return ''; const p = d.slice(0,10).split('-'); return p.length===3 ? p[2]+'.'+p[1]+'.'+p[0].slice(2) : d; }
+function daysSince(iso){
+  if(!iso) return null;
+  const t = Date.parse(iso.length===10 ? iso+'T00:00:00Z' : iso);
+  return isNaN(t) ? null : Math.floor((Date.now()-t)/864e5);
+}
+function agoText(iso){ const d = daysSince(iso); if(d===null) return 'не входил'; if(d<=0) return 'сегодня'; if(d===1) return 'вчера'; return d+' дн. назад'; }
+// raw=true — без защиты от формул (для сгенерированных паролей, которые могут начинаться с «-» или «=»)
+function csvCell(v, raw){ let s = String(v??''); if(!raw && /^[=+\-@\t\r]/.test(s)) s = "'" + s; return '"' + s.replace(/"/g,'""') + '"'; }
+function downloadCsv(name, rows, raw){
+  const text = '\ufeff' + rows.map(r => r.map(c => csvCell(c, raw)).join(';')).join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type:'text/csv;charset=utf-8'}));
+  a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function loadAll(){ load(); loadAuditLog(); loadResults(); loadBanner(); loadFlags(); loadBanks(); }
+
 /* ---------- Ключ ---------- */
 function getKey(){ return localStorage.getItem(KEY) || ''; }
 function syncKeyView(){
@@ -448,7 +588,7 @@ syncKeyView();
 $('saveKey').onclick = () => {
   localStorage.setItem(KEY, $('key').value.trim());
   syncKeyView();
-  load(); loadAuditLog(); loadResults();
+  loadAll();
 };
 $('changeKeyBtn').onclick = () => { $('keyFormView').classList.remove('hidden'); $('keyEnteredView').classList.add('hidden'); $('key').focus(); };
 $('keyToggle').onclick = () => { const i=$('key'); i.type = i.type==='password' ? 'text' : 'password'; };
@@ -568,17 +708,21 @@ function groupedDirections(){
 }
 
 function accessCellHtml(u){
-  const given = u.access || []; // [{code, language}]
-  const chips = given.map(g => `
-    <span class="access-chip access-chip-${g.language}" title="${testLabel(g.code, g.language)}">
-      ${g.code} <span class="access-chip-lang">${langBadge(g.language)}</span>
-      <button data-revoke="${u.id}" data-code="${g.code}" data-lang="${g.language}" title="Отозвать доступ">×</button>
-    </span>`).join('');
+  const given = u.access || []; // [{code, language, expires_at}]
+  const today = todayStr();
+  const chips = given.map(g => {
+    const exp = g.expires_at || '', expired = exp && exp < today;
+    return `
+    <span class="access-chip access-chip-${escapeHtml(g.language)}${expired ? ' access-chip-expired' : ''}" title="${escapeHtml(testLabel(g.code, g.language))}${exp ? ' · ' + (expired ? 'истёк ' : 'до ') + fmtD(exp) : ' · бессрочно'}">
+      ${escapeHtml(g.code)} <span class="access-chip-lang">${langBadge(g.language)}</span>${exp ? `<span class="access-chip-exp">${expired ? 'истёк' : 'до'} ${fmtD(exp)}</span>` : ''}
+      <button data-revoke="${u.id}" data-code="${escapeHtml(g.code)}" data-lang="${escapeHtml(g.language)}" title="Отозвать доступ">×</button>
+    </span>`;
+  }).join('');
   const directions = groupedDirections();
   if (!directions.length) {
     return `<div class="access-chips">${chips || '<span class="muted">Доступа нет</span>'}</div>`;
   }
-  const options = directions.map(d => `<option value="${d.code}">${d.gopCode ? d.gopCode+' · ' : ''}${d.code}${d.title ? ' — '+d.title : ''}</option>`).join('');
+  const options = directions.map(d => `<option value="${escapeHtml(d.code)}">${d.gopCode ? escapeHtml(d.gopCode)+' · ' : ''}${escapeHtml(d.code)}${d.title ? ' — '+escapeHtml(d.title) : ''}</option>`).join('');
   return `
     <div class="access-chips">${chips || '<span class="muted">Доступа нет</span>'}</div>
     <div class="access-add">
@@ -599,14 +743,14 @@ function refreshGrantButtons(userId, given){
     const btn = document.querySelector(`[data-grant="${userId}"][data-lang="${lang}"]`);
     if (!btn) return;
     const available = !!(dir && dir.languages.includes(lang));
-    const granted = given.some(g => g.code === select.value && g.language === lang);
+    const granted = given.some(g => g.code === select.value && g.language === lang && !g.expires_at); // с датой окончания можно выдать снова — срок обновится
     btn.disabled = !available || granted;
-    btn.title = !available ? 'Для этого направления нет контента на этом языке' : (granted ? 'Уже выдано' : `Выдать ${langBadge(lang)}`);
+    btn.title = !available ? 'Для этого направления нет контента на этом языке' : (granted ? 'Уже выдано бессрочно' : `Выдать ${langBadge(lang)} (срок — из выпадающего списка)`);
   });
 }
 
 async function grantAccess(userId, code, language){
-  try{ await api('/api/admin/grant-access', { method:'POST', body:{ user_id:userId, code, language } }); load(); loadAuditLog(); }
+  try{ await api('/api/admin/grant-access', { method:'POST', body:{ user_id:userId, code, language, days:Number($('grantDays').value) } }); load(); loadAuditLog(); }
   catch(e){ $('listMsg').textContent=e.message; $('listMsg').className='msg err'; }
 }
 
@@ -642,19 +786,38 @@ function filteredSortedUsers(){
   return list;
 }
 
+const selected = new Set();
+function fillBulkDirs(){
+  const sel = $('bulkDir'); const cur = sel.value;
+  sel.innerHTML = groupedDirections().map(d => `<option value="${escapeHtml(d.code)}">${d.gopCode ? escapeHtml(d.gopCode)+' · ' : ''}${escapeHtml(d.code)}${d.title ? ' — '+escapeHtml(d.title) : ''}</option>`).join('');
+  if (cur) sel.value = cur;
+}
+function updateBulkBar(){
+  $('bulkBar').classList.toggle('hidden', selected.size === 0);
+  $('bulkCount').textContent = selected.size;
+}
+
 function renderUsersTable(){
   const list = filteredSortedUsers();
-  $('rows').innerHTML = list.map(u=>`
-    <tr>
+  fillBulkDirs();
+  $('rows').innerHTML = list.map(u => {
+    const badges = [
+      u.blocked ? '<span class="tag bad">Заблокирован</span>' : '',
+      u.note ? `<span class="tag neu" title="${escapeHtml(u.note)}">📝 заметка</span>` : '',
+    ].filter(Boolean).join(' ');
+    return `
+    <tr class="${u.blocked ? 'is-blocked' : ''}">
+      <td><input type="checkbox" class="rowchk" data-sel="${u.id}" ${selected.has(u.id) ? 'checked' : ''} aria-label="Выбрать"></td>
       <td><span class="id-pill">#${u.id}</span></td>
-      <td><div class="user-cell">${avatarHtml(u.name, u.email)}<span>${escapeHtml(u.email)}${u.name ? `<br><span class="muted">${escapeHtml(u.name)}</span>` : ''}</span></div></td>
+      <td><div class="user-cell" data-open="${u.id}" title="Открыть карточку">${avatarHtml(u.name, u.email)}<span>${escapeHtml(u.email)}${u.name && u.name !== u.email ? `<br><span class="muted">${escapeHtml(u.name)}</span>` : ''}${badges ? `<br>${badges}` : ''}</span></div></td>
       <td>${escapeHtml(u.city||'—')}</td>
       <td class="results-cell">${u.results}${u.results > 0 ? ` <button class="btn-reset" data-reset-progress="${u.id}" data-login="${escapeHtml(u.email)}" title="Очистить результаты тестов и статистику по темам">Очистить</button>` : ''}</td>
       <td class="access-cell">${accessCellHtml(u)}</td>
-      <td>${(u.created_at||'').slice(0,10)}</td>
-      <td class="pw-cell" id="pw-${u.id}"><button class="btn-reset" data-reset="${u.id}" data-login="${u.email}">Сбросить пароль</button></td>
-      <td><button class="btn-del" data-del="${u.id}" data-login="${u.email}">Удалить</button></td>
-    </tr>`).join('');
+      <td>${(u.created_at||'').slice(0,10)}<br><span class="muted">вход: ${agoText(u.last_login_at)}</span></td>
+      <td class="pw-cell" id="pw-${u.id}"><button class="btn-reset" data-reset="${u.id}" data-login="${escapeHtml(u.email)}">Сбросить пароль</button></td>
+      <td><button class="btn-del" data-del="${u.id}" data-login="${escapeHtml(u.email)}">Удалить</button></td>
+    </tr>`;
+  }).join('');
   $('usersEmpty').classList.toggle('hidden', list.length > 0);
 
   $('rows').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>del(Number(b.dataset.del), b.dataset.login));
@@ -665,17 +828,73 @@ function renderUsersTable(){
     const sel = $('rows').querySelector(`[data-add-select="${b.dataset.grant}"]`);
     if(sel && sel.value && !b.disabled) grantAccess(Number(b.dataset.grant), sel.value, b.dataset.lang);
   });
+  $('rows').querySelectorAll('[data-open]').forEach(el=>el.onclick=()=>openUser(Number(el.dataset.open)));
+  $('rows').querySelectorAll('[data-sel]').forEach(c=>c.onchange=()=>{
+    const id = Number(c.dataset.sel);
+    if (c.checked) selected.add(id); else selected.delete(id);
+    updateBulkBar(); syncSelAll(list);
+  });
   list.forEach(u => {
     refreshGrantButtons(u.id, u.access||[]);
     const sel = $('rows').querySelector(`[data-add-select="${u.id}"]`);
     if (sel) sel.addEventListener('change', () => refreshGrantButtons(u.id, u.access||[]));
   });
+  syncSelAll(list); updateBulkBar();
 
   document.querySelectorAll('th.sortable').forEach(th => {
     th.classList.toggle('is-active', th.dataset.sort === sortKey);
     th.querySelector('.arrow').textContent = th.dataset.sort === sortKey ? (sortDir===1?'↑':'↓') : '↕';
   });
 }
+function syncSelAll(list){ $('selAll').checked = list.length > 0 && list.every(u => selected.has(u.id)); }
+$('selAll').onchange = () => {
+  const list = filteredSortedUsers();
+  list.forEach(u => $('selAll').checked ? selected.add(u.id) : selected.delete(u.id));
+  renderUsersTable();
+};
+$('bulkClear').onclick = () => { selected.clear(); renderUsersTable(); };
+async function bulkAccess(revoke){
+  const code = $('bulkDir').value, language = $('bulkLang').value, ids = [...selected];
+  if (!code || !ids.length) return;
+  const days = Number($('grantDays').value);
+  const what = revoke ? 'Отозвать' : 'Выдать';
+  if (!confirm(`${what} доступ к ${code} [${langBadge(language)}] — ${ids.length} польз.${!revoke && days ? ' на ' + days + ' дн.' : ''}?`)) return;
+  try{
+    await api('/api/admin/bulk-access', { method:'POST', body:{ user_ids:ids, code, language, days, revoke } });
+    selected.clear(); load(); loadAuditLog();
+  }catch(e){ $('listMsg').textContent = e.message; $('listMsg').className = 'msg err'; }
+}
+$('bulkGrant').onclick = () => bulkAccess(false);
+$('bulkRevoke').onclick = () => bulkAccess(true);
+
+/* ---------- Массовое создание + экспорт ---------- */
+let bulkAccounts = [];
+$('bulkCreateBtn').onclick = async () => {
+  const msg = $('createMsg'); msg.textContent=''; msg.className='msg';
+  const btn = $('bulkCreateBtn'); btn.disabled = true; btn.textContent = 'Создаём…';
+  try{
+    const r = await api('/api/admin/bulk-create', { method:'POST', body:{ count:Number($('bCount').value), prefix:$('bPrefix').value.trim() } });
+    bulkAccounts = r.accounts || [];
+    $('bulkRows').innerHTML = bulkAccounts.map((a,i) => `<tr><td class="muted">${i+1}</td><td>${escapeHtml(a.login)}</td><td><b>${escapeHtml(a.password)}</b></td></tr>`).join('');
+    $('bulkResult').classList.remove('hidden');
+    load(); loadAuditLog();
+  }catch(e){ msg.textContent = e.message; msg.className = 'msg err'; }
+  btn.disabled = false; btn.textContent = 'Создать пачку';
+};
+$('bulkCsvBtn').onclick = () => downloadCsv('accounts-' + todayStr() + '.csv', [['Логин','Пароль'], ...bulkAccounts.map(a => [a.login, a.password])], true);
+$('bulkCopyBtn').onclick = () => copy(bulkAccounts.map(a => a.login + ' / ' + a.password).join('\n'), $('bulkCopyBtn'));
+
+$('exportUsersBtn').onclick = () => {
+  const rows = [['ID','Логин','Имя','Телефон','Город','Создан','Последний вход','Заблокирован','Доступы','Попыток','Заметка']];
+  filteredSortedUsers().forEach(u => rows.push([u.id, u.email, u.name, u.phone, u.city, (u.created_at||'').slice(0,10), (u.last_login_at||'').slice(0,10),
+    u.blocked ? 'да' : '', (u.access||[]).map(g => g.code + '/' + g.language + (g.expires_at ? ' до ' + g.expires_at : '')).join(', '), u.results, u.note||'']));
+  downloadCsv('users-' + todayStr() + '.csv', rows);
+};
+$('exportResBtn').onclick = () => {
+  const rows = [['Дата','Логин','Имя','Код','Тип','Блок','Набрал','Всего','Процент','Итог']];
+  filteredResults().forEach(r => rows.push([r.date, r.email, r.name, r.code, isKT(r) ? 'КТ' : 'Предмет', r.section||'', r.score, r.total, pct(r), isKT(r) ? (r.passed ? 'Сдал' : 'Не сдал') : '']));
+  downloadCsv('results-' + todayStr() + '.csv', rows);
+};
 
 $('userSearch').addEventListener('input', renderUsersTable);
 document.querySelectorAll('th.sortable').forEach(th => {
@@ -699,7 +918,8 @@ async function load(){
     usersCache = d.users || [];
     $('count').textContent = d.count;
     updateStats();
-    renderUsersTable();
+    for (const id of [...selected]) if (!usersCache.some(u => u.id === id)) selected.delete(id);
+    renderUsersTable(); renderAnalytics();
   }catch(e){ lm.textContent=e.message; lm.className='msg err'; }
 }
 
@@ -707,8 +927,19 @@ const ACTION_LABELS = {
   create_user: 'Создан аккаунт',
   delete_user: 'Удалён аккаунт',
   reset_password: 'Сброшен пароль',
+  reset_progress: 'Очищен прогресс',
   grant_access: 'Выдан доступ',
   revoke_access: 'Отозван доступ',
+  bulk_create: 'Массовое создание',
+  bulk_grant: 'Массовая выдача доступа',
+  bulk_revoke: 'Массовый отзыв доступа',
+  set_note: 'Изменена заметка',
+  block_user: 'Заблокирован',
+  unblock_user: 'Разблокирован',
+  end_session: 'Завершена сессия',
+  set_banner: 'Изменён баннер',
+  flag_question: 'Помечен вопрос',
+  resolve_flag: 'Пометка вопроса',
 };
 
 async function loadAuditLog(){
@@ -722,10 +953,10 @@ async function loadAuditLog(){
     $('auditRows').innerHTML = entries.map(e => `
       <tr>
         <td>${(e.created_at||'').replace('T',' ').slice(0,19)}</td>
-        <td>${ACTION_LABELS[e.action]||e.action}</td>
-        <td>${e.target||''}</td>
-        <td class="muted">${e.detail||''}</td>
-        <td class="muted">${e.actor_ip||''}</td>
+        <td>${escapeHtml(ACTION_LABELS[e.action]||e.action)}</td>
+        <td>${escapeHtml(e.target||'')}</td>
+        <td class="muted">${escapeHtml(e.detail||'')}</td>
+        <td class="muted">${escapeHtml(e.actor_ip||'')}</td>
       </tr>`).join('');
     $('auditEmpty').classList.toggle('hidden', entries.length > 0);
   }catch(e){ am.textContent=e.message; am.className='msg err'; }
@@ -740,8 +971,10 @@ function kindLabel(r){
 }
 const isKT = r => !!r.kind && r.kind.startsWith('kt:');
 const pct = r => r.total > 0 ? Math.round(r.score / r.total * 100) : 0;
-function pbar(p){
-  const c = p >= 70 ? 'var(--ok)' : p >= 40 ? 'var(--warn)' : 'var(--danger)';
+// bad=true — шкала «чем больше, тем хуже» (доля ошибок)
+function pbar(p, bad){
+  const c = bad ? (p >= 60 ? 'var(--danger)' : p >= 30 ? 'var(--warn)' : 'var(--ok)')
+    : (p >= 70 ? 'var(--ok)' : p >= 40 ? 'var(--warn)' : 'var(--danger)');
   return `<div class="pbar"><div class="track"><div class="fill" style="width:${p}%;background:${c}"></div></div><b>${p}%</b></div>`;
 }
 function verdictTag(r){
@@ -793,42 +1026,97 @@ function renderStats(){
       <td>${verdictTag(r)}</td>
     </tr>`).join('');
 }
+let currentUid = null;
+async function adminAct(path, body, okMsg){
+  const m = $('umMsg'); m.textContent = ''; m.className = 'msg';
+  try{ await api(path, { method:'POST', body }); m.textContent = okMsg || 'Сохранено'; m.className = 'msg ok'; loadAuditLog(); return true; }
+  catch(e){ m.textContent = e.message; m.className = 'msg err'; return false; }
+}
 function openUser(uid){
+  const u = usersCache.find(x => x.id === uid);
   const rs = resultsCache.filter(r => r.user_id === uid); // все попытки, без фильтров
-  if (!rs.length) return;
-  const u = rs[0], chrono = [...rs].reverse();
-  const ktr = rs.filter(isKT), ktOk = ktr.filter(r=>r.passed).length;
-  const avg = Math.round(rs.reduce((n,r)=>n+pct(r),0)/rs.length);
+  const base = u || (rs[0] ? { id:uid, email:rs[0].email, name:rs[0].name } : null);
+  if (!base) return;
+  currentUid = uid;
+  const chrono = [...rs].reverse();
   const kpi = (n,l) => `<div class="kpi"><div class="n">${n}</div><div class="l">${l}</div></div>`;
-  // динамика: точки по хронологии
-  const pts = chrono.map((r,i) => [chrono.length>1 ? 8+i*(384/(chrono.length-1)) : 200, 8+(100-pct(r))/100*64]);
-  const trend = `<svg viewBox="0 0 400 80" preserveAspectRatio="none">
-    <line x1="0" y1="${8+0.3*64}" x2="400" y2="${8+0.3*64}" stroke="var(--line)" stroke-dasharray="3 3"/>
-    <polyline fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke" points="${pts.map(p=>p.join(',')).join(' ')}"/>
-    ${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="var(--accent)"/>`).join('')}</svg>`;
-  // разбивка по тестам и блокам
-  const groups = new Map();
-  rs.forEach(r => { const k = r.code+'|'+kindLabel(r); if(!groups.has(k)) groups.set(k,{code:r.code,label:kindLabel(r),list:[]}); groups.get(k).list.push(r); });
-  const gRows = [...groups.values()].sort((a,b)=>b.list.length-a.list.length).map(g => {
-    const a = Math.round(g.list.reduce((n,r)=>n+pct(r),0)/g.list.length), b = Math.max(...g.list.map(pct));
-    return `<tr><td><b>${escapeHtml(g.code)}</b></td><td><span class="tag ${g.label.startsWith('Симуляция')?'kt':'neu'}">${escapeHtml(g.label)}</span></td><td>${g.list.length}</td><td>${pbar(a)}</td><td>${pbar(b)}</td></tr>`;
-  }).join('');
+  let stats = '<p class="muted">Попыток пока нет.</p>';
+  if (rs.length) {
+    const ktr = rs.filter(isKT), ktOk = ktr.filter(r=>r.passed).length;
+    const avg = Math.round(rs.reduce((n,r)=>n+pct(r),0)/rs.length);
+    const first = pct(chrono[0]), last = pct(chrono[chrono.length-1]);
+    const pts = chrono.map((r,i) => [chrono.length>1 ? 8+i*(384/(chrono.length-1)) : 200, 8+(100-pct(r))/100*64]);
+    const trend = `<svg viewBox="0 0 400 80" preserveAspectRatio="none">
+      <line x1="0" y1="${8+0.3*64}" x2="400" y2="${8+0.3*64}" stroke="var(--line)" stroke-dasharray="3 3"/>
+      <polyline fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke" points="${pts.map(p=>p.join(',')).join(' ')}"/>
+      ${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="var(--accent)"/>`).join('')}</svg>`;
+    const groups = new Map();
+    rs.forEach(r => { const k = r.code+'|'+kindLabel(r); if(!groups.has(k)) groups.set(k,{code:r.code,label:kindLabel(r),list:[]}); groups.get(k).list.push(r); });
+    const gRows = [...groups.values()].sort((a,b)=>b.list.length-a.list.length).map(g => {
+      const a = Math.round(g.list.reduce((n,r)=>n+pct(r),0)/g.list.length), b = Math.max(...g.list.map(pct));
+      return `<tr><td><b>${escapeHtml(g.code)}</b></td><td><span class="tag ${g.label.startsWith('Симуляция')?'kt':'neu'}">${escapeHtml(g.label)}</span></td><td>${g.list.length}</td><td>${pbar(a)}</td><td>${pbar(b)}</td></tr>`;
+    }).join('');
+    stats = `
+      <div class="kpis">${kpi(rs.length,'Попыток')}${kpi(avg+'%','Средний результат')}${kpi(Math.max(...rs.map(pct))+'%','Лучший')}
+        ${kpi(chrono.length>1 ? (last-first>=0?'+':'')+(last-first)+'%' : '—','Прогресс (первая → последняя)')}
+        ${kpi(ktr.length ? ktOk+'/'+ktr.length : '—','Сдал КТ')}</div>
+      <div class="sub-title" style="margin-top:4px">Динамика результатов</div><div class="trend">${trend}</div>
+      <div class="sub-title">Слабые темы</div><div id="umTopics" class="muted">Загрузка…</div>
+      <div class="sub-title">По тестам</div>
+      <div class="table-scroll"><table style="min-width:520px"><thead><tr><th>Код</th><th>Тип</th><th>Попыток</th><th>Средний</th><th>Лучший</th></tr></thead><tbody>${gRows}</tbody></table></div>
+      <div class="sub-title">Все попытки</div>
+      <div class="table-scroll table-scroll-v"><table style="min-width:520px"><thead><tr><th>Дата</th><th>Тест</th><th>Набрал</th><th>Результат</th><th>Итог</th></tr></thead><tbody>${rs.map(r=>`
+        <tr><td class="muted">${escapeHtml(r.date)}</td><td><span class="tag ${isKT(r)?'kt':'neu'}">${escapeHtml(kindLabel(r))}</span> <span class="muted">${escapeHtml(r.code)}</span></td>
+        <td><b>${r.score}</b> <span class="muted">/ ${r.total}</span></td><td>${pbar(pct(r))}</td><td>${verdictTag(r)}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+  const controls = u ? `
+    <div class="um-box">
+      <div>
+        <div>
+          <label for="umNote">Заметка</label>
+          <textarea id="umNote" rows="3" maxlength="500" placeholder="Например: связались 15.10, Алматы">${escapeHtml(u.note||'')}</textarea>
+          <button class="btn-ghost btn-sm" id="umNoteSave">Сохранить заметку</button>
+        </div>
+      </div>
+      <div class="um-btns">
+        <button class="btn-reset" id="umEnd">Завершить сессию</button>
+        <button class="${u.blocked ? 'btn-reset' : 'btn-del'}" id="umBlock">${u.blocked ? 'Разблокировать' : 'Заблокировать'}</button>
+      </div>
+      <p id="umMsg" class="msg" style="margin:0"></p>
+    </div>` : '';
   $('userModalBody').innerHTML = `
-    <div class="modal-head">${avatarHtml(u.name,u.email)}
-      <div class="who"><b>${escapeHtml(u.email)}</b><br><span class="muted">${u.name && u.name!==u.email ? escapeHtml(u.name)+' · ' : ''}ID #${u.user_id} · первая попытка ${escapeHtml(chrono[0].date)}</span></div>
+    <div class="modal-head">${avatarHtml(base.name, base.email)}
+      <div class="who"><b>${escapeHtml(base.email)}</b><br><span class="muted">${base.name && base.name!==base.email ? escapeHtml(base.name)+' · ' : ''}ID #${base.id}${u ? ' · создан '+escapeHtml((u.created_at||'').slice(0,10))+' · вход: '+escapeHtml(agoText(u.last_login_at)) : ''}</span>
+        <div style="margin-top:6px">${u && u.blocked ? '<span class="tag bad">Заблокирован</span>' : ''}</div></div>
       <button class="modal-close" id="userModalClose" aria-label="Закрыть">×</button></div>
-    <div class="kpis">${kpi(rs.length,'Попыток')}${kpi(avg+'%','Средний результат')}${kpi(Math.max(...rs.map(pct))+'%','Лучший')}
-      ${kpi(chrono.length>1 ? ((pct(chrono[chrono.length-1])-pct(chrono[0]))>=0?'+':'')+(pct(chrono[chrono.length-1])-pct(chrono[0]))+'%' : '—','Прогресс (первая → последняя)')}
-      ${kpi(ktr.length ? ktOk+'/'+ktr.length : '—','Сдал КТ')}</div>
-    <div class="sub-title" style="margin-top:4px">Динамика результатов</div><div class="trend">${trend}</div>
-    <div class="sub-title">По тестам</div>
-    <div class="table-scroll"><table style="min-width:520px"><thead><tr><th>Код</th><th>Тип</th><th>Попыток</th><th>Средний</th><th>Лучший</th></tr></thead><tbody>${gRows}</tbody></table></div>
-    <div class="sub-title">Все попытки</div>
-    <div class="table-scroll table-scroll-v"><table style="min-width:520px"><thead><tr><th>Дата</th><th>Тест</th><th>Набрал</th><th>Результат</th><th>Итог</th></tr></thead><tbody>${rs.map(r=>`
-      <tr><td class="muted">${escapeHtml(r.date)}</td><td><span class="tag ${isKT(r)?'kt':'neu'}">${escapeHtml(kindLabel(r))}</span> <span class="muted">${escapeHtml(r.code)}</span></td>
-      <td><b>${r.score}</b> <span class="muted">/ ${r.total}</span></td><td>${pbar(pct(r))}</td><td>${verdictTag(r)}</td></tr>`).join('')}</tbody></table></div>`;
+    ${controls}
+    ${stats}`;
   $('userModal').classList.remove('hidden');
   $('userModalClose').onclick = closeUser;
+
+  if (u) {
+    const refresh = () => { renderUsersTable(); openUser(uid); };
+    $('umNoteSave').onclick = async () => { const v = $('umNote').value.trim(); if (await adminAct('/api/admin/set-note', { id:uid, note:v })) { u.note = v; renderUsersTable(); } };
+    $('umEnd').onclick = () => { if (confirm('Завершить активную сессию пользователя? Ему придётся войти заново.')) adminAct('/api/admin/end-session', { id:uid }, 'Сессия завершена'); };
+    $('umBlock').onclick = async () => {
+      const block = !u.blocked;
+      if (!confirm(block ? 'Заблокировать аккаунт? Сессия завершится, вход будет закрыт до разблокировки.' : 'Разблокировать аккаунт?')) return;
+      if (await adminAct('/api/admin/set-blocked', { id:uid, blocked:block })) { u.blocked = block; refresh(); }
+    };
+  }
+  if (rs.length) {
+    api('/api/admin/user-topics?id=' + uid).then(d => {
+      const box = $('umTopics');
+      if (currentUid !== uid || !box) return;
+      const rows = (d.topics||[]).map(t => ({...t, total:t.correct+t.wrong})).filter(t => t.total >= 3)
+        .sort((a,b) => a.correct/a.total - b.correct/b.total).slice(0,12);
+      box.className = '';
+      box.innerHTML = rows.length ? `<div class="table-scroll"><table style="min-width:520px"><thead><tr><th>Тема</th><th>Тест</th><th>Верно / Неверно</th><th>Усвоение</th></tr></thead><tbody>${rows.map(t => `
+        <tr><td>${escapeHtml(t.topic)}</td><td class="muted">${escapeHtml(t.code)} · ${escapeHtml(SECTION_LABELS[t.section]||t.section)}</td>
+        <td><b>${t.correct}</b> / ${t.wrong}</td><td>${pbar(Math.round(t.correct/t.total*100))}</td></tr>`).join('')}</tbody></table></div>`
+        : '<span class="muted">Недостаточно данных (нужно минимум 3 ответа по теме).</span>';
+    }).catch(() => { const box = $('umTopics'); if (box) box.textContent = 'Не удалось загрузить темы.'; });
+  }
 }
 function closeUser(){ $('userModal').classList.add('hidden'); }
 $('userModal').addEventListener('click', e => { if (e.target === $('userModal')) closeUser(); });
@@ -840,16 +1128,116 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUser();
 async function loadResults(){
   const m=$('resMsg'); m.textContent=''; m.className='msg';
   if(!getKey()){ m.textContent='Введите ADMIN_KEY.'; m.className='msg err'; return; }
-  try{ resultsCache = (await api('/api/admin/results')).results || []; renderStats(); }
+  try{ resultsCache = (await api('/api/admin/results')).results || []; renderStats(); renderAnalytics(); }
   catch(e){ m.textContent=e.message; m.className='msg err'; }
 }
 $('fKind').onchange = $('fPeriod').onchange = renderStats;
 $('fSearch').addEventListener('input', renderStats);
 $('resReloadBtn').onclick = loadResults;
 
+/* ---------- Аналитика ---------- */
+function lastActivity(u){
+  const login = (u.last_login_at||'').slice(0,10);
+  const lr = resultsCache.find(r => r.user_id === u.id); // результаты идут от новых к старым
+  const res = lr ? lr.date : '';
+  return res > login ? res : login;
+}
+function renderAnalytics(){
+  // по дням
+  const days = [];
+  for (let i = 29; i >= 0; i--) days.push(new Date(Date.now() - i*864e5).toISOString().slice(0,10));
+  const cnt = Object.fromEntries(days.map(d => [d, 0]));
+  resultsCache.forEach(r => { if (r.date in cnt) cnt[r.date]++; });
+  const max = Math.max(1, ...Object.values(cnt));
+  $('dailyChart').innerHTML = `<div class="bars">${days.map(d => `<div class="b" style="height:${Math.max(2, cnt[d]/max*100)}%" title="${fmtD(d)}: ${cnt[d]}"></div>`).join('')}</div>
+    <div class="bars-x"><span>${fmtD(days[0])}</span><span>макс. за день: ${max}</span><span>${fmtD(days[29])}</span></div>`;
+  // неактивные
+  const rows = usersCache.map(u => { const la = lastActivity(u); return { u, la, d: daysSince(la) }; })
+    .filter(x => x.d === null || x.d >= 7).sort((a,b) => (b.d ?? 1e9) - (a.d ?? 1e9)).slice(0,100);
+  $('inactiveRows').innerHTML = rows.map(x => {
+    return `<tr class="clickable" data-uid="${x.u.id}"><td><div class="user-cell">${avatarHtml(x.u.name, x.u.email)}<span>${escapeHtml(x.u.email)}</span></div></td>
+      <td>${x.la ? fmtD(x.la) : '<span class="muted">никогда</span>'}</td><td>${x.d === null ? '—' : x.d}</td><td>${(x.u.access||[]).length}</td></tr>`;
+  }).join('');
+  $('inactiveEmpty').classList.toggle('hidden', rows.length > 0);
+}
+$('inactiveRows').addEventListener('click', e => { const tr = e.target.closest('tr[data-uid]'); if (tr) openUser(Number(tr.dataset.uid)); });
+
+async function loadHard(){
+  const btn = $('hardLoadBtn'); btn.disabled = true; btn.textContent = 'Считаем…';
+  try{
+    const d = await api('/api/admin/hard-questions');
+    const qs = d.questions || [];
+    $('hardInfo').textContent = qs.length ? `Проанализировано попыток: ${d.attempts_scanned}. Показаны вопросы с самой высокой долей ошибок (от 3 ответов).` : `Недостаточно данных: проанализировано попыток — ${d.attempts_scanned}.`;
+    $('hardRows').innerHTML = qs.map(q => `<tr>
+      <td>${escapeHtml(q.question)}${q.topic ? `<br><span class="muted">${escapeHtml(q.topic)}</span>` : ''}</td>
+      <td class="muted">${escapeHtml(q.bank)} #${q.idx}</td>
+      <td>${pbar(Math.round(q.wrong_rate*100), true)}</td><td>${q.attempts}</td>
+      <td><button class="btn-reset" data-flag-bank="${escapeHtml(q.bank)}" data-flag-idx="${q.idx}">Пометить</button></td></tr>`).join('');
+  }catch(e){ $('hardInfo').textContent = e.message; }
+  btn.disabled = false; btn.textContent = 'Обновить';
+}
+$('hardLoadBtn').onclick = loadHard;
+$('hardRows').addEventListener('click', async e => {
+  const b = e.target.closest('[data-flag-bank]'); if (!b) return;
+  const note = prompt('Что не так с вопросом? (необязательно)');
+  if (note === null) return;
+  try{ await api('/api/admin/flag-question', { method:'POST', body:{ bank:b.dataset.flagBank, idx:Number(b.dataset.flagIdx), note } });
+    b.textContent = '✓ Помечен'; b.disabled = true; loadFlags(); loadAuditLog(); }
+  catch(err){ alert(err.message); }
+});
+
+/* ---------- Контент: баннер, пометки, банки ---------- */
+async function loadBanner(){
+  if(!getKey()) return;
+  try{ const b = await api('/api/admin/banner'); $('bnText').value = b.text||''; $('bnKind').value = b.kind||'info'; $('bnActive').checked = !!b.active; }catch(e){}
+}
+$('bnSave').onclick = async () => {
+  const m = $('bnMsg'); m.textContent=''; m.className='msg';
+  try{ await api('/api/admin/banner', { method:'POST', body:{ text:$('bnText').value.trim(), kind:$('bnKind').value, active:$('bnActive').checked } });
+    m.textContent = $('bnActive').checked ? 'Сохранено — баннер показывается на сайте' : 'Сохранено — баннер скрыт'; m.className='msg ok'; loadAuditLog(); }
+  catch(e){ m.textContent = e.message; m.className='msg err'; }
+};
+
+let flagsCache = [];
+function renderFlags(){
+  const all = $('flagsAll').checked;
+  const list = flagsCache.filter(f => all || !f.resolved);
+  $('flagCount').textContent = flagsCache.filter(f => !f.resolved).length;
+  $('flagEmpty').classList.toggle('hidden', list.length > 0);
+  $('flagRows').innerHTML = list.map(f => `<tr style="${f.resolved ? 'opacity:.55' : ''}">
+    <td>${escapeHtml(f.question)}<br><span class="muted">${escapeHtml(f.bank)} #${f.idx}</span></td>
+    <td>${escapeHtml(f.note||'—')}</td><td class="muted">${escapeHtml((f.created_at||'').slice(0,10))}</td>
+    <td>${f.resolved ? '<span class="tag ok">Решено</span>' : '<span class="tag bad">Открыто</span>'}</td>
+    <td><button class="btn-reset" data-resolve="${f.id}" data-to="${f.resolved ? 0 : 1}">${f.resolved ? 'Вернуть' : 'Решено'}</button></td></tr>`).join('');
+}
+async function loadFlags(){
+  if(!getKey()) return;
+  try{ flagsCache = (await api('/api/admin/flags')).flags || []; renderFlags(); }catch(e){}
+}
+$('flagsAll').onchange = renderFlags;
+$('flagRows').addEventListener('click', async e => {
+  const b = e.target.closest('[data-resolve]'); if (!b) return;
+  try{ await api('/api/admin/resolve-flag', { method:'POST', body:{ id:Number(b.dataset.resolve), resolved:b.dataset.to === '1' } }); loadFlags(); loadAuditLog(); }
+  catch(err){ alert(err.message); }
+});
+
+let banksCache = [];
+function renderBanks(){
+  const q = $('bankSearch').value.trim().toLowerCase();
+  const list = banksCache.filter(b => !q || b.id.toLowerCase().includes(q));
+  $('bankCount').textContent = banksCache.length;
+  const cell = (n, total) => total ? `${n} <span class="muted">(${Math.round(n/total*100)}%)</span>` : '—';
+  $('bankRows').innerHTML = list.map(b => `<tr><td><b>${escapeHtml(b.id)}</b></td><td>${b.questions}</td><td>${b.topics}</td><td>${cell(b.conspects, b.questions)}</td><td>${cell(b.explained, b.questions)}</td></tr>`).join('');
+}
+async function loadBanks(){
+  if(!getKey()) return;
+  try{ banksCache = (await api('/api/admin/banks')).banks || []; renderBanks(); }catch(e){}
+}
+$('bankSearch').addEventListener('input', renderBanks);
+
 $('reloadBtn').onclick = load;
 $('auditReloadBtn').onclick = loadAuditLog;
-if(getKey()){ load(); loadAuditLog(); loadResults(); } else { $('liveBadge').classList.add('hidden'); }
+if(getKey()){ loadAll(); } else { $('liveBadge').classList.add('hidden'); }
 </script>
 </body>
 </html>

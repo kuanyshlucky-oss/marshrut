@@ -386,3 +386,36 @@ func countQuestions(pf *profileFile) int {
 	}
 	return n
 }
+
+// BankStat — сводка по банку вопросов (для админки).
+type BankStat struct {
+	ID        string `json:"id"`
+	Questions int    `json:"questions"`
+	Conspects int    `json:"conspects"` // вопросов с конспектом
+	Explained int    `json:"explained"` // вопросов с разбором (why/explanations)
+	Topics    int    `json:"topics"`
+}
+
+// BankStats — сводка по всем банкам, по id.
+func (s *Service) BankStats() []BankStat {
+	out := make([]BankStat, 0, len(s.banks))
+	for id, b := range s.banks {
+		st := BankStat{ID: id, Questions: len(b.Questions)}
+		topics := map[string]bool{}
+		for _, q := range b.Questions {
+			if q.Conspect != "" {
+				st.Conspects++
+			}
+			if q.Why != "" || len(q.Explanations) > 0 {
+				st.Explained++
+			}
+			if q.Topic != "" {
+				topics[q.Topic] = true
+			}
+		}
+		st.Topics = len(topics)
+		out = append(out, st)
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
+	return out
+}

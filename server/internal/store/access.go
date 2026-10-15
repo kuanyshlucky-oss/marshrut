@@ -6,7 +6,7 @@ import (
 )
 
 // Доступ к тестам выдаётся вручную администратором на код направления и язык
-// (RU/KK) — булево «выдан/не выдан», без срока действия.
+// (RU/KK) — срок действия необязателен (test_access.expires_at).
 
 func (s *Store) GrantAccess(ctx context.Context, userID int64, code, language string) error {
 	_, err := s.db.ExecContext(ctx,
@@ -25,7 +25,7 @@ func (s *Store) RevokeAccess(ctx context.Context, userID int64, code, language s
 func (s *Store) HasAccess(ctx context.Context, userID int64, code, language string) (bool, error) {
 	var ok bool
 	err := s.db.QueryRowContext(ctx,
-		`SELECT EXISTS(SELECT 1 FROM test_access WHERE user_id = $1 AND code = $2 AND language = $3)`,
+		`SELECT EXISTS(SELECT 1 FROM test_access WHERE user_id = $1 AND code = $2 AND language = $3 AND `+activeAccess+`)`,
 		userID, code, language).Scan(&ok)
 	return ok, err
 }
@@ -34,7 +34,7 @@ func (s *Store) HasAccess(ctx context.Context, userID int64, code, language stri
 func (s *Store) HasAnyAccess(ctx context.Context, userID int64, code string) (bool, error) {
 	var ok bool
 	err := s.db.QueryRowContext(ctx,
-		`SELECT EXISTS(SELECT 1 FROM test_access WHERE user_id = $1 AND code = $2)`,
+		`SELECT EXISTS(SELECT 1 FROM test_access WHERE user_id = $1 AND code = $2 AND `+activeAccess+`)`,
 		userID, code).Scan(&ok)
 	return ok, err
 }

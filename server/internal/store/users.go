@@ -52,7 +52,7 @@ func (s *Store) LoadUser(ctx context.Context, id int64) (*User, error) {
 		        -- DISTINCT: доступ к одному коду может быть на обоих языках (ru и kk),
 		        -- для карточек «мои направления» язык не важен, только код.
 		        COALESCE((SELECT json_agg(a.code ORDER BY a.code)
-		                FROM (SELECT DISTINCT code FROM test_access WHERE user_id = u.id) a), '[]')
+		                FROM (SELECT DISTINCT code FROM test_access WHERE user_id = u.id AND `+activeAccess+`) a), '[]')
 		 FROM users u WHERE u.id = $1`, id,
 	).Scan(&u.Name, &u.Email, &u.Profile.FullName, &u.Profile.Phone, &u.Profile.Education, &u.Profile.City,
 		&u.Profile.SpecialityID, &u.Profile.Language, &u.Profile.TargetType,
@@ -131,10 +131,10 @@ func (s *Store) ToggleFavorite(ctx context.Context, id int64, code string) error
 // ListUsers — админ-список одним запросом (агрегаты вместо цикла N+1).
 func (s *Store) ListUsers(ctx context.Context) ([]AdminUser, error) {
 	rows, err := s.db.QueryContext(ctx, `
-		SELECT u.id, u.name, u.email, u.phone, u.education, u.city, u.created_at,
+		SELECT u.id, u.name, u.email, u.phone, u.education, u.city, u.created_at, u.note, u.blocked, u.last_login_at,
 		       COALESCE((SELECT string_agg(f.code, ',' ORDER BY f.code) FROM favorites f WHERE f.user_id = u.id), ''),
 		       (SELECT COUNT(*) FROM results r WHERE r.user_id = u.id),
-		       COALESCE((SELECT json_agg(json_build_object('code', a.code, 'language', a.language) ORDER BY a.code, a.language)
+		       COALESCE((SELECT json_agg(json_build_object('code', a.code, 'language', a.language, 'expires_at', a.expires_at) ORDER BY a.code, a.language)
 		                 FROM test_access a WHERE a.user_id = u.id), '[]')
 		FROM users u
 		ORDER BY u.id`)
@@ -148,7 +148,7 @@ func (s *Store) ListUsers(ctx context.Context) ([]AdminUser, error) {
 		var u AdminUser
 		var favCSV string
 		var accessJSON []byte
-		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Education, &u.City, &u.CreatedAt, &favCSV, &u.Results, &accessJSON); err != nil {
+		if err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Education, &u.City, &u.CreatedAt, &u.Note, &u.Blocked, &u.LastLoginAt, &favCSV, &u.Results, &accessJSON); err != nil {
 			return nil, err
 		}
 		u.Favorites = []string{}

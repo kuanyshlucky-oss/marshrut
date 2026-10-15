@@ -39,7 +39,7 @@ func New(ctx context.Context, cfg *config.Config, st *store.Store, ct *content.S
 		signer:       auth.NewSigner(cfg.JWTSecret),
 		sessions:     auth.NewSessionCache(cfg.SessionCacheTTL, 10_000),
 		loginLimiter: newRateLimiter(ctx, 5, time.Minute),
-		adminLimiter: newRateLimiter(ctx, 20, time.Minute),
+		adminLimiter: newRateLimiter(ctx, 120, time.Minute),
 		adminFails:   newRateLimiter(ctx, maxAdminKeyFailures, 15*time.Minute),
 		dummyHash:    dummy,
 	}
@@ -100,6 +100,20 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/admin/revoke-access", s.admin(s.handleAdminRevokeAccess))
 	mux.HandleFunc("GET /api/admin/audit-log", s.admin(s.handleAdminAuditLog))
 	mux.HandleFunc("GET /api/admin/results", s.admin(s.handleAdminResults))
+	mux.HandleFunc("POST /api/admin/bulk-create", s.admin(s.handleAdminBulkCreate))
+	mux.HandleFunc("POST /api/admin/bulk-access", s.admin(s.handleAdminBulkAccess))
+	mux.HandleFunc("POST /api/admin/set-note", s.admin(s.handleAdminSetNote))
+	mux.HandleFunc("POST /api/admin/set-blocked", s.admin(s.handleAdminSetBlocked))
+	mux.HandleFunc("POST /api/admin/end-session", s.admin(s.handleAdminEndSession))
+	mux.HandleFunc("GET /api/admin/user-topics", s.admin(s.handleAdminUserTopics))
+	mux.HandleFunc("GET /api/admin/hard-questions", s.admin(s.handleAdminHardQuestions))
+	mux.HandleFunc("GET /api/admin/banks", s.admin(s.handleAdminBanks))
+	mux.HandleFunc("GET /api/admin/banner", s.admin(s.handleAdminGetBanner))
+	mux.HandleFunc("POST /api/admin/banner", s.admin(s.handleAdminSetBanner))
+	mux.HandleFunc("GET /api/admin/flags", s.admin(s.handleAdminFlags))
+	mux.HandleFunc("POST /api/admin/flag-question", s.admin(s.handleAdminFlagQuestion))
+	mux.HandleFunc("POST /api/admin/resolve-flag", s.admin(s.handleAdminResolveFlag))
+	mux.HandleFunc("GET /api/banner", s.handleBanner)
 
 	// Конспекты (картинки страниц) — только по доступу к курсу
 	mux.HandleFunc("GET /api/konspekt/{course}/{file}", s.auth(s.handleKonspektImage))

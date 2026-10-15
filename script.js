@@ -4344,3 +4344,35 @@ async function openResultDetail(code, score, total, date, attemptId) {
   document.body.classList.add('test-open');
   window.scrollTo(0, 0);
 }
+
+
+/* ---------------------------------------------------------
+   Баннер от администратора (админка → Контент → Сообщение).
+   Ошибки сети молча игнорируем: баннер не должен ломать сайт.
+   --------------------------------------------------------- */
+(function siteBanner() {
+  const show = async () => {
+    try {
+      const res = await fetch(API_BASE + '/api/banner');
+      if (!res.ok) return;
+      const b = await res.json();
+      if (!b.active || !b.text) return;
+      const key = 'jetishub_banner_closed';
+      try { if (sessionStorage.getItem(key) === b.text) return; } catch (_) { /* sessionStorage может быть недоступен */ }
+      const el = document.createElement('div');
+      el.setAttribute('role', 'status');
+      el.style.cssText = 'position:relative;z-index:60;display:flex;gap:12px;align-items:center;justify-content:center;padding:10px 44px 10px 16px;font:600 14px/1.4 Manrope,system-ui,sans-serif;text-align:center;color:#fff;background:' + (b.kind === 'warn' ? '#B14545' : '#0A6CC9');
+      const span = document.createElement('span');
+      span.textContent = b.text;
+      const close = document.createElement('button');
+      close.type = 'button';
+      close.setAttribute('aria-label', 'Закрыть');
+      close.textContent = '×';
+      close.style.cssText = 'position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:0;color:#fff;font-size:22px;line-height:1;cursor:pointer;padding:4px 8px';
+      close.onclick = () => { el.remove(); try { sessionStorage.setItem(key, b.text); } catch (_) { /* ignore */ } };
+      el.append(span, close);
+      document.body.prepend(el);
+    } catch (_) { /* нет сети — баннера просто не будет */ }
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', show); else show();
+})();

@@ -78,8 +78,18 @@ func (s *Server) handleLogin(w http.ResponseWriter, r *http.Request) {
 		writeError(w, http.StatusUnauthorized, msgBadCredentials)
 		return
 	}
+	if blocked, err := s.store.IsBlocked(ctx, id); err != nil {
+		s.dbError(w, r, "проверка блокировки аккаунта", err)
+		return
+	} else if blocked {
+		writeError(w, http.StatusForbidden, "Аккаунт заблокирован. Обратитесь к администратору.")
+		return
+	}
 	if err := s.store.ResetFailures(ctx, pair); err != nil {
 		s.log.Warn("не удалось сбросить счётчик входа", "err", err)
+	}
+	if err := s.store.TouchLogin(ctx, id); err != nil {
+		s.log.Warn("не удалось записать время входа", "err", err)
 	}
 	s.respondAuth(w, r, id)
 }

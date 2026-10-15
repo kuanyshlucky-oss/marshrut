@@ -65,20 +65,25 @@ type TopicHit struct {
 type AccessGrant struct {
 	Code     string `json:"code"`
 	Language string `json:"language"`
+	// ExpiresAt — YYYY-MM-DD, пусто = бессрочно.
+	ExpiresAt string `json:"expires_at"`
 }
 
 // AdminUser — безопасное представление пользователя для админ-списка.
 type AdminUser struct {
-	ID        int64         `json:"id"`
-	Name      string        `json:"name"`
-	Email     string        `json:"email"`
-	Phone     string        `json:"phone"`
-	Education string        `json:"education"`
-	City      string        `json:"city"`
-	Favorites []string      `json:"favorites"`
-	Results   int           `json:"results"`
-	CreatedAt string        `json:"created_at"`
-	Access    []AccessGrant `json:"access"`
+	ID          int64         `json:"id"`
+	Name        string        `json:"name"`
+	Email       string        `json:"email"`
+	Phone       string        `json:"phone"`
+	Education   string        `json:"education"`
+	City        string        `json:"city"`
+	Favorites   []string      `json:"favorites"`
+	Results     int           `json:"results"`
+	CreatedAt   string        `json:"created_at"`
+	Access      []AccessGrant `json:"access"`
+	Note        string        `json:"note"`
+	Blocked     bool          `json:"blocked"`
+	LastLoginAt string        `json:"last_login_at"`
 }
 
 type AuditEntry struct {
