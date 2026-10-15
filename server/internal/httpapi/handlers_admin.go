@@ -210,3 +210,13 @@ func (s *Server) handleAdminAuditLog(w http.ResponseWriter, r *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, map[string]any{"entries": entries})
 }
+
+// GET /api/admin/results — результаты прохождения всех пользователей (до 5000 последних).
+func (s *Server) handleAdminResults(w http.ResponseWriter, r *http.Request) {
+	res, err := s.store.ListAllResults(r.Context(), 5000)
+	if err != nil {
+		s.dbError(w, r, "результаты", err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"results": res})
+}

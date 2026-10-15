@@ -76,3 +76,39 @@ func addTopicStats(ctx context.Context, tx *sql.Tx, uid int64, code string, hits
 	}
 	return nil
 }
+
+// AdminResult — строка результата для админ-статистики (с данными пользователя).
+type AdminResult struct {
+	ID      int64  `json:"id"`
+	UserID  int64  `json:"user_id"`
+	Email   string `json:"email"`
+	Name    string `json:"name"`
+	Code    string `json:"code"`
+	Kind    string `json:"kind"`
+	Section string `json:"section"`
+	Score   int    `json:"score"`
+	Total   int    `json:"total"`
+	Passed  bool   `json:"passed"`
+	Date    string `json:"date"`
+}
+
+// ListAllResults — последние результаты всех пользователей (новые первыми).
+func (s *Store) ListAllResults(ctx context.Context, limit int) ([]AdminResult, error) {
+	rows, err := s.db.QueryContext(ctx, `
+		SELECT r.id, r.user_id, u.email, u.name, r.code, r.kind, r.section, r.score, r.total, r.passed, r.date
+		FROM results r JOIN users u ON u.id = r.user_id
+		ORDER BY r.id DESC LIMIT $1`, limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	out := []AdminResult{}
+	for rows.Next() {
+		var r AdminResult
+		if err := rows.Scan(&r.ID, &r.UserID, &r.Email, &r.Name, &r.Code, &r.Kind, &r.Section, &r.Score, &r.Total, &r.Passed, &r.Date); err != nil {
+			return nil, err
+		}
+		out = append(out, r)
+	}
+	return out, rows.Err()
+}

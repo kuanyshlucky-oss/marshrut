@@ -199,6 +199,25 @@
   .collapse-panel.is-open{ max-height:1000px; }
   .collapse-inner{ padding-top:18px; border-top:1px solid var(--line); margin-top:18px; }
 
+
+  /* Статистика прохождения */
+  .kpis{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:18px; }
+  .kpi{ background:var(--surface-2); border-radius:14px; padding:14px 16px; }
+  .kpi .n{ font-family:'Space Grotesk','Manrope',sans-serif; font-weight:700; font-size:24px; line-height:1.1; }
+  .kpi .l{ color:var(--soft); font-size:12px; margin-top:3px; }
+  .filters{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .filters select{ padding:7px 10px; border:1px solid var(--line); border-radius:999px; font-size:12px; font-family:inherit; background:var(--surface); color:var(--ink); margin:0; }
+  .sub-title{ font-family:'Space Grotesk','Manrope',sans-serif; font-weight:700; font-size:14px; margin:22px 0 10px; }
+  .pbar{ display:flex; align-items:center; gap:8px; min-width:130px; }
+  .pbar .track{ flex:1; height:7px; background:var(--surface-2); border-radius:99px; overflow:hidden; }
+  .pbar .fill{ height:100%; border-radius:99px; }
+  .pbar b{ font-size:12px; min-width:34px; text-align:right; }
+  .tag{ display:inline-block; font-size:11px; font-weight:700; border-radius:999px; padding:2px 9px; }
+  .tag.ok{ background:var(--ok-soft); color:var(--ok); }
+  .tag.bad{ background:var(--danger-soft); color:var(--danger); }
+  .tag.neu{ background:var(--surface-2); color:var(--soft); }
+  .tag.kt{ background:var(--accent-soft); color:var(--accent-ink); }
+
   @media (max-width:640px){
     .wrap{ padding:24px 16px 56px; }
     .top-row{ flex-direction:column; }
@@ -271,6 +290,7 @@
   <!-- Вкладки -->
   <div class="tabs" role="tablist">
     <button class="tab-btn is-active" data-tab="users" role="tab">Пользователи</button>
+    <button class="tab-btn" data-tab="stats" role="tab">Статистика</button>
     <button class="tab-btn" data-tab="audit" role="tab">Журнал действий</button>
   </div>
 
@@ -334,6 +354,46 @@
     </div>
   </div>
 
+  <!-- Статистика прохождения -->
+  <div class="tab-panel" id="tab-stats">
+    <div class="card">
+      <div class="card-head">
+        <h2>Статистика прохождения <span class="count">(<span id="resCount">0</span>)</span></h2>
+        <div class="filters">
+          <select id="fKind" aria-label="Тип теста">
+            <option value="">Все типы</option>
+            <option value="subject">Тесты по предметам</option>
+            <option value="kt">Симуляции КТ</option>
+          </select>
+          <select id="fPeriod" aria-label="Период">
+            <option value="0">За всё время</option>
+            <option value="7">7 дней</option>
+            <option value="30">30 дней</option>
+          </select>
+          <button class="btn-ghost btn-sm" id="resReloadBtn">Обновить</button>
+        </div>
+      </div>
+      <div class="kpis" id="kpis"></div>
+
+      <div class="sub-title">По пользователям</div>
+      <div class="table-scroll table-scroll-v"><table>
+        <thead><tr><th>Пользователь</th><th>Попыток</th><th>Лучший</th><th>Средний результат</th><th>Сдал КТ</th><th>Последний тест</th></tr></thead>
+        <tbody id="userStatRows"></tbody>
+      </table></div>
+
+      <div class="sub-title">Последние попытки</div>
+      <div class="table-scroll table-scroll-v"><table>
+        <thead><tr><th>Дата</th><th>Пользователь</th><th>Тест</th><th>Набрал</th><th>Результат</th><th>Итог</th></tr></thead>
+        <tbody id="resRows"></tbody>
+      </table></div>
+      <div id="resEmpty" class="state-block hidden">
+        <svg class="ic" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+        <span class="t">Попыток пока нет</span>
+      </div>
+      <p id="resMsg" class="msg"></p>
+    </div>
+  </div>
+
   <!-- Журнал -->
   <div class="tab-panel" id="tab-audit">
     <div class="card">
@@ -371,7 +431,7 @@ syncKeyView();
 $('saveKey').onclick = () => {
   localStorage.setItem(KEY, $('key').value.trim());
   syncKeyView();
-  load(); loadAuditLog();
+  load(); loadAuditLog(); loadResults();
 };
 $('changeKeyBtn').onclick = () => { $('keyFormView').classList.remove('hidden'); $('keyEnteredView').classList.add('hidden'); $('key').focus(); };
 $('keyToggle').onclick = () => { const i=$('key'); i.type = i.type==='password' ? 'text' : 'password'; };
@@ -654,9 +714,80 @@ async function loadAuditLog(){
   }catch(e){ am.textContent=e.message; am.className='msg err'; }
 }
 
+/* ---------- Статистика прохождения ---------- */
+let resultsCache = [];
+const SECTION_LABELS = { lang:'Язык', logic:'Логика', subj1:'Предмет 1', subj2:'Предмет 2' };
+function kindLabel(r){
+  if (r.kind && r.kind.startsWith('kt:')) return 'Симуляция КТ';
+  return 'Предмет' + (r.section ? ' · ' + (SECTION_LABELS[r.section]||r.section) : '');
+}
+const isKT = r => !!r.kind && r.kind.startsWith('kt:');
+const pct = r => r.total > 0 ? Math.round(r.score / r.total * 100) : 0;
+function pbar(p){
+  const c = p >= 70 ? 'var(--ok)' : p >= 40 ? 'var(--warn)' : 'var(--danger)';
+  return `<div class="pbar"><div class="track"><div class="fill" style="width:${p}%;background:${c}"></div></div><b>${p}%</b></div>`;
+}
+function verdictTag(r){
+  if (!isKT(r)) return '<span class="tag neu">—</span>';
+  return r.passed ? '<span class="tag ok">Сдал</span>' : '<span class="tag bad">Не сдал</span>';
+}
+function filteredResults(){
+  const kind = $('fKind').value, days = Number($('fPeriod').value);
+  const from = days ? new Date(Date.now() - days*864e5).toISOString().slice(0,10) : '';
+  return resultsCache.filter(r => (!kind || (kind==='kt' ? isKT(r) : !isKT(r))) && (!from || r.date >= from));
+}
+function renderStats(){
+  const list = filteredResults();
+  $('resCount').textContent = list.length;
+  $('resEmpty').classList.toggle('hidden', list.length > 0);
+  const users = new Set(list.map(r=>r.user_id));
+  const avg = list.length ? Math.round(list.reduce((n,r)=>n+pct(r),0)/list.length) : 0;
+  const kt = list.filter(isKT), ktOk = kt.filter(r=>r.passed).length;
+  const best = list.reduce((m,r)=>Math.max(m,pct(r)),0);
+  const kpi = (n,l) => `<div class="kpi"><div class="n">${n}</div><div class="l">${l}</div></div>`;
+  $('kpis').innerHTML = kpi(list.length,'Всего попыток') + kpi(users.size,'Прошли тесты (чел.)')
+    + kpi(list.length ? avg+'%' : '—','Средний результат') + kpi(list.length ? best+'%' : '—','Лучший результат')
+    + kpi(kt.length ? `${ktOk}/${kt.length}` : '—','Сдали симуляцию КТ')
+    + kpi(kt.length ? Math.round(ktOk/kt.length*100)+'%' : '—','Доля сдавших КТ');
+
+  const byUser = new Map();
+  list.forEach(r => { if(!byUser.has(r.user_id)) byUser.set(r.user_id, []); byUser.get(r.user_id).push(r); });
+  const rows = [...byUser.values()].map(rs => {
+    const ktr = rs.filter(isKT);
+    return { u:rs[0], n:rs.length, best:Math.max(...rs.map(pct)), avg:Math.round(rs.reduce((n,r)=>n+pct(r),0)/rs.length),
+      ktOk:ktr.filter(r=>r.passed).length, ktN:ktr.length, last:rs[0] };
+  }).sort((a,b)=>b.n-a.n || b.avg-a.avg);
+  $('userStatRows').innerHTML = rows.map(x => `
+    <tr>
+      <td><div class="user-cell">${avatarHtml(x.u.name, x.u.email)}<span>${escapeHtml(x.u.email)}${x.u.name && x.u.name!==x.u.email ? `<br><span class="muted">${escapeHtml(x.u.name)}</span>` : ''}</span></div></td>
+      <td><b>${x.n}</b></td>
+      <td>${pbar(x.best)}</td>
+      <td>${pbar(x.avg)}</td>
+      <td>${x.ktN ? `<span class="tag ${x.ktOk ? 'ok':'bad'}">${x.ktOk}/${x.ktN}</span>` : '<span class="muted">—</span>'}</td>
+      <td class="muted">${escapeHtml(x.last.date)} · ${escapeHtml(x.last.code)}</td>
+    </tr>`).join('');
+  $('resRows').innerHTML = list.slice(0,300).map(r => `
+    <tr>
+      <td class="muted">${escapeHtml(r.date)}</td>
+      <td>${escapeHtml(r.email)}</td>
+      <td><span class="tag ${isKT(r)?'kt':'neu'}">${escapeHtml(kindLabel(r))}</span> <span class="muted">${escapeHtml(r.code)}</span></td>
+      <td><b>${r.score}</b> <span class="muted">/ ${r.total}</span></td>
+      <td>${pbar(pct(r))}</td>
+      <td>${verdictTag(r)}</td>
+    </tr>`).join('');
+}
+async function loadResults(){
+  const m=$('resMsg'); m.textContent=''; m.className='msg';
+  if(!getKey()){ m.textContent='Введите ADMIN_KEY.'; m.className='msg err'; return; }
+  try{ resultsCache = (await api('/api/admin/results')).results || []; renderStats(); }
+  catch(e){ m.textContent=e.message; m.className='msg err'; }
+}
+$('fKind').onchange = $('fPeriod').onchange = renderStats;
+$('resReloadBtn').onclick = loadResults;
+
 $('reloadBtn').onclick = load;
 $('auditReloadBtn').onclick = loadAuditLog;
-if(getKey()){ load(); loadAuditLog(); } else { $('liveBadge').classList.add('hidden'); }
+if(getKey()){ load(); loadAuditLog(); loadResults(); } else { $('liveBadge').classList.add('hidden'); }
 </script>
 </body>
 </html>
