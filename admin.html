@@ -218,6 +218,18 @@
   .tag.neu{ background:var(--surface-2); color:var(--soft); }
   .tag.kt{ background:var(--accent-soft); color:var(--accent-ink); }
 
+  /* Детали пользователя */
+  tr.clickable{ cursor:pointer; }
+  .modal-bg{ position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto; z-index:50; }
+  .modal{ background:var(--surface); border:1px solid var(--line); border-radius:20px; width:100%; max-width:860px; padding:24px; box-shadow:var(--shadow-sm); }
+  .modal-head{ display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+  .modal-head .avatar{ width:44px; height:44px; font-size:17px; }
+  .modal-head .who{ flex:1; min-width:0; }
+  .modal-head .who b{ font-size:17px; font-family:'Space Grotesk','Manrope',sans-serif; }
+  .modal-close{ background:var(--surface-2); color:var(--ink); border-radius:50%; width:34px; height:34px; padding:0; font-size:18px; line-height:1; }
+  .trend{ background:var(--surface-2); border-radius:14px; padding:12px 14px; }
+  .trend svg{ width:100%; height:90px; display:block; }
+
   @media (max-width:640px){
     .wrap{ padding:24px 16px 56px; }
     .top-row{ flex-direction:column; }
@@ -360,6 +372,10 @@
       <div class="card-head">
         <h2>Статистика прохождения <span class="count">(<span id="resCount">0</span>)</span></h2>
         <div class="filters">
+          <div class="search-wrap">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input id="fSearch" type="text" placeholder="Поиск: логин, имя, код теста…">
+          </div>
           <select id="fKind" aria-label="Тип теста">
             <option value="">Все типы</option>
             <option value="subject">Тесты по предметам</option>
@@ -393,6 +409,7 @@
       <p id="resMsg" class="msg"></p>
     </div>
   </div>
+  <div class="modal-bg hidden" id="userModal"><div class="modal" id="userModalBody"></div></div>
 
   <!-- Журнал -->
   <div class="tab-panel" id="tab-audit">
@@ -732,9 +749,9 @@ function verdictTag(r){
   return r.passed ? '<span class="tag ok">Сдал</span>' : '<span class="tag bad">Не сдал</span>';
 }
 function filteredResults(){
-  const kind = $('fKind').value, days = Number($('fPeriod').value);
+  const q = $('fSearch').value.trim().toLowerCase(), kind = $('fKind').value, days = Number($('fPeriod').value);
   const from = days ? new Date(Date.now() - days*864e5).toISOString().slice(0,10) : '';
-  return resultsCache.filter(r => (!kind || (kind==='kt' ? isKT(r) : !isKT(r))) && (!from || r.date >= from));
+  return resultsCache.filter(r => (!q || [r.email, r.name, r.code, r.user_id].some(v => String(v||'').toLowerCase().includes(q))) && (!kind || (kind==='kt' ? isKT(r) : !isKT(r))) && (!from || r.date >= from));
 }
 function renderStats(){
   const list = filteredResults();
@@ -758,7 +775,7 @@ function renderStats(){
       ktOk:ktr.filter(r=>r.passed).length, ktN:ktr.length, last:rs[0] };
   }).sort((a,b)=>b.n-a.n || b.avg-a.avg);
   $('userStatRows').innerHTML = rows.map(x => `
-    <tr>
+    <tr class="clickable" data-uid="${x.u.user_id}" title="Подробная статистика">
       <td><div class="user-cell">${avatarHtml(x.u.name, x.u.email)}<span>${escapeHtml(x.u.email)}${x.u.name && x.u.name!==x.u.email ? `<br><span class="muted">${escapeHtml(x.u.name)}</span>` : ''}</span></div></td>
       <td><b>${x.n}</b></td>
       <td>${pbar(x.best)}</td>
@@ -767,7 +784,7 @@ function renderStats(){
       <td class="muted">${escapeHtml(x.last.date)} · ${escapeHtml(x.last.code)}</td>
     </tr>`).join('');
   $('resRows').innerHTML = list.slice(0,300).map(r => `
-    <tr>
+    <tr class="clickable" data-uid="${r.user_id}" title="Подробная статистика">
       <td class="muted">${escapeHtml(r.date)}</td>
       <td>${escapeHtml(r.email)}</td>
       <td><span class="tag ${isKT(r)?'kt':'neu'}">${escapeHtml(kindLabel(r))}</span> <span class="muted">${escapeHtml(r.code)}</span></td>
@@ -776,6 +793,50 @@ function renderStats(){
       <td>${verdictTag(r)}</td>
     </tr>`).join('');
 }
+function openUser(uid){
+  const rs = resultsCache.filter(r => r.user_id === uid); // все попытки, без фильтров
+  if (!rs.length) return;
+  const u = rs[0], chrono = [...rs].reverse();
+  const ktr = rs.filter(isKT), ktOk = ktr.filter(r=>r.passed).length;
+  const avg = Math.round(rs.reduce((n,r)=>n+pct(r),0)/rs.length);
+  const kpi = (n,l) => `<div class="kpi"><div class="n">${n}</div><div class="l">${l}</div></div>`;
+  // динамика: точки по хронологии
+  const pts = chrono.map((r,i) => [chrono.length>1 ? 8+i*(384/(chrono.length-1)) : 200, 8+(100-pct(r))/100*64]);
+  const trend = `<svg viewBox="0 0 400 80" preserveAspectRatio="none">
+    <line x1="0" y1="${8+0.3*64}" x2="400" y2="${8+0.3*64}" stroke="var(--line)" stroke-dasharray="3 3"/>
+    <polyline fill="none" stroke="var(--accent)" stroke-width="2" vector-effect="non-scaling-stroke" points="${pts.map(p=>p.join(',')).join(' ')}"/>
+    ${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="var(--accent)"/>`).join('')}</svg>`;
+  // разбивка по тестам и блокам
+  const groups = new Map();
+  rs.forEach(r => { const k = r.code+'|'+kindLabel(r); if(!groups.has(k)) groups.set(k,{code:r.code,label:kindLabel(r),list:[]}); groups.get(k).list.push(r); });
+  const gRows = [...groups.values()].sort((a,b)=>b.list.length-a.list.length).map(g => {
+    const a = Math.round(g.list.reduce((n,r)=>n+pct(r),0)/g.list.length), b = Math.max(...g.list.map(pct));
+    return `<tr><td><b>${escapeHtml(g.code)}</b></td><td><span class="tag ${g.label.startsWith('Симуляция')?'kt':'neu'}">${escapeHtml(g.label)}</span></td><td>${g.list.length}</td><td>${pbar(a)}</td><td>${pbar(b)}</td></tr>`;
+  }).join('');
+  $('userModalBody').innerHTML = `
+    <div class="modal-head">${avatarHtml(u.name,u.email)}
+      <div class="who"><b>${escapeHtml(u.email)}</b><br><span class="muted">${u.name && u.name!==u.email ? escapeHtml(u.name)+' · ' : ''}ID #${u.user_id} · первая попытка ${escapeHtml(chrono[0].date)}</span></div>
+      <button class="modal-close" id="userModalClose" aria-label="Закрыть">×</button></div>
+    <div class="kpis">${kpi(rs.length,'Попыток')}${kpi(avg+'%','Средний результат')}${kpi(Math.max(...rs.map(pct))+'%','Лучший')}
+      ${kpi(chrono.length>1 ? ((pct(chrono[chrono.length-1])-pct(chrono[0]))>=0?'+':'')+(pct(chrono[chrono.length-1])-pct(chrono[0]))+'%' : '—','Прогресс (первая → последняя)')}
+      ${kpi(ktr.length ? ktOk+'/'+ktr.length : '—','Сдал КТ')}</div>
+    <div class="sub-title" style="margin-top:4px">Динамика результатов</div><div class="trend">${trend}</div>
+    <div class="sub-title">По тестам</div>
+    <div class="table-scroll"><table style="min-width:520px"><thead><tr><th>Код</th><th>Тип</th><th>Попыток</th><th>Средний</th><th>Лучший</th></tr></thead><tbody>${gRows}</tbody></table></div>
+    <div class="sub-title">Все попытки</div>
+    <div class="table-scroll table-scroll-v"><table style="min-width:520px"><thead><tr><th>Дата</th><th>Тест</th><th>Набрал</th><th>Результат</th><th>Итог</th></tr></thead><tbody>${rs.map(r=>`
+      <tr><td class="muted">${escapeHtml(r.date)}</td><td><span class="tag ${isKT(r)?'kt':'neu'}">${escapeHtml(kindLabel(r))}</span> <span class="muted">${escapeHtml(r.code)}</span></td>
+      <td><b>${r.score}</b> <span class="muted">/ ${r.total}</span></td><td>${pbar(pct(r))}</td><td>${verdictTag(r)}</td></tr>`).join('')}</tbody></table></div>`;
+  $('userModal').classList.remove('hidden');
+  $('userModalClose').onclick = closeUser;
+}
+function closeUser(){ $('userModal').classList.add('hidden'); }
+$('userModal').addEventListener('click', e => { if (e.target === $('userModal')) closeUser(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeUser(); });
+['userStatRows','resRows'].forEach(id => $(id).addEventListener('click', e => {
+  const tr = e.target.closest('tr[data-uid]'); if (tr) openUser(Number(tr.dataset.uid));
+}));
+
 async function loadResults(){
   const m=$('resMsg'); m.textContent=''; m.className='msg';
   if(!getKey()){ m.textContent='Введите ADMIN_KEY.'; m.className='msg err'; return; }
@@ -783,6 +844,7 @@ async function loadResults(){
   catch(e){ m.textContent=e.message; m.className='msg err'; }
 }
 $('fKind').onchange = $('fPeriod').onchange = renderStats;
+$('fSearch').addEventListener('input', renderStats);
 $('resReloadBtn').onclick = loadResults;
 
 $('reloadBtn').onclick = load;
