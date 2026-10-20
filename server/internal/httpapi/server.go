@@ -125,6 +125,11 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/roadmap", s.auth(s.handleRoadmap))
 	mux.HandleFunc("POST /api/roadmap/toggle", s.auth(s.handleRoadmapToggle))
 
+	// прогресс практики английского
+	mux.HandleFunc("GET /api/practice", s.auth(s.handlePracticeGet))
+	mux.HandleFunc("POST /api/practice/result", s.auth(s.handlePracticeSave))
+	mux.HandleFunc("POST /api/practice/import", s.auth(s.handlePracticeImport))
+
 	var h http.Handler = mux
 	h = withGzip(h)
 	h = s.withCORS(h)

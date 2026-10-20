@@ -122,8 +122,42 @@
   var D = window.PRACTICE_EN;
   var app = document.getElementById('app');
   var KEY = 'practice-en-v1';
-  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  /* Прогресс: у вошедшего пользователя хранится на сервере (свой у каждого аккаунта),
+     у гостя — только в localStorage этого браузера. */
+  var API = (function () {
+    var local = location.hostname === 'localhost' || location.hostname === '127.0.0.1', o = null;
+    try { o = local ? localStorage.getItem('marshrut_api_base') : null; } catch (e) {}
+    return o || 'https://marshrut-9c5z.onrender.com';
+  })();
+  var token = null, cache = null;
+  try { token = localStorage.getItem('marshrut_token'); } catch (e) {}
+  function api(path, body) {
+    return fetch(API + path, {
+      method: body ? 'POST' : 'GET',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+  function loadLocal() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function load() { return token && cache ? cache : loadLocal(); }
   function save(s) { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }
+  function record(uid, right, st) {
+    var s = st[uid] || { tries: 0 };
+    s.tries = (s.tries || 0) + 1; s.last = right; s.best = Math.max(s.best || 0, right); st[uid] = s;
+    if (token && cache) {
+      api('/api/practice/result', { unit: uid, right: right }).then(function (d) { cache = d.progress || cache; }).catch(function () {});
+    } else save(st);
+  }
+  /* разовый перенос старого прогресса из браузера в аккаунт */
+  function syncFromServer() {
+    var legacy = loadLocal(), migrated = false;
+    try { migrated = !!localStorage.getItem(KEY + '-migrated'); } catch (e) {}
+    var p = (!migrated && Object.keys(legacy).length) ? api('/api/practice/import', { progress: legacy }) : api('/api/practice');
+    return p.then(function (d) {
+      cache = d.progress || {};
+      try { localStorage.setItem(KEY + '-migrated', '1'); } catch (e) {}
+    });
+  }
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
 
   /* разметка конспекта (та же, что formatConspectText на сайте) */
@@ -242,8 +276,7 @@
     }
     function finish() {
       var right = results.filter(Boolean).length, total = u.ex.length, pct = Math.round(right / total * 100);
-      var st = load(), s = st[u.id] || { tries: 0 };
-      s.tries = (s.tries || 0) + 1; s.last = right; s.best = Math.max(s.best || 0, right); st[u.id] = s; save(st);
+      record(u.id, right, load());
       var cls = pct >= 80 ? 'ok' : pct >= 50 ? 'mid' : 'low';
       var wrong = u.ex.map(function (e, k) { return { e: e, k: k }; }).filter(function (x) { return !results[x.k]; });
       body.innerHTML = '<div class="card"><div class="score"><div class="big ' + cls + '">' + right + '/' + total + '</div><p>' + pct + '% · ' + (pct >= 80 ? 'Отлично! Юнит освоен.' : pct >= 50 ? 'Неплохо — повторите теорию и ошибки.' : 'Стоит перечитать теорию и пройти ещё раз.') + '</p></div>' +
@@ -273,7 +306,10 @@
     try { localStorage.setItem('theme', n); } catch (e) {}
   });
   window.addEventListener('hashchange', route);
-  route();
+  if (token) {
+    app.innerHTML = '<p class="lead">Загрузка прогресса…</p>';
+    syncFromServer().catch(function () { token = null; }).then(route);
+  } else route();
 })();
 </script>
 </body>
