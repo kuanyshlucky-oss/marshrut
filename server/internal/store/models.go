@@ -52,6 +52,9 @@ type TopicStat struct {
 	Topic   string `json:"topic"`
 	Correct int    `json:"correct"`
 	Wrong   int    `json:"wrong"`
+	// Seen — сколько разных вопросов этой темы пользователь уже решал (учитываются с момента
+	// появления seen_questions: у старых попыток отпечатков вопросов не сохранилось).
+	Seen int `json:"seen"`
 }
 
 // TopicHit — один вопрос завершённой попытки: тема + верность + раздел.
@@ -59,6 +62,7 @@ type TopicHit struct {
 	Topic   string
 	Correct bool
 	Section string
+	Key     string // отпечаток вопроса (content.Question.FP); пусто — вопрос не учитывается как «решённый»
 }
 
 // AccessGrant — одна выданная пара (код направления, язык теста).

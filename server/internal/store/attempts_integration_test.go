@@ -22,7 +22,7 @@ func mkAttempt(uid int64, id string) *Attempt {
 // okGrade — проверка «всё верно»: 1 из 1, с одной темой.
 func okGrade(a *Attempt) (*Submission, error) {
 	return &Submission{Code: a.Code, Kind: "subject", Score: 1, Total: 1, Passed: true, Section: a.Section,
-		Hits: []TopicHit{{"Тема", true, "subj1"}}}, nil
+		Hits: []TopicHit{{Topic: "Тема", Correct: true, Section: "subj1", Key: "k1"}}}, nil
 }
 
 func TestAttemptLifecycle(t *testing.T) {

@@ -2449,6 +2449,11 @@ const API = {
     return r;
   },
 
+  // Сколько вопросов в каждой теме профильных предметов (код → предмет → тема → N); без ключей ответов.
+  getTopicTotals() {
+    return apiFetch('/api/topic-totals', { auth: true });
+  },
+
   // Разбор сданной попытки из кабинета: вопросы, ключи, ответы пользователя.
   getAttemptReview(id) {
     return apiFetch(`/api/attempts/${encodeURIComponent(id)}/review`, { auth: true });
@@ -2876,7 +2881,8 @@ function renderQuizQuestion() {
     imageEl.innerHTML = q.image ? `<div class="kt-question-image${q.imageReplacesText ? ' math-question-image' : ''}"><img src="${q.image}" alt="Условие вопроса"></div>` : '';
   }
 
-  const isMulti = !!q.multi; // чекбоксы/радио определяет сервер: ключей на клиенте до сдачи нет
+  // чекбоксы/радио определяет сервер (ключей на клиенте до сдачи нет); второй профильный предмет — всегда чекбоксы
+  const isMulti = !!q.multi || q.block === 'subj2';
   const curAns = activeQuiz.answers[activeQuiz.qIndex];
   const hintEl = document.getElementById('testMultiHint');
   if (hintEl) hintEl.remove();
@@ -2884,7 +2890,7 @@ function renderQuizQuestion() {
     const hint = document.createElement('p');
     hint.id = 'testMultiHint';
     hint.className = 'kt-multi-hint';
-    hint.textContent = 'Выберите все подходящие варианты';
+    hint.textContent = I18N.t('kt.multiHint');
     document.getElementById('testQuestion').insertAdjacentElement('afterend', hint);
   }
 
@@ -2899,10 +2905,14 @@ function renderQuizQuestion() {
   optionsEl.querySelectorAll('[data-option]').forEach(btn => {
     btn.addEventListener('click', () => {
       const i = Number(btn.dataset.option);
-      if (q.multi) {
+      if (isMulti) {
         const cur = Array.isArray(activeQuiz.answers[activeQuiz.qIndex]) ? activeQuiz.answers[activeQuiz.qIndex].slice() : [];
         const pos = cur.indexOf(i);
-        if (pos === -1) cur.push(i); else cur.splice(pos, 1);
+        if (pos === -1) {
+          // лимит фиксированный (3), а не число верных ответов вопроса — иначе он выдаёт ответ
+          if (cur.length >= 3) { showToast(I18N.t('kt.multiLimit').replace('{n}', '3')); return; }
+          cur.push(i);
+        } else cur.splice(pos, 1);
         activeQuiz.answers[activeQuiz.qIndex] = cur;
       } else {
         activeQuiz.answers[activeQuiz.qIndex] = i;
@@ -3386,6 +3396,37 @@ function progressTopicStatus(t) {
   return { key: 'low', label: 'Слабо' };
 }
 
+// Число вопросов банка по темам (с сервера), чтобы показывать «решали X из N». Загружается один раз;
+// пока не пришло (или нет сети), строки тем просто без знаменателя.
+let progressTotalsRaw = null;
+let progressTotalsIndex = null;
+let progressTotalsLoading = false;
+function progressLoadTotals() {
+  if (progressTotalsRaw || progressTotalsLoading) return;
+  progressTotalsLoading = true;
+  API.getTopicTotals().then(raw => {
+    progressTotalsRaw = raw || {};
+    progressTotalsIndex = null;
+    renderProgress();
+  }).catch(() => { progressTotalsLoading = false; });
+}
+// Тема в статистике хранится с номером («Тема 7. …»), в списке программы — без: сравниваем по progressNorm.
+function progressTopicTotal(code, section, topic) {
+  if (!progressTotalsRaw) return 0;
+  if (!progressTotalsIndex) {
+    progressTotalsIndex = {};
+    Object.entries(progressTotalsRaw).forEach(([c, secs]) => {
+      progressTotalsIndex[c] = {};
+      Object.entries(secs).forEach(([sec, topics]) => {
+        progressTotalsIndex[c][sec] = {};
+        Object.entries(topics).forEach(([t, n]) => { progressTotalsIndex[c][sec][progressNorm(t)] = n; });
+      });
+    });
+  }
+  const bySec = (progressTotalsIndex[code] || {})[section.section || section] || {};
+  return bySec[progressTopicKey(code, topic)] || 0;
+}
+
 function computeProgressForCode(code, user) {
   const isKt = r => typeof r.kind === 'string' && r.kind.indexOf('kt:') === 0;
   const results = (user.results || []).filter(r => r.code === code);
@@ -3432,12 +3473,14 @@ function computeProgressForCode(code, user) {
     stats.filter(t => t.section === s).forEach(t => {
       const k = progressTopicKey(code, t.topic);
       const m = merged.get(k) || { topic: (PROGRESS_TOPIC_ALIASES[code] || {})[t.topic] || t.topic, correct: 0, wrong: 0 };
-      m.correct += t.correct; m.wrong += t.wrong;
+      m.correct += t.correct; m.wrong += t.wrong; m.seen = (m.seen || 0) + (t.seen || 0);
       merged.set(k, m);
     });
     const topics = [...merged.values()].map(t => {
       const n = t.correct + t.wrong;
       const row = { ...t, n, acc: n ? Math.round((t.correct / n) * 100) : null, href: progressConspectHref(code, t.topic) };
+      row.seen = t.seen || 0;
+      row.total = progressTopicTotal(code, s, t.topic);
       row.status = progressTopicStatus(row);
       return row;
     }).sort((a, b) => {
@@ -3452,6 +3495,8 @@ function computeProgressForCode(code, user) {
       section: s, label: progressSectionLabel(code, s), correct, wrong, n,
       pct: n ? Math.round((correct / n) * 100) : null,
       topics, tried: topics.filter(t => t.n).length, weak: topics.filter(t => t.status.key === 'low').length,
+      seen: topics.reduce((x, t) => x + t.seen, 0),
+      total: topics.some(t => t.total) ? topics.reduce((x, t) => x + (t.total || 0), 0) : 0,
     };
   });
 
@@ -3480,6 +3525,7 @@ function renderProgress() {
     return;
   }
   section.classList.remove('hidden');
+  progressLoadTotals();
 
   const codeList = [...codes];
   if (!progressActiveCode || !codeList.includes(progressActiveCode)) progressActiveCode = codeList[0];
@@ -3599,7 +3645,7 @@ function renderProgress() {
       ${data.sections.map(s => `
         <a class="prog-block-row" href="#prog-topics-${esc(s.section)}">
           <div class="prog-block-name">${esc(s.label)}
-            <span class="prog-block-note">верно ${s.correct} из ${s.n} · тем решали ${s.tried} из ${s.topics.length}${s.weak ? ` · слабых ${s.weak}` : ''}</span>
+            <span class="prog-block-note">верно ${s.correct} из ${s.n} · тем решали ${s.tried} из ${s.topics.length}${s.total ? ` · вопросов банка решали ${Math.min(s.seen, s.total)} из ${s.total}` : ''}${s.weak ? ` · слабых ${s.weak}` : ''}</span>
           </div>
           <div class="prog-block-bar"><div class="prog-block-fill ${tierOf(s.pct)}" style="width:${s.pct ?? 0}%"></div></div>
           <div class="prog-block-pct">${s.pct == null ? '—' : s.pct + '%'}</div>
@@ -3619,7 +3665,7 @@ function renderProgress() {
         <span class="prog-topics-summary-title">Темы · ${esc(s.label)}</span>
         <span class="prog-topics-summary-note">${summaryNote}</span>
       </summary>
-      <p class="prog-section-note">Доля верных ответов по теме за все попытки: сначала слабые, в конце — темы, которые ещё не попадались.</p>
+      <p class="prog-section-note">Доля верных ответов по теме за все попытки: сначала слабые, в конце — темы, которые ещё не попадались. «Решали вопросов» — сколько разных вопросов темы вам уже попадалось (счёт ведётся с момента появления этого показателя).</p>
       ${s.topics.map(t => `
         <div class="prog-topic-row${t.n ? '' : ' is-untried'}">
           <div class="prog-topic-main">
@@ -3627,6 +3673,7 @@ function renderProgress() {
             <span class="prog-topic-meta">
               <span class="prog-chip is-${t.status.key}">${t.status.label}</span>
               ${t.n ? `<span>верно ${t.correct} из ${t.n}${t.n < 3 ? ' · мало ответов' : ''}</span>` : ''}
+              ${t.total ? `<span class="prog-seen" title="Разных вопросов этой темы, которые вам уже попадались в тестах">решали вопросов: ${Math.min(t.seen, t.total)} из ${t.total}</span>` : (t.seen ? `<span class="prog-seen">решали вопросов: ${t.seen}</span>` : '')}
               ${t.href ? `<a class="prog-topic-link" href="${t.href}">конспект</a>` : ''}
             </span>
           </div>

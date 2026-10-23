@@ -419,3 +419,31 @@ func (s *Service) BankStats() []BankStat {
 	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
 	return out
 }
+
+// TopicTotals — сколько вопросов в каждой теме профильных предметов: код → предмет (subj1/subj2) →
+// тема → число вопросов. Для «Прогресса подготовки» («решали X из N»). Берётся русский банк, а если
+// его нет — банк другого языка; у направления без разбивки по предметам обе секции дают общий список.
+func (s *Service) TopicTotals() map[string]map[string]map[string]int {
+	out := map[string]map[string]map[string]int{}
+	for _, info := range s.infos {
+		if _, done := out[info.Code]; done && info.Language != "ru" {
+			continue
+		}
+		bySection := map[string]map[string]int{}
+		for _, subj := range []string{"subj1", "subj2"} {
+			b, ok := s.ProfileBank(info.Code, info.Language, subj)
+			if !ok {
+				continue
+			}
+			counts := map[string]int{}
+			for _, q := range b.Questions {
+				if q.Topic != "" {
+					counts[q.Topic]++
+				}
+			}
+			bySection[subj] = counts
+		}
+		out[info.Code] = bySection
+	}
+	return out
+}

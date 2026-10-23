@@ -148,7 +148,13 @@ func TestAttemptNeverLeaksKeysBeforeSubmit(t *testing.T) {
 			// берём фрагмент из середины
 			if r := []rune(q.Conspect); len(r) > 160 {
 				frag := string(r[100:140])
-				if !strings.Contains(q.Q, frag) && strings.Contains(text, strings.ReplaceAll(frag, `"`, `\"`)) {
+				// фрагмент, который есть в тексте вопроса или в его вариантах ответа, публичен
+				// (конспект нередко пересказывает формулировку верного варианта)
+				public := strings.Contains(q.Q, frag)
+				for _, o := range q.Options {
+					public = public || strings.Contains(o, frag)
+				}
+				if !public && strings.Contains(text, strings.ReplaceAll(frag, `"`, `\"`)) {
 					t.Fatalf("%v: конспект утёк: %q", body, frag)
 				}
 			}

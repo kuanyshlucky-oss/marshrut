@@ -114,6 +114,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/admin/flag-question", s.admin(s.handleAdminFlagQuestion))
 	mux.HandleFunc("POST /api/admin/resolve-flag", s.admin(s.handleAdminResolveFlag))
 	mux.HandleFunc("GET /api/banner", s.handleBanner)
+	mux.HandleFunc("GET /api/topic-totals", s.auth(s.handleTopicTotals))
 
 	// Конспекты (картинки страниц) — только по доступу к курсу
 	mux.HandleFunc("GET /api/konspekt/{course}/{file}", s.auth(s.handleKonspektImage))

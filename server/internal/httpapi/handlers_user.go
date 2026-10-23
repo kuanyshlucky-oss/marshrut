@@ -157,6 +157,12 @@ func (s *Server) handleMe(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, u)
 }
 
+// GET /api/topic-totals — число вопросов по темам профильных предметов (код → предмет → тема → N):
+// знаменатель для «решали X из N» в «Прогрессе подготовки». Ключей ответов здесь нет.
+func (s *Server) handleTopicTotals(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, http.StatusOK, s.content.TopicTotals())
+}
+
 // PUT /api/profile
 func (s *Server) handleUpdateProfile(w http.ResponseWriter, r *http.Request) {
 	var p store.Profile

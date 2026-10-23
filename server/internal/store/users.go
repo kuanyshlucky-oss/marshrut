@@ -47,7 +47,9 @@ func (s *Store) LoadUser(ctx context.Context, id int64) (*User, error) {
 		                FROM results r WHERE r.user_id = u.id), '[]'),
 		        COALESCE((SELECT json_agg(json_build_object(
 		                'code', t.code, 'section', t.section, 'topic', t.topic,
-		                'correct', t.correct, 'wrong', t.wrong) ORDER BY t.id)
+		                'correct', t.correct, 'wrong', t.wrong,
+		                'seen', (SELECT COUNT(*) FROM seen_questions q
+		                         WHERE q.user_id = t.user_id AND q.code = t.code AND q.section = t.section AND q.topic = t.topic)) ORDER BY t.id)
 		                FROM topic_stats t WHERE t.user_id = u.id), '[]'),
 		        -- DISTINCT: доступ к одному коду может быть на обоих языках (ru и kk),
 		        -- для карточек «мои направления» язык не важен, только код.
@@ -193,7 +195,7 @@ func (s *Store) SetPasswordHash(ctx context.Context, uid int64, hash string) err
 // DeleteUser удаляет аккаунт вместе со всеми его данными, атомарно.
 func (s *Store) DeleteUser(ctx context.Context, id int64) error {
 	return s.inTx(ctx, func(tx *sql.Tx) error {
-		for _, table := range []string{"favorites", "results", "topic_stats", "test_access", "user_checklist", "attempts"} {
+		for _, table := range []string{"favorites", "results", "topic_stats", "seen_questions", "test_access", "user_checklist", "attempts"} {
 			if _, err := tx.ExecContext(ctx, `DELETE FROM `+table+` WHERE user_id = $1`, id); err != nil {
 				return err
 			}
@@ -208,7 +210,7 @@ func (s *Store) DeleteUser(ctx context.Context, id int64) error {
 func (s *Store) ResetProgress(ctx context.Context, id int64) error {
 	return s.inTx(ctx, func(tx *sql.Tx) error {
 		// попытки удаляются вместе с результатами: разбор без результата не нужен
-		for _, table := range []string{"results", "topic_stats", "attempts"} {
+		for _, table := range []string{"results", "topic_stats", "seen_questions", "attempts"} {
 			if _, err := tx.ExecContext(ctx, `DELETE FROM `+table+` WHERE user_id = $1`, id); err != nil {
 				return err
 			}

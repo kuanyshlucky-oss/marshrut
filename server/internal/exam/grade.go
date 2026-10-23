@@ -75,13 +75,12 @@ var partialCreditCodes = map[string]bool{
 // Остальные предметы (и вопросы с одним ответом) — «всё или ничего» за 1 балл.
 func PartialCredit(code, block string) bool { return block == "subj2" && partialCreditCodes[code] }
 
-// IsMultiUI — рисовать ли для вопроса чекбоксы. Для предметов с частичным баллом
-// чекбоксы у ВСЕХ вопросов (радио/чекбокс не должен выдавать число верных).
+// IsMultiUI — рисовать ли для вопроса чекбоксы. Во втором профильном предмете (subj2, 20 вопросов)
+// можно отметить до трёх вариантов у ВСЕХ вопросов — и в КТ, и в обычном тесте по предмету, у любого
+// направления: радио/чекбокс не должен выдавать число верных ответов. Баллы это не меняет: частичный
+// балл — только у PartialCredit.
 func IsMultiUI(kind, code, block string, q *content.Question) bool {
-	if q.Multi {
-		return true
-	}
-	return kind != KindSubject && PartialCredit(code, block)
+	return q.Multi || block == "subj2"
 }
 
 func sameSet(a, b []int) bool {
@@ -151,6 +150,7 @@ type TopicHit struct {
 	Topic   string
 	Correct bool
 	Section string
+	Key     string // отпечаток вопроса (content.Question.FP)
 }
 
 // Outcome — итог проверки попытки.
@@ -183,7 +183,7 @@ func Grade(p *Plan, qs []*content.Question, answers []Answer) (*Outcome, error) 
 		o.Score += e
 		o.Total += m
 		if q.Topic != "" {
-			o.Hits = append(o.Hits, TopicHit{Topic: q.Topic, Correct: IsCorrect(q, answers[i]), Section: block})
+			o.Hits = append(o.Hits, TopicHit{Topic: q.Topic, Correct: IsCorrect(q, answers[i]), Section: block, Key: q.FP})
 		}
 	}
 	if t, ok := KTTypeByKind(p.Kind); ok {

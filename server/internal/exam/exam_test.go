@@ -455,16 +455,21 @@ func TestReviewKeepsCorrectShape(t *testing.T) {
 func TestMultiUIForPartialCreditSubjects(t *testing.T) {
 	single := mkQ(t, "1", 4)
 	multi := mkQ(t, "[0,2]", 4)
-	// тест по предмету: чекбокс только у вопросов с массивом correct
-	if IsMultiUI(KindSubject, "M107", "subj2", single) || !IsMultiUI(KindSubject, "M107", "subj2", multi) {
-		t.Error("тест по предмету: multi должен зависеть только от формы correct")
+	// второй профильный предмет (subj2): чекбоксы у ВСЕХ вопросов, в КТ и в тесте по предмету,
+	// у любого направления (до 3 вариантов; не выдаём число верных)
+	for _, kind := range []string{KindSubject, KindKTSci} {
+		for _, code := range []string{"M107", "7M01"} {
+			if !IsMultiUI(kind, code, "subj2", single) || !IsMultiUI(kind, code, "subj2", multi) {
+				t.Errorf("%s %s subj2: у всех вопросов должны быть чекбоксы", kind, code)
+			}
+		}
 	}
-	// КТ, предмет с частичным баллом: чекбоксы у ВСЕХ вопросов subj2 (не выдаём число верных)
-	if !IsMultiUI(KindKTSci, "M107", "subj2", single) {
-		t.Error("КТ subj2 частичного балла: одиночный вопрос должен быть с чекбоксами")
+	// первый профильный предмет: чекбокс только у вопросов с массивом correct
+	if IsMultiUI(KindSubject, "M107", "subj1", single) || IsMultiUI(KindKTSci, "7M01", "subj1", single) {
+		t.Error("subj1: одиночный вопрос не должен быть с чекбоксами")
 	}
-	if IsMultiUI(KindKTSci, "M107", "subj1", single) || IsMultiUI(KindKTSci, "7M01", "subj2", single) {
-		t.Error("чекбоксы только у subj2 предметов с частичным баллом")
+	if !IsMultiUI(KindSubject, "M107", "subj1", multi) {
+		t.Error("subj1: вопрос с массивом correct — с чекбоксами")
 	}
 }
 

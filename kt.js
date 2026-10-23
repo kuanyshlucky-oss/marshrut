@@ -276,7 +276,9 @@ function renderKTQuestion() {
   // вопросы с одним и с несколькими правильными ответами. Сервер помечает multi у ВСЕХ
   // вопросов такого предмета (чекбоксы), даже если верный ответ один — иначе тип
   // виджета (radio vs checkbox) сам выдавал бы студенту, сколько правильных у вопроса.
-  const isMulti = !!item.multi; // сервер: чекбоксы у всех вопросов предмета с частичным баллом
+  // Второй профильный предмет (subj2): чекбоксы (до 3 вариантов) у ВСЕХ вопросов. Блок учитываем и на клиенте —
+  // чтобы так было и у ответа старой версии сервера, который помечал multi не у всех.
+  const isMulti = !!item.multi || item.block === 'subj2';
   const blockTag = item.stage ? `${ktBlockLabel(s.code, item.block)} · ${KT_LANG_STAGE_LABELS[item.stage]}` : ktBlockLabel(s.code, item.block);
 
   const ranges = ktBlockRanges(s);

@@ -186,8 +186,8 @@ func TestResultsAndTopicStats(t *testing.T) {
 	id := mustUser(t, st, "r@x.kz")
 
 	hits := []TopicHit{
-		{"Тема 1", true, "subj1"}, {"Тема 1", false, "subj1"}, {"Тема 1", true, "subj1"},
-		{"Тема 2", true, "subj2"}, {"", true, "subj1"}, {"Без раздела", true, ""},
+		{"Тема 1", true, "subj1", "q1"}, {"Тема 1", false, "subj1", "q2"}, {"Тема 1", true, "subj1", "q1"},
+		{"Тема 2", true, "subj2", "q3"}, {"", true, "subj1", "q4"}, {"Без раздела", true, "", "q5"},
 	}
 	if err := addResult(t, st, id, "7M01", 12, 20, "subject", true, "subj1", hits); err != nil {
 		t.Fatal(err)
@@ -208,6 +208,13 @@ func TestResultsAndTopicStats(t *testing.T) {
 	}
 	if s := got["subj1/Тема 1"]; s.Correct != 3 || s.Wrong != 1 { // 2+1 верных, 1 неверный — накопительно
 		t.Errorf("subj1/Тема 1 = %+v, want correct=3 wrong=1", s)
+	}
+	// «решали X из N»: q1 повторяется в обеих попытках, считается один раз → 2 разных вопроса
+	if s := got["subj1/Тема 1"]; s.Seen != 2 {
+		t.Errorf("subj1/Тема 1: seen = %d, want 2", s.Seen)
+	}
+	if s := got["subj2/Тема 2"]; s.Seen != 1 {
+		t.Errorf("subj2/Тема 2: seen = %d, want 1", s.Seen)
 	}
 }
 
@@ -231,7 +238,7 @@ func TestAddResultIsAtomic(t *testing.T) {
 	if _, err := st.db.Exec(`ALTER TABLE topic_stats RENAME TO topic_stats_broken`); err != nil {
 		t.Fatal(err)
 	}
-	err := addResult(t, st, id, "7M01", 1, 1, "subject", true, "subj1", []TopicHit{{"T", true, "subj1"}})
+	err := addResult(t, st, id, "7M01", 1, 1, "subject", true, "subj1", []TopicHit{{Topic: "T", Correct: true, Section: "subj1"}})
 	if err == nil {
 		t.Fatal("ожидалась ошибка из-за отсутствующей таблицы")
 	}
@@ -249,7 +256,7 @@ func TestDeleteUserRemovesEverything(t *testing.T) {
 	other := mustUser(t, st, "keep@x.kz")
 	for _, uid := range []int64{id, other} {
 		st.ToggleFavorite(ctx, uid, "7M01")
-		addResult(t, st, uid, "7M01", 1, 2, "subject", false, "subj1", []TopicHit{{"T", true, "subj1"}})
+		addResult(t, st, uid, "7M01", 1, 2, "subject", false, "subj1", []TopicHit{{Topic: "T", Correct: true, Section: "subj1"}})
 		st.GrantAccess(ctx, uid, "7M01", "ru")
 		st.Roadmap(ctx, uid, time.Now().Year(), false)
 	}
@@ -277,7 +284,7 @@ func TestResetProgressKeepsAccount(t *testing.T) {
 	ctx := context.Background()
 	id := mustUser(t, st, "rp@x.kz")
 	st.ToggleFavorite(ctx, id, "7M01")
-	addResult(t, st, id, "7M01", 1, 2, "subject", false, "subj1", []TopicHit{{"T", true, "subj1"}})
+	addResult(t, st, id, "7M01", 1, 2, "subject", false, "subj1", []TopicHit{{Topic: "T", Correct: true, Section: "subj1"}})
 	if err := st.ResetProgress(ctx, id); err != nil {
 		t.Fatal(err)
 	}

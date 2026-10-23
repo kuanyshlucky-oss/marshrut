@@ -33,10 +33,15 @@ func addResultTx(ctx context.Context, tx *sql.Tx, uid int64, code string, score,
 func addTopicStats(ctx context.Context, tx *sql.Tx, uid int64, code string, hits []TopicHit) error {
 	type key struct{ section, topic string }
 	type acc struct{ correct, wrong int }
+	type seenKey struct{ section, topic, qkey string }
 	byKey := map[key]*acc{}
+	seen := map[seenKey]bool{}
 	for _, h := range hits {
 		if h.Topic == "" || h.Section == "" {
 			continue
+		}
+		if h.Key != "" {
+			seen[seenKey{h.Section, h.Topic, h.Key}] = true
 		}
 		k := key{h.Section, h.Topic}
 		a := byKey[k]
@@ -70,6 +75,27 @@ func addTopicStats(ctx context.Context, tx *sql.Tx, uid int64, code string, hits
 			 DO UPDATE SET correct = topic_stats.correct + EXCLUDED.correct,
 			               wrong   = topic_stats.wrong   + EXCLUDED.wrong`,
 			uid, code, k.section, k.topic, a.correct, a.wrong,
+		); err != nil {
+			return err
+		}
+	}
+	// какие вопросы решены: порядок вставки фиксирован по тем же причинам, что и выше
+	seenKeys := make([]seenKey, 0, len(seen))
+	for k := range seen {
+		seenKeys = append(seenKeys, k)
+	}
+	sort.Slice(seenKeys, func(i, j int) bool {
+		a, b := seenKeys[i], seenKeys[j]
+		if a.section != b.section {
+			return a.section < b.section
+		}
+		return a.qkey < b.qkey
+	})
+	for _, k := range seenKeys {
+		if _, err := tx.ExecContext(ctx,
+			`INSERT INTO seen_questions(user_id, code, section, topic, qkey) VALUES($1, $2, $3, $4, $5)
+			 ON CONFLICT (user_id, code, section, qkey) DO NOTHING`,
+			uid, code, k.section, k.topic, k.qkey,
 		); err != nil {
 			return err
 		}
