@@ -101,6 +101,14 @@ func (s *Server) handleCreateAttempt(w http.ResponseWriter, r *http.Request) {
 		s.dbError(w, r, "разбор плана попытки", err)
 		return
 	}
+	// Журнал использования: платная часть открыта — фиксируем начало использования ДО отдачи вопросов
+	// (оферта, п. 7.3). Если запись не удалась, вопросы не отдаём.
+	if needsAccess {
+		if _, err := s.store.RecordUsage(r.Context(), uid, in.Code, contentLang, a.ID, in.Kind, in.Section, s.clientIP(r)); err != nil {
+			s.dbError(w, r, "журнал использования", err)
+			return
+		}
+	}
 	writeJSON(w, http.StatusOK, map[string]any{
 		"id": a.ID, "kind": a.Kind, "code": a.Code, "section": a.Section, "lang": a.Lang, "title": a.Title,
 		"limitSeconds": int(plan.Limit.Seconds()), "expiresAt": a.ExpiresAt.UTC().Format(time.RFC3339),

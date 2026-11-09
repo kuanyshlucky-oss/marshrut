@@ -27,6 +27,7 @@ type Server struct {
 	loginLimiter *rateLimiter // 5 попыток входа в минуту с одного IP
 	adminLimiter *rateLimiter // запросы к /api/admin/* с одного IP
 	adminFails   *rateLimiter // неверные админ-ключи с одного IP
+	demoLimiter  *rateLimiter // демо-вопросы с одного IP (публичный маршрут)
 
 	dummyHash string // хеш заведомо неверного пароля: выравнивает время ответа для несуществующих логинов
 }
@@ -41,6 +42,7 @@ func New(ctx context.Context, cfg *config.Config, st *store.Store, ct *content.S
 		loginLimiter: newRateLimiter(ctx, 5, time.Minute),
 		adminLimiter: newRateLimiter(ctx, 120, time.Minute),
 		adminFails:   newRateLimiter(ctx, maxAdminKeyFailures, 15*time.Minute),
+		demoLimiter:  newRateLimiter(ctx, 30, time.Minute),
 		dummyHash:    dummy,
 	}
 	go s.purgeStale(ctx)
@@ -75,6 +77,9 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/health", s.handleHealth)
 	mux.HandleFunc("GET /api/ready", s.handleReady)
 
+	// Демо: бесплатные вопросы теста, без входа
+	mux.HandleFunc("GET /api/demo/{code}", s.rateLimit(s.demoLimiter, s.handleDemo))
+
 	// Аккаунт
 	mux.HandleFunc("POST /api/auth/register", s.handleRegister)
 	mux.HandleFunc("POST /api/auth/login", s.rateLimit(s.loginLimiter, s.handleLogin))
@@ -99,6 +104,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/admin/grant-access", s.admin(s.handleAdminGrantAccess))
 	mux.HandleFunc("POST /api/admin/revoke-access", s.admin(s.handleAdminRevokeAccess))
 	mux.HandleFunc("GET /api/admin/audit-log", s.admin(s.handleAdminAuditLog))
+	mux.HandleFunc("GET /api/admin/usage", s.admin(s.handleAdminUsage))
 	mux.HandleFunc("GET /api/admin/results", s.admin(s.handleAdminResults))
 	mux.HandleFunc("POST /api/admin/bulk-create", s.admin(s.handleAdminBulkCreate))
 	mux.HandleFunc("POST /api/admin/bulk-access", s.admin(s.handleAdminBulkAccess))
