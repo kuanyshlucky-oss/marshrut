@@ -32,6 +32,22 @@ type Config struct {
 	DBMaxConns      int
 	SessionCacheTTL time.Duration
 	LogJSON         bool
+
+	// Оплата. PaymentsProvider: "kaspi_qr" (по умолчанию: оплата по QR продавца, подтверждает администратор)
+	// или "hmac" (общий формат подписанных уведомлений для агрегатора/шлюза).
+	PaymentsProvider      string
+	PaymentsWebhookSecret []byte
+	PaymentsPayURL        string // шаблон ссылки на оплату для "hmac": {order_id} {amount} {currency}
+	KaspiQRImageURL       string // картинка QR продавца (для "kaspi_qr")
+	KaspiQRPayURL         string // ссылка на оплату Kaspi (необязательно)
+	PublicSiteURL         string // база ссылок в письмах: https://example.kz (без / в конце)
+	ProductPriceKZT       int64  // цена доступа, ₸
+	ProductDays           int    // срок доступа, календарных дней
+	OfferVersion          string // версия оферты, которую принимает покупатель
+	AdminNotifyEmail      string // куда слать «заказ ждёт подтверждения» (необязательно)
+
+	// SMTP для писем покупателям. Пусто (SMTPHost) = письма только копятся в очереди (видны в админке).
+	SMTPHost, SMTPPort, SMTPUser, SMTPPass, SMTPFrom string
 }
 
 const (
@@ -69,6 +85,40 @@ func Load(getenv func(string) string) (*Config, error) {
 	}
 	c.SessionCacheTTL = time.Duration(ttl) * time.Second
 
+	c.PaymentsProvider = env("PAYMENTS_PROVIDER", "kaspi_qr")
+	c.PaymentsWebhookSecret = []byte(strings.TrimSpace(getenv("PAYMENTS_WEBHOOK_SECRET")))
+	c.PaymentsPayURL = strings.TrimSpace(getenv("PAYMENTS_PAY_URL"))
+	c.KaspiQRImageURL = strings.TrimSpace(getenv("KASPI_QR_IMAGE_URL"))
+	c.KaspiQRPayURL = strings.TrimSpace(getenv("KASPI_QR_PAY_URL"))
+	c.PublicSiteURL = strings.TrimRight(strings.TrimSpace(getenv("PUBLIC_SITE_URL")), "/")
+	c.OfferVersion = env("OFFER_VERSION", "1.0")
+	c.AdminNotifyEmail = strings.TrimSpace(getenv("ADMIN_NOTIFY_EMAIL"))
+	c.SMTPHost, c.SMTPPort = strings.TrimSpace(getenv("SMTP_HOST")), env("SMTP_PORT", "587")
+	c.SMTPUser, c.SMTPPass, c.SMTPFrom = strings.TrimSpace(getenv("SMTP_USER")), getenv("SMTP_PASS"), strings.TrimSpace(getenv("SMTP_FROM"))
+	if c.ProductPriceKZT, err = envInt64(env, "PRODUCT_PRICE_KZT", 3990, 1, 10_000_000); err != nil {
+		return nil, err
+	}
+	days, err := envInt(env, "PRODUCT_DAYS", 90, 1, 3650)
+	if err != nil {
+		return nil, err
+	}
+	c.ProductDays = days
+	switch c.PaymentsProvider {
+	case "kaspi_qr":
+	case "hmac":
+		if len(c.PaymentsWebhookSecret) < minSecretLen {
+			return nil, fmt.Errorf("PAYMENTS_WEBHOOK_SECRET не задан или короче %d символов (нужен для PAYMENTS_PROVIDER=hmac)", minSecretLen)
+		}
+		if c.PaymentsPayURL == "" {
+			return nil, errors.New("PAYMENTS_PAY_URL не задан (нужен для PAYMENTS_PROVIDER=hmac)")
+		}
+	default:
+		return nil, fmt.Errorf("PAYMENTS_PROVIDER=%q: ожидается kaspi_qr или hmac", c.PaymentsProvider)
+	}
+	if c.SMTPHost != "" && c.SMTPFrom == "" {
+		return nil, errors.New("SMTP_HOST задан, а SMTP_FROM нет: укажите адрес отправителя")
+	}
+
 	c.AllowedOrigins = splitCSV(env("ALLOWED_ORIGIN", "*"))
 	c.AdminAllowedIPs = splitCSV(env("ADMIN_ALLOWED_IPS", ""))
 
@@ -98,6 +148,18 @@ func (c *Config) Warnings() []string {
 		w = append(w, "ADMIN_ALLOWED_IPS не задан — админка доступна с любого IP (защищена только ключом)")
 	}
 	return w
+}
+
+func envInt64(env func(string, string) string, key string, def, min, max int64) (int64, error) {
+	raw := env(key, "")
+	if raw == "" {
+		return def, nil
+	}
+	n, err := strconv.ParseInt(raw, 10, 64)
+	if err != nil || n < min || n > max {
+		return 0, fmt.Errorf("%s=%q: ожидается целое от %d до %d", key, raw, min, max)
+	}
+	return n, nil
 }
 
 func envInt(env func(string, string) string, key string, def, min, max int) (int, error) {

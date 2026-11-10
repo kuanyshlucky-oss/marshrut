@@ -13,6 +13,8 @@ import (
 	"marshrut-api/internal/auth"
 	"marshrut-api/internal/config"
 	"marshrut-api/internal/content"
+	"marshrut-api/internal/mail"
+	"marshrut-api/internal/payments"
 	"marshrut-api/internal/store"
 )
 
@@ -28,6 +30,12 @@ type Server struct {
 	adminLimiter *rateLimiter // запросы к /api/admin/* с одного IP
 	adminFails   *rateLimiter // неверные админ-ключи с одного IP
 	demoLimiter  *rateLimiter // демо-вопросы с одного IP (публичный маршрут)
+	shopLimiter  *rateLimiter // создание заказов и заявки «я оплатил» с одного IP
+	hookLimiter  *rateLimiter // уведомления об оплате с одного IP
+	pwLimiter    *rateLimiter // установка пароля по ссылке с одного IP
+
+	payments payments.Provider // провайдер оплаты
+	mailer   mail.Sender       // nil — SMTP не настроен: письма только копятся в очереди
 
 	dummyHash string // хеш заведомо неверного пароля: выравнивает время ответа для несуществующих логинов
 }
@@ -43,7 +51,23 @@ func New(ctx context.Context, cfg *config.Config, st *store.Store, ct *content.S
 		adminLimiter: newRateLimiter(ctx, 120, time.Minute),
 		adminFails:   newRateLimiter(ctx, maxAdminKeyFailures, 15*time.Minute),
 		demoLimiter:  newRateLimiter(ctx, 30, time.Minute),
+		shopLimiter:  newRateLimiter(ctx, 20, time.Hour),
+		hookLimiter:  newRateLimiter(ctx, 300, time.Minute),
+		pwLimiter:    newRateLimiter(ctx, 10, time.Minute),
 		dummyHash:    dummy,
+	}
+	prov, err := payments.New(payments.Settings{
+		Provider: cfg.PaymentsProvider, WebhookSecret: cfg.PaymentsWebhookSecret, PayURLTemplate: cfg.PaymentsPayURL,
+		KaspiQRImageURL: cfg.KaspiQRImageURL, KaspiQRPayURL: cfg.KaspiQRPayURL,
+	})
+	if err != nil { // конфигурация уже проверена в config.Load; сюда попадаем только при ошибке сборки
+		log.Error("платёжный провайдер не настроен, используется kaspi_qr", "err", err)
+		prov, _ = payments.New(payments.Settings{Provider: "kaspi_qr"})
+	}
+	s.payments = prov
+	if cfg.SMTPHost != "" {
+		s.mailer = &mail.SMTP{Host: cfg.SMTPHost, Port: cfg.SMTPPort, User: cfg.SMTPUser, Pass: cfg.SMTPPass, From: cfg.SMTPFrom}
+		go s.mailWorker(ctx)
 	}
 	go s.purgeStale(ctx)
 	return s
@@ -62,6 +86,9 @@ func (s *Server) purgeStale(ctx context.Context) {
 			if _, err := s.store.PurgeAttempts(c, 24*time.Hour); err != nil {
 				s.log.Warn("не удалось очистить login_attempts", "err", err)
 			}
+			if _, err := s.store.PurgeOldEmails(c, 14*24*time.Hour, time.Now()); err != nil {
+				s.log.Warn("не удалось очистить старые письма", "err", err)
+			}
 			if _, err := s.store.PurgeAttemptsData(c); err != nil {
 				s.log.Warn("не удалось очистить старые попытки тестов", "err", err)
 			}
@@ -76,6 +103,14 @@ func (s *Server) Handler() http.Handler {
 
 	mux.HandleFunc("GET /api/health", s.handleHealth)
 	mux.HandleFunc("GET /api/ready", s.handleReady)
+
+	// Продажа доступа
+	mux.HandleFunc("GET /api/shop/products", s.handleShopProducts)
+	mux.HandleFunc("POST /api/shop/orders", s.rateLimit(s.shopLimiter, s.handleCreateOrder))
+	mux.HandleFunc("GET /api/shop/orders/{id}", s.handleOrderStatus)
+	mux.HandleFunc("POST /api/shop/orders/{id}/claim", s.rateLimit(s.shopLimiter, s.handleClaimOrder))
+	mux.HandleFunc("POST /api/payments/webhook/{provider}", s.rateLimit(s.hookLimiter, s.handlePaymentWebhook))
+	mux.HandleFunc("POST /api/auth/set-password", s.rateLimit(s.pwLimiter, s.handleSetPassword))
 
 	// Демо: бесплатные вопросы теста, без входа
 	mux.HandleFunc("GET /api/demo/{code}", s.rateLimit(s.demoLimiter, s.handleDemo))
@@ -105,6 +140,11 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/admin/revoke-access", s.admin(s.handleAdminRevokeAccess))
 	mux.HandleFunc("GET /api/admin/audit-log", s.admin(s.handleAdminAuditLog))
 	mux.HandleFunc("GET /api/admin/usage", s.admin(s.handleAdminUsage))
+	mux.HandleFunc("GET /api/admin/orders", s.admin(s.handleAdminOrders))
+	mux.HandleFunc("POST /api/admin/orders/confirm", s.admin(s.handleAdminConfirmOrder))
+	mux.HandleFunc("POST /api/admin/orders/refund", s.admin(s.handleAdminRefundOrder))
+	mux.HandleFunc("POST /api/admin/orders/resend", s.admin(s.handleAdminResendAccess))
+	mux.HandleFunc("GET /api/admin/outbox", s.admin(s.handleAdminOutbox))
 	mux.HandleFunc("GET /api/admin/results", s.admin(s.handleAdminResults))
 	mux.HandleFunc("POST /api/admin/bulk-create", s.admin(s.handleAdminBulkCreate))
 	mux.HandleFunc("POST /api/admin/bulk-access", s.admin(s.handleAdminBulkAccess))
