@@ -10,16 +10,26 @@ var demoSizes = map[string]int{"GOSSLUZHBA": 15}
 // DemoSize — сколько вопросов открыто бесплатно у теста; 0 — демо не предусмотрено.
 func DemoSize(code string) int { return demoSizes[code] }
 
+// DemoItem — демо-вопрос и предмет (subj1…), из которого он взят.
+type DemoItem struct {
+	Block string
+	Q     *Question
+}
+
 // DemoQuestions возвращает демо-набор теста: вопросы равномерно разложены по предметам,
 // а внутри предмета выбраны с равным шагом. Выбор детерминирован (одни и те же вопросы
 // при каждом запросе и деплое, пока банк не менялся). nil — демо недоступно.
-func (s *Service) DemoQuestions(code, lang string) []*Question {
+func (s *Service) DemoQuestions(code, lang string) []DemoItem {
 	n := demoSizes[code]
 	pf, ok := s.profile[fileKey{code, lang}]
 	if n == 0 || !ok {
 		return nil
 	}
-	var pools []*Bank
+	type pool struct {
+		block string
+		bank  *Bank
+	}
+	var pools []pool
 	if len(pf.bySubject) > 0 {
 		keys := make([]string, 0, len(pf.bySubject))
 		for k, b := range pf.bySubject {
@@ -29,16 +39,17 @@ func (s *Service) DemoQuestions(code, lang string) []*Question {
 		}
 		sort.Strings(keys)
 		for _, k := range keys {
-			pools = append(pools, pf.bySubject[k])
+			pools = append(pools, pool{k, pf.bySubject[k]})
 		}
 	} else if len(pf.flat.Questions) > 0 {
-		pools = []*Bank{pf.flat}
+		pools = []pool{{"", pf.flat}}
 	}
 	if len(pools) == 0 {
 		return nil
 	}
-	var out []*Question
-	for i, b := range pools {
+	var out []DemoItem
+	for i, pl := range pools {
+		b := pl.bank
 		c := n / len(pools)
 		if i < n%len(pools) {
 			c++
@@ -47,7 +58,7 @@ func (s *Service) DemoQuestions(code, lang string) []*Question {
 			c = len(b.Questions)
 		}
 		for j := 0; j < c; j++ {
-			out = append(out, b.Questions[int((float64(j)+0.5)*float64(len(b.Questions))/float64(c))])
+			out = append(out, DemoItem{pl.block, b.Questions[int((float64(j)+0.5)*float64(len(b.Questions))/float64(c))]})
 		}
 	}
 	return out

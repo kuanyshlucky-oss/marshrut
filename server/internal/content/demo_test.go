@@ -10,7 +10,10 @@ func TestDemoQuestions(t *testing.T) {
 	}
 	seen := map[string]bool{}
 	perAct := map[string]int{}
-	for _, q := range qs {
+	perBlock := map[string]int{}
+	for _, it := range qs {
+		q := it.Q
+		perBlock[it.Block]++
 		if seen[q.FP] {
 			t.Errorf("повтор вопроса в демо: %.40q", q.Q)
 		}
@@ -21,8 +24,8 @@ func TestDemoQuestions(t *testing.T) {
 		perAct[q.Topic[:12]]++
 	}
 	// 15 вопросов на 4 предмета: 4/4/4/3 — ни один акт не пропущен.
-	if len(perAct) < 4 {
-		t.Errorf("демо покрывает не все акты: %v", perAct)
+	if len(perAct) < 4 || perBlock["subj1"] != 4 || perBlock["subj2"] != 4 || perBlock["subj3"] != 4 || perBlock["subj4"] != 3 {
+		t.Errorf("демо покрывает акты неравномерно: %v (по темам %v)", perBlock, perAct)
 	}
 	again := s.DemoQuestions("GOSSLUZHBA", "ru")
 	for i := range qs {

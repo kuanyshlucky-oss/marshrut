@@ -15,6 +15,7 @@ import (
 
 type demoQuestion struct {
 	ID           string          `json:"id"`
+	Block        string          `json:"block,omitempty"` // предмет/акт (subj1…), чтобы клиент мог показать итог по актам
 	Q            string          `json:"q"`
 	Options      []string        `json:"options"`
 	Correct      json.RawMessage `json:"correct"`
@@ -40,9 +41,10 @@ func (s *Server) handleDemo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	out := make([]demoQuestion, len(qs))
-	for i, q := range qs {
+	for i, it := range qs {
+		q := it.Q
 		out[i] = demoQuestion{
-			ID: q.FP, Q: q.Q, Options: q.Options, Correct: q.CorrectRaw, Multi: q.Multi,
+			ID: q.FP, Block: it.Block, Q: q.Q, Options: q.Options, Correct: q.CorrectRaw, Multi: q.Multi,
 			Conspect: q.Conspect, Why: q.Why, Topic: q.Topic, Passage: q.Passage, Image: q.Image, OptionImages: q.OptionImages,
 		}
 	}

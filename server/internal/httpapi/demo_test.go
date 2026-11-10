@@ -46,6 +46,7 @@ func TestDemoPublicAndLimited(t *testing.T) {
 		Size      int `json:"size"`
 		Questions []struct {
 			ID       string          `json:"id"`
+			Block    string          `json:"block"`
 			Options  []string        `json:"options"`
 			Correct  json.RawMessage `json:"correct"`
 			Conspect string          `json:"conspect"`
@@ -58,10 +59,15 @@ func TestDemoPublicAndLimited(t *testing.T) {
 	if resp.Size != 15 || len(resp.Questions) != 15 {
 		t.Fatalf("size=%d, вопросов=%d, ждали 15", resp.Size, len(resp.Questions))
 	}
+	blocks := map[string]int{}
 	for _, q := range resp.Questions {
+		blocks[q.Block]++
 		if q.ID == "" || len(q.Options) < 2 || len(q.Correct) == 0 || q.Conspect == "" {
 			t.Errorf("демо-вопрос неполный: %+v", q)
 		}
+	}
+	if blocks["subj1"] != 4 || blocks["subj2"] != 4 || blocks["subj3"] != 4 || blocks["subj4"] != 3 {
+		t.Errorf("block в ответе демо: %v, ждали 4/4/4/3", blocks)
 	}
 	if cc := rec.Header().Get("Cache-Control"); cc == "" {
 		t.Error("у публичного демо нет Cache-Control")
