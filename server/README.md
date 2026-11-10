@@ -213,6 +213,6 @@ go test -tags integration ./...        # + интеграционные на н�
   клиенте) в каждом ответе; вынести его в отдельный запрос можно только вместе
   с правкой фронта.
 
-## Проект «госслужба» на общем API
+## Отдельный production для проекта «госслужба»
 
-Тренажёр использует тот же сервис `marshrut-api` и ту же базу, что и основной сайт: отдельного сервиса нет. Продукт отличается кодом `GOSSLUZHBA`, заказы и доступ хранятся в своих таблицах. Нужно лишь добавить в окружение сервиса переменные оплаты (`PAYMENTS_PROVIDER`, `PUBLIC_SITE_URL`, `KASPI_QR_IMAGE_URL`, `PRODUCT_PRICE_KZT`, `PRODUCT_DAYS`, `OFFER_VERSION`, `ADMIN_NOTIFY_EMAIL`, `SMTP_*`) и домен страниц в `ALLOWED_ORIGIN` (через запятую к существующему).
+`render.gosluzhba.yaml` — Blueprint второго сервиса `gosluzhba-api` с собственной базой и окружением (пользователи, заказы и согласия не смешиваются с JetisHub). Порядок: создать новый проект Neon и взять его `DATABASE_URL`; Render → New → Blueprint → Blueprint Path `server/render.gosluzhba.yaml`; заполнить переменные с `sync: false`; после старта проверить `/api/health` и `/api/shop/products`; в `apiBase` страниц `buy.html`, `test.html`, `demo.html` подставить адрес нового сервиса.
