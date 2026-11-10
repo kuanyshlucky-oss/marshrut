@@ -20,12 +20,13 @@ import (
 
 var attemptIDRe = regexp.MustCompile(`^[A-Za-z0-9]{24}$`)
 
-var validAttemptKinds = map[string]bool{exam.KindSubject: true, exam.KindKTSci: true, exam.KindKTProf: true, exam.KindKTProf2: true}
+var validAttemptKinds = map[string]bool{exam.KindSubject: true, exam.KindGos: true, exam.KindKTSci: true, exam.KindKTProf: true, exam.KindKTProf2: true}
 
 const msgNoAccess = "Нет доступа к этому тесту — обратитесь к администратору для получения доступа"
 
 // POST /api/attempts
 // {kind:"subject", code, section:"lang|logic|subj1|subj2", contentLang}
+// {kind:"gos", code, section:"mock|subj1|subj2|subj3|subj4", contentLang} — тест по госслужбе (пробный тест или акт)
 // {kind:"kt:nauchped"|"kt:profile"|"kt:profile2", code, lang:"en", contentLang}
 func (s *Server) handleCreateAttempt(w http.ResponseWriter, r *http.Request) {
 	var in struct {
@@ -59,9 +60,12 @@ func (s *Server) handleCreateAttempt(w http.ResponseWriter, r *http.Request) {
 
 	var plan *exam.Plan
 	var err error
-	if in.Kind == exam.KindSubject {
+	switch {
+	case in.Kind == exam.KindSubject:
 		plan, err = exam.BuildSubject(s.content, exam.DefaultShuffler, in.Code, contentLang, in.Section)
-	} else {
+	case in.Kind == exam.KindGos:
+		plan, err = exam.BuildGos(s.content, exam.DefaultShuffler, in.Code, contentLang, in.Section)
+	default:
 		lang := in.Lang
 		if lang == "" {
 			lang = "en"
@@ -175,7 +179,7 @@ func (s *Server) handleSubmitAttempt(w http.ResponseWriter, r *http.Request) {
 			Code: a.Code, Kind: ev.outcome.Kind, Score: ev.outcome.Score, Total: ev.outcome.Total,
 			Passed: ev.outcome.Passed,
 		}
-		if a.Kind == exam.KindSubject {
+		if a.Kind == exam.KindSubject || a.Kind == exam.KindGos {
 			sub.Section = a.Section
 		}
 		for _, h := range ev.outcome.Hits {

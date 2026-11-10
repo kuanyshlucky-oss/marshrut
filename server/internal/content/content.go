@@ -340,6 +340,17 @@ func (s *Service) ProfileBank(code, lang, subject string) (*Bank, bool) {
 	return pf.flat, true
 }
 
+// HasSubject — есть ли у теста собственный (непустой) банк предмета в bySubject. В отличие от
+// ProfileBank не подменяет отсутствующий предмет общим списком.
+func (s *Service) HasSubject(code, lang, subject string) bool {
+	pf, ok := s.profile[fileKey{code, lang}]
+	if !ok {
+		return false
+	}
+	b, ok := pf.bySubject[subject]
+	return ok && len(b.Questions) > 0
+}
+
 // ProfileTitle — заголовок профильного теста.
 func (s *Service) ProfileTitle(code, lang string) string {
 	if pf, ok := s.profile[fileKey{code, lang}]; ok {
@@ -420,7 +431,7 @@ func (s *Service) BankStats() []BankStat {
 	return out
 }
 
-// TopicTotals — сколько вопросов в каждой теме профильных предметов: код → предмет (subj1/subj2) →
+// TopicTotals — сколько вопросов в каждой теме профильных предметов: код → предмет (subj1/subj2; subj3/subj4 — только у теста по госслужбе) →
 // тема → число вопросов. Для «Прогресса подготовки» («решали X из N»). Берётся русский банк, а если
 // его нет — банк другого языка; у направления без разбивки по предметам обе секции дают общий список.
 func (s *Service) TopicTotals() map[string]map[string]map[string]int {
@@ -430,7 +441,12 @@ func (s *Service) TopicTotals() map[string]map[string]map[string]int {
 			continue
 		}
 		bySection := map[string]map[string]int{}
-		for _, subj := range []string{"subj1", "subj2"} {
+		for _, subj := range []string{"subj1", "subj2", "subj3", "subj4"} {
+			// subj3/subj4 есть только у тестов с четырьмя предметами (госслужба); у остальных
+			// ProfileBank подставил бы общий список и размножил его по лишним разделам.
+			if (subj == "subj3" || subj == "subj4") && !s.HasSubject(info.Code, info.Language, subj) {
+				continue
+			}
 			b, ok := s.ProfileBank(info.Code, info.Language, subj)
 			if !ok {
 				continue

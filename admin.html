@@ -653,7 +653,7 @@ function derive(){
 }
 const isKT = r => !!r.kind && r.kind.startsWith('kt:');
 const pct = r => r.total > 0 ? Math.round(r.score / r.total * 100) : 0;
-const SECTION_LABELS = { lang:'Язык', logic:'Логика', subj1:'Предмет 1', subj2:'Предмет 2' };
+const SECTION_LABELS = { lang:'Язык', logic:'Логика', subj1:'Предмет 1', subj2:'Предмет 2', subj3:'Предмет 3', subj4:'Предмет 4', mock:'Пробный тест' };
 function kindLabel(r){ return isKT(r) ? 'Симуляция КТ' : 'Предмет' + (r.section ? ' · ' + (SECTION_LABELS[r.section] || r.section) : ''); }
 function verdictTag(r){ return !isKT(r) ? '<span class="tag neu">—</span>' : r.passed ? '<span class="tag ok">Сдал</span>' : '<span class="tag bad">Не сдал</span>'; }
 function langBadge(l){ return l === 'kk' ? 'KZ' : 'RU'; }

@@ -80,6 +80,9 @@ func PartialCredit(code, block string) bool { return block == "subj2" && partial
 // направления: радио/чекбокс не должен выдавать число верных ответов. Баллы это не меняет: частичный
 // балл — только у PartialCredit.
 func IsMultiUI(kind, code, block string, q *content.Question) bool {
+	if kind == KindGos { // тест по госслужбе: во втором акте вопросы с одним ответом, не КТ
+		return q.Multi
+	}
 	return q.Multi || block == "subj2"
 }
 
@@ -159,8 +162,8 @@ type Outcome struct {
 	Score     int           `json:"score"`
 	Total     int           `json:"total"`
 	Passed    bool          `json:"passed"`
-	Threshold int           `json:"thresholdTotal,omitempty"` // только КТ
-	Blocks    []BlockResult `json:"blocks,omitempty"`         // только КТ
+	Threshold int           `json:"thresholdTotal,omitempty"` // КТ и пробный тест по госслужбе
+	Blocks    []BlockResult `json:"blocks,omitempty"`         // КТ и пробный тест по госслужбе
 	Hits      []TopicHit    `json:"-"`
 }
 
@@ -185,6 +188,10 @@ func Grade(p *Plan, qs []*content.Question, answers []Answer) (*Outcome, error) 
 		if q.Topic != "" {
 			o.Hits = append(o.Hits, TopicHit{Topic: q.Topic, Correct: IsCorrect(q, answers[i]), Section: block, Key: q.FP})
 		}
+	}
+	if p.Kind == KindGos && p.Section == GosMock {
+		gradeGosMock(o, blockScore, blockMax)
+		return o, nil
 	}
 	if t, ok := KTTypeByKind(p.Kind); ok {
 		o.Threshold = t.Threshold

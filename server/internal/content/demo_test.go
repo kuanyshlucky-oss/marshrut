@@ -44,3 +44,33 @@ func TestDemoUnavailable(t *testing.T) {
 		t.Error("демо отдано для несуществующего кода")
 	}
 }
+
+func TestTopicTotalsFourSubjectsOnlyForGos(t *testing.T) {
+	s := load(t)
+	if !s.HasSubject("GOSSLUZHBA", "ru", "subj4") || s.HasSubject("GOSSLUZHBA", "kk", "subj1") || s.HasSubject("M150", "ru", "subj3") {
+		t.Fatal("HasSubject вернул неверный ответ")
+	}
+	totals := s.TopicTotals()
+	gos := totals["GOSSLUZHBA"]
+	for _, subj := range []string{"subj1", "subj2", "subj3", "subj4"} {
+		n := 0
+		for _, c := range gos[subj] {
+			n += c
+		}
+		if n == 0 {
+			t.Errorf("GOSSLUZHBA/%s: нет вопросов с темами для прогресса", subj)
+		}
+	}
+	// У остальных тестов разделов subj3/subj4 быть не должно (иначе общий список размножился бы).
+	for code, by := range totals {
+		if code == "GOSSLUZHBA" {
+			continue
+		}
+		if _, ok := by["subj3"]; ok {
+			t.Errorf("%s: появился лишний раздел subj3", code)
+		}
+		if _, ok := by["subj4"]; ok {
+			t.Errorf("%s: появился лишний раздел subj4", code)
+		}
+	}
+}
