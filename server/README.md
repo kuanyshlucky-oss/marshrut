@@ -212,3 +212,7 @@ go test -tags integration ./...        # + интеграционные на н�
 - `GET /api/me` отдаёт аватар (до 500 КБ, обычно десятки КБ после сжатия на
   клиенте) в каждом ответе; вынести его в отдельный запрос можно только вместе
   с правкой фронта.
+
+## Отдельный production для проекта «госслужба»
+
+`render.gosluzhba.yaml` — Blueprint второго сервиса `gosluzhba-api` с собственной базой и окружением (пользователи, заказы и согласия не смешиваются с JetisHub). Порядок: создать новый проект Neon и взять его `DATABASE_URL`; Render → New → Blueprint → Blueprint Path `server/render.gosluzhba.yaml`; заполнить переменные с `sync: false`; после старта проверить `/api/health` и `/api/shop/products`; в `apiBase` страниц `buy.html`, `test.html`, `demo.html` подставить адрес нового сервиса.
