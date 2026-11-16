@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Listening · диктант по клипам — JetisHub</title>
+<meta name="robots" content="noindex">
+<script>
+  (function () {
+    var t = 'light';
+    try { t = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch (e) {}
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+</script>
+<style>
+  :root{
+    --bg:#FBFBFA; --surface:#FFFFFF; --ink:#1D1D1F; --ink-soft:#55555B; --line:rgba(29,29,31,.12);
+    --accent:#0A6CC9; --accent-on:#FFFFFF;
+    --ok:#12803F; --ok-bg:rgba(18,128,63,.12); --bad:#CF2F35; --bad-bg:rgba(207,47,53,.11); --warn:#C2620A; --warn-bg:rgba(194,98,10,.13);
+  }
+  html[data-theme="dark"]{
+    --bg:#0A0A0B; --surface:#161618; --ink:#F5F5F7; --ink-soft:#A8A8B0; --line:rgba(255,255,255,.12);
+    --accent:#4DA3FF; --accent-on:#08131F;
+    --ok:#55D68F; --ok-bg:rgba(85,214,143,.15); --bad:#FF8587; --bad-bg:rgba(255,133,135,.14); --warn:#FFB067; --warn-bg:rgba(255,176,103,.15);
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; }
+  a{ color:var(--accent); }
+  .wrap{ max-width:920px; margin:0 auto; padding:20px 16px 64px; }
+  .top{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
+  .top a{ text-decoration:none; font-size:14px; color:var(--ink-soft); }
+  .theme{ border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:999px; padding:6px 12px; cursor:pointer; font-size:13px; }
+  h1{ font-size:clamp(26px,5vw,38px); line-height:1.15; margin:14px 0 6px; letter-spacing:-.02em; }
+  .lead{ color:var(--ink-soft); margin:0 0 22px; max-width:640px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:12px; }
+  .clip{ display:block; width:100%; text-align:left; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px; cursor:pointer; color:inherit; font:inherit; transition:transform .15s,border-color .15s; }
+  .clip:hover{ transform:translateY(-2px); border-color:var(--accent); }
+  .clip .lv{ display:inline-block; font-size:11px; font-weight:700; letter-spacing:.05em; padding:2px 8px; border-radius:99px; background:rgba(10,108,201,.1); color:var(--accent); }
+  .clip .t{ font-weight:700; margin:8px 0 2px; }
+  .clip .s{ font-size:13px; color:var(--ink-soft); }
+  .bar{ height:6px; border-radius:99px; background:var(--line); margin-top:12px; overflow:hidden; }
+  .bar i{ display:block; height:100%; background:var(--accent); border-radius:99px; }
+  .bar.ok i{ background:var(--ok); }
+  .meta{ font-size:12px; color:var(--ink-soft); margin-top:6px; }
+  .empty{ border:1px dashed var(--line); border-radius:16px; padding:28px; color:var(--ink-soft); text-align:center; }
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:20px 22px; box-shadow:0 12px 32px -18px rgba(0,0,0,.25); margin-bottom:16px; }
+  video{ width:100%; max-height:420px; border-radius:12px; background:#000; display:block; }
+  .tools{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:12px; }
+  .btn{ border:0; background:var(--accent); color:var(--accent-on); padding:10px 18px; border-radius:12px; font:inherit; font-weight:600; cursor:pointer; }
+  .btn.ghost{ background:transparent; color:var(--ink); border:1px solid var(--line); }
+  .btn.sm{ padding:6px 12px; font-size:13px; border-radius:10px; }
+  .btn:disabled{ opacity:.5; cursor:default; }
+  select{ font:inherit; padding:8px 10px; border-radius:10px; border:1px solid var(--line); background:var(--surface); color:var(--ink); }
+  .row{ display:grid; grid-template-columns:auto 1fr; gap:10px 12px; padding:14px 0; border-top:1px solid var(--line); }
+  .row:first-child{ border-top:0; }
+  .row .n{ width:34px; height:34px; border-radius:50%; border:1.5px solid var(--accent); background:transparent; color:var(--accent); font-weight:700; cursor:pointer; }
+  .row .n:hover{ background:var(--accent); color:var(--accent-on); }
+  .row .n.playing{ background:var(--accent); color:var(--accent-on); }
+  textarea{ width:100%; font:inherit; padding:10px 12px; border-radius:12px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); resize:vertical; min-height:46px; }
+  textarea:focus{ outline:none; border-color:var(--accent); }
+  textarea.big{ min-height:150px; }
+  .hintline{ font-size:12px; color:var(--ink-soft); margin-top:4px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .res{ margin-top:8px; padding:10px 12px; border-radius:12px; background:rgba(128,128,128,.07); font-size:15px; line-height:1.9; }
+  .w{ padding:1px 5px; border-radius:6px; margin-right:2px; white-space:nowrap; }
+  .w.ok{ background:var(--ok-bg); color:var(--ok); }
+  .w.typo{ background:var(--warn-bg); color:var(--warn); }
+  .w.bad{ background:var(--bad-bg); color:var(--bad); }
+  .w.miss{ background:var(--bad-bg); color:var(--bad); text-decoration:underline wavy; }
+  .w.extra{ color:var(--ink-soft); text-decoration:line-through; }
+  .w small{ font-size:11px; opacity:.85; margin-left:3px; }
+  .legend{ font-size:12px; color:var(--ink-soft); display:flex; gap:12px; flex-wrap:wrap; margin:6px 0 0; }
+  .gram{ margin-top:6px; font-size:13px; color:var(--warn); }
+  .ru{ margin-top:4px; font-size:13px; color:var(--ink-soft); }
+  .score{ text-align:center; padding:6px 0 2px; }
+  .score .big{ font-size:48px; font-weight:800; line-height:1; letter-spacing:-.03em; }
+  .big.ok{ color:var(--ok); } .big.mid{ color:var(--warn); } .big.low{ color:var(--bad); }
+  .notes{ margin:8px 0 0; padding:0; list-style:none; font-size:14px; }
+  .notes li{ padding:6px 0; border-top:1px solid var(--line); }
+  .notes b{ color:var(--accent); }
+  .step .stmsg{ margin:0 0 10px; color:var(--ink-soft); font-size:15px; }
+  .step .prog{ display:flex; align-items:center; gap:12px; margin-bottom:10px; font-size:14px; color:var(--ink-soft); }
+  .step .prog .bar{ flex:1; margin:0; }
+  .step textarea{ font-size:18px; }
+  .verdict{ margin-top:14px; font-weight:800; font-size:20px; }
+  .verdict small{ font-weight:600; font-size:13px; opacity:.8; }
+  .verdict.ok{ color:var(--ok); } .verdict.mid{ color:var(--warn); } .verdict.bad{ color:var(--bad); }
+  .n2{ color:var(--accent); font-weight:700; }
+  .hint{ font-size:12px; color:var(--ink-soft); text-align:center; margin-top:22px; }
+  h3{ margin:0 0 6px; font-size:17px; }
+  /* ---------- минимализм ---------- */
+  .min{ max-width:760px; }
+  .min h1{ font-size:22px; font-weight:600; letter-spacing:-.01em; margin:18px 0 20px; }
+  .min .lead{ font-size:13px; margin:0 0 16px; }
+  .min .card{ border:0; box-shadow:none; background:transparent; padding:0; margin-bottom:12px; }
+  .min video{ border-radius:22px; max-height:460px; box-shadow:0 18px 40px -22px rgba(0,0,0,.45); }
+  .min .vtools{ display:flex; justify-content:flex-end; margin-top:12px; }
+  .min select{ border:0; background:rgba(128,128,128,.12); border-radius:999px; color:var(--ink-soft); font-size:13px; padding:4px 10px; cursor:pointer; }
+  .min .step{ padding-top:18px; }
+  .min .step .prog{ gap:10px; font-size:12px; margin-bottom:6px; }
+  .min .bar{ height:4px; border-radius:999px; background:var(--line); }
+  .min .bar i, .min .bar.ok i{ background:var(--ink); border-radius:999px; }
+  .min .step .stmsg{ font-size:12px; margin:0 0 6px; }
+  .min .step .stmsg b{ font-weight:500; }
+  .min .step textarea, .min textarea{ border:1.5px solid var(--line); border-radius:18px; background:var(--surface); padding:14px 18px; font-size:20px; min-height:0; resize:none; transition:border-color .15s, box-shadow .15s; }
+  .min textarea::placeholder{ color:var(--ink-soft); opacity:.6; letter-spacing:.12em; white-space:pre-wrap; }
+  .min textarea:focus{ border-color:var(--ink); box-shadow:0 0 0 4px rgba(128,128,128,.12); }
+  .min .btn{ background:var(--ink); color:var(--bg); border-radius:999px; padding:10px 24px; font-weight:500; }
+  .min .btn.ghost{ background:transparent; color:var(--ink-soft); border:0; border-radius:999px; padding:10px 14px; font-weight:400; }
+  .min .btn.ghost:hover{ background:rgba(128,128,128,.12); }
+  .min .btn.ghost:hover{ color:var(--ink); }
+  .min .tools{ margin-top:10px; gap:4px; }
+  .min .hintline{ font-size:12px; }
+  .min .res{ background:rgba(128,128,128,.08); border-radius:18px; padding:14px 18px; font-size:20px; line-height:1.6; }
+  .min .w{ padding:0; border-radius:0; margin-right:0; background:none; }
+  .min .w.ok{ color:var(--ink); }
+  .min .w.typo{ color:var(--warn); border-bottom:2px solid var(--warn); }
+  .min .w.bad{ color:var(--bad); border-bottom:2px solid var(--bad); }
+  .min .w.miss{ color:var(--bad); border-bottom:2px dotted var(--bad); text-decoration:none; }
+  .min .w.extra{ color:var(--ink-soft); }
+  .min .w small{ display:block; font-size:11px; line-height:1.2; opacity:.8; margin:0; }
+  .min .w.typo,.min .w.bad{ display:inline-block; vertical-align:top; }
+  .min .verdict{ font-size:15px; font-weight:600; margin-top:14px; }
+  .min .verdict small{ font-weight:400; }
+  .min .gram{ font-size:13px; }
+  .min .ru{ font-size:14px; color:var(--ink-soft); font-style:italic; }
+  .min .legend{ display:none; }
+  .min .score{ padding:10px 0; } .min .score .big{ font-size:40px; font-weight:700; }
+  .min .row{ border-top:1px solid var(--line); }
+  .min .row .n{ border:0; background:transparent; color:var(--ink-soft); }
+  .min .row .n:hover, .min .row .n.playing{ background:var(--ink); color:var(--bg); }
+  .min .clip{ border:0; border-bottom:1px solid var(--line); border-radius:0; padding:14px 0; background:transparent; }
+  .min .clip:hover{ transform:none; }
+  .min .grid{ grid-template-columns:1fr; gap:0; }
+  .min .clip .lv{ background:none; padding:0; color:var(--ink-soft); }
+  .min .theme{ border:0; background:none; color:var(--ink-soft); }
+  .min .hint{ font-size:11px; margin-top:32px; }
+  .lvl{ margin:30px 0 8px; }
+  .lvl-h{ display:flex; align-items:baseline; gap:10px; }
+  .lvl-id{ font-size:22px; font-weight:700; letter-spacing:-.01em; }
+  .lvl-name{ font-size:15px; font-weight:600; color:var(--ink-soft); }
+  .lvl-hint{ margin:2px 0 10px; font-size:13px; color:var(--ink-soft); max-width:560px; }
+  .lvl-soon{ margin:6px 0 0; font-size:13px; color:var(--ink-soft); opacity:.7; padding:12px 0; border-top:1px solid var(--line); }
+  .min .notes li{ border-top:1px solid var(--line); }
+  .min .notes b{ color:var(--ink); }
+  /* поле ввода без рамки-коробки: только линия снизу */
+  .min .step textarea, .min textarea{ border:0; border-bottom:2px solid var(--line); border-radius:0; background:transparent; box-shadow:none; padding:10px 2px 12px; font-size:22px; line-height:1.45; letter-spacing:.01em; caret-color:var(--accent); }
+  .min .step textarea:focus, .min textarea:focus{ border-bottom-color:var(--ink); box-shadow:none; }
+  .min .step textarea::placeholder, .min textarea::placeholder{ letter-spacing:.14em; opacity:.45; }
+  /* ---------- телефон: видео закреплено сверху, ввод и кнопки под рукой ---------- */
+  @media (max-width:640px){
+    .wrap{ padding:10px 12px 40px; }
+    .min h1{ font-size:18px; margin:10px 0 10px; }
+    .min .card:not(.step){ position:sticky; top:0; z-index:5; background:var(--bg); padding:6px 0 8px; margin:0 -12px 6px; }
+    .min video{ border-radius:0; max-height:36vh; box-shadow:none; }
+    .min .vtools{ justify-content:flex-end; margin:6px 12px 0; }
+    .min select{ min-height:36px; padding:6px 14px; font-size:14px; }
+    .min .step{ padding-top:6px; }
+    .min .step textarea, .min textarea{ font-size:20px; padding:10px 2px 12px; }
+    .min .btn{ min-height:46px; padding:10px 26px; font-size:16px; }
+    .min .btn.ghost{ min-height:46px; }
+    .top a, .theme{ min-height:36px; display:inline-flex; align-items:center; }
+  }
+  @media (max-height:480px) and (orientation:landscape){
+    .min video{ max-height:62vh; }
+    .min .card:not(.step){ position:static; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap min">
+  <div class="top">
+    <a id="back" href="practice.html">← Практика</a>
+    <button class="theme" id="theme" type="button">Тема</button>
+  </div>
+  <div id="app"></div>
+</div>
+<script src="listening-data.js"></script>
+<script src="listening-data-kfp.js"></script>
+<script src="listening-data-clips.js"></script>
+<script>
+(function () {
+  var D = window.LISTENING, app = document.getElementById('app'), KEY = 'listening-v1';
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  /* Результаты: у вошедшего пользователя хранятся на сервере (свои у каждого аккаунта),
+     у гостя — только в localStorage этого браузера. Формат: { clipId: { best, last, tries } }. */
+  var API = (function () {
+    var local = location.hostname === 'localhost' || location.hostname === '127.0.0.1', o = null;
+    try { o = local ? localStorage.getItem('marshrut_api_base') : null; } catch (e) {}
+    return o || 'https://marshrut-9c5z.onrender.com';
+  })();
+  var token = null, cache = null;
+  try { token = localStorage.getItem('marshrut_token'); } catch (e) {}
+  function api(path, body) {
+    return fetch(API + path, {
+      method: body ? 'POST' : 'GET',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: body ? JSON.stringify(body) : undefined
+    }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+  }
+  function loadLocal() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
+  function load() { return token && cache ? cache : loadLocal(); }
+  function record(clipId, pct, phrases) {
+    if (token && cache) {
+      api('/api/listening/result', { clip: clipId, score: pct, phrases: phrases }).then(function (d) { cache = d.progress || cache; }).catch(function () {});
+      // пока ответ не пришёл, показываем результат сразу
+      var s = cache[clipId] || { tries: 0, best: 0 };
+      cache[clipId] = { tries: (s.tries || 0) + 1, last: pct, best: Math.max(s.best || 0, pct) };
+    } else {
+      var st = loadLocal(), s2 = st[clipId] || { tries: 0 };
+      s2.tries = (s2.tries || 0) + 1; s2.last = pct; s2.best = Math.max(s2.best || 0, pct); st[clipId] = s2;
+      try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {}
+    }
+  }
+  function syncFromServer() { return api('/api/listening').then(function (d) { cache = d.progress || {}; }); }
+
+  /* ---------- разбор и сравнение текста ---------- */
+  var KEEP_OUR = { your: 1, yours: 1, four: 1, hour: 1, hours: 1, our: 1, ours: 1, pour: 1, tour: 1, tours: 1, sour: 1, flour: 1, devour: 1, detour: 1 };
+  function key(w) {
+    var k = w.toLowerCase().replace(/[’`´‘]/g, "'").replace(/^[^a-z0-9']+|[^a-z0-9']+$/g, '').replace(/[^a-z0-9'\-]/g, '');
+    // британское и американское написание считаем одинаковым: favourite = favorite, harbour = harbor
+    if (!KEEP_OUR[k]) k = k.replace(/([a-z])our(s|ed|ing|ite|ful|able)?$/, '$1or$2');
+    return k;
+  }
+  /* «– –––– ––––»: по чёрточке на каждую букву, слова разделены пробелами; апострофы и дефисы остаются */
+  function maskText(s) {
+    return String(s).trim().split(/\s+/).map(function (w) {
+      return w.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, '').replace(/[A-Za-z0-9]/g, '–').replace(/[’‘`´]/g, "'");
+    }).filter(Boolean).join('   ');
+  }
+  function toks(s) { return String(s).trim().split(/\s+/).filter(Boolean).map(function (w) { return { raw: w, k: key(w) }; }).filter(function (t) { return t.k; }); }
+  function lev(a, b) {
+    var m = a.length, n = b.length, d = [], i, j;
+    for (i = 0; i <= m; i++) { d[i] = [i]; }
+    for (j = 1; j <= n; j++) d[0][j] = j;
+    for (i = 1; i <= m; i++) for (j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    return d[m][n];
+  }
+  /* выравнивание по LCS точных слов; промежутки сопоставляются попарно: опечатка (≤ 1–2 правок), ошибка, лишнее, пропуск */
+  function diff(ref, usr) {
+    var R = toks(ref), U = toks(usr), m = R.length, n = U.length, i, j, L = [];
+    for (i = 0; i <= m; i++) { L[i] = new Array(n + 1).fill(0); }
+    for (i = m - 1; i >= 0; i--) for (j = n - 1; j >= 0; j--) L[i][j] = R[i].k === U[j].k ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    var out = [], ok = 0, typo = 0; i = 0; j = 0;
+    function gap(ri, rj, ui, uj) { // R[ri..rj), U[ui..uj)
+      var a = R.slice(ri, rj), b = U.slice(ui, uj), p, q;
+      // «That’s» ↔ «That is», «isn’t» ↔ «is not»: раскрытое сокращение — не ошибка слуха, а половинка балла
+      var AUX = { is: 1, am: 1, are: 1, will: 1, have: 1, has: 1, had: 1, would: 1, not: 1 };
+      for (q = 0; q < a.length && q + 1 < b.length; q++) {
+        var ap = a[q].k.indexOf("'");
+        if (ap > 0 && b[q].k.length >= 1 && AUX[b[q + 1].k] && (a[q].k.slice(0, ap) === b[q].k || a[q].k.slice(0, ap - 1) === b[q].k)) {
+          out.push({ t: 'typo', w: a[q].raw, u: b[q].raw + ' ' + b[q + 1].raw }); typo++;
+          a.splice(q, 1); b.splice(q, 2); q--;
+        }
+      }
+      p = Math.min(a.length, b.length);
+      for (q = 0; q < p; q++) {
+        var d = lev(a[q].k, b[q].k), lim = a[q].k.length >= 7 ? 2 : 1;
+        if (d <= lim && a[q].k.length >= 3) { out.push({ t: 'typo', w: a[q].raw, u: b[q].raw }); typo++; }
+        else out.push({ t: 'bad', w: a[q].raw, u: b[q].raw });
+      }
+      for (q = p; q < a.length; q++) out.push({ t: 'miss', w: a[q].raw });
+      for (q = p; q < b.length; q++) out.push({ t: 'extra', w: b[q].raw });
+    }
+    var ri = 0, ui = 0;
+    while (i < m && j < n) {
+      if (R[i].k === U[j].k) { gap(ri, i, ui, j); out.push({ t: 'ok', w: R[i].raw }); ok++; i++; j++; ri = i; ui = j; }
+      else if (L[i + 1][j] >= L[i][j + 1]) i++; else j++;
+    }
+    gap(ri, m, ui, n);
+    var pct = m ? Math.round((ok + typo * 0.5) / m * 100) : 0;
+    return { out: out, ok: ok, typo: typo, total: m, pct: pct, empty: !n };
+  }
+  /* «грамотность»: заглавная в начале, знак в конце, апострофы */
+  function grammarTips(ref, usr, d) {
+    var u = String(usr).trim(), r = String(ref).trim(), tips = [];
+    if (!u) return tips;
+    if (/^[a-z]/.test(u) && /^[A-Z]/.test(r)) tips.push('Предложение начинается с заглавной буквы.');
+    var re = r.slice(-1), ue = u.slice(-1);
+    if (/[.!?]/.test(re) && !/[.!?]/.test(ue)) tips.push('В конце не хватает знака «' + re + '».');
+    else if (/[.!?]/.test(re) && /[.!?]/.test(ue) && re !== ue) tips.push('Вместо «' + ue + '» в конце должно быть «' + re + '».');
+    if (/\bi\b/.test(u) && /\bI\b/.test(r)) tips.push('Местоимение «I» всегда пишется с заглавной.');
+    var rc = (r.match(/,/g) || []).length, uc = (u.match(/,/g) || []).length;
+    if (rc !== uc) tips.push('Запятых должно быть ' + rc + ' (у вас ' + uc + ').');
+    if (/\s[,.!?;:]/.test(u)) tips.push('Перед знаком препинания пробел не ставится.');
+    if (/[,;:][^\s\d]/.test(u.replace(/[.!?]$/, ''))) tips.push('После запятой нужен пробел.');
+    if (/\s{2,}/.test(u)) tips.push('Между словами должен быть один пробел.');
+    // имена и названия: Riley, Simba, Mr. — с заглавной, даже в середине фразы
+    var rw = r.split(/\s+/), uw = u.split(/\s+/), seen = {};
+    rw.forEach(function (w, k) {
+      var clean = w.replace(/[^A-Za-z']/g, '');
+      if (k > 0 && /^[A-Z][a-z]+$/.test(clean) && clean !== 'I' && (!/[.!?]$/.test(rw[k - 1]) || /^(Mr|Mrs|Ms|Dr|St|Jr|Sr)\.$/.test(rw[k - 1]))) {
+        var hit = uw.find(function (x) { return x.replace(/[^A-Za-z']/g, '').toLowerCase() === clean.toLowerCase(); });
+        if (hit && !/^[A-Z]/.test(hit) && !seen[clean]) { seen[clean] = 1; tips.push('«' + clean + '» — имя или название, пишется с заглавной.'); }
+      }
+    });
+    // пропущенный апостроф: dont → don't, im → I'm
+    if (d) d.out.forEach(function (x) {
+      if ((x.t === 'typo' || x.t === 'bad') && x.u && x.w.indexOf("'") < 0 && x.w.indexOf('’') < 0) return;
+      if ((x.t === 'typo' || x.t === 'bad') && x.u && x.u.indexOf("'") < 0 && x.u.indexOf('’') < 0 && x.u.toLowerCase() === x.w.toLowerCase().replace(/[’']/g, '')) {
+        var m = "Апостроф: «" + x.w.replace(/[^A-Za-z’']/g, '') + "» (сокращение пишется с ').";
+        if (tips.indexOf(m) < 0) tips.push(m);
+      }
+    });
+    // частые путаницы: их/там, твой/ты есть, его/оно есть, к/тоже
+    if (d) {
+      var CONF = {
+        'their|there': 'their — «их» (their house); there — «там» (over there) и there is/are.',
+        'there|their': 'there — «там» и there is/are; their — «их» (their house).',
+        "you're|your": "you're = you are («ты есть»); your — «твой».",
+        "your|you're": "your — «твой»; you're = you are («ты есть»).",
+        "it's|its": "it's = it is / it has; its — «его/её» (принадлежность).",
+        "its|it's": "its — «его/её» (принадлежность); it's = it is / it has.",
+        'to|too': 'to — предлог «к, чтобы»; too — «тоже, слишком».',
+        'too|to': 'too — «тоже, слишком»; to — предлог «к, чтобы».',
+        'then|than': 'then — «потом, тогда»; than — «чем» в сравнении.',
+        'than|then': 'than — «чем» в сравнении; then — «потом, тогда».',
+        'loose|lose': 'lose — «терять»; loose — «свободный».',
+        'lose|loose': 'lose — «терять»; loose — «свободный».',
+        'whose|who\'s': "whose — «чей»; who's = who is.",
+        "who's|whose": "who's = who is; whose — «чей».",
+        'were|where': 'were — прошедшее от are; where — «где».',
+        'where|were': 'where — «где»; were — прошедшее от are.',
+        'wear|where': 'wear — «носить»; where — «где».',
+        'know|no': 'know — «знать»; no — «нет».',
+        'no|know': 'no — «нет»; know — «знать».',
+        'hear|here': 'hear — «слышать»; here — «здесь».',
+        'here|hear': 'here — «здесь»; hear — «слышать».',
+      };
+      d.out.forEach(function (x) {
+        if ((x.t !== 'bad' && x.t !== 'typo') || !x.u) return;
+        var k2 = key(x.w) + '|' + key(x.u), m2 = CONF[k2];
+        if (m2 && tips.indexOf(m2) < 0) tips.push(m2);
+      });
+    }
+    return tips;
+  }
+  function renderDiff(d) {
+    return d.out.map(function (x) {
+      if (x.t === 'ok') return '<span class="w ok">' + esc(x.w) + '</span>';
+      if (x.t === 'typo') return '<span class="w typo">' + esc(x.w) + '<small>вы: ' + esc(x.u) + '</small></span>';
+      if (x.t === 'bad') return '<span class="w bad">' + esc(x.w) + '<small>вы: ' + esc(x.u) + '</small></span>';
+      if (x.t === 'miss') return '<span class="w miss">' + esc(x.w) + '</span>';
+      return '<span class="w extra">' + esc(x.w) + '</span>';
+    }).join(' ');
+  }
+  var LEGEND = '<div class="legend"><span><span class="w ok">слово</span> верно</span><span><span class="w typo">слово</span> опечатка (½ балла)</span><span><span class="w bad">слово</span> ошибка</span><span><span class="w miss">слово</span> пропущено</span><span><span class="w extra">слово</span> лишнее</span></div>';
+
+  /* ---------- список клипов ---------- */
+  function home() {
+    var st = load();
+    document.getElementById('back').textContent = '← Практика'; document.getElementById('back').setAttribute('href', 'practice.html');
+    if (!D.clips.length) { app.innerHTML = '<h1>Listening</h1><div class="empty">Клипов пока нет.</div>'; return; }
+    var levels = D.levels || [], known = {};
+    levels.forEach(function (l) { known[l.id] = true; });
+    function card(c) {
+      var s = st[c.id] || {}, dur = c.lines.length ? Math.round(c.lines[c.lines.length - 1].e) : 0;
+      return '<button class="clip" data-id="' + esc(c.id) + '"><div class="t">' + esc(c.title) + '</div><div class="s">' + esc(c.source || '') + '</div>' +
+        '<div class="bar' + (s.best >= 85 ? ' ok' : '') + '"><i style="width:' + (s.best || 0) + '%"></i></div><div class="meta">' + c.lines.length + ' фраз · ' + dur + ' с' + (s.best != null ? ' · лучший результат ' + s.best + '%' : '') + '</div></button>';
+    }
+    var sections = levels.map(function (l) {
+      var list = D.clips.filter(function (c) { return c.level === l.id; });
+      return '<section class="lvl"><div class="lvl-h"><span class="lvl-id">' + esc(l.id) + '</span><span class="lvl-name">' + esc(l.name) + '</span></div><p class="lvl-hint">' + esc(l.hint) + '</p>' +
+        (list.length ? '<div class="grid">' + list.map(card).join('') + '</div>' : '<p class="lvl-soon">Клипы скоро появятся</p>') + '</section>';
+    }).join('');
+    var rest = D.clips.filter(function (c) { return !known[c.level]; });
+    if (rest.length) sections += '<section class="lvl"><div class="lvl-h"><span class="lvl-name">Без уровня</span></div><div class="grid">' + rest.map(card).join('') + '</div></section>';
+    app.innerHTML = '<h1>Listening: диктант по клипам</h1><p class="lead">Смотрите отрывок из фильма или мультфильма, слушайте по фразам и записывайте услышанное. Выберите уровень сложности.</p>' + sections;
+    app.querySelectorAll('.clip').forEach(function (b) { b.addEventListener('click', function () { location.hash = '#' + b.dataset.id; }); });
+  }
+
+  /* ---------- клип ---------- */
+  function clipView(c) {
+    document.getElementById('back').textContent = '← Все клипы'; document.getElementById('back').setAttribute('href', '#');
+    var vid;
+    app.innerHTML = '<h1>' + esc(c.title) + '</h1>' +
+      '<div class="card">' + '<video id="v" src="' + esc(c.src) + '" controls playsinline preload="auto"></video>' +
+      '<div class="vtools"><select id="spd" title="Скорость"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option></select></div></div>' +
+      '<div id="work"></div>';
+    /* Остановка видео: точная пауза в конце фразы.
+       - стоп проверяется каждые ~40 мс (timeupdate приходит раз в 250 мс и даёт «хвост» следующей фразы);
+       - стоп включается только после перемотки (иначе старая позиция > конца и видео вставало бы сразу);
+       - хвост не заходит на начало следующей фразы (lim). */
+    var stopAt = null, armed = false, playingBtn = null, pl, tick = null;
+    function spd() { return Number(document.getElementById('spd').value); }
+    function clearBtn() { if (playingBtn) playingBtn.classList.remove('playing'); }
+    function halt() { vid.pause(); stopAt = null; armed = false; clearBtn(); if (tick) { clearInterval(tick); tick = null; } }
+    function watch() {
+      if (tick) clearInterval(tick);
+      tick = setInterval(function () {
+        if (stopAt == null) return;
+        if (!armed) { if (!vid.seeking && Math.abs(vid.currentTime - startAt) < 0.5) armed = true; else return; }
+        if (vid.currentTime >= stopAt || vid.ended) halt();
+      }, 40);
+    }
+    var startAt = 0;
+    vid = document.getElementById('v');
+    vid.addEventListener('timeupdate', function () { if (armed && stopAt != null && vid.currentTime >= stopAt) halt(); });
+    vid.addEventListener('pause', function () { if (stopAt == null) clearBtn(); });
+    vid.addEventListener('ended', function () { stopAt = null; armed = false; clearBtn(); });
+    vid.addEventListener('play', function () { if (stopAt == null && tick) { clearInterval(tick); tick = null; } });
+    window.addEventListener('hashchange', function () { if (tick) { clearInterval(tick); tick = null; } }, { once: true });
+    pl = { rate: function (r) { vid.playbackRate = r; } };
+    document.getElementById('spd').addEventListener('change', function (e) { pl.rate(Number(e.target.value)); });
+    /* lim — начало следующей фразы: пауза не позже неё */
+    function playRange(s, e, btn, lim) {
+      clearBtn(); playingBtn = btn || null; if (btn) btn.classList.add('playing');
+      var tail = 0.18 + (spd() < 1 ? 0.12 : 0);
+      stopAt = e + tail; if (lim != null) stopAt = Math.max(e, Math.min(stopAt, lim - 0.04));
+      startAt = Math.max(0, s - 0.12); armed = false;
+      vid.pause(); vid.currentTime = startAt; vid.playbackRate = spd();
+      var p = vid.play(); if (p && p.catch) p.catch(function () { halt(); });
+      watch();
+    }
+    function nextStart(i) { var n = c.lines[i + 1]; return n ? n.s : null; }
+    
+
+    var work = document.getElementById('work');
+    /* Диктант фраза за фразой: видео проигрывает фразу и встаёт на паузу, внизу поле ввода; Enter — сразу «верно / неверно», затем следующая */
+    function drawStep() {
+      var N = c.lines.length, i = 0, scores = [], done = false, tries = 0, started = false;
+      work.innerHTML = '<div class="card step"><div id="stbox"></div></div><div id="sum"></div>';
+      var box = document.getElementById('stbox');
+      function intro() {
+        box.innerHTML = '<p class="stmsg">Слушайте фразу и пишите. Enter — проверить, Enter ещё раз — дальше.</p>' +
+          '<div class="tools"><button class="btn" id="stgo">▶ Начать (' + N + ' фраз)</button></div>';
+        document.getElementById('stgo').addEventListener('click', function () { started = true; i = 0; scores = []; panel(); phrase(); });
+      }
+      function panel() {
+        box.innerHTML = '<div class="prog"><span id="stn"></span><div class="bar"><i id="stb" style="width:0"></i></div><span id="sts"></span></div>' +
+                    '<textarea id="sti" rows="2" placeholder="" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>' +
+          '<div class="tools"><button class="btn" id="stok">Проверить</button><button class="btn ghost" id="strep" title="Повторить фразу">↺</button></div>' +
+          '<div id="stres"></div>';
+        var ta = document.getElementById('sti');
+        ta.addEventListener('keydown', function (ev) {
+          if (ev.key === 'Enter') { ev.preventDefault(); if (ev.shiftKey) replay(); else act(); }
+        });
+        document.getElementById('stok').addEventListener('click', act);
+        document.getElementById('strep').addEventListener('click', replay);
+      }
+      function phrase() {
+        done = false; tries = 0;
+        var l = c.lines[i];
+        document.getElementById('stn').textContent = 'Фраза ' + (i + 1) + ' из ' + N;
+        document.getElementById('stb').style.width = Math.round(i / N * 100) + '%';
+        document.getElementById('sts').textContent = scores.length ? 'верно: ' + scores.filter(function (x) { return x === 100; }).length : '';
+        document.getElementById('sti').value = ''; document.getElementById('sti').disabled = false; document.getElementById('sti').placeholder = maskText(l.text);
+        document.getElementById('stres').innerHTML = '';
+        var ok = document.getElementById('stok'); ok.textContent = 'Проверить';
+        playRange(l.s, l.e, null, nextStart(i));
+        document.getElementById('sti').focus();
+      }
+      function replay() { var l = c.lines[i]; playRange(l.s, l.e, null, nextStart(i)); document.getElementById('sti').focus(); }
+      function act() { if (done) next(); else check(); }
+      function check() {
+        var l = c.lines[i], ta = document.getElementById('sti'), val = ta.value.trim();
+        if (!val) { document.getElementById('stres').innerHTML = '<div class="gram">Сначала напишите, что вы услышали (Shift+Enter — послушать ещё раз).</div>'; return; }
+        var d = diff(l.text, val), tips = grammarTips(l.text, val, d), perfect = d.pct === 100 && d.typo === 0 && !tips.length;
+        var wrongWords = d.out.filter(function (x) { return x.t === 'bad' || x.t === 'miss' || x.t === 'extra'; }).length;
+        var word = d.pct === 100 && d.typo === 0 ? 'ok' : (!wrongWords && d.typo ? 'mid' : d.pct >= 70 ? 'mid' : 'bad');
+        if (tries === 0) scores[i] = d.pct;
+        tries++; done = true; ta.disabled = true;
+        var verdict = word === 'ok' ? '✓ Верно!' : !wrongWords ? '≈ Почти верно — опечатки в словах' : word === 'mid' ? '✗ Есть ошибки — проверьте слова ниже' : '✗ Неверно';
+        document.getElementById('stres').innerHTML = '<div class="verdict ' + word + '">' + verdict + ' <small>' + d.pct + '%</small></div><div class="res">' + renderDiff(d) + '</div>' +
+          (tips.length ? '<div class="gram">✎ ' + tips.map(esc).join(' ') + '</div>' : '') + (l.ru ? '<div class="ru">' + esc(l.ru) + '</div>' : '') +
+          (d.pct < 100 ? '<div class="tools"><button class="btn ghost" id="stagain">↺ Попробовать ещё раз</button></div>' : '');
+        document.getElementById('stok').textContent = i === N - 1 ? 'Результат' : 'Дальше →';
+        document.getElementById('stok').focus();
+        var ag = document.getElementById('stagain');
+        if (ag) ag.addEventListener('click', function () { done = false; ta.disabled = false; document.getElementById('stres').innerHTML = ''; document.getElementById('stok').textContent = 'Проверить'; replay(); ta.focus(); });
+        void perfect;
+      }
+      function next() {
+        if (i < N - 1) { i++; phrase(); return; }
+        // конец
+        var sum = scores.reduce(function (a, b) { return a + (b || 0); }, 0), avg = Math.floor(sum / N); // 99,5% не округляем до 100: идеал — только когда всё верно
+        document.getElementById('stb') && (document.getElementById('stb').style.width = '100%');
+        var bad = c.lines.map(function (l, k) { return { l: l, k: k, s: scores[k] || 0 }; }).filter(function (x) { return x.s < 100; });
+        box.innerHTML = '<p class="stmsg">Диктант пройден. ' + (bad.length ? 'Фразы с ошибками:' : 'Все фразы без ошибок!') + '</p>' +
+          (bad.length ? '<ul class="review">' + bad.map(function (x) { return '<li><span class="n2">' + (x.k + 1) + '.</span> ' + esc(x.l.text) + ' <span style="color:var(--ink-soft)">· ' + x.s + '%</span></li>'; }).join('') + '</ul>' : '') +
+          '<div class="tools"><button class="btn" id="stagain2">Пройти заново</button></div>';
+        document.getElementById('stagain2').addEventListener('click', function () { panel(); i = 0; scores = []; phrase(); document.getElementById('sum').innerHTML = ''; });
+        summary(avg, scores.map(function (x) { return x || 0; }), false);
+      }
+      intro();
+    }
+    function summary(pct, phrases, tag) {
+      var cls = pct >= 85 ? 'ok' : pct >= 60 ? 'mid' : 'low';
+      if (!tag) record(c.id, pct, phrases);
+      document.getElementById('sum').innerHTML = '<div class="card"><div class="score"><div class="big ' + cls + '">' + pct + '%</div><p>' + (tag ? 'Ответы показаны — результат не засчитан.' : pct >= 85 ? 'Отлично! Слух и орфография на высоте.' : pct >= 60 ? 'Неплохо. Переслушайте фразы с ошибками.' : 'Послушайте ещё раз по фразам и повторите.') + '</p></div>' + LEGEND +
+        (c.notes && c.notes.length ? '<h3 style="margin-top:14px">Слова и выражения</h3><ul class="notes">' + c.notes.map(function (n) { return '<li><b>' + esc(n.w) + '</b> — ' + esc(n.ru) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+      document.getElementById('sum').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    drawStep();
+  }
+
+  function route() {
+    var id = location.hash.replace('#', ''), c = D.clips.find(function (x) { return x.id === id; });
+    if (c) clipView(c); else home();
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('back').addEventListener('click', function (e) { if (location.hash) { e.preventDefault(); location.hash = ''; } });
+  document.getElementById('theme').addEventListener('click', function () {
+    var n = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', n); try { localStorage.setItem('theme', n); } catch (e) {}
+  });
+  window.addEventListener('hashchange', route);
+  if (token) { syncFromServer().catch(function () { token = null; }).then(route); } else route();
+})();
+</script>
+</body>
+</html>
