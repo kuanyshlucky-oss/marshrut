@@ -142,6 +142,47 @@
   .lvl-soon{ margin:6px 0 0; font-size:13px; color:var(--ink-soft); opacity:.7; padding:12px 0; border-top:1px solid var(--line); }
   .min .notes li{ border-top:1px solid var(--line); }
   .min .notes b{ color:var(--ink); }
+  /* ---------- каталог: тёмный кинотеатр ---------- */
+  body.cine{ --bg:#0B0B0D; --surface:#17171A; --ink:#F5F5F7; --ink-soft:#A1A1AA; --line:rgba(255,255,255,.14); --accent:#F6C453; --accent-on:#1A1300; }
+  body.cine{ background:radial-gradient(1200px 520px at 50% -140px, rgba(246,196,83,.10), transparent 70%), #0B0B0D; }
+  .wrap.cine{ max-width:1120px; }
+  .cine .top a, .cine .theme{ color:var(--ink-soft); }
+  .hero{ padding:18px 0 6px; }
+  .hero h1.big{ font-size:clamp(36px,8vw,64px); font-weight:800; letter-spacing:-.035em; line-height:1.02; margin:0 0 12px; }
+  .hero h1.big span{ color:var(--accent); }
+  .hero .sub{ margin:0; max-width:560px; color:var(--ink-soft); font-size:16px; line-height:1.5; }
+  .chips{ display:flex; gap:8px; overflow-x:auto; padding:22px 0 4px; scrollbar-width:none; }
+  .chips::-webkit-scrollbar{ display:none; }
+  .chip{ flex:none; border:1px solid var(--line); background:transparent; color:var(--ink); padding:9px 18px; border-radius:999px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; transition:background .15s,color .15s,border-color .15s; }
+  .chip small{ opacity:.6; font-weight:500; margin-left:4px; }
+  .chip:hover{ border-color:var(--ink-soft); }
+  .chip.on{ background:var(--accent); color:var(--accent-on); border-color:var(--accent); }
+  .cine .lvl{ margin:38px 0 6px; }
+  .cine .lvl-id{ font-size:30px; font-weight:800; color:var(--accent); }
+  .cine .lvl-name{ font-size:16px; color:var(--ink); }
+  .cine .lvl-hint{ margin:4px 0 16px; }
+  .cine .grid{ grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:26px 20px; }
+  .pc{ display:block; width:100%; padding:0; border:0; background:none; text-align:left; color:inherit; font:inherit; cursor:pointer; }
+  .pc-img{ position:relative; aspect-ratio:16/9; border-radius:16px; overflow:hidden; background:#17171A center/cover no-repeat; box-shadow:0 14px 30px -18px rgba(0,0,0,.9); transition:transform .25s ease, box-shadow .25s ease; }
+  .pc-img::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.32) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0) 56%, rgba(0,0,0,.62) 100%); }
+  .pc:hover .pc-img, .pc:focus-visible .pc-img{ transform:translateY(-4px) scale(1.015); box-shadow:0 22px 40px -18px rgba(0,0,0,.95); }
+  .pc:focus-visible{ outline:none; }
+  .pc-lv{ position:absolute; z-index:2; left:10px; top:10px; font-size:12px; font-weight:800; letter-spacing:.06em; padding:3px 9px; border-radius:8px; background:var(--accent); color:var(--accent-on); }
+  .pc-dur{ position:absolute; z-index:2; right:10px; bottom:9px; font-size:12px; font-weight:600; padding:2px 8px; border-radius:7px; background:rgba(0,0,0,.62); color:#fff; backdrop-filter:blur(4px); }
+  .pc-play{ position:absolute; z-index:2; left:50%; top:50%; width:54px; height:54px; margin:-27px 0 0 -27px; border-radius:50%; background:rgba(255,255,255,.92); display:flex; align-items:center; justify-content:center; opacity:0; transform:scale(.8); transition:opacity .2s, transform .2s; }
+  .pc-play::before{ content:''; margin-left:4px; border-left:15px solid #111; border-top:9px solid transparent; border-bottom:9px solid transparent; }
+  .pc:hover .pc-play, .pc:focus-visible .pc-play{ opacity:1; transform:scale(1); }
+  .pc-done{ position:absolute; z-index:2; right:10px; top:10px; font-size:12px; font-weight:700; padding:3px 9px; border-radius:8px; background:rgba(85,214,143,.95); color:#06260F; }
+  .pc-bar{ position:absolute; z-index:2; left:0; right:0; bottom:0; height:4px; background:rgba(255,255,255,.18); }
+  .pc-bar i{ display:block; height:100%; background:var(--accent); }
+  .pc-t{ margin:12px 2px 2px; font-size:17px; font-weight:700; letter-spacing:-.01em; line-height:1.25; }
+  .pc-s{ margin:0 2px; font-size:13px; color:var(--ink-soft); }
+  .pc-m{ margin:5px 2px 0; font-size:12px; color:var(--ink-soft); opacity:.85; }
+  @media (max-width:640px){
+    .cine .grid{ grid-template-columns:1fr; gap:24px; }
+    .hero h1.big{ font-size:40px; }
+    .hero .sub{ font-size:15px; }
+  }
   /* поле ввода без рамки-коробки: только линия снизу */
   .min .step textarea, .min textarea{ border:0; border-bottom:2px solid var(--line); border-radius:0; background:transparent; box-shadow:none; padding:10px 2px 12px; font-size:22px; line-height:1.45; letter-spacing:.01em; caret-color:var(--accent); }
   .min .step textarea:focus, .min textarea:focus{ border-bottom-color:var(--ink); box-shadow:none; }
@@ -354,24 +395,42 @@
     levels.forEach(function (l) { known[l.id] = true; });
     function card(c) {
       var s = st[c.id] || {}, dur = c.lines.length ? Math.round(c.lines[c.lines.length - 1].e) : 0;
-      return '<button class="clip" data-id="' + esc(c.id) + '"><div class="t">' + esc(c.title) + '</div><div class="s">' + esc(c.source || '') + '</div>' +
-        '<div class="bar' + (s.best >= 85 ? ' ok' : '') + '"><i style="width:' + (s.best || 0) + '%"></i></div><div class="meta">' + c.lines.length + ' фраз · ' + dur + ' с' + (s.best != null ? ' · лучший результат ' + s.best + '%' : '') + '</div></button>';
+      var poster = 'assets/listening/posters/' + c.id + '.jpg?v=1';
+      return '<button class="pc" data-id="' + esc(c.id) + '"><div class="pc-img" style="background-image:url(\'' + esc(poster) + '\')">' +
+        '<span class="pc-lv">' + esc(c.level || '') + '</span>' + (s.best >= 85 ? '<span class="pc-done">✓ ' + s.best + '%</span>' : '') +
+        '<span class="pc-play"></span><span class="pc-dur">' + dur + ' с</span>' +
+        (s.best ? '<div class="pc-bar"><i style="width:' + s.best + '%"></i></div>' : '') + '</div>' +
+        '<div class="pc-t">' + esc(c.title) + '</div><div class="pc-s">' + esc(c.source || '') + '</div>' +
+        '<div class="pc-m">' + c.lines.length + ' фраз' + (s.best != null && s.best < 85 ? ' · лучший результат ' + s.best + '%' : '') + '</div></button>';
     }
     var sections = levels.map(function (l) {
       var list = D.clips.filter(function (c) { return c.level === l.id; });
-      return '<section class="lvl"><div class="lvl-h"><span class="lvl-id">' + esc(l.id) + '</span><span class="lvl-name">' + esc(l.name) + '</span></div><p class="lvl-hint">' + esc(l.hint) + '</p>' +
+      return '<section class="lvl" data-lvl="' + esc(l.id) + '"><div class="lvl-h"><span class="lvl-id">' + esc(l.id) + '</span><span class="lvl-name">' + esc(l.name) + '</span></div><p class="lvl-hint">' + esc(l.hint) + '</p>' +
         (list.length ? '<div class="grid">' + list.map(card).join('') + '</div>' : '<p class="lvl-soon">Клипы скоро появятся</p>') + '</section>';
     }).join('');
     var rest = D.clips.filter(function (c) { return !known[c.level]; });
-    if (rest.length) sections += '<section class="lvl"><div class="lvl-h"><span class="lvl-name">Без уровня</span></div><div class="grid">' + rest.map(card).join('') + '</div></section>';
-    app.innerHTML = '<h1>Listening: диктант по клипам</h1><p class="lead">Смотрите отрывок из фильма или мультфильма, слушайте по фразам и записывайте услышанное. Выберите уровень сложности.</p>' + sections;
-    app.querySelectorAll('.clip').forEach(function (b) { b.addEventListener('click', function () { location.hash = '#' + b.dataset.id; }); });
+    if (rest.length) sections += '<section class="lvl" data-lvl="other"><div class="lvl-h"><span class="lvl-name">Без уровня</span></div><div class="grid">' + rest.map(card).join('') + '</div></section>';
+    var chips = '<button class="chip on" data-f="all">Все<small>' + D.clips.length + '</small></button>' + levels.map(function (l) {
+      var n = D.clips.filter(function (c) { return c.level === l.id; }).length;
+      return n ? '<button class="chip" data-f="' + esc(l.id) + '">' + esc(l.id) + '<small>' + n + '</small></button>' : '';
+    }).join('');
+    document.body.classList.add('cine'); document.querySelector('.wrap').classList.add('cine');
+    app.innerHTML = '<div class="hero"><h1 class="big">Listening<span>.</span></h1><p class="sub">Смотрите сцены из фильмов и мультфильмов, слушайте по фразам и записывайте услышанное. Выберите уровень.</p></div>' +
+      '<div class="chips" id="chips">' + chips + '</div>' + sections;
+    app.querySelectorAll('.pc').forEach(function (b) { b.addEventListener('click', function () { location.hash = '#' + b.dataset.id; }); });
+    document.getElementById('chips').addEventListener('click', function (e) {
+      var b = e.target.closest('.chip'); if (!b) return;
+      var f = b.dataset.f;
+      app.querySelectorAll('.chip').forEach(function (x) { x.classList.toggle('on', x === b); });
+      app.querySelectorAll('.lvl').forEach(function (s) { s.style.display = (f === 'all' || s.dataset.lvl === f) ? '' : 'none'; });
+    });
   }
 
   /* ---------- клип ---------- */
   function clipView(c) {
     document.getElementById('back').textContent = '← Все клипы'; document.getElementById('back').setAttribute('href', '#');
     var vid;
+    document.body.classList.remove('cine'); document.querySelector('.wrap').classList.remove('cine');
     app.innerHTML = '<h1>' + esc(c.title) + '</h1>' +
       '<div class="card">' + '<video id="v" src="' + esc(c.src) + '" controls playsinline preload="auto"></video>' +
       '<div class="vtools"><select id="spd" title="Скорость"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option></select></div></div>' +
