@@ -168,6 +168,7 @@
   .cine .grid{ grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:26px 20px; }
   .pc{ display:block; width:100%; padding:0; border:0; background:none; text-align:left; color:inherit; font:inherit; cursor:pointer; }
   .pc-img{ position:relative; aspect-ratio:16/9; border-radius:16px; overflow:hidden; background:#17171A center/cover no-repeat; box-shadow:0 14px 30px -18px rgba(0,0,0,.9); transition:transform .25s ease, box-shadow .25s ease; }
+  .pc-pic{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
   .pc-img::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.32) 0%, rgba(0,0,0,0) 34%, rgba(0,0,0,0) 56%, rgba(0,0,0,.62) 100%); }
   .pc:hover .pc-img, .pc:focus-visible .pc-img{ transform:translateY(-4px) scale(1.015); box-shadow:0 22px 40px -18px rgba(0,0,0,.95); }
   .pc:focus-visible{ outline:none; }
@@ -436,7 +437,7 @@
     function card(c) {
       var s = st[c.id] || {}, dur = c.lines.length ? Math.round(c.lines[c.lines.length - 1].e) : 0;
       var poster = 'assets/listening/posters/' + c.id + '.jpg?v=1';
-      return '<button class="pc" data-id="' + esc(c.id) + '"><div class="pc-img" style="background-image:url(\'' + esc(poster) + '\')">' +
+      return '<button class="pc" data-id="' + esc(c.id) + '"><div class="pc-img"><img class="pc-pic" src="' + esc(poster) + '" alt="" width="640" height="360" loading="lazy" decoding="async">' +
         '<span class="pc-lv">' + esc(c.level || '') + '</span>' + (s.best >= 85 ? '<span class="pc-done">✓ ' + s.best + '%</span>' : '') +
         '<span class="pc-play"></span><span class="pc-dur">' + dur + ' с</span>' +
         (s.best ? '<div class="pc-bar"><i style="width:' + s.best + '%"></i></div>' : '') + '</div>' +
@@ -472,7 +473,7 @@
     var vid;
     document.body.classList.remove('cine'); document.querySelector('.wrap').classList.remove('cine');
     app.innerHTML = '<h1>' + esc(c.title) + '</h1>' +
-      '<div class="card">' + '<video id="v" src="' + esc(c.src) + '" controls playsinline preload="auto"></video>' +
+      '<div class="card">' + '<video id="v" src="' + esc(c.src) + '" poster="assets/listening/posters/' + esc(c.id) + '.jpg" controls playsinline preload="metadata"></video>' +
       '<div class="vtools"><select id="spd" title="Скорость"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option></select></div></div>' +
       '<div id="work"></div>';
     /* Остановка видео: точная пауза в конце фразы.
