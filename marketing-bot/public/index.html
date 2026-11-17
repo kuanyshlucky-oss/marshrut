@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Маркетолог JetisHUB</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23F6C453'/%3E%3Ctext x='16' y='22' font-size='18' text-anchor='middle' font-family='Arial' font-weight='700' fill='%231A1300'%3EJ%3C/text%3E%3C/svg%3E">
+<style>
+  :root{ --bg:#FBFBFA; --surface:#FFFFFF; --ink:#1D1D1F; --soft:#5F5F66; --line:rgba(29,29,31,.12); --accent:#F6C453; --accent-ink:#1A1300; --user:#EFEFEA; --ok:#12803F; --bad:#CF2F35; }
+  @media (prefers-color-scheme: dark){ :root{ --bg:#0B0B0D; --surface:#161618; --ink:#F5F5F7; --soft:#A1A1AA; --line:rgba(255,255,255,.14); --user:#1E1E21; --ok:#55D68F; --bad:#FF8587; } }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 -apple-system,"Segoe UI",Roboto,Arial,sans-serif; }
+  .app{ max-width:980px; margin:0 auto; padding:16px; display:grid; grid-template-columns:320px 1fr; gap:16px; min-height:100vh; }
+  @media (max-width:820px){ .app{ grid-template-columns:1fr; } }
+  h1{ font-size:20px; margin:4px 0 2px; letter-spacing:-.01em; } h1 span{ color:var(--accent); }
+  .sub{ color:var(--soft); font-size:13px; margin:0 0 14px; }
+  .panel{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:14px; align-self:start; position:sticky; top:16px; }
+  .tabs{ display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
+  .tab{ border:1px solid var(--line); background:transparent; color:var(--ink); padding:7px 12px; border-radius:999px; font:inherit; font-size:13px; font-weight:600; cursor:pointer; }
+  .tab.on{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+  label{ display:block; font-size:12px; font-weight:600; color:var(--soft); margin:10px 0 3px; }
+  input, textarea, select{ width:100%; font:inherit; font-size:14px; padding:9px 10px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--ink); }
+  textarea{ resize:vertical; min-height:60px; }
+  input:focus, textarea:focus, select:focus{ outline:2px solid var(--accent); outline-offset:0; border-color:transparent; }
+  .check{ display:flex; gap:8px; align-items:center; font-size:13px; color:var(--soft); margin-top:12px; font-weight:500; }
+  .check input{ width:auto; }
+  .btn{ border:0; border-radius:999px; padding:11px 20px; font:inherit; font-weight:700; cursor:pointer; background:var(--accent); color:var(--accent-ink); }
+  .btn.ghost{ background:transparent; color:var(--soft); border:1px solid var(--line); font-weight:600; padding:8px 14px; font-size:13px; }
+  .btn:disabled{ opacity:.5; cursor:default; }
+  .row{ display:flex; gap:8px; margin-top:14px; flex-wrap:wrap; }
+  .chat{ display:flex; flex-direction:column; min-width:0; }
+  .log{ flex:1; display:flex; flex-direction:column; gap:12px; padding-bottom:12px; }
+  .empty{ border:1px dashed var(--line); border-radius:16px; padding:28px; color:var(--soft); text-align:center; }
+  .msg{ border-radius:16px; padding:12px 14px; max-width:100%; overflow-wrap:anywhere; }
+  .msg.user{ background:var(--user); align-self:flex-end; white-space:pre-wrap; max-width:90%; }
+  .msg.bot{ background:var(--surface); border:1px solid var(--line); }
+  .msg.err{ border:1px solid var(--bad); color:var(--bad); }
+  .tools{ display:flex; gap:6px; margin-top:8px; align-items:center; }
+  .meta{ font-size:12px; color:var(--soft); margin-left:auto; }
+  .md h1,.md h2,.md h3{ font-size:16px; margin:14px 0 6px; } .md h1{ font-size:18px; }
+  .md p{ margin:6px 0; } .md ul,.md ol{ margin:6px 0; padding-left:22px; }
+  .md table{ border-collapse:collapse; width:100%; font-size:13.5px; margin:8px 0; display:block; overflow-x:auto; }
+  .md th,.md td{ border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  .md th{ background:var(--user); }
+  .md code{ background:var(--user); padding:1px 5px; border-radius:5px; font-size:.92em; }
+  .md pre{ background:var(--user); padding:10px; border-radius:10px; overflow-x:auto; } .md pre code{ background:none; padding:0; }
+  .md hr{ border:0; border-top:1px solid var(--line); margin:12px 0; }
+  .composer{ position:sticky; bottom:0; background:var(--bg); padding:10px 0 4px; display:flex; gap:8px; align-items:flex-end; border-top:1px solid var(--line); }
+  .composer textarea{ min-height:46px; max-height:180px; }
+  .status{ font-size:13px; color:var(--soft); margin:4px 2px; min-height:18px; }
+  .warn{ background:rgba(207,47,53,.1); color:var(--bad); border-radius:10px; padding:8px 10px; font-size:13px; margin-bottom:10px; display:none; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="panel">
+    <h1>Маркетолог <span>JetisHUB</span></h1>
+    <p class="sub">Сценарии рилсов для Instagram: таргет и информация про магистратуру.</p>
+    <div class="warn" id="keyWarn">Ключ API не найден. Создайте файл <b>.env</b> (см. README) и перезапустите бота.</div>
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-mode="A">Таргет-рилсы</button>
+      <button class="tab" data-mode="B">Информационные</button>
+      <button class="tab" data-mode="FREE">Свободный чат</button>
+    </div>
+
+    <form id="formA" data-mode="A">
+      <label>Что рекламируем (угол)</label>
+      <select name="angle">
+        <option>Full подготовка: расклад по баллам</option>
+        <option>Пакет «Профиль»: без лишнего, только профильные</option>
+        <option>Английский: Listening (диктант по сценам из фильмов)</option>
+        <option>Английский: грамматика по темам и звёзды</option>
+        <option>Пробные тесты и симуляция КТ</option>
+        <option>Рассрочка без процентов (снимаем «дорого»)</option>
+      </select>
+      <label>Дата тестирования</label>
+      <select name="date"><option>Лето</option><option>Зима</option><option>Конкретная дата (укажу в уточнении)</option></select>
+      <label>Оффер (что человек получает за заявку)</label>
+      <input name="offer" value="Бесплатный расклад по баллам на твою специальность за 5 минут">
+      <label>CTA и ссылка / номер WhatsApp</label>
+      <input name="cta" placeholder="WhatsApp +7 7XX XXX XX XX">
+      <label>Бюджет в день, ₸</label>
+      <input name="budget" value="5000">
+      <label>Язык</label>
+      <select name="lang"><option>Русский</option><option>Қазақша</option><option>Оба варианта</option></select>
+      <label>Уточнение (необязательно)</label>
+      <textarea name="extra" placeholder="Например: сделай упор на тех, кто боится английского"></textarea>
+    </form>
+
+    <form id="formB" data-mode="B" hidden>
+      <label>Тема рилса</label>
+      <select name="preset">
+        <option value="">— своя тема (введите ниже) —</option>
+        <option>5 шагов поступления в магистратуру в Казахстане, по порядку</option>
+        <option>Из чего состоит комплексное тестирование и сколько времени отводится</option>
+        <option>Профильная и научно-педагогическая магистратура: что выбрать</option>
+        <option>3 ошибки, которые стоят баллов на английском в КТ</option>
+        <option>Как учить английский на слух: диктант по сценам из фильмов</option>
+        <option>«Без английского нельзя»: правда или нет</option>
+        <option>Как распределить подготовку, если до теста 2 месяца</option>
+        <option>«Мне 28, поздно?»: честный ответ</option>
+        <option>Как выбрать специальность и посмотреть требования по своей</option>
+        <option>Что делать в последнюю неделю перед тестированием</option>
+        <option>«Провалил(а) в первый раз»: что делать дальше</option>
+      </select>
+      <label>Своя тема (вместо списка)</label>
+      <input name="topic" placeholder="Например: чем ТГО отличается от английского">
+      <label>Аудитория</label>
+      <select name="aud"><option>Бакалавры 4 курса, 21–23 года</option><option>Работающие, 25–35 лет</option><option>Уже сдавали КТ</option></select>
+      <label>Длина</label>
+      <select name="len"><option>30 секунд</option><option selected>45 секунд</option><option>60 секунд</option></select>
+      <label>Язык</label>
+      <select name="lang"><option>Русский</option><option>Қазақша</option><option>Оба варианта</option></select>
+    </form>
+
+    <div id="freeHint" hidden class="sub">Пишите любые задачи внизу: правки сценария, перевод на казахский, идеи постов, ответы на комментарии.</div>
+
+    <label class="check"><input type="checkbox" id="withVideo"> Добавить промты для AI-генератора видео</label>
+    <div class="row">
+      <button class="btn" id="go" type="button">Сгенерировать</button>
+      <button class="btn ghost" id="reset" type="button">Новый чат</button>
+    </div>
+    <p class="sub" style="margin-top:12px">Бот не обещает грант и баллы, цены и сроки сверяйте с прайсом перед публикацией.</p>
+  </aside>
+
+  <main class="chat">
+    <div class="log" id="log"><div class="empty" id="empty">Заполните форму слева и нажмите «Сгенерировать».<br>Дальше можно просить правки в строке внизу: «сделай хук короче», «переведи на казахский».</div></div>
+    <div class="status" id="status"></div>
+    <div class="composer">
+      <textarea id="input" rows="1" placeholder="Напишите уточнение или правку…  (Enter — отправить, Shift+Enter — новая строка)"></textarea>
+      <button class="btn" id="send" type="button">Отправить</button>
+      <button class="btn ghost" id="stop" type="button" hidden>Стоп</button>
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  var $ = function (s) { return document.querySelector(s); };
+  var log = $('#log'), statusEl = $('#status'), input = $('#input');
+  var mode = 'A', messages = [], busy = false, ctrl = null;
+
+  /* ---------- вкладки ---------- */
+  document.querySelectorAll('.tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      mode = t.dataset.mode;
+      document.querySelectorAll('.tab').forEach(function (x) { x.classList.toggle('on', x === t); });
+      $('#formA').hidden = mode !== 'A'; $('#formB').hidden = mode !== 'B'; $('#freeHint').hidden = mode !== 'FREE';
+      $('#go').style.display = mode === 'FREE' ? 'none' : '';
+    });
+  });
+  fetch('/api/info').then(function (r) { return r.json(); }).then(function (i) { if (!i.hasKey) $('#keyWarn').style.display = 'block'; });
+
+  /* ---------- сообщения формы по шаблонам запроса ---------- */
+  function val(f, n) { return (f.elements[n].value || '').trim(); }
+  function buildRequest() {
+    if (mode === 'A') {
+      var f = $('#formA');
+      return 'НАПРАВЛЕНИЕ/УГОЛ: ' + val(f, 'angle') + '\nДАТА ТЕСТИРОВАНИЯ: ' + val(f, 'date') + '\nОФФЕР: ' + val(f, 'offer') +
+        '\nCTA И ССЫЛКА: ' + (val(f, 'cta') || '[подставлю позже]') + '\nБЮДЖЕТ В ДЕНЬ: ' + val(f, 'budget') + ' ₸\nЯЗЫК: ' + val(f, 'lang') +
+        (val(f, 'extra') ? '\nУТОЧНЕНИЕ: ' + val(f, 'extra') : '') + '\n\nСделай 3 разных рекламных рилса (боль, расчёт, доказательство) по структуре режима А.';
+    }
+    var g = $('#formB'), topic = val(g, 'topic') || val(g, 'preset');
+    if (!topic) { alert('Выберите тему из списка или впишите свою.'); return null; }
+    return 'ТЕМА / РУБРИКА: ' + topic + '\nАУДИТОРИЯ: ' + val(g, 'aud') + '\nЯЗЫК: ' + val(g, 'lang') + '\nДЛИНА: ' + val(g, 'len');
+  }
+
+  /* ---------- мини-рендер markdown ---------- */
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+  function inline(s) { return esc(s).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<i>$2</i>'); }
+  function md(src) {
+    var lines = src.replace(/\r/g, '').split('\n'), out = [], i = 0;
+    while (i < lines.length) {
+      var l = lines[i];
+      if (/^```/.test(l)) { var code = []; i++; while (i < lines.length && !/^```/.test(lines[i])) code.push(lines[i++]); i++; out.push('<pre><code>' + esc(code.join('\n')) + '</code></pre>'); continue; }
+      if (/^\s*\|.*\|\s*$/.test(l) && /^\s*\|[\s:|-]+\|\s*$/.test(lines[i + 1] || '')) {
+        var head = l.trim().replace(/^\||\|$/g, '').split('|'); i += 2; var rows = [];
+        while (i < lines.length && /^\s*\|.*\|\s*$/.test(lines[i])) rows.push(lines[i++].trim().replace(/^\||\|$/g, '').split('|'));
+        out.push('<table><thead><tr>' + head.map(function (c) { return '<th>' + inline(c.trim()) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+          rows.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + inline(c.trim()) + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>'); continue;
+      }
+      var h = l.match(/^(#{1,4})\s+(.*)$/); if (h) { out.push('<h' + Math.min(h[1].length + 1, 4) + '>' + inline(h[2]) + '</h' + Math.min(h[1].length + 1, 4) + '>'); i++; continue; }
+      if (/^\s*(-{3,}|\*{3,})\s*$/.test(l)) { out.push('<hr>'); i++; continue; }
+      if (/^\s*[-*•]\s+/.test(l)) { var li = []; while (i < lines.length && /^\s*[-*•]\s+/.test(lines[i])) li.push('<li>' + inline(lines[i++].replace(/^\s*[-*•]\s+/, '')) + '</li>'); out.push('<ul>' + li.join('') + '</ul>'); continue; }
+      if (/^\s*\d+[.)]\s+/.test(l)) { var ol = []; while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) ol.push('<li>' + inline(lines[i++].replace(/^\s*\d+[.)]\s+/, '')) + '</li>'); out.push('<ol>' + ol.join('') + '</ol>'); continue; }
+      if (!l.trim()) { i++; continue; }
+      var p = [l]; i++; while (i < lines.length && lines[i].trim() && !/^(#{1,4}\s|```|\s*[-*•]\s|\s*\d+[.)]\s|\s*\|)/.test(lines[i])) p.push(lines[i++]);
+      out.push('<p>' + inline(p.join(' ')) + '</p>');
+    }
+    return out.join('');
+  }
+
+  /* ---------- вывод ---------- */
+  function add(cls, html) { var d = document.createElement('div'); d.className = 'msg ' + cls; d.innerHTML = html || ''; log.appendChild(d); window.scrollTo(0, document.body.scrollHeight); return d; }
+  function setBusy(b) { busy = b; $('#send').disabled = b; $('#go').disabled = b; $('#stop').hidden = !b; }
+  function addTools(box, text) {
+    var t = document.createElement('div'); t.className = 'tools';
+    var c = document.createElement('button'); c.className = 'btn ghost'; c.textContent = 'Копировать';
+    c.onclick = function () { navigator.clipboard.writeText(text).then(function () { c.textContent = 'Скопировано ✓'; setTimeout(function () { c.textContent = 'Копировать'; }, 1500); }); };
+    var m = document.createElement('span'); m.className = 'meta'; box.__meta = m;
+    t.appendChild(c); t.appendChild(m); box.appendChild(t);
+  }
+
+  async function send(text) {
+    if (busy) return;
+    $('#empty') && $('#empty').remove();
+    messages.push({ role: 'user', content: text });
+    add('user').textContent = text;
+    var box = add('bot'), body = document.createElement('div'); body.className = 'md'; box.appendChild(body);
+    var acc = '', gotText = false; setBusy(true); statusEl.textContent = 'Пишу сценарий…'; ctrl = new AbortController();
+    try {
+      var res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctrl.signal,
+        body: JSON.stringify({ mode: mode, withVideo: $('#withVideo').checked, messages: messages }) });
+      if (!res.ok || !res.body) throw new Error('Сервер ответил ' + res.status);
+      var reader = res.body.getReader(), dec = new TextDecoder(), buf = '';
+      for (;;) {
+        var r = await reader.read(); if (r.done) break;
+        buf += dec.decode(r.value, { stream: true });
+        var parts = buf.split('\n\n'); buf = parts.pop();
+        parts.forEach(function (chunk) {
+          var ev = (chunk.match(/^event: (.*)$/m) || [])[1], data = (chunk.match(/^data: (.*)$/m) || [])[1];
+          if (!ev || data === undefined) return; var d = JSON.parse(data);
+          if (ev === 'text') { gotText = true; acc += d; body.innerHTML = md(acc); statusEl.textContent = ''; window.scrollTo(0, document.body.scrollHeight); }
+          else if (ev === 'status' && !gotText) statusEl.textContent = 'Думаю…';
+          else if (ev === 'error') { box.classList.add('err'); body.innerHTML += '<p>' + esc(d) + '</p>'; }
+          else if (ev === 'note') body.innerHTML += '<p><i>' + esc(d) + '</i></p>';
+          else if (ev === 'usage') { box.__usage = d; }
+        });
+      }
+      if (acc) { messages.push({ role: 'assistant', content: acc }); addTools(box, acc); if (box.__usage) box.__meta.textContent = box.__usage.output + ' токенов ответа'; }
+      else { messages.pop(); }
+    } catch (e) {
+      if (e.name === 'AbortError') { if (acc) { messages.push({ role: 'assistant', content: acc }); addTools(box, acc); } else messages.pop(); statusEl.textContent = 'Остановлено.'; }
+      else { box.classList.add('err'); body.innerHTML = '<p>' + esc(e.message || 'Ошибка связи') + '</p>'; messages.pop(); }
+    } finally { setBusy(false); if (statusEl.textContent !== 'Остановлено.') statusEl.textContent = ''; ctrl = null; }
+  }
+
+  $('#go').addEventListener('click', function () { var t = buildRequest(); if (t) send(t); });
+  $('#send').addEventListener('click', function () { var t = input.value.trim(); if (t) { input.value = ''; send(t); } });
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#send').click(); } });
+  $('#stop').addEventListener('click', function () { if (ctrl) ctrl.abort(); });
+  $('#reset').addEventListener('click', function () { if (busy && ctrl) ctrl.abort(); messages = []; log.innerHTML = '<div class="empty" id="empty">Новый чат. Заполните форму слева и нажмите «Сгенерировать».</div>'; statusEl.textContent = ''; });
+  $('#go').style.display = '';
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "jetishub-marketing-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Бот-маркетолог JetisHUB: сценарии рилсов для Instagram (таргет и информационные)",
+  "type": "module",
+  "scripts": {
+    "prompts": "node build-prompts.js",
+    "start": "node build-prompts.js && node --env-file-if-exists=.env server.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.9.0"
+  }
+}
