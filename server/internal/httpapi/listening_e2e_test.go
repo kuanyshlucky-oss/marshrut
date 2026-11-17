@@ -63,3 +63,53 @@ func TestListeningProgressE2E(t *testing.T) {
 		t.Errorf("отклонённые попытки попали в базу: %v", m)
 	}
 }
+
+// Повторная отправка с тем же id прохождения не удваивает результат; кривой id отклоняется.
+func TestListeningIdempotentE2E(t *testing.T) {
+	e := newEnv(t)
+	_, email, pw := e.mkUser("LisIdem")
+	tok := e.mustLogin(email, pw)
+
+	body := map[string]any{"id": "9f1c2d3e-4b5a-4c6d-8e7f-0a1b2c3d4e5f", "clip": "nemo-keep-swimming", "score": 80, "phrases": []int{100, 60}}
+	for i := 0; i < 3; i++ {
+		code, m := e.json("POST", "/api/listening/result", body, bearer(tok))
+		if code != 200 {
+			t.Fatalf("отправка #%d: %d %v", i+1, code, m)
+		}
+		c := m["progress"].(map[string]any)["nemo-keep-swimming"].(map[string]any)
+		if c["tries"] != float64(1) || c["best"] != float64(80) {
+			t.Errorf("после отправки #%d: %v (повтор должен быть идемпотентным)", i+1, c)
+		}
+	}
+	bad := map[string]any{"id": "short", "clip": "nemo-keep-swimming", "score": 80}
+	if code, _ := e.json("POST", "/api/listening/result", bad, bearer(tok)); code != 400 {
+		t.Errorf("кривой id прохождения принят: %d", code)
+	}
+}
+
+// Запись результатов ограничена по числу в минуту на пользователя; чтение и другие пользователи не страдают.
+func TestListeningRateLimitE2E(t *testing.T) {
+	e := newEnv(t)
+	_, email1, pw1 := e.mkUser("LisRate1")
+	_, email2, pw2 := e.mkUser("LisRate2")
+	tok1, tok2 := e.mustLogin(email1, pw1), e.mustLogin(email2, pw2)
+
+	post := func(tok string) int {
+		code, _ := e.json("POST", "/api/listening/result", map[string]any{"clip": "nemo-keep-swimming", "score": 50}, bearer(tok))
+		return code
+	}
+	for i := 0; i < listeningRatePerMin; i++ {
+		if code := post(tok1); code != 200 {
+			t.Fatalf("запись #%d: %d, want 200", i+1, code)
+		}
+	}
+	if code := post(tok1); code != 429 {
+		t.Errorf("запись сверх лимита: %d, want 429", code)
+	}
+	if code, _ := e.json("GET", "/api/listening", nil, bearer(tok1)); code != 200 {
+		t.Errorf("чтение при исчерпанном лимите записи: %d, want 200", code)
+	}
+	if code := post(tok2); code != 200 {
+		t.Errorf("лимит одного пользователя задел другого: %d", code)
+	}
+}

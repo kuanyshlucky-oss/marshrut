@@ -26,13 +26,14 @@ type Server struct {
 	sessions *auth.SessionCache
 	log      *slog.Logger
 
-	loginLimiter *rateLimiter // 5 попыток входа в минуту с одного IP
-	adminLimiter *rateLimiter // запросы к /api/admin/* с одного IP
-	adminFails   *rateLimiter // неверные админ-ключи с одного IP
-	demoLimiter  *rateLimiter // демо-вопросы с одного IP (публичный маршрут)
-	shopLimiter  *rateLimiter // создание заказов и заявки «я оплатил» с одного IP
-	hookLimiter  *rateLimiter // уведомления об оплате с одного IP
-	pwLimiter    *rateLimiter // установка пароля по ссылке с одного IP
+	loginLimiter     *rateLimiter // 5 попыток входа в минуту с одного IP
+	adminLimiter     *rateLimiter // запросы к /api/admin/* с одного IP
+	adminFails       *rateLimiter // неверные админ-ключи с одного IP
+	demoLimiter      *rateLimiter // демо-вопросы с одного IP (публичный маршрут)
+	shopLimiter      *rateLimiter // создание заказов и заявки «я оплатил» с одного IP
+	hookLimiter      *rateLimiter // уведомления об оплате с одного IP
+	listeningLimiter *rateLimiter // запись результатов Listening: не чаще listeningRatePerMin в минуту на пользователя
+	pwLimiter        *rateLimiter // установка пароля по ссылке с одного IP
 
 	payments payments.Provider // провайдер оплаты
 	mailer   mail.Sender       // nil — SMTP не настроен: письма только копятся в очереди
@@ -45,16 +46,17 @@ func New(ctx context.Context, cfg *config.Config, st *store.Store, ct *content.S
 	dummy, _ := auth.HashPassword("dummy-password-for-timing")
 	s := &Server{
 		cfg: cfg, store: st, content: ct, log: log,
-		signer:       auth.NewSigner(cfg.JWTSecret),
-		sessions:     auth.NewSessionCache(cfg.SessionCacheTTL, 10_000),
-		loginLimiter: newRateLimiter(ctx, 5, time.Minute),
-		adminLimiter: newRateLimiter(ctx, 120, time.Minute),
-		adminFails:   newRateLimiter(ctx, maxAdminKeyFailures, 15*time.Minute),
-		demoLimiter:  newRateLimiter(ctx, 30, time.Minute),
-		shopLimiter:  newRateLimiter(ctx, 20, time.Hour),
-		hookLimiter:  newRateLimiter(ctx, 300, time.Minute),
-		pwLimiter:    newRateLimiter(ctx, 10, time.Minute),
-		dummyHash:    dummy,
+		signer:           auth.NewSigner(cfg.JWTSecret),
+		sessions:         auth.NewSessionCache(cfg.SessionCacheTTL, 10_000),
+		loginLimiter:     newRateLimiter(ctx, 5, time.Minute),
+		adminLimiter:     newRateLimiter(ctx, 120, time.Minute),
+		adminFails:       newRateLimiter(ctx, maxAdminKeyFailures, 15*time.Minute),
+		listeningLimiter: newRateLimiter(ctx, listeningRatePerMin, time.Minute),
+		demoLimiter:      newRateLimiter(ctx, 30, time.Minute),
+		shopLimiter:      newRateLimiter(ctx, 20, time.Hour),
+		hookLimiter:      newRateLimiter(ctx, 300, time.Minute),
+		pwLimiter:        newRateLimiter(ctx, 10, time.Minute),
+		dummyHash:        dummy,
 	}
 	prov, err := payments.New(payments.Settings{
 		Provider: cfg.PaymentsProvider, WebhookSecret: cfg.PaymentsWebhookSecret, PayURLTemplate: cfg.PaymentsPayURL,

@@ -247,7 +247,9 @@
   var QKEY = 'listening-queue-v1', flushing = false;
   function qLoad() { try { return JSON.parse(localStorage.getItem(QKEY)) || []; } catch (e) { return []; } }
   function qSave(q) { try { localStorage.setItem(QKEY, JSON.stringify(q)); } catch (e) {} }
-  function qPush(clip, score, phrases) { var q = qLoad(); q.push({ clip: clip, score: score, phrases: phrases || [] }); qSave(q); }
+  function newId() { try { if (window.crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (e) {} return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 8); }
+  // id прохождения: сервер по нему отбрасывает повторную отправку той же записи (сеть оборвалась после записи)
+  function qPush(clip, score, phrases) { var q = qLoad(); q.push({ id: newId(), clip: clip, score: score, phrases: phrases || [] }); qSave(q); }
   function flush() {
     if (!token || flushing) return Promise.resolve();
     var q = qLoad(); if (!q.length) return Promise.resolve();
