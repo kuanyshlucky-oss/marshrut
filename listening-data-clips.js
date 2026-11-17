@@ -449,11 +449,99 @@
     ]
   });
 
+  C.push({
+    id: 'interstellar-love-transcends', title: 'Love transcends time and space', source: 'Interstellar (2014): Купер и доктор Брэнд', level: 'C1', src: 'assets/listening/interstellar-love-transcends.mp4',
+    lines: [
+      { s: 3.69, e: 13.18, text: "Hey, I love you forever, you hear me? I love you forever, and I'm coming back.", ru: 'Эй, я люблю тебя вечно, слышишь? Люблю вечно, и я вернусь.' },
+      { s: 13.53, e: 21.7, text: "I know you're going to get this message. Professor Brand assured me that he's going to get it to you. And know that I love you.", ru: 'Я знаю, что ты получишь это сообщение. Профессор Брэнд заверил меня, что передаст его тебе. И знай, что я тебя люблю.' },
+      { s: 21.77, e: 31.9, text: "Love isn't something we invented. It's observable, powerful. It has to mean something.", ru: 'Любовь — не наше изобретение. Она наблюдаема и сильна. Она должна что-то значить.' },
+      { s: 32.09, e: 36.6, text: 'Love has meaning, yes. Social utility, social bonding, child-rearing.', ru: 'Конечно, значит: социальная польза, социальные связи, воспитание детей.' },
+      { s: 36.65, e: 41.14, text: "We love people who have died. Where's the social utility in that?", ru: 'Мы любим тех, кто умер. Где тут социальная польза?' },
+      { s: 41.53, e: 48.36, text: "None. Maybe it means something more. Something we can't yet understand.", ru: 'Её нет. Возможно, это значит нечто большее. Что-то, чего мы пока не понимаем.' },
+      { s: 48.41, e: 57.6, text: "Maybe it's some evidence, some artifact of a higher dimension that we can't consciously perceive.", ru: 'Может быть, это свидетельство, след высшего измерения, которое мы не можем воспринять осознанно.' },
+      { s: 57.65, e: 65.34, text: "I'm drawn across the universe to someone I haven't seen in a decade, who I know is probably dead.", ru: 'Меня тянет через всю вселенную к человеку, которого я не видела десять лет и который, скорее всего, мёртв.' },
+      { s: 65.69, e: 76.78, text: "Love is the one thing we're capable of perceiving that transcends dimensions of time and space.", ru: 'Любовь — единственное, что мы способны воспринимать и что выходит за пределы измерений времени и пространства.' }
+    ],
+    notes: [
+      { w: 'transcend', ru: 'выходить за пределы, превосходить' },
+      { w: 'observable', ru: 'наблюдаемый' },
+      { w: 'social utility', ru: 'социальная польза' },
+      { w: 'perceive', ru: 'воспринимать' }
+    ]
+  });
+
+  C.push({
+    id: 'fight-club-rules', title: 'The rules of Fight Club', source: 'Fight Club (1999): правила клуба', level: 'B2', src: 'assets/listening/fight-club-rules.mp4',
+    lines: [
+      { s: 12.78, e: 17.37, text: 'The first rule of Fight Club is: you do not talk about Fight Club.', ru: 'Первое правило Бойцовского клуба: никому не рассказывать о Бойцовском клубе.' },
+      { s: 17.91, e: 24.0, text: 'The second rule of Fight Club is: you do not talk about Fight Club.', ru: 'Второе правило Бойцовского клуба: никому не рассказывать о Бойцовском клубе.' },
+      { s: 24.24, e: 31.26, text: "Third rule of Fight Club: if someone yells stop, goes limp, taps out, the fight is over.", ru: 'Третье правило: если кто-то кричит «стоп», обмякает или сдаётся, бой окончен.' },
+      { s: 31.32, e: 34.62, text: 'Fourth rule: only two guys to a fight.', ru: 'Четвёртое правило: в драке участвуют только двое.' },
+      { s: 36.03, e: 38.16, text: 'Fifth rule: one fight at a time, fellas.', ru: 'Пятое правило: один бой за раз, ребята.' },
+      { s: 39.6, e: 42.13, text: 'Sixth rule: no shirts, no shoes.', ru: 'Шестое правило: без рубашек и без обуви.' },
+      { s: 42.18, e: 46.74, text: 'Seventh rule: fights will go on as long as they have to.', ru: 'Седьмое правило: бои длятся столько, сколько нужно.' },
+      { s: 47.22, e: 56.7, text: 'And the eighth and final rule: if this is your first night at Fight Club, you have to fight.', ru: 'И восьмое, последнее правило: если это твоя первая ночь в Бойцовском клубе, ты обязан драться.' }
+    ],
+    notes: [
+      { w: 'go limp', ru: 'обмякнуть' },
+      { w: 'tap out', ru: 'сдаться (хлопком по полу)' },
+      { w: 'fellas', ru: 'ребята (разг.)' },
+      { w: 'as long as they have to', ru: 'сколько потребуется' }
+    ]
+  });
+
+  C.push({
+    id: 'inception-youre-dreaming', title: "You're in a dream", source: 'Inception (2010): Кобб и Ариадна', level: 'C1', src: 'assets/listening/inception-youre-dreaming.mp4',
+    lines: [
+      { s: 0.2, e: 3.18, text: "When we're asleep, our mind can do almost anything.", ru: 'Когда мы спим, наш разум может почти всё.' },
+      { s: 4.37, e: 11.9, text: "Well, imagine you're designing a building, right? You consciously create each aspect, but sometimes it feels like it's almost creating itself, if you know what I mean.", ru: 'Представь, что ты проектируешь здание. Ты сознательно создаёшь каждую деталь, но порой кажется, что оно создаёт себя само, понимаешь, о чём я?' },
+      { s: 12.05, e: 14.6, text: "Yeah. Yeah, like I'm discovering it.", ru: 'Да. Как будто я его открываю.' },
+      { s: 14.65, e: 25.65, text: 'Genuine inspiration, right? Now, in a dream, our mind continuously does this. We create and perceive our world simultaneously.', ru: 'Настоящее вдохновение, да? Так вот, во сне наш разум делает это непрерывно. Мы создаём свой мир и воспринимаем его одновременно.' },
+      { s: 25.73, e: 32.5, text: "And our mind does this so well that we don't even know it's happening. That allows us to get right in the middle of that process.", ru: 'И разум делает это так хорошо, что мы даже не замечаем. Это позволяет нам вмешаться прямо в середину процесса.' },
+      { s: 32.97, e: 38.45, text: 'By taking over the creating part. Now, this is where I need you. You create the world of the dream.', ru: 'Взяв на себя создание. Вот здесь ты мне и нужна. Ты создаёшь мир сна.' },
+      { s: 38.77, e: 44.0, text: 'We bring the subject into that dream, and they fill it with their subconscious.', ru: 'Мы приводим объект в этот сон, и он наполняет его своим подсознанием.' },
+      { s: 44.05, e: 49.1, text: "How could I ever acquire enough detail to make them think that it's reality?", ru: 'Как я смогу добиться достаточной детальности, чтобы он принял это за реальность?' },
+      { s: 49.25, e: 56.5, text: "Well, dreams, they feel real while we're in them, right? It's only when we wake up that we realize something was actually strange.", ru: 'Сны кажутся реальными, пока мы в них, так? И только проснувшись, мы понимаем, что что-то было странным.' },
+      { s: 58.01, e: 66.3, text: "Let me ask you a question. You never really remember the beginning of a dream, do you? You always wind up right in the middle of what's going on.", ru: 'Позволь задать вопрос. Ты ведь никогда не помнишь начало сна? Ты всегда оказываешься прямо в середине происходящего.' },
+      { s: 66.37, e: 67.54, text: 'I guess, yeah.', ru: 'Пожалуй, да.' },
+      { s: 67.61, e: 69.6, text: 'So, how did we end up here?', ru: 'Так как мы здесь оказались?' },
+      { s: 71.85, e: 77.14, text: 'Think about it, Ariadne. How did you get here? Where are you right now?', ru: 'Подумай, Ариадна. Как ты сюда попала? Где ты сейчас?' },
+      { s: 81.17, e: 82.0, text: "We're dreaming?", ru: 'Мы спим?' },
+      { s: 82.05, e: 89.5, text: "You're actually in the middle of the workshop right now, sleeping. This is your first lesson in shared dreaming. Stay calm.", ru: 'На самом деле ты сейчас в мастерской и спишь. Это твой первый урок совместных сновидений. Сохраняй спокойствие.' }
+    ],
+    notes: [
+      { w: 'simultaneously', ru: 'одновременно' },
+      { w: 'subconscious', ru: 'подсознание' },
+      { w: 'wind up (somewhere)', ru: 'оказаться (где-то)' },
+      { w: 'genuine', ru: 'настоящий, подлинный' }
+    ]
+  });
+
+  C.push({
+    id: 'home-alone-toothbrush', title: 'Is this toothbrush approved?', source: 'Home Alone (1990): Кевин в магазине', level: 'A2', src: 'assets/listening/home-alone-toothbrush.mp4',
+    lines: [
+      { s: 0.81, e: 3.86, text: 'Is this toothbrush approved by the American Dental Association?', ru: 'Эту зубную щётку одобрила Американская стоматологическая ассоциация?' },
+      { s: 4.89, e: 11.14, text: "Well, I don't know. It doesn't say. Hon, can you please find out?", ru: 'Ну, не знаю. Тут не написано. Дорогой, ты не мог бы выяснить?' },
+      { s: 14.25, e: 18.4, text: "Herb? Yeah, I've got a question here about a toothbrush.", ru: 'Герб? Да, у меня тут вопрос про зубную щётку.' },
+      { s: 25.85, e: 29.74, text: 'Do you know, is this toothbrush approved by the American Dental Association?', ru: 'Вы не знаете, эту зубную щётку одобрила Американская стоматологическая ассоциация?' },
+      { s: 30.73, e: 31.8, text: "I don't know.", ru: 'Не знаю.' },
+      { s: 58.73, e: 60.82, text: 'Wait, son, you have to pay for that toothbrush.', ru: 'Постой, сынок, за эту щётку нужно заплатить.' },
+      { s: 61.45, e: 66.6, text: 'Son! Hey, Jimmy! Stop that boy!', ru: 'Сынок! Эй, Джимми! Останови мальчика!' }
+    ],
+    notes: [
+      { w: 'approved by', ru: 'одобренный (кем-то)' },
+      { w: 'I have a question about…', ru: 'у меня вопрос о…' },
+      { w: 'you have to pay', ru: 'нужно заплатить' },
+      { w: 'Hon (honey)', ru: 'дорогой, дорогая (обращение)' }
+    ]
+  });
+
   /* тайминги выше сняты с исходного ролика; отрывки вырезаны с этих секунд */
   var OFF = { 'nemo-keep-swimming': 38, 'inside-out-first-day': 2, 'dory-hank-driving': 0.3, 'cars-meet-mater': 2.5, 'zootopia-popsicle': 21.0,
     'forrest-gump-chocolates': 12.6, 'shrek-ogres-onions': 33.8, 'matrix-red-pill': 6.3, 'dark-knight-joker': 12.8, 'good-will-hunting-bench': 47.4,
     'dead-poets-carpe-diem': 157.4, 'godfather-i-believe-in-america': 0.8, 'godfather-respect': 188.9, 'titanic-flying': 82.0,
-    'despicable-me-bedtime': 1.2, 'up-russell-explorer': 12.6, 'frozen-meet-olaf': 74.3, 'nemo-fish-are-friends': 4.3, 'paddington-meets-browns': 70.8, 'toy-story-woody-buzz': 66.0 };
+    'despicable-me-bedtime': 1.2, 'up-russell-explorer': 12.6, 'frozen-meet-olaf': 74.3, 'nemo-fish-are-friends': 4.3, 'paddington-meets-browns': 70.8, 'toy-story-woody-buzz': 66.0,
+    'interstellar-love-transcends': 3.0, 'fight-club-rules': 2.0, 'home-alone-toothbrush': 0.2 };
   C.forEach(function (c) {
     if (OFF[c.id] == null) return;
     c.lines.forEach(function (l) { l.s = Math.max(0, +(l.s - OFF[c.id]).toFixed(2)); l.e = +(l.e - OFF[c.id]).toFixed(2); });
