@@ -39,22 +39,6 @@
   });
 
   C.push({
-    id: 'lion-king-circle-of-life', title: 'The great Circle of Life', source: 'The Lion King (1994): Муфаса и Симба', level: 'C1', src: 'assets/listening/lion-king-circle-of-life.mp4',
-    lines: [
-      { s: 92.3, e: 96.6, text: 'Everything you see exists together in a delicate balance.', ru: 'Всё, что ты видишь, существует вместе в хрупком равновесии.' },
-      { s: 96.65, e: 99.7, text: 'As king, you need to understand that balance,', ru: 'Став королём, ты должен понимать это равновесие' },
-      { s: 99.7, e: 104.8, text: 'and respect all the creatures from the crawling ant to the leaping antelope.', ru: 'и уважать всех существ — от ползущего муравья до прыгающей антилопы.' },
-      { s: 106.1, e: 108.9, text: 'Yes, Simba, but let me explain.', ru: 'Да, Симба, но позволь объяснить.' },
-      { s: 108.88, e: 114.5, text: 'When we die, our bodies become the grass, and the antelope eat the grass.', ru: 'Когда мы умираем, наши тела становятся травой, а антилопы едят траву.' },
-      { s: 114.5, e: 120.5, text: 'And so we are all connected in the great Circle of Life.', ru: 'Так мы все связаны в великом Круге жизни.' }
-    ],
-    notes: [
-      { w: 'delicate balance', ru: 'хрупкое равновесие' },
-      { w: 'creatures', ru: 'существа' },
-      { w: 'connected', ru: 'связанные' }
-    ]
-  });
-  C.push({
     id: 'dory-hank-driving', title: 'Which way? Dory directs Hank', source: 'Finding Dory (2016): Дори и Ханк за рулём', level: 'A2', src: 'assets/listening/dory-hank-driving.mp4',
     lines: [
       { s: 0.96, e: 3.2, text: 'Straight, straight, left, left.', ru: 'Прямо, прямо, налево, налево.' },
@@ -466,7 +450,7 @@
   });
 
   /* тайминги выше сняты с исходного ролика; отрывки вырезаны с этих секунд */
-  var OFF = { 'nemo-keep-swimming': 38, 'inside-out-first-day': 2, 'lion-king-circle-of-life': 91.5, 'dory-hank-driving': 0.3, 'cars-meet-mater': 2.5, 'zootopia-popsicle': 21.0,
+  var OFF = { 'nemo-keep-swimming': 38, 'inside-out-first-day': 2, 'dory-hank-driving': 0.3, 'cars-meet-mater': 2.5, 'zootopia-popsicle': 21.0,
     'forrest-gump-chocolates': 12.6, 'shrek-ogres-onions': 33.8, 'matrix-red-pill': 6.3, 'dark-knight-joker': 12.8, 'good-will-hunting-bench': 47.4,
     'dead-poets-carpe-diem': 157.4, 'godfather-i-believe-in-america': 0.8, 'godfather-respect': 188.9, 'titanic-flying': 82.0,
     'despicable-me-bedtime': 1.2, 'up-russell-explorer': 12.6, 'frozen-meet-olaf': 74.3, 'nemo-fish-are-friends': 4.3, 'paddington-meets-browns': 70.8, 'toy-story-woody-buzz': 66.0 };
