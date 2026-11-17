@@ -194,6 +194,18 @@
   .min .step textarea, .min textarea{ border:0; border-bottom:2px solid var(--line); border-radius:0; background:transparent; box-shadow:none; padding:10px 2px 12px; font-size:22px; line-height:1.45; letter-spacing:.01em; caret-color:var(--accent); }
   .min .step textarea:focus, .min textarea:focus{ border-bottom-color:var(--ink); box-shadow:none; }
   .min .step textarea::placeholder, .min textarea::placeholder{ letter-spacing:.14em; opacity:.45; }
+  /* ---------- строка ответа: набранные буквы встают на чёрточки под видео (без поля-коробки) ---------- */
+  .ans{ position:relative; margin:18px 0 6px; padding:14px 4px 10px; text-align:center; cursor:text; min-height:4.2em; border-radius:18px; transition:background .2s; }
+  .ans:focus-within{ background:rgba(128,128,128,.06); }
+  .ans-line{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:clamp(22px,4.6vw,32px); line-height:1.55; letter-spacing:.14em; white-space:pre-wrap; word-break:break-word; color:var(--ink); }
+  .ans-line .t{ color:var(--ink); }
+  .ans-line .g{ color:var(--ink-soft); opacity:.4; }
+  .ans-line .cur{ display:inline-block; width:2px; height:1.15em; background:var(--accent); margin:0 1px; vertical-align:-.18em; animation:ansBlink 1s steps(1) infinite; }
+  .ans.off .cur, .ans.dis .cur{ display:none; }
+  .ans.dis .ans-line .g{ display:none; }
+  @keyframes ansBlink{ 50%{ opacity:0; } }
+  .ans textarea{ position:absolute !important; inset:0; width:100%; height:100%; opacity:0; resize:none; border:0 !important; padding:0 !important; font-size:16px !important; background:transparent !important; box-shadow:none !important; z-index:2; }
+  .ans-hint{ text-align:center; font-size:12px; color:var(--ink-soft); margin:0 0 4px; opacity:.8; }
   /* ---------- телефон: видео закреплено сверху, ввод и кнопки под рукой ---------- */
   @media (max-width:640px){
     .wrap{ padding:10px 12px 40px; }
@@ -529,23 +541,44 @@
       }
       function panel() {
         box.innerHTML = '<div class="prog"><span id="stn"></span><div class="bar"><i id="stb" style="width:0"></i></div><span id="sts"></span></div>' +
-                    '<textarea id="sti" rows="2" placeholder="" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>' +
+                    '<div class="ans off" id="ans"><div class="ans-line" id="ansl"></div><textarea id="sti" rows="2" placeholder="" aria-label="Что вы услышали" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea></div>' +
+          '<p class="ans-hint">Пишите услышанное: буквы встают на чёрточки</p>' +
           '<div class="tools"><button class="btn" id="stok">Проверить</button><button class="btn ghost" id="strep" title="Повторить фразу">↺</button></div>' +
           '<div id="stres"></div>';
-        var ta = document.getElementById('sti');
+        var ta = document.getElementById('sti'), ans = document.getElementById('ans');
+        ta.addEventListener('input', paintAns);
+        ta.addEventListener('focus', function () { ans.classList.remove('off'); keepVisible(); });
+        ta.addEventListener('blur', function () { ans.classList.add('off'); });
+        ans.addEventListener('click', function () { if (!ta.disabled) ta.focus(); });
         ta.addEventListener('keydown', function (ev) {
           if (ev.key === 'Enter') { ev.preventDefault(); if (ev.shiftKey) replay(); else act(); }
         });
         document.getElementById('stok').addEventListener('click', act);
         document.getElementById('strep').addEventListener('click', replay);
       }
+      /* чёрточки по буквам фразы («___ _'_ ____»): набранное заменяет начало, остаток подсказывает длину слов */
+      function patternOf(s) {
+        return String(s).trim().split(/\s+/).map(function (w) { return w.replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, '').replace(/[A-Za-z0-9]/g, '_').replace(/[’‘`´]/g, "'"); }).filter(Boolean).join(' ');
+      }
+      function paintAns() {
+        var ta = document.getElementById('sti'), ans = document.getElementById('ans'), line = document.getElementById('ansl');
+        if (!ta || !line) return;
+        var typed = ta.value.replace(/\s+/g, ' ').replace(/^\s+/, ''), pat = ans.dataset.pat || '';
+        ans.classList.toggle('dis', ta.disabled);
+        line.innerHTML = '<span class="t">' + esc(typed) + '</span><span class="cur"></span><span class="g">' + esc(pat.slice(Math.min(typed.length, pat.length))) + '</span>';
+      }
+      /* на телефоне при открытой клавиатуре строка ответа должна оставаться на виду */
+      function keepVisible() {
+        setTimeout(function () { var a = document.getElementById('ans'); if (a && a.scrollIntoView) a.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 250);
+      }
+      if (window.visualViewport) window.visualViewport.addEventListener('resize', function () { if (document.activeElement && document.activeElement.id === 'sti') keepVisible(); });
       function phrase() {
         done = false; tries = 0;
         var l = c.lines[i];
         document.getElementById('stn').textContent = 'Фраза ' + (i + 1) + ' из ' + N;
         document.getElementById('stb').style.width = Math.round(i / N * 100) + '%';
         document.getElementById('sts').textContent = scores.length ? 'верно: ' + scores.filter(function (x) { return x === 100; }).length : '';
-        document.getElementById('sti').value = ''; document.getElementById('sti').disabled = false; document.getElementById('sti').placeholder = maskText(l.text);
+        document.getElementById('sti').value = ''; document.getElementById('sti').disabled = false; document.getElementById('ans').dataset.pat = patternOf(l.text); paintAns();
         document.getElementById('stres').innerHTML = '';
         var ok = document.getElementById('stok'); ok.textContent = 'Проверить';
         playRange(l.s, l.e, null, nextStart(i));
@@ -560,7 +593,7 @@
         var wrongWords = d.out.filter(function (x) { return x.t === 'bad' || x.t === 'miss' || x.t === 'extra'; }).length;
         var word = d.pct === 100 && d.typo === 0 ? 'ok' : (!wrongWords && d.typo ? 'mid' : d.pct >= 70 ? 'mid' : 'bad');
         if (tries === 0) scores[i] = d.pct;
-        tries++; done = true; ta.disabled = true;
+        tries++; done = true; ta.disabled = true; paintAns();
         var verdict = word === 'ok' ? '✓ Верно!' : !wrongWords ? '≈ Почти верно — опечатки в словах' : word === 'mid' ? '✗ Есть ошибки — проверьте слова ниже' : '✗ Неверно';
         document.getElementById('stres').innerHTML = '<div class="verdict ' + word + '">' + verdict + ' <small>' + d.pct + '%</small></div><div class="res">' + renderDiff(d) + '</div>' +
           (tips.length ? '<div class="gram">✎ ' + tips.map(esc).join(' ') + '</div>' : '') + (l.ru ? '<div class="ru">' + esc(l.ru) + '</div>' : '') +
@@ -568,7 +601,7 @@
         document.getElementById('stok').textContent = i === N - 1 ? 'Результат' : 'Дальше →';
         document.getElementById('stok').focus();
         var ag = document.getElementById('stagain');
-        if (ag) ag.addEventListener('click', function () { done = false; ta.disabled = false; document.getElementById('stres').innerHTML = ''; document.getElementById('stok').textContent = 'Проверить'; replay(); ta.focus(); });
+        if (ag) ag.addEventListener('click', function () { done = false; ta.disabled = false; paintAns(); document.getElementById('stres').innerHTML = ''; document.getElementById('stok').textContent = 'Проверить'; replay(); ta.focus(); });
         void perfect;
       }
       function next() {
