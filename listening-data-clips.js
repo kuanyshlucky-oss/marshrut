@@ -536,12 +536,38 @@
     ]
   });
 
+  C.push({
+    id: 'pursuit-of-happyness-dream', title: "You got a dream, you gotta protect it", source: 'The Pursuit of Happyness (2006): Крис и его сын', level: 'B1', src: 'assets/listening/pursuit-of-happyness-dream.mp4',
+    lines: [
+      { s: 49.37, e: 51.4, text: 'Hey, you know what today is?', ru: 'Эй, знаешь, какой сегодня день?' },
+      { s: 52.93, e: 55.55, text: 'Saturday. You know what Saturday is, right?', ru: 'Суббота. Ты ведь знаешь, что такое суббота?' },
+      { s: 57.97, e: 60.4, text: 'Basketball. You want to go play some basketball?', ru: 'Баскетбол. Хочешь пойти поиграть в баскетбол?' },
+      { s: 61.57, e: 67.45, text: "Okay. All right then. We're going to go sell a bone density scanner. How about that? You want to do that?", ru: 'Ладно. Тогда мы пойдём продавать денситометр. Как тебе? Хочешь этим заняться?' },
+      { s: 69.53, e: 76.15, text: "No. Dad, I'm going pro. I'm going pro.", ru: 'Нет. Пап, я буду профессионалом. Я стану профи.' },
+      { s: 77.05, e: 84.95, text: "Oh, okay. Yeah, I don't know. You know, you'll probably be about as good as I was.", ru: 'А, ладно. Ну, не знаю. Скорее всего, ты будешь играть примерно так же, как я.' },
+      { s: 85.25, e: 88.92, text: "That's kind of the way it works, you know. And I, I, I was below average, you know.", ru: 'Так обычно и бывает, понимаешь. А я был ниже среднего.' },
+      { s: 88.97, e: 94.46, text: "So... whoa. So you'll probably ultimately rank somewhere around there, you know.", ru: 'Так что… ого. Скорее всего, ты в итоге окажешься где-то там же, понимаешь.' },
+      { s: 94.53, e: 100.88, text: "So really, you'll excel at a lot of things, just not this. I don't want you out here shooting this ball around all day and night.", ru: 'Так что на самом деле ты преуспеешь во многом, но только не в этом. Я не хочу, чтобы ты целыми днями и ночами бросал здесь мяч.' },
+      { s: 100.93, e: 106.7, text: 'All right. All right. Okay. All right. Good.', ru: 'Ладно. Ладно. Хорошо. Ну всё. Отлично.' },
+      { s: 135.13, e: 145.0, text: "Hey. Don't ever let somebody tell you you can't do something. Not even me.", ru: 'Эй. Никогда не позволяй никому говорить тебе, что ты чего-то не можешь. Даже мне.' },
+      { s: 145.37, e: 154.6, text: "All right? All right. You got a dream, you gotta protect it.", ru: 'Хорошо? Хорошо. Если у тебя есть мечта, её нужно защищать.' },
+      { s: 154.93, e: 163.0, text: "People can't do something themselves, they want to tell you you can't do it.", ru: 'Люди, которые сами чего-то не могут, хотят сказать тебе, что и ты не сможешь.' },
+      { s: 163.57, e: 175.1, text: 'You want something, go get it. Period.', ru: 'Если чего-то хочешь, иди и добивайся. Точка.' }
+    ],
+    notes: [
+      { w: "you gotta (you've got to)", ru: 'ты должен, тебе нужно (разг.)' },
+      { w: 'protect', ru: 'защищать' },
+      { w: 'below average', ru: 'ниже среднего' },
+      { w: 'excel at', ru: 'преуспевать в' }
+    ]
+  });
+
   /* тайминги выше сняты с исходного ролика; отрывки вырезаны с этих секунд */
   var OFF = { 'nemo-keep-swimming': 38, 'inside-out-first-day': 2, 'dory-hank-driving': 0.3, 'cars-meet-mater': 2.5, 'zootopia-popsicle': 21.0,
     'forrest-gump-chocolates': 12.6, 'shrek-ogres-onions': 33.8, 'matrix-red-pill': 6.3, 'dark-knight-joker': 12.8, 'good-will-hunting-bench': 47.4,
     'dead-poets-carpe-diem': 157.4, 'godfather-i-believe-in-america': 0.8, 'godfather-respect': 188.9, 'titanic-flying': 82.0,
     'despicable-me-bedtime': 1.2, 'up-russell-explorer': 12.6, 'frozen-meet-olaf': 74.3, 'nemo-fish-are-friends': 4.3, 'paddington-meets-browns': 70.8, 'toy-story-woody-buzz': 66.0,
-    'interstellar-love-transcends': 3.0, 'fight-club-rules': 2.0, 'home-alone-toothbrush': 0.2 };
+    'interstellar-love-transcends': 3.0, 'fight-club-rules': 2.0, 'home-alone-toothbrush': 0.2, 'pursuit-of-happyness-dream': 46.5 };
   C.forEach(function (c) {
     if (OFF[c.id] == null) return;
     c.lines.forEach(function (l) { l.s = Math.max(0, +(l.s - OFF[c.id]).toFixed(2)); l.e = +(l.e - OFF[c.id]).toFixed(2); });
