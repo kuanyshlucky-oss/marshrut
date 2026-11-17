@@ -197,8 +197,9 @@
   /* ---------- строка ответа: набранные буквы встают на чёрточки под видео (без поля-коробки) ---------- */
   .ans{ position:relative; margin:18px 0 6px; padding:14px 4px 10px; text-align:center; cursor:text; min-height:4.2em; border-radius:18px; transition:background .2s; }
   .ans:focus-within{ background:rgba(128,128,128,.06); }
-  .ans-line{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:clamp(22px,4.6vw,32px); line-height:1.55; letter-spacing:.14em; white-space:pre-wrap; word-break:break-word; color:var(--ink); }
+  .ans-line{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:clamp(22px,4.6vw,32px); line-height:1.7; letter-spacing:.14em; word-break:normal; color:var(--ink); }
   .ans-line .t{ color:var(--ink); }
+  .ans-line .w{ display:inline-block; white-space:nowrap; margin:0 .32em; }
   .ans-line .g{ color:var(--ink-soft); opacity:.4; }
   .ans-line .cur{ display:inline-block; width:3px; height:1.1em; border-radius:2px; background:var(--accent); margin:0 .3em 0 .08em; vertical-align:-.16em; animation:ansBlink 1s steps(1) infinite; }
   .ans.off .cur, .ans.dis .cur{ display:none; }
@@ -563,9 +564,16 @@
       function paintAns() {
         var ta = document.getElementById('sti'), ans = document.getElementById('ans'), line = document.getElementById('ansl');
         if (!ta || !line) return;
-        var typed = ta.value.replace(/\s+/g, ' ').replace(/^\s+/, ''), pat = ans.dataset.pat || '';
         ans.classList.toggle('dis', ta.disabled);
-        line.innerHTML = '<span class="t">' + esc(typed) + '</span><span class="cur"></span><span class="g">' + esc(pat.slice(Math.min(typed.length, pat.length))) + '</span>';
+        var raw = ta.value.replace(/^\s+/, ''), endsSpace = /\s$/.test(raw), words = raw.split(/\s+/).filter(Boolean);
+        var target = (ans.dataset.pat || '').split(' ').filter(Boolean);
+        var cur = endsSpace ? words.length : Math.max(words.length - 1, 0);   // номер ячейки, где сейчас каретка
+        var n = Math.max(target.length, words.length, cur + 1), html = '';
+        for (var k = 0; k < n; k++) {
+          var w = words[k] || '', need = (target[k] || '').length, rest = Math.max(0, need - w.length);
+          html += '<span class="w' + (k === cur ? ' cw' : '') + '"><span class="t">' + esc(w) + '</span>' + (k === cur ? '<span class="cur"></span>' : '') + (rest ? '<span class="g">' + new Array(rest + 1).join('_') + '</span>' : '') + '</span> ';
+        }
+        line.innerHTML = html;
       }
       /* на телефоне при открытой клавиатуре строка ответа должна оставаться на виду */
       function keepVisible() {
