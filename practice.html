@@ -75,8 +75,9 @@
   .node-row.done .node{ background:conic-gradient(var(--star) 100%, var(--star) 0); }
   .node-row.done .node::after{ background:var(--star); }
   .node-row.done .node b{ color:#1D1D1F; }
-  .node-row.next .node{ animation:pulse 1.8s ease-out infinite; }
-  @keyframes pulse{ 0%{ box-shadow:0 0 0 0 rgba(128,128,128,.45); } 100%{ box-shadow:0 0 0 14px rgba(128,128,128,0); } }
+  /* пульсация кольца: анимируются только transform и opacity (композитор, без перерисовки) */
+  .node-row.next .node::before{ content:''; position:absolute; inset:0; border-radius:50%; background:rgba(128,128,128,.45); z-index:-1; animation:pulse 1.8s ease-out infinite; }
+  @keyframes pulse{ 0%{ transform:scale(1); opacity:1; } 100%{ transform:scale(1.28); opacity:0; } }
   .node-info .t{ font-weight:700; font-size:17px; line-height:1.25; }
   .node-info .r{ font-size:13px; color:var(--ink-soft); }
   .stars{ display:inline-flex; gap:2px; font-size:15px; letter-spacing:1px; }
@@ -202,7 +203,7 @@
     <a class="back" id="back" href="cabinet.html">← В кабинет</a>
     <button class="linkbtn" id="theme" type="button">Тема</button>
   </div>
-  <div id="app"></div>
+  <main id="app"></main>
 </div>
 <script src="practice-data-en.js"></script>
 <script src="practice-data-en-2.js"></script>

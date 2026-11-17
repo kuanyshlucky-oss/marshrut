@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<link rel="preconnect" href="https://www.googletagmanager.com">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WGKT7DVS73"></script>
+<!-- Google tag (gtag.js): сам gtag.js подгружается после первой отрисовки (см. loadAnalytics ниже) -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -30,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://marshrut-9c5z.onrender.com">
-<link rel="preload" as="image" href="assets/illustrations/hero.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/illustrations/hero-640.webp" fetchpriority="high">
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Onest:wght@400;500;600;700;800&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
@@ -127,12 +125,25 @@
 <link rel="stylesheet" href="style.min.css?v=14">
 <!-- Yandex.Metrika counter -->
 <script>
-(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-m[i].l=1*new Date();
-for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+(function(m,i){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();})(window, "ym");
 ym(113595199, "init", {clickmap:true, trackLinks:true, accurateTrackBounce:true});
+</script>
+<script>
+// Счётчики (Google Analytics и Яндекс.Метрика, ~250 КБ) грузятся после первой отрисовки: сначала страница, потом аналитика.
+// Старт: первое действие пользователя (касание, прокрутка, клавиша, мышь) или через 1,5 с после события load.
+// Всё, что случилось до загрузки, уже лежит в очереди (dataLayer, ym.a) и отправится сразу после подключения скриптов.
+(function () {
+  var started = false;
+  function add(src) { var s = document.createElement('script'); s.async = true; s.src = src; document.head.appendChild(s); }
+  function loadAnalytics() {
+    if (started) return; started = true;
+    add('https://www.googletagmanager.com/gtag/js?id=G-WGKT7DVS73');
+    add('https://mc.yandex.ru/metrika/tag.js');
+  }
+  ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach(function (e) { addEventListener(e, loadAnalytics, { once: true, passive: true }); });
+  if (document.readyState === 'complete') setTimeout(loadAnalytics, 1500);
+  else addEventListener('load', function () { setTimeout(loadAnalytics, 1500); });
+})();
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/113595199" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
@@ -215,7 +226,7 @@ ym(113595199, "init", {clickmap:true, trackLinks:true, accurateTrackBounce:true}
         </div>
       </div>
       <div class="hero-visual" aria-hidden="true">
-        <img src="assets/illustrations/hero.webp" alt="" width="760" height="567" fetchpriority="high">
+        <img src="assets/illustrations/hero-640.webp" alt="" width="640" height="477" fetchpriority="high">
       </div>
     </div>
 
