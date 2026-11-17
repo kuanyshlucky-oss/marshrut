@@ -563,9 +563,9 @@ function avatarHtml(name, email, big){
   let hash = 0; for (let i=0;i<label.length;i++) hash = (hash*31 + label.charCodeAt(i)) >>> 0;
   return `<span class="avatar${big?' lg':''}" style="background:${AVATAR_COLORS[hash % AVATAR_COLORS.length]}">${esc(label.charAt(0).toUpperCase())}</span>`;
 }
-function pbar(p, bad){
+function pbar(p, bad, label){
   const c = bad ? (p >= 60 ? 'var(--danger)' : p >= 30 ? 'var(--warn)' : 'var(--ok)') : (p >= 70 ? 'var(--ok)' : p >= 40 ? 'var(--warn)' : 'var(--danger)');
-  return `<div class="pbar"><div class="track"><div class="fill" style="width:${p}%;background:${c}"></div></div><b>${p}%</b></div>`;
+  return `<div class="pbar"><div class="track"><div class="fill" style="width:${p}%;background:${c}"></div></div><b>${label != null ? label : p + '%'}</b></div>`;
 }
 function barsHtml(days){
   const list = []; for (let i = days-1; i >= 0; i--) list.push(new Date(Date.now() - i*864e5).toISOString().slice(0,10));
@@ -653,7 +653,7 @@ function derive(){
 }
 const isKT = r => !!r.kind && r.kind.startsWith('kt:');
 const pct = r => r.total > 0 ? Math.round(r.score / r.total * 100) : 0;
-const SECTION_LABELS = { lang:'Язык', logic:'Логика', subj1:'Предмет 1', subj2:'Предмет 2', subj3:'Предмет 3', subj4:'Предмет 4', mock:'Пробный тест' };
+const SECTION_LABELS = { lang:'Язык', logic:'Логика', subj1:'Предмет 1', subj2:'Предмет 2' };
 function kindLabel(r){ return isKT(r) ? 'Симуляция КТ' : 'Предмет' + (r.section ? ' · ' + (SECTION_LABELS[r.section] || r.section) : ''); }
 function verdictTag(r){ return !isKT(r) ? '<span class="tag neu">—</span>' : r.passed ? '<span class="tag ok">Сдал</span>' : '<span class="tag bad">Не сдал</span>'; }
 function langBadge(l){ return l === 'kk' ? 'KZ' : 'RU'; }
@@ -888,7 +888,9 @@ function cardResultsHtml(rs){
   rs.forEach(r => { const k = r.code + '|' + kindLabel(r); if (!groups.has(k)) groups.set(k, { code:r.code, label:kindLabel(r), list:[] }); groups.get(k).list.push(r); });
   const gRows = [...groups.values()].sort((a, b) => b.list.length - a.list.length).map(g => {
     const a = Math.round(g.list.reduce((n, r) => n + pct(r), 0) / g.list.length), b = Math.max(...g.list.map(pct));
-    return `<tr><td><b>${esc(g.code)}</b></td><td><span class="tag ${g.label.startsWith('Симуляция') ? 'kt' : 'neu'}">${esc(g.label)}</span></td><td>${g.list.length}</td><td>${pbar(a)}</td><td>${pbar(b)}</td></tr>`;
+    const avgSc = Math.round(g.list.reduce((n, r) => n + r.score, 0) / g.list.length * 10) / 10, avgTot = Math.round(g.list.reduce((n, r) => n + r.total, 0) / g.list.length);
+    const bestR = g.list.reduce((m, r) => pct(r) > pct(m) ? r : m, g.list[0]);
+    return `<tr><td><b>${esc(g.code)}</b></td><td><span class="tag ${g.label.startsWith('Симуляция') ? 'kt' : 'neu'}">${esc(g.label)}</span></td><td>${g.list.length}</td><td>${pbar(a, false, avgSc + ' / ' + avgTot)}</td><td>${pbar(b, false, bestR.score + ' / ' + bestR.total)}</td></tr>`;
   }).join('');
   return `<div class="kpis">${kpi(rs.length, 'попыток')}${kpi(avg + '%', 'средний результат')}${kpi(Math.max(...rs.map(pct)) + '%', 'лучший')}
       ${kpi(chrono.length > 1 ? (last - first >= 0 ? '+' : '') + (last - first) + '%' : '—', 'прогресс (первая → последняя)')}${kpi(ktr.length ? ktOk + '/' + ktr.length : '—', 'сдал КТ')}</div>
