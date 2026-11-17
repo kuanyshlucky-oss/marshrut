@@ -236,16 +236,50 @@
       method: body ? 'POST' : 'GET',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: body ? JSON.stringify(body) : undefined
-    }).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); });
+    }).then(function (r) { if (!r.ok) { var e = new Error(r.status); e.status = r.status; throw e; } return r.json(); });
   }
   function loadLocal() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
   function load() { return token && cache ? cache : loadLocal(); }
+
+  /* Очередь отправки: результат сначала кладётся в localStorage и уходит на сервер по одному.
+     Если сети нет, сервер просыпается или токен истёк — запись остаётся в очереди и уйдёт позже
+     (при загрузке страницы, возврате онлайн и после следующего прохождения). */
+  var QKEY = 'listening-queue-v1', flushing = false;
+  function qLoad() { try { return JSON.parse(localStorage.getItem(QKEY)) || []; } catch (e) { return []; } }
+  function qSave(q) { try { localStorage.setItem(QKEY, JSON.stringify(q)); } catch (e) {} }
+  function qPush(clip, score, phrases) { var q = qLoad(); q.push({ clip: clip, score: score, phrases: phrases || [] }); qSave(q); }
+  function flush() {
+    if (!token || flushing) return Promise.resolve();
+    var q = qLoad(); if (!q.length) return Promise.resolve();
+    flushing = true;
+    function next() {
+      var q2 = qLoad(); if (!q2.length) { flushing = false; return Promise.resolve(); }
+      var it = q2[0];
+      return api('/api/listening/result', it).then(function (d) {
+        cache = d.progress || cache; qSave(qLoad().slice(1)); return next();
+      }).catch(function (e) {
+        // 400 — запись некорректна, её не отправить никогда: убираем; остальное (сеть, 5xx, 401) — оставляем на потом
+        if (e && e.status === 400) { qSave(qLoad().slice(1)); return next(); }
+        flushing = false;
+      });
+    }
+    return next();
+  }
+  /* Гостевой прогресс (до входа) переносим в аккаунт один раз: лучший результат каждого клипа уходит в очередь. */
+  function mergeGuest() {
+    var st = loadLocal(), ids = Object.keys(st);
+    if (!token || !ids.length) return;
+    ids.forEach(function (id) { var s = st[id]; if (s && s.best != null) qPush(id, s.best, []); });
+    try { localStorage.removeItem(KEY); } catch (e) {}
+  }
   function record(clipId, pct, phrases) {
-    if (token && cache) {
-      api('/api/listening/result', { clip: clipId, score: pct, phrases: phrases }).then(function (d) { cache = d.progress || cache; }).catch(function () {});
+    if (token) {
+      qPush(clipId, pct, phrases);
       // пока ответ не пришёл, показываем результат сразу
+      cache = cache || {};
       var s = cache[clipId] || { tries: 0, best: 0 };
       cache[clipId] = { tries: (s.tries || 0) + 1, last: pct, best: Math.max(s.best || 0, pct) };
+      flush();
     } else {
       var st = loadLocal(), s2 = st[clipId] || { tries: 0 };
       s2.tries = (s2.tries || 0) + 1; s2.last = pct; s2.best = Math.max(s2.best || 0, pct); st[clipId] = s2;
@@ -563,7 +597,18 @@
     document.documentElement.setAttribute('data-theme', n); try { localStorage.setItem('theme', n); } catch (e) {}
   });
   window.addEventListener('hashchange', route);
-  if (token) { syncFromServer().catch(function () { token = null; }).then(route); } else route();
+  /* Каталог рисуем сразу из localStorage, не ждём сервер (на бесплатном хостинге он может просыпаться до минуты).
+     Прогресс с сервера подтягивается в фоне, после него каталог обновляется. */
+  route();
+  if (token) {
+    // сначала проверяем токен запросом прогресса, и только потом переносим гостевые результаты и дослаём очередь
+    syncFromServer().then(function () { mergeGuest(); return flush(); }).then(function () {
+      if (!location.hash) home();   // обновить полосы прогресса, только если пользователь ещё на каталоге
+    }).catch(function (e) {
+      if (e && e.status === 401) { token = null; }   // токен недействителен — работаем как гость; при сети/5xx токен не трогаем
+    });
+    window.addEventListener('online', flush);
+  }
 })();
 </script>
 </body>

@@ -177,6 +177,11 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/practice/result", s.auth(s.handlePracticeSave))
 	mux.HandleFunc("POST /api/practice/import", s.auth(s.handlePracticeImport))
 
+	// результаты диктантов Listening (listening.html)
+	mux.HandleFunc("GET /api/listening", s.auth(s.handleListeningGet))
+	mux.HandleFunc("POST /api/listening/result", s.auth(s.handleListeningSave))
+	mux.HandleFunc("GET /api/listening/history", s.auth(s.handleListeningHistory))
+
 	var h http.Handler = mux
 	h = withGzip(h)
 	h = s.withCORS(h)
