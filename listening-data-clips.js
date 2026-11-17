@@ -460,7 +460,7 @@
       { s: 41.53, e: 48.36, text: "None. Maybe it means something more. Something we can't yet understand.", ru: 'Её нет. Возможно, это значит нечто большее. Что-то, чего мы пока не понимаем.' },
       { s: 48.41, e: 57.6, text: "Maybe it's some evidence, some artifact of a higher dimension that we can't consciously perceive.", ru: 'Может быть, это свидетельство, след высшего измерения, которое мы не можем воспринять осознанно.' },
       { s: 57.65, e: 65.34, text: "I'm drawn across the universe to someone I haven't seen in a decade, who I know is probably dead.", ru: 'Меня тянет через всю вселенную к человеку, которого я не видела десять лет и который, скорее всего, мёртв.' },
-      { s: 65.69, e: 76.78, text: "Love is the one thing we're capable of perceiving that transcends dimensions of time and space.", ru: 'Любовь — единственное, что мы способны воспринимать и что выходит за пределы измерений времени и пространства.' }
+      { s: 65.69, e: 71.0, text: "Love is the one thing we're capable of perceiving that transcends dimensions of time and space.", ru: 'Любовь — единственное, что мы способны воспринимать и что выходит за пределы измерений времени и пространства.' }
     ],
     notes: [
       { w: 'transcend', ru: 'выходить за пределы, превосходить' },
