@@ -9,6 +9,7 @@
 <link rel="icon" href="assets/brand/favicon-192.png" sizes="192x192" type="image/png">
 <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
 <meta name="robots" content="noindex">
+<meta name="description" content="Listening: диктант по сценам из фильмов и мультфильмов. Смотрите отрывок, пишите услышанное, тренажёр проверяет слова, опечатки и грамотность. Уровни от A1 до C1.">
 <script>
   (function () {
     var t = 'light';
@@ -159,6 +160,7 @@
   .chips::-webkit-scrollbar{ display:none; }
   .chip{ flex:none; border:1px solid var(--line); background:transparent; color:var(--ink); padding:9px 18px; border-radius:999px; font:inherit; font-size:14px; font-weight:600; cursor:pointer; transition:background .15s,color .15s,border-color .15s; }
   .chip small{ opacity:.6; font-weight:500; margin-left:4px; }
+  .chip.on small{ opacity:.85; }
   .chip:hover{ border-color:var(--ink-soft); }
   .chip.on{ background:var(--accent); color:var(--accent-on); border-color:var(--accent); }
   .cine .lvl{ margin:38px 0 6px; }
@@ -218,7 +220,7 @@
     <a id="back" href="practice.html">← Практика</a>
     <button class="theme" id="theme" type="button">Тема</button>
   </div>
-  <div id="app"></div>
+  <main id="app"></main>
 </div>
 <script src="listening-data.js?v=4"></script>
 <script src="listening-data-kfp.js?v=4"></script>
