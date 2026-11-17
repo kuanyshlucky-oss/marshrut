@@ -320,10 +320,156 @@
     ]
   });
 
+  C.push({
+    id: 'despicable-me-bedtime', title: 'Time for a bedtime story', source: 'Despicable Me (2010): Грю и девочки', level: 'A1', src: 'assets/listening/despicable-me-bedtime.mp4',
+    lines: [
+      { s: 2.01, e: 4.52, text: "Come on now, it's bedtime. Did you brush your teeth?", ru: 'Давайте, пора спать. Вы почистили зубы?' },
+      { s: 4.57, e: 10.1, text: 'Let me smell. Let me smell. You did not. Put on your PJs.', ru: 'Дай понюхать. Дай понюхать. Нет, не чистила. Надень пижаму.' },
+      { s: 20.17, e: 23.0, text: 'Will you read us a bedtime story?', ru: 'Ты прочитаешь нам сказку на ночь?' },
+      { s: 29.13, e: 35.4, text: "The physical appearance of the 'please' makes no difference. It is still no. So go to sleep.", ru: 'Как выглядит твоё «пожалуйста», не важно. Всё равно нет. Так что спите.' },
+      { s: 35.45, e: 46.2, text: "We can't. We're all hyper, and without a bedtime story, we'll just keep getting up and bugging you all night long.", ru: 'Мы не можем. Мы все взвинчены, и без сказки мы будем вставать и доставать тебя всю ночь.' },
+      { s: 64.17, e: 66.82, text: "Okay, let's get this over with.", ru: 'Ладно, давайте покончим с этим.' },
+      { s: 67.13, e: 71.38, text: 'Three little kittens love to play. They had fun in the sun all day.', ru: 'Три котёнка любили играть. Они весь день веселились на солнце.' },
+      { s: 71.53, e: 76.04, text: "Then their mother came out and said, 'Time for kittens to go to bed.'", ru: 'Тут вышла их мама и сказала: «Котятам пора спать».' },
+      { s: 76.09, e: 82.5, text: 'Wow, this is garbage. Do you actually like this?', ru: 'Ого, это просто мусор. Вам что, правда это нравится?' }
+    ],
+    notes: [
+      { w: "it's bedtime", ru: 'пора спать' },
+      { w: 'brush your teeth', ru: 'чистить зубы' },
+      { w: 'get this over with', ru: 'покончить с этим побыстрее' },
+      { w: 'bug (someone)', ru: 'докучать, доставать' }
+    ]
+  });
+
+  C.push({
+    id: 'up-russell-explorer', title: 'Can I help you, sir?', source: 'Up (2009): Рассел и Карл', level: 'A1', src: 'assets/listening/up-russell-explorer.mp4',
+    lines: [
+      { s: 13.33, e: 25.3, text: 'Good afternoon. My name is Russell, and I am a wilderness explorer in tribe 54, sweat lodge 12. Are you in need of any assistance today, sir?', ru: 'Добрый день. Меня зовут Рассел, я юный следопыт из племени 54, барак 12. Вам сегодня не нужна помощь, сэр?' },
+      { s: 25.81, e: 28.3, text: 'I could help you cross the street.', ru: 'Я мог бы помочь вам перейти улицу.' },
+      { s: 29.33, e: 32.3, text: 'I could help you cross your yard.', ru: 'Я мог бы помочь вам перейти двор.' },
+      { s: 33.21, e: 36.3, text: 'I could help you cross your porch.', ru: 'Я мог бы помочь вам перейти крыльцо.' },
+      { s: 37.29, e: 39.0, text: 'Well, I got to help you cross something.', ru: 'Ну, мне нужно помочь вам что-нибудь перейти.' },
+      { s: 39.41, e: 42.5, text: "Uh, no. I'm doing fine.", ru: 'Э-э, нет. У меня всё хорошо.' },
+      { s: 74.33, e: 78.0, text: 'See these? These are my wilderness explorer badges.', ru: 'Видите? Это мои значки следопыта.' },
+      { s: 78.37, e: 83.2, text: "You may notice one is missing. It's my assisting the elderly badge.", ru: 'Вы можете заметить, что одного не хватает. Это значок «помощь пожилым».' },
+      { s: 83.57, e: 89.0, text: 'If I get it, I will become a senior wilderness explorer.', ru: 'Если я его получу, я стану старшим следопытом.' },
+      { s: 93.81, e: 100.0, text: "It's going to be great. There's a big ceremony, and all the dads come, and they pin on our badges.", ru: 'Это будет здорово. Будет большая церемония, придут все папы и приколют нам значки.' },
+      { s: 100.37, e: 102.1, text: 'So, you want to assist an old person?', ru: 'Значит, тебе нужно помочь старику?' },
+      { s: 102.53, e: 107.2, text: "Yep. Then I'll be a senior wilderness explorer.", ru: 'Ага. Тогда я стану старшим следопытом.' }
+    ],
+    notes: [
+      { w: 'in need of', ru: 'нуждаться в' },
+      { w: 'assistance', ru: 'помощь' },
+      { w: 'badge', ru: 'значок' },
+      { w: 'the elderly', ru: 'пожилые люди' }
+    ]
+  });
+
+  C.push({
+    id: 'frozen-meet-olaf', title: "I'm Olaf and I like warm hugs", source: 'Frozen (2013): Анна и Олаф', level: 'A1', src: 'assets/listening/frozen-meet-olaf.mp4',
+    lines: [
+      { s: 75.0, e: 82.2, text: "Hi, everyone, I'm Olaf and I like warm hugs.", ru: 'Всем привет, я Олаф, и я люблю тёплые объятия.' },
+      { s: 91.57, e: 94.84, text: "I'm Anna. And who's the funky-looking donkey over there?", ru: 'Я Анна. А кто тот забавный осёл вон там?' },
+      { s: 94.89, e: 98.18, text: "That's Sven. Uh-huh. And who's the reindeer?", ru: 'Это Свен. Ага. А кто олень?' },
+      { s: 98.53, e: 107.1, text: 'Sven. Oh, okay. Make things easier for me. Oh, look at him trying to kiss my nose. I like you too, Olaf.', ru: 'Свен. А, ладно, так мне легче. Смотрите, он пытается поцеловать мой нос. Ты мне тоже нравишься, Олаф.' },
+      { s: 107.41, e: 108.75, text: 'Did Elsa build you?', ru: 'Тебя Эльза сделала?' },
+      { s: 108.85, e: 111.06, text: 'Yeah. Why? Do you know where she is?', ru: 'Да. А что? Ты знаешь, где она?' },
+      { s: 111.33, e: 113.76, text: 'Yeah. Why? Do you think you could show us the way?', ru: 'Да. А что? Ты мог бы показать нам дорогу?' },
+      { s: 113.81, e: 122.82, text: "Yeah. Why? I'll tell you why. We need Elsa to bring back summer.", ru: 'Да. А что? Я скажу, зачем. Нам нужна Эльза, чтобы вернуть лето.' },
+      { s: 123.17, e: 133.26, text: "Summer? Mm-hmm. Oh, I don't know why, but I've always loved the idea of summer, and sun, and all things hot.", ru: 'Лето? Ммм. Не знаю почему, но я всегда любил саму мысль о лете, о солнце и обо всём жарком.' },
+      { s: 133.49, e: 136.86, text: "Really? I'm guessing you don't have much experience with heat.", ru: 'Правда? Думаю, у тебя маловато опыта с жарой.' }
+    ],
+    notes: [
+      { w: 'warm hugs', ru: 'тёплые объятия' },
+      { w: 'show us the way', ru: 'показать нам дорогу' },
+      { w: 'bring back', ru: 'вернуть' },
+      { w: "I'm guessing…", ru: 'я полагаю…' }
+    ]
+  });
+
+  C.push({
+    id: 'nemo-fish-are-friends', title: 'Fish are friends, not food', source: 'Finding Nemo (2003): акулы Брюс и Дори', level: 'A2', src: 'assets/listening/nemo-fish-are-friends.mp4',
+    lines: [
+      { s: 5.29, e: 10.04, text: 'Right then. The meeting has officially come to order. Let us all say the pledge.', ru: 'Итак, собрание официально открыто. Давайте все произнесём клятву.' },
+      { s: 10.09, e: 14.28, text: 'I am a nice shark, not a mindless eating machine.', ru: 'Я добрая акула, а не бездумная машина для еды.' },
+      { s: 14.33, e: 23.2, text: 'If I am to change this image, I must first change myself. Fish are friends, not food.', ru: 'Чтобы изменить этот образ, я должен сначала изменить себя. Рыбы — друзья, а не еда.' },
+      { s: 33.53, e: 36.8, text: 'Now, do you all have your friends? Got mine.', ru: 'Так, у всех есть свои друзья? У меня есть.' },
+      { s: 53.85, e: 56.3, text: 'Hello, my name is Bruce.', ru: 'Здравствуйте, меня зовут Брюс.' },
+      { s: 57.29, e: 59.48, text: 'It has been three weeks since my last fish.', ru: 'Прошло три недели с тех пор, как я в последний раз съел рыбу.' },
+      { s: 59.53, e: 63.05, text: "On my honor, or may I be chopped up and made into soup.", ru: 'Честное слово, а иначе пусть меня порубят и сварят суп.' },
+      { s: 63.13, e: 65.9, text: "You're an inspiration to all of us.", ru: 'Ты вдохновляешь всех нас.' },
+      { s: 66.41, e: 68.3, text: "Right then, who's next?", ru: 'Так, кто следующий?' },
+      { s: 74.89, e: 82.0, text: "I'm Dory, and, uh, well, I don't think I've ever eaten a fish.", ru: 'Я Дори, и, ну, кажется, я никогда не ела рыбу.' },
+      { s: 82.33, e: 86.4, text: "That's incredible. Good on you, mate.", ru: 'Это невероятно. Молодец, приятель.' }
+    ],
+    notes: [
+      { w: 'pledge', ru: 'клятва, обещание' },
+      { w: 'come to order', ru: 'открыться (о собрании)' },
+      { w: 'good on you', ru: 'молодец (разг., австрал.)' },
+      { w: 'on my honor', ru: 'честное слово' }
+    ]
+  });
+
+  C.push({
+    id: 'paddington-meets-browns', title: 'A very rare bear', source: 'Paddington (2014): Паддингтон и семья Браун', level: 'A2', src: 'assets/listening/paddington-meets-browns.mp4',
+    lines: [
+      { s: 78.89, e: 82.68, text: "I hope you don't mind me asking, but shouldn't you be at home?", ru: 'Надеюсь, вы не обидитесь на вопрос, но разве вам не пора быть дома?' },
+      { s: 82.73, e: 87.72, text: "Oh, yes, I should. But I haven't quite worked out how to find one.", ru: 'О да, пора. Но я пока не придумал, как его найти.' },
+      { s: 87.77, e: 89.14, text: 'Well, where are your parents?', ru: 'А где ваши родители?' },
+      { s: 89.37, e: 91.22, text: 'Oh, they died when I was small.', ru: 'О, они умерли, когда я был маленьким.' },
+      { s: 91.93, e: 93.48, text: 'All I have left is my aunt.', ru: 'У меня осталась только тётя.' },
+      { s: 94.65, e: 98.2, text: 'Darkest Peru, in the Home for Retired Bears.', ru: 'В самом сердце Перу, в доме для пожилых медведей.' },
+      { s: 98.41, e: 99.56, text: 'How did you get here?', ru: 'Как вы сюда попали?' },
+      { s: 99.61, e: 101.3, text: 'I stowed away in a lifeboat.', ru: 'Я спрятался на спасательной шлюпке.' },
+      { s: 104.81, e: 106.68, text: "I didn't even know bears could talk.", ru: 'Я даже не знала, что медведи умеют говорить.' },
+      { s: 106.73, e: 110.34, text: "Oh, well, I'm a very rare bear. There aren't many of us left.", ru: 'Ну, я очень редкий медведь. Нас осталось немного.' },
+      { s: 110.89, e: 112.28, text: 'What are you going to do now?', ru: 'Что вы теперь будете делать?' },
+      { s: 112.33, e: 115.78, text: 'Well, I thought I would probably just sleep over there in that bin.', ru: 'Ну, я подумал, что, наверное, просто переночую вон в том мусорном баке.' },
+      { s: 118.93, e: 121.64, text: "Dad, why don't we find him some help?", ru: 'Пап, давай найдём ему помощь?' },
+      { s: 121.69, e: 124.9, text: "Oh, yes, please. If you're sure it's no trouble.", ru: 'О да, пожалуйста. Если вам это не трудно.' },
+      { s: 124.97, e: 127.62, text: "Of course it isn't. Is it, darling?", ru: 'Конечно, не трудно. Правда, дорогой?' }
+    ],
+    notes: [
+      { w: "I hope you don't mind…", ru: 'надеюсь, вы не против…' },
+      { w: 'stow away', ru: 'спрятаться «зайцем»' },
+      { w: 'rare', ru: 'редкий' },
+      { w: 'no trouble', ru: 'не трудно, не затруднит' }
+    ]
+  });
+
+  C.push({
+    id: 'toy-story-woody-buzz', title: 'Woody meets Buzz Lightyear', source: 'Toy Story (1995): Вуди и Базз', level: 'A2', src: 'assets/listening/toy-story-woody-buzz.mp4',
+    lines: [
+      { s: 66.81, e: 73.88, text: "Did I frighten you? Didn't mean to. Sorry. Howdy. My name is Woody, and this is Andy's room.", ru: 'Я тебя напугал? Не хотел. Извини. Здорово. Меня зовут Вуди, и это комната Энди.' },
+      { s: 73.93, e: 81.0, text: "That's all I wanted to say. And also, there has been a bit of a mix-up. This is my spot. See, the bed here.", ru: 'Это всё, что я хотел сказать. И ещё, вышла небольшая путаница. Это моё место. Видишь, кровать.' },
+      { s: 81.05, e: 88.55, text: "Local law enforcement. About time you got here. I'm Buzz Lightyear, Space Ranger, Universe Protection Unit. My ship has crash-landed here by mistake.", ru: 'Местная полиция. Давно пора. Я Базз Лайтер, космический рейнджер, отряд защиты вселенной. Мой корабль потерпел крушение по ошибке.' },
+      { s: 88.85, e: 92.48, text: 'Yes, it is a mistake, because, you see, the bed here is my spot.', ru: 'Да, это ошибка, потому что, видишь ли, эта кровать — моё место.' },
+      { s: 92.53, e: 97.4, text: 'I need to repair my turbo boosters. Do people still use fossil fuels, or have you discovered crystallic fusion?', ru: 'Мне нужно починить турбоускорители. Вы всё ещё используете ископаемое топливо или открыли кристаллический синтез?' },
+      { s: 97.45, e: 99.62, text: "Well, let's see. We got double A's.", ru: 'Ну, посмотрим. У нас есть пальчиковые батарейки.' },
+      { s: 101.25, e: 102.65, text: "Who goes there? Don't shoot.", ru: 'Кто идёт? Не стреляйте.' },
+      { s: 102.73, e: 105.4, text: "It's okay, friends. Do you know these life forms?", ru: 'Всё в порядке, друзья. Вы знаете эти формы жизни?' },
+      { s: 105.85, e: 108.3, text: "Yes, they're Andy's toys.", ru: 'Да, это игрушки Энди.' },
+      { s: 108.49, e: 110.34, text: "All right, everyone, you're clear to come up.", ru: 'Хорошо, все, можно подниматься.' },
+      { s: 110.69, e: 113.48, text: 'I am Buzz Lightyear. I come in peace.', ru: 'Я Базз Лайтер. Я пришёл с миром.' },
+      { s: 113.53, e: 117.3, text: "Oh, I'm so glad you're not a dinosaur.", ru: 'Как я рад, что ты не динозавр.' },
+      { s: 118.33, e: 122.14, text: 'Thank you. Now, thank you all for your kind welcome.', ru: 'Спасибо. И спасибо вам всем за тёплый приём.' },
+      { s: 128.17, e: 133.12, text: "Woody's got something like that. His is a pull-string, only it sounds like a car ran over it.", ru: 'У Вуди есть что-то похожее. У него на шнурке, только звук такой, будто по нему проехала машина.' },
+      { s: 133.17, e: 138.22, text: 'Oh yeah, but not like this one. This is a quality sound system. Probably all copper wiring.', ru: 'Да, но не такое, как это. Здесь качественная аудиосистема. Наверное, вся проводка медная.' },
+      { s: 138.53, e: 141.94, text: 'So, uh, where you from? Singapore? Hong Kong?', ru: 'А ты откуда? Из Сингапура? Из Гонконга?' }
+    ],
+    notes: [
+      { w: 'mix-up', ru: 'путаница, недоразумение' },
+      { w: 'about time', ru: 'давно пора' },
+      { w: 'by mistake', ru: 'по ошибке' },
+      { w: 'I come in peace', ru: 'я пришёл с миром' }
+    ]
+  });
+
   /* тайминги выше сняты с исходного ролика; отрывки вырезаны с этих секунд */
   var OFF = { 'nemo-keep-swimming': 38, 'inside-out-first-day': 2, 'lion-king-circle-of-life': 91.5, 'dory-hank-driving': 0.3, 'cars-meet-mater': 2.5, 'zootopia-popsicle': 21.0,
     'forrest-gump-chocolates': 12.6, 'shrek-ogres-onions': 33.8, 'matrix-red-pill': 6.3, 'dark-knight-joker': 12.8, 'good-will-hunting-bench': 47.4,
-    'dead-poets-carpe-diem': 157.4, 'godfather-i-believe-in-america': 0.8, 'godfather-respect': 188.9, 'titanic-flying': 82.0 };
+    'dead-poets-carpe-diem': 157.4, 'godfather-i-believe-in-america': 0.8, 'godfather-respect': 188.9, 'titanic-flying': 82.0,
+    'despicable-me-bedtime': 1.2, 'up-russell-explorer': 12.6, 'frozen-meet-olaf': 74.3, 'nemo-fish-are-friends': 4.3, 'paddington-meets-browns': 70.8, 'toy-story-woody-buzz': 66.0 };
   C.forEach(function (c) {
     if (OFF[c.id] == null) return;
     c.lines.forEach(function (l) { l.s = Math.max(0, +(l.s - OFF[c.id]).toFixed(2)); l.e = +(l.e - OFF[c.id]).toFixed(2); });
