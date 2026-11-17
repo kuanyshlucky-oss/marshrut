@@ -195,13 +195,13 @@
   .min .step textarea:focus, .min textarea:focus{ border-bottom-color:var(--ink); box-shadow:none; }
   .min .step textarea::placeholder, .min textarea::placeholder{ letter-spacing:.14em; opacity:.45; }
   /* ---------- строка ответа: набранные буквы встают на чёрточки под видео (без поля-коробки) ---------- */
-  .ans{ position:relative; margin:18px 0 6px; padding:14px 4px 10px; text-align:center; cursor:text; min-height:4.2em; border-radius:18px; transition:background .2s; }
+  .ans{ position:relative; margin:14px 0 6px; padding:10px 4px 8px; text-align:center; cursor:text; min-height:4.2em; border-radius:18px; transition:background .2s; }
   .ans:focus-within{ background:rgba(128,128,128,.06); }
-  .ans-line{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:clamp(22px,4.6vw,32px); line-height:1.7; letter-spacing:.14em; word-break:normal; color:var(--ink); }
+  .ans-line{ font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:clamp(17px,4.2vw,28px); line-height:1.6; letter-spacing:.1em; word-break:normal; color:var(--ink); }
   .ans-line .t{ color:var(--ink); }
-  .ans-line .w{ display:inline-block; white-space:nowrap; margin:0 .32em; }
+  .ans-line .w{ display:inline-block; white-space:nowrap; margin:0 .26em; }
   .ans-line .g{ color:var(--ink-soft); opacity:.4; }
-  .ans-line .cur{ display:inline-block; width:3px; height:1.1em; border-radius:2px; background:var(--accent); margin:0 .3em 0 .08em; vertical-align:-.16em; animation:ansBlink 1s steps(1) infinite; }
+  .ans-line .cur{ display:inline-block; width:3px; height:1.1em; border-radius:2px; background:#F6C453; margin:0 .3em 0 .08em; vertical-align:-.16em; animation:ansBlink 1s steps(1) infinite; }
   .ans.off .cur, .ans.dis .cur{ display:none; }
   .ans.dis .ans-line .g{ display:none; }
   @keyframes ansBlink{ 50%{ opacity:0; } }
