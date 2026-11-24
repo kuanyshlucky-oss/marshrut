@@ -869,10 +869,12 @@ function serveStatic(req, res, url) {
   });
 }
 
-http.createServer(async (req, res) => {
+const srv = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, 'http://localhost');
     if (url.pathname.startsWith('/api/')) return await api(req, res, url);
     serveStatic(req, res, url);
   } catch (e) { console.error(e); if (!res.headersSent) send(res, 500, { error: 'Ошибка сервера' }); }
-}).listen(PORT, () => console.log(`3D Караганда MVP: http://localhost:${PORT}   админка: /admin   оплата: ${PAYMENT_MODE}${PAYMENT_MODE === 'demo' ? ' (ДЕМО — настоящие деньги не принимаются)' : ''}${ADMIN_PASSWORD === 'admin' ? '   ВНИМАНИЕ: пароль админки по умолчанию «admin» — смените!' : ''}`));
+});
+srv.on('error', e => { if (e.code === 'EADDRINUSE') { console.error(`Порт ${PORT} уже занят: карта, скорее всего, уже запущена. Откройте http://localhost:${PORT}`); process.exit(1); } throw e; });
+srv.listen(PORT, () => console.log(`3D Караганда MVP: http://localhost:${PORT}   админка: /admin   оплата: ${PAYMENT_MODE}${PAYMENT_MODE === 'demo' ? ' (ДЕМО — настоящие деньги не принимаются)' : ''}${ADMIN_PASSWORD === 'admin' ? '   ВНИМАНИЕ: пароль админки по умолчанию «admin» — смените!' : ''}`));

@@ -63,6 +63,18 @@
 </style>
 </head>
 <body>
+<!-- Если страницу открыли двойным кликом (file://), сервер недоступен: показываем понятную инструкцию вместо «мёртвой» страницы -->
+<div id="nofile" style="display:none;position:fixed;inset:0;z-index:99;background:#0f1318;color:#e8edf3;font:16px/1.7 system-ui,'Segoe UI',sans-serif;padding:8vh 7vw;overflow:auto">
+  <h1 style="margin:0 0 12px;font-size:24px">Откройте карту через сервер, а не двойным кликом по файлу</h1>
+  <p>Страница открыта как обычный файл, поэтому не загружаются данные, участки и 3D. Нужно запустить небольшой сервер и открыть адрес в браузере.</p>
+  <p><b>Способ 1 (проще всего):</b> в папке <code>geo3d-mvp</code> дважды щёлкните файл <code>start.bat</code>. Он запустит сервер и сам откроет карту.</p>
+  <p><b>Способ 2:</b> в PowerShell, в папке проекта:</p>
+  <pre style="background:#171d25;padding:14px;border-radius:10px;font-size:15px">cd geo3d-mvp
+node server.js --demo</pre>
+  <p>Затем откройте в браузере: <b style="color:#f2b84b">http://localhost:8095</b></p>
+  <p style="color:#93a0ae;font-size:14px">Нужен установленный Node.js (nodejs.org). Если окно сервера закрыть, карта перестанет работать.</p>
+</div>
+<script>if(location.protocol!=='http:'&&location.protocol!=='https:'){document.getElementById('nofile').style.display='block';}</script>
 <div id="map"></div>
 
 <div id="top" class="glass">
@@ -126,9 +138,20 @@ const style = {
       'fill-extrusion-height':['coalesce',['get','render_height'],6],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.92}}
   ]
 };
+// 3D и вся карта требуют WebGL. Если браузер его не даёт (отключено ускорение, старая видеокарта), говорим об этом прямо
+(function(){
+  let gl=null; try{ const c=document.createElement('canvas'); gl=c.getContext('webgl2')||c.getContext('webgl'); }catch(e){}
+  if(!gl){
+    document.getElementById('map').innerHTML='<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;color:#e8edf3;font:16px/1.6 system-ui"><div style="max-width:520px"><h2>Карта не может запуститься: нет поддержки WebGL</h2><p>Включите аппаратное ускорение в настройках браузера (Chrome: Настройки → Система → «Использовать аппаратное ускорение»), обновите драйвер видеокарты или откройте карту в другом браузере (Chrome, Edge, Firefox).</p></div></div>';
+    throw new Error('WebGL недоступен');
+  }
+})();
 // Как в 2ГИС: карта открывается плоской (2D); наклон, поворот, рельеф и объёмные здания включает кнопка «3D»
 const map = new maplibregl.Map({container:'map',style,center:[C.lng,C.lat],zoom:14.6,pitch:0,bearing:0,maxPitch:0});
 map.dragRotate.disable(); map.touchZoomRotate.disableRotation(); map.keyboard.disableRotation();
+// если не грузятся тайлы или здания (нет интернета, блокировка сервиса), скажем об этом один раз, а не молча покажем пустую карту
+let mapErrShown=false;
+map.on('error',e=>{ if(mapErrShown) return; const m=(e&&e.error&&e.error.message)||''; if(/AJAXError|Failed to fetch|NetworkError|tile|load/i.test(m)||!m){ mapErrShown=true; const t=document.getElementById('toast'); if(t){ t.textContent='Часть карты не загрузилась (рельеф, здания или подложка). Проверьте интернет и обновите страницу.'; t.style.display='block'; setTimeout(()=>t.style.display='none',8000); } } });
 map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),'bottom-right');
 map.addControl(new maplibregl.ScaleControl({unit:'metric'}),'bottom-right');
 
