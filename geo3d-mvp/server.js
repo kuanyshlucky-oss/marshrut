@@ -58,11 +58,153 @@ function seedDemo() {
   return out.map(({ x, y, ...r }) => r);
 }
 
+/* =====================================================================
+   СКВАЖИНЫ v2: паспорт, слои, справочник грунтов, автопроверки, очередь проверки.
+   Пороги в CHECKS ориентировочные — согласовать с геологом.
+   ===================================================================== */
+const clean = (s, max) => String(s ?? '').replace(/[<>\u0000-\u001f]/g, '').trim().slice(0, max);   // убираем < > и управляющие символы из всего, что пришло снаружи
+const SOIL_CLASSES = ['Почвенно-растительный слой', 'Суглинок', 'Глина', 'Песок с гравием', 'Скальный грунт'];   // классы упрощённой модели (по порядку залегания)
+const SOIL_FILE = path.join(DATA, 'soil-dictionary.json');
+const DEFAULT_SOIL_DICT = [   // сопоставление по ПЕРВОМУ слову названия (основной грунт по ГОСТ 25100); при совпадении побеждает самое длинное начало
+  { p: 'почв', cls: 0 }, { p: 'растительн', cls: 0 }, { p: 'чернозем', cls: 0 }, { p: 'насыпн', cls: 0 }, { p: 'техноген', cls: 0 },
+  { p: 'суглин', cls: 1 }, { p: 'супес', cls: 1 }, { p: 'лесс', cls: 1 },
+  { p: 'глин', cls: 2 },
+  { p: 'песок', cls: 3 }, { p: 'песч', cls: 3 }, { p: 'гравий', cls: 3 }, { p: 'гравел', cls: 3 }, { p: 'галеч', cls: 3 }, { p: 'щебен', cls: 3 }, { p: 'дресв', cls: 3 },
+  { p: 'песчаник', cls: 4 }, { p: 'скальн', cls: 4 }, { p: 'известняк', cls: 4 }, { p: 'гранит', cls: 4 }, { p: 'сланец', cls: 4 }, { p: 'алевролит', cls: 4 }, { p: 'аргиллит', cls: 4 }, { p: 'выветрел', cls: 4 }
+];
+let soilDict = load(SOIL_FILE, null) || DEFAULT_SOIL_DICT;
+const CHECKS = {
+  zMin: 300, zMax: 900, zWarn: [480, 650],      // отметка устья, м: вне [zMin,zMax] — ошибка, вне zWarn — предупреждение
+  gapTol: 0.05, depthTol: 0.1, maxDepth: 100,   // допуски по слоям и глубине, м
+  dupDist: 2,                                   // м: две скважины ближе — возможный дубль
+  maxAgeYears: 10,                              // старше — предупреждение
+  minDepth: 12,                                 // глубина модели: мельче — нижние слои достраиваются
+  nbRadius: 300, nbMin: 3, nbDev: { b: [0.8, 2.0, 2.5, 3.0], gw: 2.0 },   // сверка с соседями: радиус, мин. число соседей, допустимые отклонения границ слоёв и УГВ, м
+  zNbRadius: 250, zNbMin: 2, zNbDev: 1.5        // сверка отметки устья с соседями: радиус, мин. число соседей, допуск, м
+};
+const ACC_W = { A: 1, B: 0.7, C: 0.3 };         // вес скважины в модели по классу точности координат (D в модель не допускается)
+const ACC_RU = { A: 'RTK / тахеометр (до ~0,1 м)', B: 'GNSS (1–3 м)', C: 'по схеме или привязке (десятки метров)', D: 'координаты не подтверждены' };
+
+const normSoil = s => String(s ?? '').toLowerCase().replace(/ё/g, 'е').trim();
+function classify(soil) {
+  const tok = (normSoil(soil).match(/^[а-яa-z\-]+/) || [''])[0]; let best = null;
+  for (const e of soilDict) { const p = normSoil(e.p); if (p && tok.startsWith(p) && (!best || p.length > best.p.length)) best = { p, cls: e.cls }; }
+  return best ? best.cls : null;
+}
+function parseDate(s) {   // ГГГГ-ММ-ДД или ДД.ММ.ГГГГ → ГГГГ-ММ-ДД; иначе null
+  s = String(s ?? '').trim(); if (!s) return null; let m;
+  if ((m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/))) { /* ok */ } else if ((m = s.match(/^(\d{2})\.(\d{2})\.(\d{4})$/))) m = [0, m[3], m[2], m[1]]; else return undefined;
+  const iso = `${m[1]}-${m[2]}-${m[3]}`; return Number.isNaN(new Date(iso).getTime()) ? undefined : iso;   // undefined — формат неверный
+}
+function deriveModel(bh) {   // упрощённая модель для интерполяции: 4 подошвы классов и УГВ
+  const L = (bh.layers || []).slice().sort((a, b) => a.from - b.from);
+  if (!L.length || L.some(l => l.cls == null || !Number.isFinite(l.to))) { bh.b = null; bh.gw = null; return; }
+  const b = []; for (let k = 0; k < 4; k++) { let m = 0; for (const l of L) if (l.cls <= k) m = Math.max(m, l.to); b.push(Math.min(DEPTH, Math.max(m, b[k - 1] || 0))); }
+  bh.b = b.map(v => +v.toFixed(2));
+  const g = Number.isFinite(bh.gw_stable) ? bh.gw_stable : Number.isFinite(bh.gw_first) ? bh.gw_first : DEPTH;   // вода не указана → «глубже модели»
+  bh.gw = +Math.min(DEPTH, g).toFixed(2);
+}
+function makeBH(f) {   // единая форма записи скважины
+  const L = (f.layers || []).map(l => ({ from: +l.from, to: +l.to, soil: clean(l.soil, 80), cls: l.cls == null ? null : +l.cls, cls_src: l.cls_src || 'dict', ige: l.ige == null || l.ige === '' ? null : clean(l.ige, 20) }));
+  const last = L.length ? Math.max(...L.map(l => l.to)) : null;
+  const bh = { id: f.id, report_id: clean(f.report_id, 60), lng: +f.lng, lat: +f.lat, crs_src: clean(f.crs_src, 40), acc: ['A', 'B', 'C', 'D'].includes(f.acc) ? f.acc : 'D', z: f.z == null || f.z === '' ? null : +f.z, z_src: clean(f.z_src, 40),
+    date: f.date ?? null, depth: f.depth == null || f.depth === '' ? last : +f.depth, method: clean(f.method, 40), org: clean(f.org, 80), doc: clean(f.doc, 120), layers: L,
+    gw_first: f.gw_first == null || f.gw_first === '' ? null : +f.gw_first, gw_stable: f.gw_stable == null || f.gw_stable === '' ? null : +f.gw_stable, gw_date: f.gw_date ?? null,
+    bearing_kpa: f.bearing_kpa == null || f.bearing_kpa === '' ? null : +f.bearing_kpa, aggressive: clean(f.aggressive, 60),
+    status: f.status || 'review', verified: false, issues: [], review: null, source: f.source || 'admin', _incons: f._incons || [] };
+  bh.verified = bh.status === 'verified'; return bh;
+}
+function migrateBH(b) {   // старые записи (id, lng, lat, gw, b[4], verified) → v2
+  if (b.layers) return b;
+  const bounds = [0, ...b.b, DEPTH], demo = b.source === 'demo';
+  const nb = makeBH({ id: b.id, lng: b.lng, lat: b.lat, acc: demo ? 'A' : 'B', crs_src: 'WGS84', source: b.source, depth: DEPTH, gw_stable: b.gw,
+    z: demo ? +(540 + (b.lng - C.lng) * kx(C.lat) * 0.012 + (b.lat - C.lat) * KY * 0.008).toFixed(2) : null, z_src: demo ? 'демо' : '', date: demo ? '2024-06-15' : null,
+    org: demo ? 'Демо' : '', doc: demo ? 'DEMO' : '', method: demo ? 'шнековое' : '', status: b.verified === false ? 'review' : 'verified',
+    layers: SOIL_CLASSES.map((name, i) => ({ from: bounds[i], to: bounds[i + 1], soil: name, cls: i, cls_src: 'file' })) });
+  nb.b = b.b; nb.gw = b.gw; return nb;   // модель сохраняем как была
+}
+function predictFrom(lng, lat, excludeId, radius, minN = CHECKS.nbMin) {   // что «ожидают» проверенные соседи
+  const k = kx(lat), nn = boreholes.filter(p => p.verified && p.id !== excludeId && p.b).map(p => ({ p, d: Math.hypot((p.lng - lng) * k, (p.lat - lat) * KY) })).filter(x => x.d <= radius);
+  if (nn.length < minN) return null;
+  let ws = 0, gw = 0, z = 0, zok = true; const b = [0, 0, 0, 0];
+  for (const { p, d } of nn) { const w = 1 / (d * d + 25); ws += w; for (let i = 0; i < 4; i++) b[i] += p.b[i] * w; gw += p.gw * w; if (Number.isFinite(p.z)) z += p.z * w; else zok = false; }
+  return { b: b.map(v => v / ws), gw: gw / ws, z: zok ? z / ws : null, n: nn.length };
+}
+
+/* --- автопроверки: error — блокирует «проверена»; warn — нужна заметка геолога --- */
+function runChecks(bh) {
+  const I = [], E = (code, text) => I.push({ sev: 'error', code, text }), W = (code, text) => I.push({ sev: 'warn', code, text }), f1 = v => (+v).toFixed(1).replace('.', ',');
+  for (const t of bh._incons || []) E('E_INCONSISTENT', t);
+  // координаты и точность
+  if (![bh.lng, bh.lat].every(Number.isFinite) || bh.lat < BBOX.minLat || bh.lat > BBOX.maxLat || bh.lng < BBOX.minLng || bh.lng > BBOX.maxLng) E('E_COORD', 'Координаты некорректны или вне области Караганды (нужна система WGS84: долгота, широта).');
+  if (bh.acc === 'D') E('E_ACC', 'Класс точности D (координаты не подтверждены) — такая скважина не может участвовать в модели. Укажите класс A, B или C.');
+  else if (bh.acc === 'C') W('W_ACC_C', 'Класс C: координаты по схеме, погрешность десятки метров — вес скважины в модели снижен.');
+  // отметка устья
+  if (bh.z == null) W('W_NO_Z', 'Не указана отметка устья — нельзя сверить с рельефом и соседями.');
+  else if (!Number.isFinite(bh.z) || bh.z < CHECKS.zMin || bh.z > CHECKS.zMax) E('E_Z', `Отметка устья ${bh.z} м вне допустимых пределов ${CHECKS.zMin}–${CHECKS.zMax} м (проверьте единицы и систему высот).`);
+  else if (bh.z < CHECKS.zWarn[0] || bh.z > CHECKS.zWarn[1]) W('W_Z_RANGE', `Необычная отметка устья ${bh.z} м для района (ожидается ${CHECKS.zWarn[0]}–${CHECKS.zWarn[1]} м).`);
+  // дата
+  if (bh.date === undefined || (bh.date && !/^\d{4}-\d{2}-\d{2}$/.test(bh.date))) E('E_DATE', 'Дата бурения не распознана (формат ГГГГ-ММ-ДД или ДД.ММ.ГГГГ).');
+  else if (!bh.date) W('W_NO_DATE', 'Не указана дата бурения — нельзя оценить актуальность данных.');
+  else { const t = new Date(bh.date).getTime(), age = (Date.now() - t) / (365.25 * 864e5); if (t > Date.now()) E('E_DATE', 'Дата бурения в будущем.'); else if (age > CHECKS.maxAgeYears) W('W_OLD', `Скважине ${Math.floor(age)} лет (старше ${CHECKS.maxAgeYears}): возможна застройка или подсыпка после бурения.`); }
+  // слои
+  const L = (bh.layers || []).slice().sort((a, b) => a.from - b.from);
+  if (!L.length) E('E_LAYERS', 'Нет описания слоёв.');
+  else if (L.some(l => !Number.isFinite(l.from) || !Number.isFinite(l.to))) E('E_LAYERS', 'Глубины слоёв должны быть числами.');
+  else {
+    if (Math.abs(L[0].from) > CHECKS.gapTol) E('E_LAYERS', `Первый слой начинается с ${f1(L[0].from)} м, а не с поверхности (0 м).`);
+    L.forEach((l, i) => {
+      if (l.to <= l.from) E('E_LAYERS', `Слой ${i + 1} («${l.soil}»): подошва ${f1(l.to)} м не глубже кровли ${f1(l.from)} м.`);
+      if (i) { const gap = l.from - L[i - 1].to; if (gap > CHECKS.gapTol) E('E_GAP', `Разрыв ${f1(gap)} м между слоями ${i} и ${i + 1} (${f1(L[i - 1].to)} → ${f1(l.from)} м).`); else if (gap < -CHECKS.gapTol) E('E_OVERLAP', `Слои ${i} и ${i + 1} перекрываются на ${f1(-gap)} м.`); }
+      if (l.cls == null) E('E_SOIL', `Грунт «${l.soil}» не сопоставлен с классом модели — добавьте его в справочник грунтов или укажите cls.`);
+    });
+    const last = L[L.length - 1];
+    if (!Number.isFinite(bh.depth) || bh.depth <= 0 || bh.depth > CHECKS.maxDepth) E('E_DEPTH', `Глубина скважины ${bh.depth} м некорректна.`);
+    else if (Math.abs(last.to - bh.depth) > CHECKS.depthTol) E('E_DEPTH', `Последний слой заканчивается на ${f1(last.to)} м, а глубина скважины ${f1(bh.depth)} м.`);
+    else if (bh.depth < CHECKS.minDepth) W('W_SHALLOW', `Скважина ${f1(bh.depth)} м мельче модели (${CHECKS.minDepth} м): нижние слои модели достраиваются по соседям и скальному грунту — данных на этих глубинах нет.`);
+    let inv = false, prev = -1; for (const l of L) { if (l.cls != null) { if (l.cls < prev) inv = true; prev = Math.max(prev, l.cls); } }
+    if (inv) W('W_SEQ', 'Порядок слоёв отличается от упрощённой модели (почва → суглинок → глина → песок → скальный): границы в модели будут обобщены, подробный разрез смотрите в первоисточнике.');
+    if (L.some(l => normSoil(l.soil).startsWith('насып') || normSoil(l.soil).startsWith('техноген'))) W('W_FILL', 'Есть насыпной/техногенный грунт — в модели он учтён как верхний слой, свойства могут сильно отличаться.');
+  }
+  // грунтовые воды
+  const gs = bh.gw_stable, gf = bh.gw_first;
+  if (gs == null && gf == null) W('W_NO_GW', 'Уровень воды не указан: в модели принято «вода глубже 12 м». Подтвердите, что воды не было.');
+  if ((gs != null && (!Number.isFinite(gs) || gs < 0 || gs > bh.depth)) || (gf != null && (!Number.isFinite(gf) || gf < 0 || gf > bh.depth))) E('E_GW', 'Уровень воды вне глубины скважины.');
+  else if (gs != null && gf != null && gf < gs - 0.05) W('W_GW_ORDER', 'Появившийся уровень воды выше установившегося — обычно наоборот, проверьте значения.');
+  if ((gs != null || gf != null) && !bh.gw_date && !bh.date) W('W_NO_GW_DATE', 'Нет даты замера воды — не известен сезон.');
+  if (!bh.doc) W('W_NO_DOC', 'Не указан документ-источник (отчёт, журнал бурения): нельзя перепроверить по оригиналу.');
+  // дубли
+  if (Number.isFinite(bh.lng) && Number.isFinite(bh.lat)) {
+    const k = kx(bh.lat), dups = boreholes.filter(p => p.id !== bh.id && Math.hypot((p.lng - bh.lng) * k, (p.lat - bh.lat) * KY) <= CHECKS.dupDist && p.status !== 'rejected').map(p => p.id);
+    if (dups.length) W('W_DUP', `Ближе ${CHECKS.dupDist} м есть скважины ${dups.join(', ')} — возможный дубль из другого отчёта.`);
+    // сверка с соседями
+    const pr = predictFrom(bh.lng, bh.lat, bh.id, CHECKS.nbRadius);
+    if (pr && bh.b) {
+      const names = ['подошва почвенного слоя', 'подошва суглинка', 'подошва глины', 'подошва песка'];
+      bh.b.forEach((v, i) => { const dv = Math.abs(v - pr.b[i]); if (dv > CHECKS.nbDev.b[i]) W('W_NEIGHBOR', `Расхождение с соседями (${pr.n} скв. в радиусе ${CHECKS.nbRadius} м): ${names[i]} на ${f1(v)} м, ожидается ≈ ${f1(pr.b[i])} м.`); });
+      if (bh.gw != null && Math.abs(bh.gw - pr.gw) > CHECKS.nbDev.gw && (gs != null || gf != null)) W('W_NEIGHBOR_GW', `УГВ ${f1(bh.gw)} м, соседи дают ≈ ${f1(pr.gw)} м (разница больше ${CHECKS.nbDev.gw} м).`);
+    }
+    const pz = predictFrom(bh.lng, bh.lat, bh.id, CHECKS.zNbRadius, CHECKS.zNbMin);
+    if (pz && pz.z != null && Number.isFinite(bh.z) && bh.z >= CHECKS.zMin && bh.z <= CHECKS.zMax && Math.abs(bh.z - pz.z) > CHECKS.zNbDev) W('W_Z_NEIGHBOR', `Отметка устья ${f1(bh.z)} м отличается от соседей (≈ ${f1(pz.z)} м) больше чем на ${CHECKS.zNbDev} м — возможна опечатка или другая система высот.`);
+  }
+  return I;
+}
+function applyChecks(bh) {
+  deriveModel(bh); bh.issues = runChecks(bh);
+  if (bh.status === 'verified' && bh.issues.some(i => i.sev === 'error')) { bh.status = 'review'; bh.review = { note: 'Снята проверка: перепроверка выявила ошибки', at: new Date().toISOString(), by: 'система' }; }
+  bh.verified = bh.status === 'verified';
+}
+function recheckAll() {   // после импорта и изменения справочника или порогов
+  for (const bh of boreholes) { for (const l of bh.layers) if (l.cls_src !== 'file') l.cls = classify(l.soil); }
+  for (const bh of boreholes) applyChecks(bh);
+}
+const issueCounts = bh => ({ errors: bh.issues.filter(i => i.sev === 'error').length, warns: bh.issues.filter(i => i.sev === 'warn').length });
+
 let boreholes = load(BH_FILE, null);
 if (!boreholes) { boreholes = seedDemo(); save(BH_FILE, boreholes); }
+{ const mig = boreholes.map(migrateBH); if (mig.some((b, i) => b !== boreholes[i])) { boreholes = mig; save(BH_FILE, boreholes); } }   // старые записи → v2
 let orders = load(ORD_FILE, []);
 orders.forEach(o => { if (!o.token) o.token = o.id; });   // старые заказы: токен = id
-const clean = (s, max) => String(s ?? '').replace(/[<>\u0000-\u001f]/g, '').trim().slice(0, max);   // убираем < > и управляющие символы из всего, что пришло снаружи
 
 /* ---------- события, заявки, аналитика ---------- */
 const EV_FILE = path.join(DATA, 'events.jsonl');
@@ -154,13 +296,13 @@ function deleteDemoAnalytics() {
 
 /* ---------- интерполяция (IDW по 6 ближайшим проверенным скважинам) ---------- */
 function interp(lng, lat) {
-  const pts = boreholes.filter(p => p.verified);
+  const pts = boreholes.filter(p => p.verified && p.b && ACC_W[p.acc] != null);   // только проверенные, с моделью, класс A–C
   if (!pts.length) return null;
   const k = kx(lat);
   const arr = pts.map(p => ({ p, d: Math.hypot((p.lng - lng) * k, (p.lat - lat) * KY) })).sort((a, b) => a.d - b.d);
   const nn = arr.slice(0, 6); let ws = 0, gw = 0; const b = [0, 0, 0, 0];
-  for (const { p, d } of nn) { const w = 1 / (d * d + 25); ws += w; for (let i = 0; i < 4; i++) b[i] += p.b[i] * w; gw += p.gw * w; }
-  return { b: b.map(v => +(v / ws).toFixed(2)), gw: +(gw / ws).toFixed(2), dmin: Math.round(arr[0].d), near: arr[0].p.id };
+  for (const { p, d } of nn) { const w = ACC_W[p.acc] / (d * d + 25); ws += w; for (let i = 0; i < 4; i++) b[i] += p.b[i] * w; gw += p.gw * w; }   // вес зависит от класса точности координат
+  return { b: b.map(v => +(v / ws).toFixed(2)), gw: +(gw / ws).toFixed(2), dmin: Math.round(arr[0].d), near: arr[0].p.id, nearDate: arr[0].p.date || null };
 }
 const confidence = d => d < 120 ? 'high' : d < 300 ? 'medium' : 'low';
 
@@ -192,7 +334,51 @@ function validateBH(o) {
 }
 const normBH = (o, source) => ({ id: o.id.trim(), lng: +o.lng, lat: +o.lat, gw: +o.gw, b: o.b.map(Number), verified: o.verified !== false, source: source || 'admin' });
 
-function parseCSV(text) {
+const legacyToV2 = (o, source) => {   // упрощённая скважина (id, lng, lat, gw, b1–b4) → v2 со статусом «на проверке»
+  const bounds = [0, ...o.b.map(Number), DEPTH];
+  return makeBH({ id: o.id.trim(), lng: o.lng, lat: o.lat, acc: 'B', crs_src: 'WGS84', depth: DEPTH, gw_stable: o.gw, status: 'review', source: source || 'admin',
+    layers: SOIL_CLASSES.map((name, i) => ({ from: bounds[i], to: bounds[i + 1], soil: name, cls: i, cls_src: 'file' })) });
+};
+
+function csvLine(line, sep) {   // разбор строки CSV с кавычками
+  const out = []; let cur = '', q = false;
+  for (let i = 0; i < line.length; i++) { const c = line[i];
+    if (q) { if (c === '"') { if (line[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true; else if (c === sep) { out.push(cur.trim()); cur = ''; } else cur += c; }
+  out.push(cur.trim()); return out;
+}
+const NUM_FIELDS = new Set(['lng', 'lat', 'z', 'depth', 'gw_first', 'gw_stable', 'layer_from', 'layer_to', 'cls', 'bearing_kpa']);
+const numOrNaN = s => { if (s === '' || s == null) return null; const v = +String(s).replace(',', '.').replace(/\s/g, ''); return Number.isFinite(v) ? v : NaN; };
+// Формат «по слоям»: одна строка = один слой; строки с одним id объединяются в скважину
+function parseBoreholesCSV(text) {
+  const lines = text.replace(/\r/g, '').split('\n').filter(l => l.trim());
+  if (lines.length < 2) return { error: 'Пустой файл или нет строк с данными.' };
+  const sep = lines[0].includes(';') ? ';' : ',';
+  const head = csvLine(lines[0].replace(/^﻿/, ''), sep).map(s => s.toLowerCase());
+  const miss = ['id', 'lng', 'lat', 'layer_from', 'layer_to', 'soil'].filter(c => !head.includes(c)); if (miss.length) return { error: 'Нет обязательных колонок: ' + miss.join(', ') };
+  const groups = new Map(), errors = [];
+  lines.slice(1).forEach((ln, idx) => {
+    const cells = csvLine(ln, sep), row = {}; head.forEach((h, i) => { row[h] = NUM_FIELDS.has(h) ? numOrNaN(cells[i]) : (cells[i] ?? ''); });
+    const id = String(row.id || '').trim(); if (!/^[\w\-.:/А-Яа-я ]{1,40}$/.test(id)) { errors.push(`Строка ${idx + 2}: некорректный id «${clean(id, 20)}» (до 40 символов, без < > и спецзнаков)`); return; }
+    row.id = id; if (!groups.has(id)) groups.set(id, []); groups.get(id).push(row);
+  });
+  if (errors.length) return { error: errors.slice(0, 10).join('\n') + (errors.length > 10 ? `\n…и ещё ${errors.length - 10}` : '') };
+  if (groups.size > 2000) return { error: 'Больше 2000 скважин за раз — разбейте файл.' };
+  const out = [];
+  for (const [id, rows] of groups) {
+    const h = rows[0], incons = [];
+    for (const key of ['lng', 'lat', 'z', 'acc', 'date', 'depth', 'gw_first', 'gw_stable']) {   // шапка скважины должна совпадать во всех строках
+      const vals = rows.map(r => r[key]).filter(v => v !== '' && v != null && !(typeof v === 'number' && Number.isNaN(v))); if (vals.length && new Set(vals.map(String)).size > 1) incons.push(`В строках скважины ${id} разные значения поля «${key}»: ${[...new Set(vals.map(String))].join(' / ')}.`);
+    }
+    const date = parseDate(h.date), gwDate = parseDate(h.gw_date);
+    out.push(makeBH({ id, report_id: h.report_id, lng: h.lng ?? NaN, lat: h.lat ?? NaN, crs_src: h.crs_src, acc: String(h.acc || '').trim().toUpperCase() || 'D', z: h.z, z_src: h.z_src, date: String(h.date || '').trim() ? date : null, depth: h.depth,
+      method: h.method, org: h.org, doc: h.doc, gw_first: h.gw_first, gw_stable: h.gw_stable, gw_date: String(h.gw_date || '').trim() ? gwDate : null, bearing_kpa: h.bearing_kpa, aggressive: h.aggressive, status: 'review', source: 'import', _incons: incons,
+      layers: rows.map(r => ({ from: r.layer_from ?? NaN, to: r.layer_to ?? NaN, soil: r.soil, cls: Number.isInteger(r.cls) && r.cls >= 0 && r.cls <= 4 ? r.cls : classify(r.soil), cls_src: Number.isInteger(r.cls) && r.cls >= 0 && r.cls <= 4 ? 'file' : 'dict', ige: r.ige }))
+    }));
+  }
+  return { rows: out };
+}
+function parseCSV(text) {   // старый упрощённый формат (id; lng; lat; gw; b1–b4) — тоже принимается и попадает «на проверку»
   const lines = text.replace(/\r/g, '').split('\n').filter(l => l.trim());
   if (lines.length < 2) return { rows: [], errors: ['Пустой файл'] };
   const sep = lines[0].includes(';') ? ';' : ',';
@@ -204,9 +390,16 @@ function parseCSV(text) {
     const cells = ln.split(sep).map(s => s.trim().replace(',', sep === ';' ? '.' : ','));
     const g = c => cells[head.indexOf(c)];
     const o = { id: g('id'), lng: g('lng'), lat: g('lat'), gw: g('gw'), b: ['b1', 'b2', 'b3', 'b4'].map(g) };
-    const err = validateBH(o); if (err) errors.push(`Строка ${idx + 2}: ${err}`); else rows.push(normBH(o, 'import'));
+    const err = validateBH(o); if (err) errors.push(`Строка ${idx + 2}: ${err}`); else rows.push(legacyToV2(o, 'import'));
   });
   return { rows, errors };
+}
+function upsertBoreholes(rows) {   // новая версия скважины всегда уходит «на проверку»
+  let added = 0, updated = 0;
+  for (const nb of rows) { const i = boreholes.findIndex(x => x.id === nb.id); if (i >= 0) { boreholes[i] = nb; updated++; } else { boreholes.push(nb); added++; } }
+  recheckAll(); save(BH_FILE, boreholes);
+  const mine = rows.map(r => boreholes.find(x => x.id === r.id)), c = mine.map(issueCounts);
+  return { added, updated, with_errors: c.filter(x => x.errors).length, with_warnings: c.filter(x => !x.errors && x.warns).length, clean: c.filter(x => !x.errors && !x.warns).length };
 }
 
 /* =====================================================================
@@ -324,7 +517,11 @@ function passport(lng, lat, obj, parcelIn) {
 
   // 8. Достоверность данных
   if (!s) B('data', 'Достоверность данных', 'red', 'Нет данных.');
-  else B('data', 'Достоверность данных', s.dmin < 120 ? 'green' : s.dmin < 300 ? 'yellow' : 'red', `Ближайшая скважина в ${s.dmin} м${s.dmin >= 120 ? ' — для проектирования нужны собственные изыскания' : ''}.`);
+  else {
+    const age = s.nearDate ? (Date.now() - new Date(s.nearDate).getTime()) / (365.25 * 864e5) : null, old = age != null && age > CHECKS.maxAgeYears;
+    let lv = s.dmin < 120 ? 'green' : s.dmin < 300 ? 'yellow' : 'red'; if (lv === 'green' && (old || age == null)) lv = 'yellow';
+    B('data', 'Достоверность данных', lv, `Ближайшая скважина в ${s.dmin} м${s.nearDate ? `, пробурена в ${s.nearDate.slice(0, 4)} году` : ', дата бурения неизвестна'}${old ? ` — данным больше ${CHECKS.maxAgeYears} лет, участок мог измениться` : ''}${s.dmin >= 120 ? ' — для проектирования нужны собственные изыскания' : ''}.`);
+  }
 
   const lv = blocks.map(b => b.level), overall = lv.includes('red') ? 'red' : lv.some(l => l === 'yellow' || l === 'gray') ? 'yellow' : 'green';
   const get = k => blocks.find(b => b.key === k).level, missing = [];
@@ -548,19 +745,43 @@ async function api(req, res, url) {
     if (m === 'GET' && p === '/api/admin/orders') return send(res, 200, orders.slice().reverse());
     if (m === 'POST' && p === '/api/admin/boreholes') {
       const o = parseJSON(await body(req)); const err = validateBH(o); if (err) return send(res, 400, { error: err });
-      const nb = normBH(o, 'admin'); const i = boreholes.findIndex(x => x.id === nb.id); if (i >= 0) boreholes[i] = nb; else boreholes.push(nb);
-      save(BH_FILE, boreholes); return send(res, 200, { ok: true, updated: i >= 0 });
+      const nb = legacyToV2(o, 'admin'), updated = boreholes.some(x => x.id === nb.id);   // быстрая запись: уходит «на проверку», а не сразу в модель
+      const s = upsertBoreholes([nb]); return send(res, 200, { ok: true, updated, ...s });
     }
     if (m === 'POST' && p === '/api/admin/import') {
-      const { rows, errors } = parseCSV(String((parseJSON(await body(req)) || {}).csv || ''));
-      if (errors.length) return send(res, 400, { error: errors.slice(0, 10).join('\n'), errors: errors.length });   // всё или ничего
-      let added = 0, updated = 0; for (const nb of rows) { const i = boreholes.findIndex(x => x.id === nb.id); if (i >= 0) { boreholes[i] = nb; updated++; } else { boreholes.push(nb); added++; } }
-      save(BH_FILE, boreholes); return send(res, 200, { added, updated });
+      const csv = String((parseJSON(await body(req, 25e6)) || {}).csv || '');
+      const first = csv.split('\n')[0].toLowerCase(), v2 = first.includes('layer_from');
+      let rows;
+      if (v2) { const r2 = parseBoreholesCSV(csv); if (r2.error) return send(res, 400, { error: r2.error }); rows = r2.rows; }   // формат по слоям; ошибки данных не блокируют загрузку — они попадают в проверку
+      else { const r3 = parseCSV(csv); if (r3.errors.length) return send(res, 400, { error: r3.errors.slice(0, 10).join('\n'), errors: r3.errors.length }); rows = r3.rows; }   // старый формат: всё или ничего
+      return send(res, 200, { ...upsertBoreholes(rows), format: v2 ? 'по слоям' : 'упрощённый' });
     }
-    if (m === 'POST' && p === '/api/admin/verify') {
-      const o = parseJSON(await body(req)) || {}; const b = boreholes.find(x => x.id === o.id); if (!b) return send(res, 404, { error: 'Не найдено' });
-      b.verified = !!o.verified; save(BH_FILE, boreholes); return send(res, 200, { ok: true });
+    if (m === 'POST' && p === '/api/admin/review') {   // решение геолога: accept | reject | reopen
+      const o = parseJSON(await body(req)) || {}; const b = boreholes.find(x => x.id === o.id); if (!b) return send(res, 404, { error: 'Скважина не найдена' });
+      const note = clean(o.note, 300);
+      if (o.action === 'accept') {
+        applyChecks(b); const errs = b.issues.filter(i => i.sev === 'error'), warns = b.issues.filter(i => i.sev === 'warn');
+        if (errs.length) return send(res, 409, { error: `Есть ошибки (${errs.length}) — исправьте данные и загрузите заново.`, issues: b.issues });
+        if (warns.length && note.length < 3) return send(res, 400, { error: `Есть предупреждения (${warns.length}): напишите заметку — почему данные можно принять.` });
+        b.status = 'verified'; b.verified = true; b.review = { note, at: new Date().toISOString(), by: 'админ', warns: warns.length };
+      } else if (o.action === 'reject') { b.status = 'rejected'; b.verified = false; b.review = { note, at: new Date().toISOString(), by: 'админ' }; }
+      else if (o.action === 'reopen') { b.status = 'review'; b.verified = false; b.review = null; }
+      else return send(res, 400, { error: 'action' });
+      recheckAll(); save(BH_FILE, boreholes); return send(res, 200, { ok: true, status: b.status });
     }
+    if (m === 'POST' && p === '/api/admin/recheck') { recheckAll(); save(BH_FILE, boreholes); return send(res, 200, { ok: true, total: boreholes.length, demoted: boreholes.filter(b => b.status === 'review' && b.review && b.review.by === 'система').length }); }
+    if (m === 'GET' && p === '/api/admin/check-config') return send(res, 200, { checks: CHECKS, acc: ACC_RU, acc_weights: ACC_W, classes: SOIL_CLASSES });
+    if (m === 'GET' && p === '/api/admin/soil-dict') {
+      const unmapped = [...new Set(boreholes.flatMap(b => b.layers.filter(l => l.cls == null).map(l => l.soil)))];
+      return send(res, 200, { dict: soilDict, classes: SOIL_CLASSES, unmapped });
+    }
+    if (m === 'POST' && p === '/api/admin/soil-dict') {
+      const o = parseJSON(await body(req)) || {}, pat = normSoil(clean(o.p, 40)), cls = +o.cls;
+      if (!/^[а-яa-z\-]{3,40}$/.test(pat)) return send(res, 400, { error: 'Начало названия: только буквы, не короче 3 знаков (например «суглин»)' });
+      if (!Number.isInteger(cls) || cls < 0 || cls > 4) return send(res, 400, { error: 'Класс от 0 до 4' });
+      soilDict = soilDict.filter(e => normSoil(e.p) !== pat).concat([{ p: pat, cls }]); save(SOIL_FILE, soilDict); recheckAll(); save(BH_FILE, boreholes); return send(res, 200, { ok: true });
+    }
+    if (m === 'DELETE' && (r = p.match(/^\/api\/admin\/soil-dict\/(.+)$/))) { const pat = normSoil(decodeURIComponent(r[1])); soilDict = soilDict.filter(e => normSoil(e.p) !== pat); save(SOIL_FILE, soilDict); recheckAll(); save(BH_FILE, boreholes); return send(res, 200, { ok: true }); }
     if (m === 'DELETE' && (r = p.match(/^\/api\/admin\/boreholes\/(.+)$/))) {
       const id = decodeURIComponent(r[1]); const n = boreholes.length; boreholes = boreholes.filter(x => x.id !== id); save(BH_FILE, boreholes); return send(res, 200, { deleted: n - boreholes.length });
     }

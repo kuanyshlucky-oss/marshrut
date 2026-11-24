@@ -93,28 +93,55 @@
 
   <!-- ===== Скважины ===== -->
   <div id="t_bh" style="display:none">
+    <div class="kpis" id="bhKpis"></div>
     <div class="card">
-      <h2>Добавить скважину</h2>
+      <div class="bar" style="justify-content:space-between;margin-bottom:8px">
+        <h2 style="margin:0">Очередь проверки</h2>
+        <div class="bar"><select id="bhFilter"><option value="work">Требуют решения</option><option value="errors">С ошибками</option><option value="verified">Проверенные (в модели)</option><option value="rejected">Отклонённые</option><option value="all">Все</option></select><button class="sec" id="btnRecheck">Перепроверить все</button><button class="sec" id="rmDemo">Удалить демо-скважины</button></div>
+      </div>
+      <div style="color:var(--mute);font-size:12.5px;margin-bottom:8px">В модель попадают только скважины со статусом «проверена». Ошибки блокируют проверку, предупреждения требуют заметки геолога. Нажмите на строку, чтобы открыть карточку.</div>
+      <div class="scroll"><table><thead><tr><th>ID</th><th>Класс</th><th>Дата</th><th>Глубина</th><th>Замечания</th><th>Статус</th></tr></thead><tbody id="bhBody"></tbody></table></div>
+    </div>
+    <div class="card" id="bhDetail" style="display:none"></div>
+    <div class="card">
+      <h2>Импорт скважин по слоям (CSV / Excel)</h2>
+      <div class="bar" style="margin-bottom:8px"><button class="sec" id="tpl">Скачать шаблон CSV</button><input type="file" id="file" accept=".csv,.txt"><button id="imp">Загрузить на проверку</button></div>
+      <textarea id="csv" placeholder="id;report_id;lng;lat;acc;z;date;depth;...;layer_from;layer_to;soil;ige;bearing_kpa;aggressive"></textarea>
+      <div class="msg" id="impMsg"></div>
+      <div style="color:var(--mute);font-size:12.5px;margin-top:8px;line-height:1.6">
+        <b style="color:var(--text)">Одна строка = один слой.</b> Строки с одним <code>id</code> объединяются в скважину; поля шапки (lng, lat, acc, z, date, depth, воды) повторяются в каждой строке и должны совпадать.<br>
+        <b style="color:var(--text)">Обязательно:</b> id, lng, lat, layer_from, layer_to, soil. <b style="color:var(--text)">Очень желательно:</b> acc (A — RTK/тахеометр, B — GNSS, C — по схеме, D — неизвестно), z (абсолютная отметка устья), date, depth, doc (документ-источник), gw_stable / gw_first / gw_date.<br>
+        Файл с ошибками в данных загружается, но скважины уходят в очередь с пометкой; отклоняется только файл, который нельзя прочитать (нет колонок, некорректный id). Старый упрощённый формат (b1–b4) тоже принимается и тоже попадает «на проверку».
+      </div>
+    </div>
+    <div class="two">
+      <div class="card">
+        <h2>Справочник грунтов</h2>
+        <div style="color:var(--mute);font-size:12.5px;margin-bottom:8px">Название из журнала сопоставляется с классом модели по <b style="color:var(--text)">первому слову</b> (основной грунт по ГОСТ 25100). Побеждает самое длинное совпадение начала. Справочник составляет и подписывает ваш геолог.</div>
+        <div id="unmapped" style="margin-bottom:8px"></div>
+        <div class="bar" style="margin-bottom:8px"><input id="sd_p" placeholder="начало слова, напр. супес" style="width:170px"><select id="sd_c"></select><button id="sd_add">Добавить</button></div>
+        <div class="msg" id="sdMsg"></div>
+        <div class="scroll" style="max-height:260px;overflow:auto"><table><tbody id="sdBody"></tbody></table></div>
+      </div>
+      <div class="card">
+        <h2>Пороги автопроверок</h2>
+        <div style="color:var(--mute);font-size:12.5px;margin-bottom:8px">Ориентировочные значения. Согласуйте с геологом, затем нажмите «Перепроверить все».</div>
+        <div class="scroll"><table><tbody id="cfgBody"></tbody></table></div>
+      </div>
+    </div>
+    <details class="card">
+      <summary style="cursor:pointer;font-weight:600">Быстрая запись одной скважины (упрощённо, 4 слоя)</summary>
+      <div style="margin-top:12px">
       <div class="grid">
         <label>ID<input id="f_id" placeholder="СКВ-101"></label><label>Широта (lat)<input id="f_lat" placeholder="49.8061"></label>
         <label>Долгота (lng)<input id="f_lng" placeholder="73.0850"></label><label>УГВ, м<input id="f_gw" placeholder="4.5"></label>
         <label>b1, м<input id="f_b1" placeholder="0.5"></label><label>b2, м<input id="f_b2" placeholder="3"></label>
         <label>b3, м<input id="f_b3" placeholder="6"></label><label>b4, м<input id="f_b4" placeholder="8.5"></label>
       </div>
-      <div class="bar"><button id="add">Сохранить</button><span style="color:var(--mute);font-size:12px">b1–b4 — глубина подошвы слоёв: почва, суглинок, глина, песок. Ниже b4 — скальный грунт до 12 м.</span></div>
+      <div class="bar"><button id="add">Сохранить на проверку</button><span style="color:var(--mute);font-size:12px">Класс точности B, без даты и отметки — будут предупреждения. Для настоящих данных используйте импорт по слоям.</span></div>
       <div class="msg" id="addMsg"></div>
-    </div>
-    <div class="card">
-      <h2>Импорт из CSV / Excel</h2>
-      <div class="bar" style="margin-bottom:8px"><button class="sec" id="tpl">Скачать шаблон CSV</button><input type="file" id="file" accept=".csv,.txt"><button id="imp">Импортировать</button></div>
-      <textarea id="csv" placeholder="id;lng;lat;gw;b1;b2;b3;b4&#10;СКВ-101;73.0850;49.8061;4.5;0.5;3;6;8.5"></textarea>
-      <div class="msg" id="impMsg"></div>
-      <div style="color:var(--mute);font-size:12px;margin-top:6px">В Excel: «Сохранить как → CSV (разделитель — точка с запятой)». Если в файле есть ошибки, не загружается ничего.</div>
-    </div>
-    <div class="card">
-      <div class="bar" style="justify-content:space-between;margin-bottom:8px"><h2 style="margin:0">Скважины (<span id="cnt">0</span>)</h2><button class="sec" id="rmDemo">Удалить демо-скважины</button></div>
-      <div class="scroll"><table><thead><tr><th>ID</th><th>lat</th><th>lng</th><th>УГВ</th><th>b1</th><th>b2</th><th>b3</th><th>b4</th><th>Источник</th><th>Проверена</th><th></th></tr></thead><tbody id="bhBody"></tbody></table></div>
-    </div>
+      </div>
+    </details>
   </div>
 </div>
 
@@ -295,35 +322,91 @@ function exportCSV(name,rows){
 $('expLeads').onclick=()=>exportCSV('leads.csv',[['Дата','Имя','Телефон','Комментарий','lat','lng','Статус'],...LEADS.map(l=>[l.created,l.name,l.phone,l.comment,l.lat,l.lng,LST[l.status]])]);
 $('expOrd').onclick=()=>exportCSV('orders.csv',[['Дата','Email','lat','lng','Сумма','Статус','Оплачен'],...ORD.map(o=>[o.created,o.email,o.lat,o.lng,o.price,o.status,o.paidAt||''])]);
 
-/* ================= СКВАЖИНЫ ================= */
-async function loadBoreholes(){
-  const bh=await aget('/api/admin/boreholes'); $('cnt').textContent=bh.length;
-  $('bhBody').innerHTML=bh.map(b=>`<tr><td>${esc(b.id)}</td><td>${b.lat}</td><td>${b.lng}</td><td>${b.gw}</td>${b.b.map(v=>`<td>${v}</td>`).join('')}<td><span class="tag">${esc(b.source)}</span></td>
-    <td><button class="sec" data-v="${esc(b.id)}" data-s="${b.verified?0:1}"><span class="tag ${b.verified?'ok':'no'}">${b.verified?'да':'нет'}</span></button></td>
-    <td><button class="del" data-d="${esc(b.id)}">удалить</button></td></tr>`).join('');
+/* ================= СКВАЖИНЫ: очередь проверки ================= */
+let BH=[], SEL=null;
+const ST={review:'на проверке',verified:'проверена',rejected:'отклонена'};
+const bhCnt=b=>({e:(b.issues||[]).filter(i=>i.sev==='error').length,w:(b.issues||[]).filter(i=>i.sev==='warn').length});
+const CLS_NAMES=LAYERS.map(l=>l.name);
+async function loadBoreholes(){ BH=await aget('/api/admin/boreholes'); renderBh(); if(SEL) openBh(SEL,true); loadSoil(); loadCfg(); }
+function renderBh(){
+  const n=s=>BH.filter(b=>b.status===s).length, errs=BH.filter(b=>b.status==='review'&&bhCnt(b).e).length;
+  $('bhKpis').innerHTML=[['Всего скважин',BH.length,''],['Проверено',n('verified'),'участвуют в модели'],['На проверке',n('review'),'с ошибками: '+errs],['Отклонено',n('rejected'),'']].map(([l,v,s])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+  const f=$('bhFilter').value;
+  const list=BH.filter(b=>f==='all'||(f==='work'&&b.status==='review')||(f==='errors'&&b.status!=='rejected'&&bhCnt(b).e>0)||b.status===f).sort((a,b)=>(a.status==='review'?0:1)-(b.status==='review'?0:1)||bhCnt(b).e-bhCnt(a).e||a.id.localeCompare(b.id));   // сначала требующие решения, внутри — с ошибками выше
+  $('bhBody').innerHTML=list.length?list.map(b=>{ const c=bhCnt(b);
+    return `<tr data-open="${esc(b.id)}" style="cursor:pointer"><td><b>${esc(b.id)}</b><div style="color:var(--mute);font-size:11.5px">${esc(b.doc||b.source)}</div></td><td><span class="tag">${esc(b.acc)}</span></td><td>${esc(b.date||'—')}</td><td>${b.depth!=null?b.depth+' м':'—'}</td>
+      <td>${c.e?`<span class="tag no">ошибок: ${c.e}</span> `:''}${c.w?`<span class="tag" style="background:rgba(242,184,75,.16);color:var(--accent)">предупр.: ${c.w}</span>`:''}${!c.e&&!c.w?'<span class="tag ok">чисто</span>':''}</td>
+      <td><span class="tag ${b.status==='verified'?'ok':b.status==='rejected'?'no':''}">${ST[b.status]||esc(b.status)}</span></td></tr>`; }).join('')
+    :'<tr><td colspan="6" style="color:var(--mute)">Нет скважин под этот фильтр.</td></tr>';
 }
-$('bhBody').onclick=async e=>{
-  const d=e.target.closest('[data-d]'), v=e.target.closest('[data-v]');
-  try{
-    if(d && confirm('Удалить скважину '+d.dataset.d+'?')){ await fetch('/api/admin/boreholes/'+encodeURIComponent(d.dataset.d),{method:'DELETE',headers:H()}); loadBoreholes(); }
-    if(v){ await jpost('/api/admin/verify',{id:v.dataset.v,verified:v.dataset.s==='1'},H()); loadBoreholes(); }
-  }catch(err){ alert(err.message); }
+$('bhFilter').onchange=renderBh;
+$('bhBody').onclick=e=>{ const r=e.target.closest('[data-open]'); if(r) openBh(r.dataset.open); };
+function openBh(id,keep){
+  const b=BH.find(x=>x.id===id); if(!b){ SEL=null; $('bhDetail').style.display='none'; return; } SEL=id;
+  const c=bhCnt(b), el=$('bhDetail'), kv=(l,v)=>`<div class="kv"><span>${l}</span><b>${esc(v==null||v===''?'—':v)}</b></div>`;
+  const layers=(b.layers||[]).slice().sort((x,y)=>x.from-y.from).map(l=>`<tr><td>${l.from}–${l.to} м</td><td>${esc(l.soil)}</td><td>${l.cls!=null?`<span class="sw" style="display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:${LAYERS[l.cls].color}"></span>${esc(CLS_NAMES[l.cls])}`:'<span class="tag no">не распознан</span>'}${l.cls_src==='file'?' <span style="color:var(--mute);font-size:11px">(задан в файле)</span>':''}</td><td>${esc(l.ige||'')}</td></tr>`).join('');
+  const issues=(b.issues||[]).map(i=>`<div class="insight ${i.sev==='error'?'bad':''}" style="${i.sev==='warn'?'':''}"><b>${i.sev==='error'?'Ошибка':'Предупреждение'} · ${esc(i.code)}</b><br>${esc(i.text)}</div>`).join('') || '<div class="insight good">Замечаний нет.</div>';
+  el.innerHTML=`<div class="bar" style="justify-content:space-between"><h2 style="margin:0">Скважина ${esc(b.id)} <span class="tag ${b.status==='verified'?'ok':b.status==='rejected'?'no':''}">${ST[b.status]||esc(b.status)}</span></h2><button class="sec" id="bhClose">Закрыть</button></div>
+    <div class="two" style="margin-top:12px"><div>
+      ${kv('Отчёт / документ',[b.report_id,b.doc].filter(Boolean).join(' · '))}${kv('Организация, способ',[b.org,b.method].filter(Boolean).join(', '))}${kv('Координаты',(b.lat!=null?b.lat+', '+b.lng:'—'))}
+      ${kv('Класс точности',b.acc+' — '+({A:'RTK / тахеометр',B:'GNSS',C:'по схеме',D:'не подтверждены'}[b.acc]||''))}${kv('Отметка устья',b.z!=null?b.z+' м ('+(b.z_src||'источник не указан')+')':null)}
+      ${kv('Дата бурения',b.date)}${kv('Глубина',b.depth!=null?b.depth+' м':null)}${kv('Вода: появилась / установилась',(b.gw_first??'—')+' / '+(b.gw_stable??'—')+' м'+(b.gw_date?' · '+b.gw_date:''))}
+      ${kv('Несущая способность',b.bearing_kpa!=null?b.bearing_kpa+' кПа':null)}${kv('Агрессивность',b.aggressive)}
+      ${b.review?`<div class="kv"><span>Решение</span><b>${esc(b.review.by||'')} · ${esc((b.review.at||'').slice(0,10))}</b></div><div style="color:var(--mute);font-size:12.5px;margin-top:4px">${esc(b.review.note||'')}</div>`:''}
+    </div><div>
+      <div class="lbl" style="margin-bottom:4px;color:var(--mute);font-size:11px;text-transform:uppercase">Слои</div>
+      <div class="scroll"><table><thead><tr><th>Глубина</th><th>Грунт по журналу</th><th>Класс модели</th><th>ИГЭ</th></tr></thead><tbody>${layers}</tbody></table></div>
+      ${b.b?`<div style="color:var(--mute);font-size:12px;margin-top:6px">В модели: подошвы классов ${b.b.join(' / ')} м, УГВ ${b.gw} м.</div>`:'<div style="color:var(--mute);font-size:12px;margin-top:6px">Модель не построена (есть ошибки).</div>'}
+    </div></div>
+    <h2 style="margin-top:14px">Замечания автопроверки (${c.e} ошиб., ${c.w} предупр.)</h2>${issues}
+    <div style="margin-top:12px"><textarea id="bhNote" style="min-height:60px" placeholder="Заметка геолога${c.w?' (обязательна: есть предупреждения)':''}: почему данные можно принять / причина отклонения"></textarea>
+      <div class="bar" style="margin-top:8px"><button id="bhAccept" ${c.e?'disabled style="opacity:.4;cursor:not-allowed"':''}>Принять — проверена</button><button class="sec" id="bhReject">Отклонить</button>${b.status!=='review'?'<button class="sec" id="bhReopen">Вернуть на проверку</button>':''}<button class="del" id="bhDel">удалить</button></div>
+      <div class="msg" id="bhMsg"></div></div>`;
+  el.style.display='block'; if(!keep) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  const act=async(action)=>{ try{ await jpost('/api/admin/review',{id,action,note:$('bhNote').value},H()); await loadBoreholes(); loadAnalytics(); }catch(e){ $('bhMsg').className='msg err'; $('bhMsg').textContent=e.message; } };
+  $('bhClose').onclick=()=>{ SEL=null; el.style.display='none'; };
+  $('bhAccept').onclick=()=>act('accept'); $('bhReject').onclick=()=>act('reject'); if($('bhReopen')) $('bhReopen').onclick=()=>act('reopen');
+  $('bhDel').onclick=async()=>{ if(!confirm('Удалить скважину '+id+' навсегда?')) return; await fetch('/api/admin/boreholes/'+encodeURIComponent(id),{method:'DELETE',headers:H()}); SEL=null; el.style.display='none'; loadBoreholes(); };
+}
+$('btnRecheck').onclick=async()=>{ try{ const r=await jpost('/api/admin/recheck',{},H()); await loadBoreholes(); loadAnalytics(); }catch(e){ alert(e.message); } };
+
+/* ---- импорт ---- */
+$('tpl').onclick=()=>{
+  const H1='id;report_id;lng;lat;acc;z;date;depth;method;org;doc;gw_first;gw_stable;gw_date;layer_from;layer_to;soil;ige;bearing_kpa;aggressive';
+  const hd='СКВ-101;ИГИ-2025/12;73.0860;49.8065;A;541.3;2025-05-10;12;шнековое;Моя геодезия;Отчёт ИГИ 2025/12;5.0;4.5;2025-05-10';
+  const rows=[[0,0.6,'Почвенно-растительный слой','',''],[0.6,3.4,'Суглинок песчанистый','ИГЭ-1',150],[3.4,7.5,'Глина тугопластичная','ИГЭ-2',220],[7.5,10,'Песок с гравием','ИГЭ-3',300],[10,12,'Известняк выветрелый','ИГЭ-4',600]];
+  const csv='\ufeff'+H1+'\n'+rows.map(r=>hd+';'+r[0]+';'+r[1]+';'+r[2]+';'+r[3]+';'+r[4]+';').join('\n')+'\n';
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='boreholes-template-v2.csv'; a.click();
+};
+$('file').onchange=e=>{ const f=e.target.files[0]; if(f) f.text().then(t=>$('csv').value=t.replace(/^\ufeff/,'')); };
+$('imp').onclick=async()=>{
+  try{ const r=await jpost('/api/admin/import',{csv:$('csv').value},H()); $('impMsg').className='msg good';
+    $('impMsg').textContent=`Загружено (формат: ${r.format}): добавлено ${r.added}, обновлено ${r.updated}. Без замечаний: ${r.clean}, с предупреждениями: ${r.with_warnings}, с ошибками: ${r.with_errors}. Все — в очереди проверки.`; $('bhFilter').value='work'; loadBoreholes(); loadAnalytics(); }
+  catch(e){ $('impMsg').className='msg err'; $('impMsg').textContent=e.message; }
 };
 $('add').onclick=async()=>{
   const o={id:$('f_id').value.trim(),lat:$('f_lat').value.replace(',','.'),lng:$('f_lng').value.replace(',','.'),gw:$('f_gw').value.replace(',','.'),b:['f_b1','f_b2','f_b3','f_b4'].map(i=>$(i).value.replace(',','.'))};
-  try{ const r=await jpost('/api/admin/boreholes',o,H()); $('addMsg').className='msg good'; $('addMsg').textContent=r.updated?'Обновлена':'Добавлена'; loadBoreholes(); }
+  try{ const r=await jpost('/api/admin/boreholes',o,H()); $('addMsg').className='msg good'; $('addMsg').textContent=(r.updated?'Обновлена':'Добавлена')+' и отправлена на проверку'; loadBoreholes(); }
   catch(e){ $('addMsg').className='msg err'; $('addMsg').textContent=e.message; }
 };
-$('tpl').onclick=()=>{
-  const csv='﻿id;lng;lat;gw;b1;b2;b3;b4\nСКВ-101;73.0850;49.8061;4.5;0.5;3.0;6.0;8.5\nСКВ-102;73.0902;49.8080;5.1;0.4;2.8;6.4;9.0\n';
-  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='boreholes-template.csv'; a.click();
-};
-$('file').onchange=e=>{ const f=e.target.files[0]; if(f) f.text().then(t=>$('csv').value=t.replace(/^﻿/,'')); };
-$('imp').onclick=async()=>{
-  try{ const r=await jpost('/api/admin/import',{csv:$('csv').value},H()); $('impMsg').className='msg good'; $('impMsg').textContent=`Добавлено: ${r.added}, обновлено: ${r.updated}`; loadBoreholes(); loadAnalytics(); }
-  catch(e){ $('impMsg').className='msg err'; $('impMsg').textContent=e.message; }
-};
 $('rmDemo').onclick=async()=>{ if(!confirm('Удалить все демо-скважины (DEMO-*)?')) return; const r=await jpost('/api/admin/delete-demo',{},H()); alert('Удалено: '+r.deleted); loadBoreholes(); loadAnalytics(); };
+
+/* ---- справочник грунтов и пороги ---- */
+$('sd_c').innerHTML=CLS_NAMES.map((n,i)=>`<option value="${i}">${i} — ${esc(n)}</option>`).join('');
+async function loadSoil(){
+  const d=await aget('/api/admin/soil-dict');
+  $('unmapped').innerHTML=d.unmapped.length?`<div class="insight bad" style="margin:0"><b>Нераспознанные грунты (${d.unmapped.length}):</b> ${d.unmapped.map(s=>`<a href="#" data-um="${esc(s)}" style="color:var(--accent)">${esc(s)}</a>`).join(', ')}<br><span style="font-size:12px">Нажмите на название, затем выберите класс и добавьте.</span></div>`:'';
+  $('sdBody').innerHTML=d.dict.slice().sort((a,b)=>a.cls-b.cls||a.p.localeCompare(b.p)).map(e=>`<tr><td>${esc(e.p)}…</td><td><span class="sw" style="display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:${LAYERS[e.cls].color}"></span>${esc(CLS_NAMES[e.cls])}</td><td><button class="del" data-sdel="${esc(e.p)}">×</button></td></tr>`).join('');
+}
+$('unmapped').onclick=e=>{ const a=e.target.closest('[data-um]'); if(!a) return; e.preventDefault(); $('sd_p').value=(a.dataset.um.toLowerCase().replace(/ё/g,'е').match(/^[а-яa-z\-]+/)||[''])[0]; $('sd_c').focus(); };
+$('sd_add').onclick=async()=>{ try{ await jpost('/api/admin/soil-dict',{p:$('sd_p').value,cls:+$('sd_c').value},H()); $('sdMsg').textContent=''; $('sd_p').value=''; await loadBoreholes(); }catch(e){ $('sdMsg').className='msg err'; $('sdMsg').textContent=e.message; } };
+$('sdBody').onclick=async e=>{ const b=e.target.closest('[data-sdel]'); if(!b) return; if(!confirm('Удалить «'+b.dataset.sdel+'…» из справочника? Скважины с этим грунтом потеряют класс и могут быть сняты с проверки.')) return; await fetch('/api/admin/soil-dict/'+encodeURIComponent(b.dataset.sdel),{method:'DELETE',headers:H()}); loadBoreholes(); };
+async function loadCfg(){
+  const d=await aget('/api/admin/check-config'), c=d.checks, r=(l,v)=>`<tr><td>${l}</td><td style="text-align:right;color:var(--mute)">${v}</td></tr>`;
+  $('cfgBody').innerHTML=[r('Отметка устья: допустимо',c.zMin+'–'+c.zMax+' м'),r('Отметка устья: ожидается',c.zWarn[0]+'–'+c.zWarn[1]+' м'),r('Допуск по разрывам слоёв',c.gapTol+' м'),r('Допуск глубины скважины',c.depthTol+' м'),r('Дубль: ближе',c.dupDist+' м'),
+    r('Данные старше',c.maxAgeYears+' лет'),r('Глубина модели',c.minDepth+' м'),r('Сверка с соседями: радиус / минимум',c.nbRadius+' м / '+c.nbMin+' скв.'),r('Допустимое отклонение границ слоёв',c.nbDev.b.join(' / ')+' м'),r('Допустимое отклонение УГВ',c.nbDev.gw+' м'),
+    r('Сверка отметки: радиус / допуск',c.zNbRadius+' м / '+c.zNbDev+' м'),r('Вес в модели по классу точности',Object.entries(d.acc_weights).map(([k,v])=>k+'='+v).join(', ')+', D — исключена')].join('');
+}
 </script>
 </body>
 </html>
