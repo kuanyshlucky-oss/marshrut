@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D Караганда — грунт и участки</title>
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<style>
+  :root{--bg:#0f1318;--panel:rgba(18,23,30,.88);--line:rgba(255,255,255,.10);--text:#e8edf3;--mute:#93a0ae;--accent:#f2b84b;--ok:#5fd18a;--warn:#f2b84b;--bad:#ef7a6a}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  #map{position:absolute;inset:0}
+  .glass{background:var(--panel);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:14px}
+  #top{position:absolute;left:16px;top:16px;padding:12px 14px;max-width:330px}
+  #top h1{margin:0 0 2px;font-size:16px} #top p{margin:0;color:var(--mute);font-size:12px}
+  .badge{display:inline-block;margin-top:8px;padding:2px 8px;border-radius:999px;background:rgba(242,184,75,.15);color:var(--accent);font-size:11px;border:1px solid rgba(242,184,75,.35)}
+  #tools{position:absolute;left:16px;top:116px;padding:10px;display:flex;flex-direction:column;gap:10px;width:260px}
+  .row{display:flex;flex-direction:column;gap:4px}
+  .lbl{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.6px}
+  .seg{display:flex;background:rgba(255,255,255,.06);border-radius:10px;padding:3px;gap:3px}
+  .seg button{flex:1;border:0;background:transparent;color:var(--mute);padding:7px 6px;border-radius:8px;cursor:pointer;font:inherit;font-size:13px}
+  .seg button.on{background:var(--accent);color:#1b1500;font-weight:600}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  #soilBox{display:none}
+  #legend div{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:3px} #legend i{width:14px;height:14px;border-radius:4px;border:1px solid rgba(255,255,255,.2)}
+  #info{position:absolute;right:16px;top:16px;width:350px;max-height:calc(100% - 32px);overflow:auto;padding:14px}
+  #info h2{margin:0 0 4px;font-size:15px} .hint{color:var(--mute);font-size:13px}
+  .kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px} .kv b{font-weight:600}
+  .pill{padding:1px 9px;border-radius:999px;font-size:12px;font-weight:600}
+  .p-ok{background:rgba(95,209,138,.16);color:var(--ok)} .p-warn{background:rgba(242,184,75,.16);color:var(--warn)} .p-bad{background:rgba(239,122,106,.16);color:var(--bad)}
+  .col{display:flex;gap:12px;margin-top:10px}
+  table{border-collapse:collapse;width:100%;font-size:12.5px} td{padding:5px 4px;border-bottom:1px solid var(--line)} td:last-child{text-align:right;color:var(--mute)}
+  .locked{filter:blur(5px);user-select:none;pointer-events:none}
+  .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+  .cta{display:block;width:100%;margin-top:8px;border:0;border-radius:10px;padding:11px;font:inherit;font-weight:700;cursor:pointer;background:var(--accent);color:#1b1500;text-align:center;text-decoration:none}
+  .cta.sec{background:rgba(255,255,255,.08);color:var(--text);font-weight:500}
+  .note{margin-top:10px;color:var(--mute);font-size:11.5px}
+  #section{position:absolute;left:16px;right:384px;bottom:16px;padding:10px 14px;display:none}
+  #section h3{margin:0 0 6px;font-size:13px;display:flex;justify-content:space-between} #section svg{width:100%;height:auto;max-height:220px}
+  #section button{background:none;border:0;color:var(--mute);cursor:pointer;font-size:18px;line-height:1}
+  #toast{position:absolute;left:50%;top:18px;transform:translateX(-50%);padding:10px 16px;display:none;z-index:5;max-width:90%}
+  #modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}
+  #modal .box{width:100%;max-width:400px;padding:20px;background:#161c24;border:1px solid var(--line);border-radius:16px}
+  #modal h3{margin:0 0 8px} #modal input{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:#0f1318;color:var(--text);font:inherit;margin:8px 0}
+  #modal .err{color:var(--bad);font-size:12.5px;min-height:18px}
+  @media (max-width:820px){
+    #top{max-width:calc(100% - 32px)} #tools{top:auto;bottom:16px;width:calc(100% - 32px);flex-direction:row;flex-wrap:wrap;max-height:30vh;overflow:auto} #tools .row{flex:1 1 140px}
+    #info{top:auto;left:16px;right:16px;width:auto;bottom:calc(30vh + 32px);max-height:38vh} #section{left:16px;right:16px;bottom:auto;top:96px}
+  }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div id="top" class="glass">
+  <h1>Караганда 3D · грунт и участки</h1>
+  <p>Выберите участок на карте — получите данные о грунте</p>
+  <span class="badge" id="demoBadge" style="display:none">Демо-данные: скважины случайные, не реальные</span>
+</div>
+
+<div id="tools" class="glass">
+  <div class="row"><span class="lbl">Подложка</span>
+    <div class="seg" id="segBase"><button data-v="dark" class="on">Тёмная</button><button data-v="sat">Спутник</button></div></div>
+  <div class="row" id="soilBox">
+    <button class="cta sec" id="btnBack" style="margin:0 0 6px">← К карте города</button>
+    <span class="lbl">Вырез блока с юга</span>
+    <input type="range" id="cut" min="0" max="10" value="4">
+    <div id="legend"></div>
+    <div class="note" style="margin:6px 0 0">Блок 275×275 м, глубина 12 м, вертикальный масштаб ×3</div>
+  </div>
+</div>
+
+<div id="info" class="glass">
+  <h2>Выберите участок</h2>
+  <div class="hint">Кликните по карте. Оранжевые точки — скважины, по которым строится модель грунта.</div>
+</div>
+<div id="section" class="glass"></div>
+<div id="toast" class="glass"></div>
+
+<div id="modal"><div class="box" id="modalBox"></div></div>
+
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script src="/common.js"></script>
+<script>
+const C = {lat:49.806, lng:73.085}, KV = 3;
+const kx = lat => 111320*Math.cos(lat*Math.PI/180), KY = 110574;
+let cfg = {price:15000};
+
+const style = {
+  version:8,
+  sources:{
+    dark:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,maxzoom:19,attribution:'© OpenStreetMap'},
+    sat:{type:'raster',tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],tileSize:256,maxzoom:19,attribution:'Esri, Maxar, Earthstar Geographics'},
+    dem:{type:'raster-dem',tiles:['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],encoding:'terrarium',tileSize:256,maxzoom:15,attribution:'Mapzen / AWS Terrain Tiles'},
+    ofm:{type:'vector',url:'https://tiles.openfreemap.org/planet',attribution:'OpenFreeMap © OpenMapTiles, данные OSM'}
+  },
+  layers:[
+    {id:'bg',type:'background',paint:{'background-color':'#0f1318'}},
+    {id:'dark',type:'raster',source:'dark',paint:{'raster-brightness-max':.32,'raster-brightness-min':0,'raster-saturation':-.7,'raster-contrast':.25}},
+    {id:'sat',type:'raster',source:'sat',layout:{visibility:'none'}},
+    {id:'hill',type:'hillshade',source:'dem',paint:{'hillshade-exaggeration':.55,'hillshade-shadow-color':'#000000','hillshade-highlight-color':'#ffffff','hillshade-accent-color':'#333a44'}},
+    {id:'bld',type:'fill-extrusion',source:'ofm','source-layer':'building',minzoom:13,paint:{
+      'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],6],0,'#4a5568',20,'#6f8fb5',60,'#9fd0e6'],
+      'fill-extrusion-height':['coalesce',['get','render_height'],6],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.92}}
+  ],
+  terrain:{source:'dem',exaggeration:2}
+};
+const map = new maplibregl.Map({container:'map',style,center:[C.lng,C.lat],zoom:14.6,pitch:60,bearing:-20,maxPitch:80});
+map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),'bottom-right');
+map.addControl(new maplibregl.ScaleControl({unit:'metric'}),'bottom-right');
+
+const emptyFC = {type:'FeatureCollection',features:[]};
+track('visit');
+map.on('load', async ()=>{
+  map.addSource('block',{type:'geojson',data:emptyFC});
+  map.addLayer({id:'block',type:'fill-extrusion',source:'block',layout:{visibility:'none'},paint:{'fill-extrusion-color':['get','color'],'fill-extrusion-base':['get','base'],'fill-extrusion-height':['get','height'],'fill-extrusion-opacity':1}});
+  map.addSource('bh',{type:'geojson',data:emptyFC});
+  map.addLayer({id:'bh-dot',type:'circle',source:'bh',paint:{'circle-radius':5,'circle-color':'#f2b84b','circle-stroke-color':'#1b1500','circle-stroke-width':1.5}});
+  map.addSource('secline',{type:'geojson',data:emptyFC});
+  map.addLayer({id:'secline',type:'line',source:'secline',paint:{'line-color':'#5fd18a','line-width':3,'line-dasharray':[2,1]}});
+  document.getElementById('legend').innerHTML = LAYERS.map(l=>`<div><i style="background:${l.color}"></i>${l.name}</div>`).join('');
+  try{
+    cfg = await jget('/api/config');
+    const bh = await jget('/api/boreholes');
+    map.getSource('bh').setData({type:'FeatureCollection',features:bh.map(p=>({type:'Feature',properties:{id:p.id},geometry:{type:'Point',coordinates:[p.lng,p.lat]}}))});
+    document.getElementById('demoBadge').style.display = bh.some(p=>p.id.startsWith('DEMO-')) ? 'inline-block':'none';
+  }catch(e){ toast('Не удалось загрузить данные: '+e.message); }
+});
+
+/* ---------- подложка ---------- */
+document.querySelectorAll('#segBase button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#segBase button').forEach(x=>x.classList.toggle('on',x===b));
+  map.setLayoutProperty('dark','visibility',b.dataset.v==='dark'?'visible':'none');
+  map.setLayoutProperty('sat','visibility',b.dataset.v==='sat'?'visible':'none');
+});
+
+let tt; function toast(t){const e=document.getElementById('toast');e.textContent=t;e.style.display='block';clearTimeout(tt);tt=setTimeout(()=>e.style.display='none',4000);}
+const info = document.getElementById('info');
+
+/* ---------- клик по карте: бесплатная часть ---------- */
+let marker=null, current=null, view='surface';
+map.on('click', async e=>{
+  if(view==='soil') return;
+  const {lng,lat}=e.lngLat;
+  if(marker) marker.remove();
+  marker = new maplibregl.Marker({color:'#f2b84b'}).setLngLat([lng,lat]).addTo(map);
+  info.innerHTML = '<h2>Участок</h2><div class="hint">Загрузка…</div>';
+  try{
+    const d = await jget(`/api/point?lng=${lng}&lat=${lat}`);
+    current = {lng,lat,d}; renderFree();
+  }catch(err){ info.innerHTML = `<h2>Ошибка</h2><div class="hint">${err.message}</div>`; }
+});
+
+function head(){
+  const {lng,lat,d}=current, cf=CONF[d.confidence]||['—',''];
+  return `<h2>Участок</h2><div class="hint">${lat.toFixed(5)}° с.ш., ${lng.toFixed(5)}° в.д.</div>
+    <div class="kv"><span>Достоверность модели</span><span class="pill ${cf[1]}">${cf[0]}</span></div>
+    <div class="kv"><span>Ближайшая скважина</span><b>${d.near}, ${d.dmin} м</b></div>`;
+}
+function renderFree(){
+  const d=current.d;
+  if(!d.available){
+    info.innerHTML = `<h2>Участок</h2><div class="hint">${current.lat.toFixed(5)}°, ${current.lng.toFixed(5)}°</div>
+      <div class="kv"><span>Данные по грунту</span><b>недостаточно</b></div>
+      <div class="note">Рядом с этой точкой нет наших скважин, поэтому мы не продаём отчёт: модель была бы ненадёжной.</div>
+      <button class="cta" onclick="openLead()">Заказать изыскания на участке</button>`;
+    return;
+  }
+  const fake=[0,1,2,3,4].map(i=>`<tr><td><span class="sw" style="background:#555"></span>Слой ${i+1}</td><td>0,0–0,0 м</td></tr>`).join('');
+  info.innerHTML = head()+`
+    <div class="kv"><span>Уровень грунтовых вод</span><b>${f1(d.gw)} м</b></div>
+    <div class="col"><div style="opacity:.35">${columnSVG([2,4,6,8],null)}</div>
+      <div style="flex:1"><div class="lbl" style="margin-bottom:4px">Слои по глубине · в отчёте</div><table class="locked">${fake}</table></div></div>
+    <button class="cta" id="buy">Купить отчёт — ${cfg.price.toLocaleString('ru-RU')} ₸</button>
+    <button class="cta sec" id="order">Заказать изыскания на участке</button>
+    <div class="note">В отчёте: слои грунта, 3D-блок, геологический разрез, PDF. Модель ориентировочная и не заменяет инженерно-геологические изыскания.</div>`;
+  document.getElementById('buy').onclick = ()=>{ track('buy_click',{lng:current.lng,lat:current.lat}); openModal(); };
+  document.getElementById('order').onclick = openLead;
+}
+
+/* ---------- заявка на изыскания ---------- */
+function openLead(){
+  track('survey_click',{lng:current.lng,lat:current.lat});
+  box.innerHTML = `<h3>Заказать изыскания</h3><div class="hint">Оставьте контакты — геодезист свяжется с вами и уточнит задачу.</div>
+    <input id="l_name" placeholder="Имя" autocomplete="name"><input id="l_phone" type="tel" placeholder="+7 701 123 45 67" autocomplete="tel">
+    <input id="l_comment" placeholder="Что планируете строить? (необязательно)"><div class="err" id="err"></div>
+    <button class="cta" id="l_go">Отправить заявку</button>`;
+  modal.style.display='flex'; document.getElementById('l_name').focus();
+  document.getElementById('l_go').onclick = async ()=>{
+    try{
+      await jpost('/api/leads',{name:document.getElementById('l_name').value,phone:document.getElementById('l_phone').value,comment:document.getElementById('l_comment').value,lng:current.lng,lat:current.lat});
+      modal.style.display='none'; toast('Заявка отправлена. Мы свяжемся с вами.');
+    }catch(e){ document.getElementById('err').textContent=e.message; }
+  };
+}
+
+/* ---------- покупка ---------- */
+const modal=document.getElementById('modal'), box=document.getElementById('modalBox');
+modal.onclick=e=>{ if(e.target===modal) modal.style.display='none'; };
+function openModal(){
+  box.innerHTML = `<h3>Отчёт по участку</h3><div class="hint">Укажите email — отправим ссылку на отчёт.</div>
+    <input id="email" type="email" placeholder="you@example.com" autocomplete="email"><div class="err" id="err"></div>
+    <button class="cta" id="go">Продолжить к оплате</button>`;
+  modal.style.display='flex'; document.getElementById('email').focus();
+  document.getElementById('go').onclick = async ()=>{
+    try{
+      const o = await jpost('/api/orders',{lng:current.lng,lat:current.lat,email:document.getElementById('email').value});
+      box.innerHTML = `<h3>Оплата</h3><div class="kv"><span>Отчёт по участку</span><b>${o.price.toLocaleString('ru-RU')} ₸</b></div>
+        <div class="note">Демо-режим: настоящая оплата не списывается. В боевой версии здесь откроется Kaspi Pay / Halyk epay.</div>
+        <button class="cta" id="pay">Оплатить (демо)</button>`;
+      document.getElementById('pay').onclick = async ()=>{
+        try{ const t = await jpost(`/api/orders/${o.orderId}/pay`); modal.style.display='none'; await loadReport(t.token); }
+        catch(e){ toast(e.message); }
+      };
+    }catch(e){ document.getElementById('err').textContent=e.message; }
+  };
+}
+
+/* ---------- платная часть ---------- */
+let report=null, token=null;
+async function loadReport(t){
+  token=t; report = await jget('/api/report/'+t);
+  current.d.near=report.near; current.d.dmin=report.dmin; current.d.confidence=report.confidence;
+  info.innerHTML = head()+`
+    <div class="kv"><span>Уровень грунтовых вод</span><b>${f1(report.gw)} м</b></div>
+    <div class="col">${columnSVG(report.b,report.gw)}
+      <div style="flex:1"><div class="lbl" style="margin-bottom:4px">Слои по глубине</div><table>${layersTable(report.b)}</table></div></div>
+    <button class="cta" id="b3d">Показать 3D-блок грунта</button>
+    <button class="cta sec" id="bsec">Геологический разрез (запад–восток)</button>
+    <a class="cta sec" href="/report.html?t=${t}" target="_blank">Отчёт для печати / PDF</a>
+    <div class="note">Ссылка на отчёт сохранится у вас: /report.html?t=${t}</div>`;
+  document.getElementById('b3d').onclick = ()=>showBlock();
+  document.getElementById('bsec').onclick = ()=>showSection();
+  toast('Оплачено (демо). Отчёт открыт.');
+}
+function showSection(){
+  track('section_view');
+  const el=document.getElementById('section'), L=report.section.length, k=kx(report.point.lat);
+  map.getSource('secline').setData({type:'Feature',properties:{},geometry:{type:'LineString',coordinates:[[report.point.lng-L/2/k,report.point.lat],[report.point.lng+L/2/k,report.point.lat]]}});
+  el.innerHTML = `<h3><span>Геологический разрез · пунктир — грунтовые воды</span><button id="xsec">×</button></h3>${sectionSVG(report.section)}`;
+  el.style.display='block'; document.getElementById('xsec').onclick=()=>{el.style.display='none'; map.getSource('secline').setData(emptyFC);};
+}
+function showBlock(){
+  track('block_view');
+  const {step,n,cells}=report.block, {lng,lat}=report.point, k=kx(lat), half=(n-1)/2, feats=[];
+  const ll=(i,j)=>[lng+(i-half)*step/k, lat+(j-half)*step/KY];
+  for(const c of cells){
+    const poly=[[ll(c.i-.5,c.j-.5),ll(c.i+.5,c.j-.5),ll(c.i+.5,c.j+.5),ll(c.i-.5,c.j+.5),ll(c.i-.5,c.j-.5)]];
+    const bounds=[0,...c.b,DEPTH];
+    for(let l=0;l<5;l++) feats.push({type:'Feature',properties:{row:c.j,color:LAYERS[l].color,base:(DEPTH-bounds[l+1])*KV,height:(bounds[l+1]-bounds[l])*KV},geometry:{type:'Polygon',coordinates:poly}});
+  }
+  map.getSource('block').setData({type:'FeatureCollection',features:feats});
+  setView('soil');
+}
+function setView(v){
+  view=v; const soil=v==='soil', vis=(id,s)=>map.setLayoutProperty(id,'visibility',s?'visible':'none');
+  vis('block',soil); vis('bld',!soil); vis('hill',!soil); vis('bh-dot',!soil);
+  map.setTerrain(soil?null:{source:'dem',exaggeration:2});
+  document.getElementById('soilBox').style.display=soil?'flex':'none';
+  if(soil){ applyCut(); if(marker) marker.remove(); }
+  const pad = window.innerWidth>820 ? {left:280,right:370,top:0,bottom:0} : {left:0,right:0,top:0,bottom:0};
+  const p = report ? [report.point.lng,report.point.lat] : [C.lng,C.lat];
+  setTimeout(()=>map.easeTo(soil?{center:p,pitch:50,bearing:-28,zoom:16.6,padding:pad,duration:1400}:{pitch:60,bearing:-20,zoom:15.4,padding:{left:0,right:0,top:0,bottom:0},duration:1400}),250);
+}
+function applyCut(){ const n=+document.getElementById('cut').value; map.setFilter('block', n?['>=',['get','row'],n]:null); }
+document.getElementById('cut').oninput=applyCut;
+document.getElementById('btnBack').onclick=()=>{ setView('surface'); if(report) marker=new maplibregl.Marker({color:'#f2b84b'}).setLngLat([report.point.lng,report.point.lat]).addTo(map); };
+</script>
+</body>
+</html>
