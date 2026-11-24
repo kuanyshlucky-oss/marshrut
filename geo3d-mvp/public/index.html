@@ -53,7 +53,10 @@
   .chk{display:flex;gap:14px;font-size:12.5px;color:var(--text)} .chk label{display:flex;gap:6px;align-items:center;cursor:pointer}
   .zl{font-size:11px;color:var(--mute);line-height:1.7} .zl i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px}
   .fin{width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:#0f1318;color:var(--text);font:inherit}
+  #btn3d{position:absolute;right:382px;top:16px;z-index:3;min-width:62px;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--text);font:inherit;font-size:15px;font-weight:800;letter-spacing:.5px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.35);transition:background .15s,color .15s}
+  #btn3d:hover{background:var(--accent);color:#1b1500} #btn3d.on{background:var(--accent);color:#1b1500}
   @media (max-width:820px){
+    #btn3d{right:16px;top:16px}
     #top{max-width:calc(100% - 32px)} #tools{top:auto;bottom:16px;width:calc(100% - 32px);flex-direction:row;flex-wrap:wrap;max-height:30vh;overflow:auto} #tools .row{flex:1 1 140px}
     #info{top:auto;left:16px;right:16px;width:auto;bottom:calc(30vh + 32px);max-height:38vh} #section{left:16px;right:16px;bottom:auto;top:96px}
   }
@@ -89,6 +92,7 @@
   <h2>Выберите участок</h2>
   <div class="hint">Кликните по карте. Оранжевые точки — скважины, по которым строится модель грунта.</div>
 </div>
+<button id="btn3d" title="Переключить 2D / 3D">3D</button>
 <div id="section" class="glass"></div>
 <div id="toast" class="glass"></div>
 
@@ -113,14 +117,18 @@ const style = {
     {id:'bg',type:'background',paint:{'background-color':'#0f1318'}},
     {id:'dark',type:'raster',source:'dark',paint:{'raster-brightness-max':.32,'raster-brightness-min':0,'raster-saturation':-.7,'raster-contrast':.25}},
     {id:'sat',type:'raster',source:'sat',layout:{visibility:'none'}},
-    {id:'hill',type:'hillshade',source:'dem',paint:{'hillshade-exaggeration':.55,'hillshade-shadow-color':'#000000','hillshade-highlight-color':'#ffffff','hillshade-accent-color':'#333a44'}},
-    {id:'bld',type:'fill-extrusion',source:'ofm','source-layer':'building',minzoom:13,paint:{
+    // 2D (по умолчанию): плоские контуры зданий, без рельефа и наклона
+    {id:'bld-flat',type:'fill',source:'ofm','source-layer':'building',minzoom:13,paint:{'fill-color':'#6b7280','fill-opacity':.55,'fill-outline-color':'#9aa4b2'}},
+    // 3D (кнопка «3D»): тени рельефа и объёмные здания
+    {id:'hill',type:'hillshade',source:'dem',layout:{visibility:'none'},paint:{'hillshade-exaggeration':.55,'hillshade-shadow-color':'#000000','hillshade-highlight-color':'#ffffff','hillshade-accent-color':'#333a44'}},
+    {id:'bld',type:'fill-extrusion',source:'ofm','source-layer':'building',minzoom:13,layout:{visibility:'none'},paint:{
       'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],6],0,'#4a5568',20,'#6f8fb5',60,'#9fd0e6'],
       'fill-extrusion-height':['coalesce',['get','render_height'],6],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.92}}
-  ],
-  terrain:{source:'dem',exaggeration:2}
+  ]
 };
-const map = new maplibregl.Map({container:'map',style,center:[C.lng,C.lat],zoom:14.6,pitch:60,bearing:-20,maxPitch:80});
+// Как в 2ГИС: карта открывается плоской (2D); наклон, поворот, рельеф и объёмные здания включает кнопка «3D»
+const map = new maplibregl.Map({container:'map',style,center:[C.lng,C.lat],zoom:14.6,pitch:0,bearing:0,maxPitch:0});
+map.dragRotate.disable(); map.touchZoomRotate.disableRotation(); map.keyboard.disableRotation();
 map.addControl(new maplibregl.NavigationControl({visualizePitch:true}),'bottom-right');
 map.addControl(new maplibregl.ScaleControl({unit:'metric'}),'bottom-right');
 
@@ -347,17 +355,48 @@ function showBlock(){
   map.getSource('block').setData({type:'FeatureCollection',features:feats});
   setView('soil');
 }
+/* ---------- режимы 2D / 3D (как в 2ГИС): по умолчанию плоская карта, кнопка «3D» включает объём ---------- */
+let M3D=false;
+const ZERO_PAD={left:0,right:0,top:0,bottom:0};
+function enableTilt(on){
+  map.setMaxPitch(on?80:0);
+  if(on){ map.dragRotate.enable(); map.touchZoomRotate.enableRotation(); map.keyboard.enableRotation(); }
+  else { map.dragRotate.disable(); map.touchZoomRotate.disableRotation(); map.keyboard.disableRotation(); }
+}
+function applyMode(animate, extra){
+  extra=extra||{};
+  const btn=document.getElementById('btn3d');
+  btn.textContent=M3D?'2D':'3D'; btn.classList.toggle('on',M3D); btn.style.display=view==='soil'?'none':'block';
+  if(view==='soil') return;
+  if(M3D){   // 3D: рельеф, тени, объёмные здания, наклон и поворот камеры
+    vset(['bld-flat'],false); vset(['bld','hill'],true);
+    enableTilt(true); map.setTerrain({source:'dem',exaggeration:2});
+    const go=()=>map.easeTo({pitch:60,bearing:-20,duration:1100,...extra});
+    animate?setTimeout(go,250):go();   // небольшая пауза: смена рельефа прерывает анимацию камеры
+  } else {   // 2D: плоские контуры зданий, камера строго сверху
+    vset(['bld','hill'],false); vset(['bld-flat'],true);
+    const done=()=>{ if(!M3D&&view!=='soil'){ map.setTerrain(null); enableTilt(false); } };   // рельеф и блокировку наклона снимаем после анимации
+    if(animate){ map.easeTo({pitch:0,bearing:0,duration:900,...extra}); map.once('moveend',done); } else { map.jumpTo({pitch:0,bearing:0}); done(); }
+  }
+}
+document.getElementById('btn3d').onclick=()=>{ M3D=!M3D; applyMode(true); track(M3D?'view3d':'view2d'); };
+
 function setView(v){
   view=v; const soil=v==='soil', vis=(id,s)=>map.setLayoutProperty(id,'visibility',s?'visible':'none');
-  vis('block',soil); vis('bld',!soil); vis('hill',!soil); vis('bh-dot',!soil);
+  vis('block',soil); vis('bh-dot',!soil);
   const pv=document.getElementById('ckParcels').checked&&!soil, zv=document.getElementById('ckZones').checked&&!soil;
   vset(['parcels-fill','parcels-line','parcels-sel'],pv); vset(['cons-fill','cons-line'],zv);
-  map.setTerrain(soil?null:{source:'dem',exaggeration:2});
   document.getElementById('soilBox').style.display=soil?'flex':'none';
-  if(soil){ applyCut(); if(marker) marker.remove(); }
-  const pad = window.innerWidth>820 ? {left:280,right:370,top:0,bottom:0} : {left:0,right:0,top:0,bottom:0};
-  const p = report ? [report.point.lng,report.point.lat] : [C.lng,C.lat];
-  setTimeout(()=>map.easeTo(soil?{center:p,pitch:50,bearing:-28,zoom:16.6,padding:pad,duration:1400}:{pitch:60,bearing:-20,zoom:15.4,padding:{left:0,right:0,top:0,bottom:0},duration:1400}),250);
+  if(soil){   // 3D-блок грунта: всегда объёмный, рельеф и здания скрыты
+    applyCut(); if(marker) marker.remove();
+    vset(['bld','hill','bld-flat'],false); enableTilt(true); map.setTerrain(null);
+    document.getElementById('btn3d').style.display='none';
+    const pad = window.innerWidth>820 ? {left:280,right:370,top:0,bottom:0} : ZERO_PAD;
+    const p = report ? [report.point.lng,report.point.lat] : [C.lng,C.lat];
+    setTimeout(()=>map.easeTo({center:p,pitch:50,bearing:-28,zoom:16.6,padding:pad,duration:1400}),250);
+  } else {    // возврат к карте города — в тот режим (2D или 3D), в котором пользователь был
+    applyMode(true,{zoom:15.4,padding:ZERO_PAD,duration:1400});
+  }
 }
 function applyCut(){ const n=+document.getElementById('cut').value; map.setFilter('block', n?['>=',['get','row'],n]:null); }
 document.getElementById('cut').oninput=applyCut;

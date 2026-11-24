@@ -217,7 +217,7 @@ function track(type, sid, extra) {
   const e = { t: Date.now(), type, sid: String(sid || 'anon').replace(/[^\w\-]/g, '').slice(0, 40), ...extra };
   events.push(e); fs.mkdirSync(DATA, { recursive: true }); fs.appendFileSync(EV_FILE, JSON.stringify(e) + '\n');
 }
-const CLIENT_EVENTS = new Set(['visit', 'buy_click', 'survey_click', 'block_view', 'section_view', 'print']);
+const CLIENT_EVENTS = new Set(['visit', 'buy_click', 'survey_click', 'block_view', 'section_view', 'print', 'view3d', 'view2d']);
 const dayKey = t => new Date(t + 5 * 36e5).toISOString().slice(0, 10);   // сутки по времени Казахстана (UTC+5)
 
 function analytics(days) {
