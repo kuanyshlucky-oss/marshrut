@@ -105,7 +105,14 @@
     <div class="card" id="bhDetail" style="display:none"></div>
     <div class="card">
       <h2>Импорт скважин по слоям (CSV / Excel)</h2>
-      <div class="bar" style="margin-bottom:8px"><button class="sec" id="tpl">Скачать шаблон CSV</button><input type="file" id="file" accept=".csv,.txt"><button id="imp">Загрузить на проверку</button></div>
+      <div class="bar" style="margin-bottom:10px;padding:10px 12px;background:rgba(242,184,75,.08);border:1px solid rgba(242,184,75,.3);border-radius:10px">
+        <b style="font-size:13px">Для камеральщика:</b>
+        <a href="/templates/boreholes-template.xlsx" download style="color:var(--accent)">Шаблон Excel</a> ·
+        <a href="/templates/boreholes-example-filled.xlsx" download style="color:var(--accent)">Заполненный пример</a> ·
+        <a href="/templates/INSTRUCTION.md" target="_blank" style="color:var(--accent)">Инструкция</a>
+        <span style="color:var(--mute);font-size:12px">— вводят шапку и слои, лист «Экспорт» сохраняют как CSV UTF-8 и загружают ниже.</span>
+      </div>
+      <div class="bar" style="margin-bottom:8px"><button class="sec" id="tpl">Скачать CSV-образец</button><input type="file" id="file" accept=".csv,.txt"><button id="imp">Загрузить на проверку</button></div>
       <textarea id="csv" placeholder="id;report_id;lng;lat;acc;z;date;depth;...;layer_from;layer_to;soil;ige;bearing_kpa;aggressive"></textarea>
       <div class="msg" id="impMsg"></div>
       <div style="color:var(--mute);font-size:12.5px;margin-top:8px;line-height:1.6">
@@ -375,7 +382,7 @@ $('tpl').onclick=()=>{
   const H1='id;report_id;lng;lat;acc;z;date;depth;method;org;doc;gw_first;gw_stable;gw_date;layer_from;layer_to;soil;ige;bearing_kpa;aggressive';
   const hd='СКВ-101;ИГИ-2025/12;73.0860;49.8065;A;541.3;2025-05-10;12;шнековое;Моя геодезия;Отчёт ИГИ 2025/12;5.0;4.5;2025-05-10';
   const rows=[[0,0.6,'Почвенно-растительный слой','',''],[0.6,3.4,'Суглинок песчанистый','ИГЭ-1',150],[3.4,7.5,'Глина тугопластичная','ИГЭ-2',220],[7.5,10,'Песок с гравием','ИГЭ-3',300],[10,12,'Известняк выветрелый','ИГЭ-4',600]];
-  const csv='\ufeff'+H1+'\n'+rows.map(r=>hd+';'+r[0]+';'+r[1]+';'+r[2]+';'+r[3]+';'+r[4]+';').join('\n')+'\n';
+  const csv='\ufeff'+H1+'\n'+rows.map(r=>hd+';'+r[0]+';'+r[1]+';'+r[2]+';'+r[3]+';220;неагрессивные').join('\n')+'\n';
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='boreholes-template-v2.csv'; a.click();
 };
 $('file').onchange=e=>{ const f=e.target.files[0]; if(f) f.text().then(t=>$('csv').value=t.replace(/^\ufeff/,'')); };

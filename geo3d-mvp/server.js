@@ -351,7 +351,7 @@ const NUM_FIELDS = new Set(['lng', 'lat', 'z', 'depth', 'gw_first', 'gw_stable',
 const numOrNaN = s => { if (s === '' || s == null) return null; const v = +String(s).replace(',', '.').replace(/\s/g, ''); return Number.isFinite(v) ? v : NaN; };
 // Формат «по слоям»: одна строка = один слой; строки с одним id объединяются в скважину
 function parseBoreholesCSV(text) {
-  const lines = text.replace(/\r/g, '').split('\n').filter(l => l.trim());
+  const lines = text.replace(/\r/g, '').split('\n').filter(l => l.replace(/[;,\s"﻿]/g, '') !== '');   // пропускаем пустые строки и строки из одних разделителей (Excel дописывает «;;;;» после формул)
   if (lines.length < 2) return { error: 'Пустой файл или нет строк с данными.' };
   const sep = lines[0].includes(';') ? ';' : ',';
   const head = csvLine(lines[0].replace(/^﻿/, ''), sep).map(s => s.toLowerCase());
@@ -379,7 +379,7 @@ function parseBoreholesCSV(text) {
   return { rows: out };
 }
 function parseCSV(text) {   // старый упрощённый формат (id; lng; lat; gw; b1–b4) — тоже принимается и попадает «на проверку»
-  const lines = text.replace(/\r/g, '').split('\n').filter(l => l.trim());
+  const lines = text.replace(/\r/g, '').split('\n').filter(l => l.replace(/[;,\s"﻿]/g, '') !== '');
   if (lines.length < 2) return { rows: [], errors: ['Пустой файл'] };
   const sep = lines[0].includes(';') ? ';' : ',';
   const head = lines[0].split(sep).map(s => s.trim().toLowerCase());
@@ -636,7 +636,7 @@ function importLayer(name, gj) {
 }
 
 /* ---------- HTTP ---------- */
-const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css', '.csv': 'text/csv; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css', '.csv': 'text/csv; charset=utf-8', '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', '.md': 'text/markdown; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon' };
 const SEC_HEADERS = { 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'same-origin' };
 const send = (res, code, obj) => { res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...SEC_HEADERS }); res.end(JSON.stringify(obj)); };
 function body(req, limit = 2e6) { return new Promise((ok, no) => { let d = ''; req.on('data', c => { d += c; if (d.length > limit) { no(new Error('too large')); req.destroy(); } }); req.on('end', () => ok(d)); req.on('error', no); }); }
