@@ -8,6 +8,8 @@ const LAYERS = [
 ];
 const DEPTH = 12;
 const f1 = v => v.toFixed(1).replace('.', ',');
+// Экранирование всего, что пришло с сервера и вставляется в HTML (названия зон, номера участков и т. п.)
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const CONF = { high: ['Высокая', 'p-ok'], medium: ['Средняя', 'p-warn'], low: ['Низкая', 'p-bad'] };
 
 function columnSVG(b, gw, w = 70, h = 190, ink = '#93a0ae') {

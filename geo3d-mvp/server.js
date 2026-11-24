@@ -2,8 +2,21 @@
 // Запуск: node server.js   (PORT, ADMIN_PASSWORD — переменные окружения)
 const http = require('http'), fs = require('fs'), path = require('path'), crypto = require('crypto');
 
+// Настройки: переменные окружения или файл .env рядом с server.js (см. .env.example)
+try { for (const l of fs.readFileSync(path.join(__dirname, '.env'), 'utf8').split(/\r?\n/)) { const m = l.match(/^\s*([A-Z_]+)\s*=\s*(.*?)\s*$/); if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^["']|["']$/g, ''); } } catch { /* .env необязателен */ }
+if (process.argv.includes('--demo')) process.env.PAYMENT_MODE = 'demo';
+
 const PORT = +process.env.PORT || 8095;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';   // ПОМЕНЯЙТЕ перед публикацией
+// Оплата: off (по умолчанию, заказы не создаются) | demo (запуск с --demo, «оплата» без денег) | live (платёжный провайдер + вебхук)
+const PAYMENT_MODE = ['demo', 'live'].includes(process.env.PAYMENT_MODE) ? process.env.PAYMENT_MODE : 'off';
+const PAYMENT_URL_TEMPLATE = process.env.PAYMENT_URL_TEMPLATE || '';   // например https://pay.provider.kz/checkout?order={orderId}&amount={amount}&return={returnUrl}
+const WEBHOOK_SECRET = process.env.PAYMENT_WEBHOOK_SECRET || '';
+const PUBLIC_URL = (process.env.PUBLIC_URL || `http://localhost:${process.env.PORT || 8095}`).replace(/\/$/, '');
+const TRUST_PROXY = process.env.TRUST_PROXY === '1';           // 1 — если сервер стоит за nginx/Caddy (берём IP из X-Forwarded-For)
+if (PAYMENT_MODE === 'live' && (ADMIN_PASSWORD === 'admin' || !WEBHOOK_SECRET || !PAYMENT_URL_TEMPLATE)) {
+  console.error('Боевой режим оплаты требует: ADMIN_PASSWORD (не «admin»), PAYMENT_WEBHOOK_SECRET и PAYMENT_URL_TEMPLATE.'); process.exit(1);
+}
 const PRICE = 15000;                                            // ₸ за отчёт по участку
 const MAX_SELL_DISTANCE = 600;                                  // м до ближайшей скважины, дальше отчёт не продаём
 const DATA = path.join(__dirname, 'data');
@@ -48,6 +61,8 @@ function seedDemo() {
 let boreholes = load(BH_FILE, null);
 if (!boreholes) { boreholes = seedDemo(); save(BH_FILE, boreholes); }
 let orders = load(ORD_FILE, []);
+orders.forEach(o => { if (!o.token) o.token = o.id; });   // старые заказы: токен = id
+const clean = (s, max) => String(s ?? '').replace(/[<>\u0000-\u001f]/g, '').trim().slice(0, max);   // убираем < > и управляющие символы из всего, что пришло снаружи
 
 /* ---------- события, заявки, аналитика ---------- */
 const EV_FILE = path.join(DATA, 'events.jsonl');
@@ -55,6 +70,7 @@ const LEAD_FILE = path.join(DATA, 'leads.json');
 let leads = load(LEAD_FILE, []);
 let events = [];
 try { events = fs.readFileSync(EV_FILE, 'utf8').split('\n').filter(Boolean).map(l => JSON.parse(l)); } catch { /* файла ещё нет */ }
+{ const keep = events.filter(e => e.t > Date.now() - 180 * 864e5); if (keep.length < events.length) { events = keep; fs.writeFileSync(EV_FILE, events.map(e => JSON.stringify(e)).join('\n') + (events.length ? '\n' : '')); } }   // храним события 180 дней
 function track(type, sid, extra) {
   const e = { t: Date.now(), type, sid: String(sid || 'anon').replace(/[^\w\-]/g, '').slice(0, 40), ...extra };
   events.push(e); fs.mkdirSync(DATA, { recursive: true }); fs.appendFileSync(EV_FILE, JSON.stringify(e) + '\n');
@@ -117,8 +133,8 @@ function seedAnalytics() {
           if (rnd() < .82) {
             t += 20000; ev('paid', sid, t, { orderId: id, price: PRICE }); ev('report_view', sid, t + 5000, { orderId: id });
             if (rnd() < .6) ev('block_view', sid, t + 15000);
-            orders.push({ id, lng: got.lng, lat: got.lat, email: 'demo@example.com', price: PRICE, status: 'paid', created: new Date(t - 60000).toISOString(), paidAt: new Date(t).toISOString(), demo: true });
-          } else orders.push({ id, lng: got.lng, lat: got.lat, email: 'demo@example.com', price: PRICE, status: 'pending', created: new Date(t).toISOString(), demo: true });
+            orders.push({ id, token: id, lng: got.lng, lat: got.lat, email: 'demo@example.com', price: PRICE, status: 'paid', created: new Date(t - 60000).toISOString(), paidAt: new Date(t).toISOString(), demo: true });
+          } else orders.push({ id, token: id, lng: got.lng, lat: got.lat, email: 'demo@example.com', price: PRICE, status: 'pending', created: new Date(t).toISOString(), demo: true });
         }
       }
       if (miss && rnd() < .14) {
@@ -197,7 +213,8 @@ function parseCSV(text) {
    Слои: участки, ограничения, сети + ПАСПОРТ УЧАСТКА (светофор по 8 блокам)
    Правила и пороги ориентировочные — согласовать с геотехником и проектировщиком.
    ===================================================================== */
-const PARCELS_FILE = path.join(DATA, 'parcels.json'), CONS_FILE = path.join(DATA, 'constraints.json'), UTIL_FILE = path.join(DATA, 'utilities.json');
+const PARCELS_FILE = path.join(DATA, 'parcels.json'), CONS_FILE = path.join(DATA, 'constraints.json'), UTIL_FILE = path.join(DATA, 'utilities.json'), COV_FILE = path.join(DATA, 'coverage.json');
+const COV_LAYERS = ['hazards', 'protection', 'utilities'];   // слои, для которых нужно подтвердить полноту данных
 const CONS_KINDS = ['protection', 'sanitary', 'undermined', 'flood', 'slag', 'contamination'];
 const UTIL_KINDS = ['water', 'sewer', 'power', 'gas', 'heat'];
 const UNITS = { water: 'м³/сут', sewer: 'м³/сут', power: 'кВт', gas: 'м³/ч', heat: 'Гкал/ч' };
@@ -223,6 +240,11 @@ function fractionInside(parcelRing, zoneRing) {   // доля площади у�
   for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) { const x = minX + (i + .5) * (maxX - minX) / N, y = minY + (j + .5) * (maxY - minY) / N; if (!inRing(parcelRing, x, y)) continue; tot++; if (inRing(zoneRing, x, y)) hit++; }
   return tot ? hit / tot : 0;
 }
+
+/* --- покрытие данных: где слой считается полным. Нет покрытия = «нет данных» (серый), а не «всё хорошо» --- */
+const coverFor = (layer, lng, lat) => coverage.find(c => c.layer === layer && inRing(c.ring, lng, lat)) || null;
+const isStale = c => !!(c && c.as_of && Date.now() - new Date(c.as_of).getTime() > 365 * 864e5);
+const asOf = c => c && c.as_of ? ` (данные на ${c.as_of.split('-').reverse().join('.')}${isStale(c) ? ', устарели — нужна актуализация' : ''})` : '';
 
 /* --- паспорт --- */
 const RANK = { green: 0, gray: 1, yellow: 1, red: 2 };
@@ -250,7 +272,8 @@ function passport(lng, lat, obj, parcelIn) {
   else B('urban', 'Градостроительство', 'green', `Жилая зона${parcel.max_floors != null ? `, до ${parcel.max_floors} этажей` : ''}.`);
 
   // 3. Инженерные сети (расстояние от центра участка, мощность)
-  if (!utilities.length) B('utilities', 'Инженерные сети', 'gray', 'Данных по сетям нет.');
+  const cvU = coverFor('utilities', cen[0], cen[1]);
+  if (!cvU) B('utilities', 'Инженерные сети', 'gray', 'Данные по сетям для этого района не загружены — оценить подключение нельзя.');
   else {
     let worst = 'green'; const parts = [];
     for (const k of ['water', 'sewer', 'power']) {
@@ -268,7 +291,7 @@ function passport(lng, lat, obj, parcelIn) {
       if (k === 'sewer' && obj === 'izhs' && lv === 'red') lv = 'yellow', t += ' (для ИЖС возможен септик)';
       if (RANK[lv] > RANK[worst]) worst = lv; parts.push(t);
     }
-    B('utilities', 'Инженерные сети', worst, parts.join('; ') + '.');
+    B('utilities', 'Инженерные сети', worst === 'green' && isStale(cvU) ? 'yellow' : worst, parts.join('; ') + '.' + asOf(cvU));
   }
 
   // 4. Рельеф
@@ -284,6 +307,8 @@ function passport(lng, lat, obj, parcelIn) {
 
   // 6–7. Зоны: опасные процессы и охранные/санитарные
   const zoneBlock = (key, title, kinds) => {
+    const cv = coverFor(key, cen[0], cen[1]);
+    if (!cv) return B(key, title, 'gray', key === 'hazards' ? 'Данные об опасных процессах (подработка, подтопление, отвалы) для этого района не загружены — нельзя утверждать, что их нет.' : 'Данные об охранных и санитарных зонах для этого района не загружены — нельзя утверждать, что ограничений нет.');
     let lv = 'green'; const parts = [];
     for (const z of constraints) {
       if (!kinds.includes(z.kind)) continue;
@@ -292,7 +317,7 @@ function passport(lng, lat, obj, parcelIn) {
       let l = 'green'; if (frac > (key === 'hazards' ? 0.3 : 0.5)) l = 'red'; else if (frac > 0 || d < (key === 'hazards' ? 150 : 50)) l = 'yellow';
       if (l !== 'green') { parts.push(`${z.name}${frac > 0 ? ` — ${Math.round(frac * 100)}% участка` : ` — рядом (${Math.round(d)} м)`}`); if (RANK[l] > RANK[lv]) lv = l; }
     }
-    B(key, title, lv, parts.length ? parts.join('; ') + '.' : 'Участок не попадает в известные зоны.');
+    B(key, title, lv === 'green' && isStale(cv) ? 'yellow' : lv, (parts.length ? parts.join('; ') + '.' : 'Участок не попадает в известные зоны.') + asOf(cv));
   };
   zoneBlock('hazards', 'Опасные процессы', ['undermined', 'flood', 'slag', 'contamination']);
   zoneBlock('protection', 'Охранные и санитарные зоны', ['protection', 'sanitary']);
@@ -367,10 +392,12 @@ function seedLayers() {
     { id: 'DEMO-U4', kind: 'power', line: [ll(-600, 140), ll(600, 140)], capacity_free: 800, owner: 'Электросети (демо)' },
     { id: 'DEMO-U5', kind: 'power', line: [ll(300, -600), ll(300, 140)], capacity_free: 0, owner: 'Электросети (демо)' }
   ].map(u => ({ ...u, source: 'demo' }));
-  return { ps, cs, us };
+  const cv = COV_LAYERS.map(layer => ({ id: `DEMO-COV-${layer}`, layer, as_of: '2026-09-01', source: 'demo', ring: poly([[-700, -700], [700, -700], [700, 700], [-700, 700]]) }));
+  return { ps, cs, us, cv };
 }
-let parcels = load(PARCELS_FILE, null), constraints = load(CONS_FILE, null), utilities = load(UTIL_FILE, null);
-if (!parcels || !constraints || !utilities) { const d = seedLayers(); parcels = d.ps; constraints = d.cs; utilities = d.us; save(PARCELS_FILE, parcels); save(CONS_FILE, constraints); save(UTIL_FILE, utilities); }
+let parcels = load(PARCELS_FILE, null), constraints = load(CONS_FILE, null), utilities = load(UTIL_FILE, null), coverage = load(COV_FILE, null);
+if (!parcels || !constraints || !utilities) { const d = seedLayers(); parcels = d.ps; constraints = d.cs; utilities = d.us; coverage = d.cv; save(PARCELS_FILE, parcels); save(CONS_FILE, constraints); save(UTIL_FILE, utilities); save(COV_FILE, coverage); }
+if (!coverage) { coverage = []; save(COV_FILE, coverage); }   // слои есть, а покрытие не задано → блоки серые, пока администратор его не загрузит
 
 /* --- импорт GeoJSON (из QGIS, WGS84); всё или ничего --- */
 const truthy = v => v === true || v === 1 || ['true', 'да', 'yes', '1', 'есть'].includes(String(v).trim().toLowerCase());
@@ -381,26 +408,30 @@ function importLayer(name, gj) {
   if (gj.features.length > 5000) return { error: 'Больше 5000 объектов за раз — разбейте файл.' };
   const out = [], errors = [], wantPoly = name !== 'utilities';
   gj.features.forEach((f, idx) => {
-    const pr = f.properties || {}, g = f.geometry || {}, tag = `Объект ${idx + 1}`;
+    const pr = (f && f.properties) || {}, g = (f && f.geometry) || {}, tag = `Объект ${idx + 1}`;
     let geoms = [];
     if (wantPoly) { if (g.type === 'Polygon') geoms = [g.coordinates[0]]; else if (g.type === 'MultiPolygon') geoms = g.coordinates.map(p => p[0]); else return errors.push(`${tag}: нужна геометрия Polygon/MultiPolygon`); }
     else { if (g.type === 'LineString') geoms = [g.coordinates]; else if (g.type === 'MultiLineString') geoms = g.coordinates; else return errors.push(`${tag}: нужна геометрия LineString/MultiLineString`); }
     for (const [gi, ring] of geoms.entries()) {
       if (!Array.isArray(ring) || ring.length < (wantPoly ? 4 : 2) || !ring.every(okCoord)) { errors.push(`${tag}: координаты некорректны или вне области Караганды (нужна система WGS84: долгота, широта)`); continue; }
       const pts = ring.map(c => [+c[0], +c[1]]);
-      const baseId = String(pr.id || pr.cad_number || `${name}-${idx + 1}`).slice(0, 60), id = geoms.length > 1 ? `${baseId}#${gi + 1}` : baseId;
+      const baseId = clean(pr.id || pr.cad_number || `${name}-${idx + 1}`, 60) || `${name}-${idx + 1}`, id = geoms.length > 1 ? `${baseId}#${gi + 1}` : baseId;
       if (name === 'parcels') {
         const status = String(pr.status || '').toLowerCase(); if (!STATUSES.includes(status)) { errors.push(`${tag}: status должен быть один из ${STATUSES.join('|')}`); continue; }
         const zone = String(pr.zone || '').toLowerCase(); if (zone && !ZONES.includes(zone)) { errors.push(`${tag}: zone должен быть один из ${ZONES.join('|')}`); continue; }
         const purposes = (Array.isArray(pr.purposes) ? pr.purposes : String(pr.purposes || '').split(/[,;]/)).map(x => x.trim()).filter(Boolean);
         const bad = purposes.find(x => !PURPOSES.includes(x)); if (bad) { errors.push(`${tag}: purposes содержит «${bad}», допустимо: ${PURPOSES.join(', ')}`); continue; }
-        out.push({ id, cad: String(pr.cad_number || '').slice(0, 40), ring: pts, area_ha: areaHa(pts), status, purposes, zone: zone || 'residential', max_floors: num(pr.max_floors), slope_pct: num(pr.slope_pct), encumbrance: String(pr.encumbrance || '').slice(0, 120), apz: truthy(pr.apz), tu: truthy(pr.tu), source: 'import' });
+        out.push({ id, cad: clean(pr.cad_number, 40), ring: pts, area_ha: areaHa(pts), status, purposes, zone: zone || 'residential', max_floors: num(pr.max_floors), slope_pct: num(pr.slope_pct), encumbrance: clean(pr.encumbrance, 120), apz: truthy(pr.apz), tu: truthy(pr.tu), source: 'import' });
       } else if (name === 'constraints') {
         const kind = String(pr.kind || '').toLowerCase(); if (!CONS_KINDS.includes(kind)) { errors.push(`${tag}: kind должен быть один из ${CONS_KINDS.join('|')}`); continue; }
-        out.push({ id, kind, name: String(pr.name || kind).slice(0, 120), regime: String(pr.regime || '').slice(0, 300), ring: pts, source: 'import' });
+        out.push({ id, kind, name: clean(pr.name || kind, 120), regime: clean(pr.regime, 300), ring: pts, source: 'import' });
+      } else if (name === 'coverage') {
+        const layer = String(pr.layer || '').toLowerCase(); if (!COV_LAYERS.includes(layer)) { errors.push(`${tag}: layer должен быть один из ${COV_LAYERS.join('|')}`); continue; }
+        const asof = String(pr.as_of || '').trim(); if (asof && (!/^\d{4}-\d{2}-\d{2}$/.test(asof) || Number.isNaN(new Date(asof).getTime()))) { errors.push(`${tag}: as_of должен быть датой ГГГГ-ММ-ДД`); continue; }
+        out.push({ id, layer, as_of: asof || null, source: clean(pr.source, 120) || 'import', ring: pts });
       } else {
         const kind = String(pr.kind || '').toLowerCase(); if (!UTIL_KINDS.includes(kind)) { errors.push(`${tag}: kind должен быть один из ${UTIL_KINDS.join('|')}`); continue; }
-        out.push({ id, kind, line: pts, capacity_free: num(pr.capacity_free), owner: String(pr.owner || '').slice(0, 80), source: 'import' });
+        out.push({ id, kind, line: pts, capacity_free: num(pr.capacity_free), owner: clean(pr.owner, 80), source: 'import' });
       }
     }
   });
@@ -409,78 +440,125 @@ function importLayer(name, gj) {
 
 /* ---------- HTTP ---------- */
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css', '.csv': 'text/csv; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon' };
-const send = (res, code, obj) => { res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(obj)); };
+const SEC_HEADERS = { 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'same-origin' };
+const send = (res, code, obj) => { res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...SEC_HEADERS }); res.end(JSON.stringify(obj)); };
 function body(req, limit = 2e6) { return new Promise((ok, no) => { let d = ''; req.on('data', c => { d += c; if (d.length > limit) { no(new Error('too large')); req.destroy(); } }); req.on('end', () => ok(d)); req.on('error', no); }); }
 const isAdmin = req => { const a = Buffer.from(String(req.headers['x-admin-password'] || '')), b = Buffer.from(ADMIN_PASSWORD); return a.length === b.length && crypto.timingSafeEqual(a, b); };
+const parseJSON = s => { try { return JSON.parse(s || '{}'); } catch { return null; } };
+
+/* --- ограничение частоты запросов (в памяти одного процесса; за прокси включить TRUST_PROXY=1) --- */
+const hits = new Map();
+function limited(key, max, ms) { const now = Date.now(); let a = hits.get(key); if (!a) hits.set(key, a = []); while (a.length && a[0] <= now - ms) a.shift(); if (a.length >= max) return true; a.push(now); return false; }
+setInterval(() => { const now = Date.now(); for (const [k, a] of hits) if (!a.length || a[a.length - 1] < now - 36e5) hits.delete(k); }, 6e4).unref();
+const clientIp = req => (TRUST_PROXY ? String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() : '') || req.socket.remoteAddress || 'unknown';
+const LIMITS = { point: [40, 6e4], layers: [20, 6e4], order: [8, 6e4], track: [60, 6e4], lead: [5, 36e5], report: [60, 6e4], status: [60, 6e4], pay: [10, 6e4] };
+const authFails = new Map();   // блокировка подбора пароля админки: 10 неверных попыток за 15 минут
+const adminLocked = ip => { const a = (authFails.get(ip) || []).filter(t => t > Date.now() - 9e5); authFails.set(ip, a); return a.length >= 10; };
+const adminFail = ip => { if (!authFails.has(ip)) authFails.set(ip, []); authFails.get(ip).push(Date.now()); };
+
+/* --- оплата --- */
+function payUrl(ord) { return PAYMENT_URL_TEMPLATE.replace('{orderId}', encodeURIComponent(ord.id)).replace('{amount}', String(ord.price)).replace('{returnUrl}', encodeURIComponent(`${PUBLIC_URL}/?t=${ord.token}`)); }
+function markPaid(ord, sid) {
+  if (ord.status === 'paid') return;
+  ord.status = 'paid'; ord.paidAt = new Date().toISOString(); save(ORD_FILE, orders); track('paid', sid, { orderId: ord.id, price: ord.price });
+}
 
 async function api(req, res, url) {
-  const p = url.pathname, m = req.method, q = url.searchParams;
+  const p = url.pathname, m = req.method, q = url.searchParams, ip = clientIp(req), sid = req.headers['x-sid'];
+  const rl = name => limited(name + ':' + ip, ...LIMITS[name]);
+  const tooMany = () => send(res, 429, { error: 'Слишком много запросов. Подождите минуту и повторите.' });
   // --- публичные ---
-  if (m === 'GET' && p === '/api/config') return send(res, 200, { price: PRICE, depth: DEPTH, maxSellDistance: MAX_SELL_DISTANCE });
-  if (m === 'GET' && p === '/api/boreholes') return send(res, 200, boreholes.filter(b => b.verified).map(b => ({ id: b.id, lng: b.lng, lat: b.lat })));   // слои наружу не отдаём
-  if (m === 'GET' && p === '/api/layers') return send(res, 200, layersPublic(q.get('obj') === 'multi' ? 'multi' : 'izhs'));   // сети публично не отдаём
+  if (m === 'GET' && p === '/api/config') return send(res, 200, { price: PRICE, depth: DEPTH, maxSellDistance: MAX_SELL_DISTANCE, payment: PAYMENT_MODE });
+  if (m === 'GET' && p === '/api/boreholes') { if (rl('layers')) return tooMany(); return send(res, 200, boreholes.filter(b => b.verified).map(b => ({ id: b.id, lng: b.lng, lat: b.lat }))); }
+  if (m === 'GET' && p === '/api/layers') { if (rl('layers')) return tooMany(); return send(res, 200, layersPublic(q.get('obj') === 'multi' ? 'multi' : 'izhs')); }   // сети публично не отдаём
   if (m === 'GET' && p === '/api/point') {
+    if (rl('point')) return tooMany();
     const lng = +q.get('lng'), lat = +q.get('lat'); if (!Number.isFinite(lng) || !Number.isFinite(lat)) return send(res, 400, { error: 'lng/lat' });
     const v = interp(lng, lat); if (!v) return send(res, 200, { available: false });
-    track('point_click', req.headers['x-sid'], { lng: +lng.toFixed(4), lat: +lat.toFixed(4), avail: v.dmin <= MAX_SELL_DISTANCE, dmin: v.dmin });
-    const pp = passport(lng, lat, q.get('obj'));   // бесплатно: только цвета блоков, без причин и цифр
-    return send(res, 200, { available: v.dmin <= MAX_SELL_DISTANCE, gw: v.gw, near: v.near, dmin: v.dmin, confidence: confidence(v.dmin), price: PRICE,
+    track('point_click', sid, { lng: +lng.toFixed(4), lat: +lat.toFixed(4), avail: v.dmin <= MAX_SELL_DISTANCE, dmin: v.dmin });
+    const pp = passport(lng, lat, q.get('obj'));   // бесплатно: только цвета блоков, без причин; УГВ и расстояние огрублены, ID скважины скрыт
+    return send(res, 200, { available: v.dmin <= MAX_SELL_DISTANCE, gw: Math.round(v.gw * 2) / 2, near: null, dmin: Math.round(v.dmin / 10) * 10, confidence: confidence(v.dmin), price: PRICE,
       parcel: pp.parcel, light: pp.overall, levels: pp.blocks.map(b => ({ key: b.key, title: b.title, level: b.level })) });
   }
   if (m === 'POST' && p === '/api/orders') {
-    const o = JSON.parse(await body(req) || '{}'); const lng = +o.lng, lat = +o.lat;
+    if (rl('order')) return tooMany();
+    if (PAYMENT_MODE === 'off') return send(res, 503, { error: 'Оплата пока не подключена. Оставьте заявку на изыскания — мы свяжемся с вами.' });
+    const o = parseJSON(await body(req)); if (!o) return send(res, 400, { error: 'json' }); const lng = +o.lng, lat = +o.lat;
     if (!Number.isFinite(lng) || !Number.isFinite(lat)) return send(res, 400, { error: 'Нет координат' });
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(o.email || ''))) return send(res, 400, { error: 'Укажите корректный email' });
     const v = interp(lng, lat); if (!v || v.dmin > MAX_SELL_DISTANCE) return send(res, 422, { error: 'Рядом нет данных. Закажите инженерные изыскания на участке.' });
-    const ord = { id: crypto.randomBytes(12).toString('hex'), lng, lat, email: String(o.email).slice(0, 120), price: PRICE, obj: o.obj === 'multi' ? 'multi' : 'izhs', status: 'pending', created: new Date().toISOString() };
-    orders.push(ord); save(ORD_FILE, orders); track('order_created', req.headers['x-sid'], { orderId: ord.id });
-    return send(res, 201, { orderId: ord.id, price: PRICE });
+    // id — для платёжного провайдера, token — секрет покупателя (он же ключ отчёта; провайдеру не передаётся)
+    const ord = { id: crypto.randomBytes(12).toString('hex'), token: crypto.randomBytes(16).toString('hex'), lng, lat, email: clean(o.email, 120), price: PRICE, obj: o.obj === 'multi' ? 'multi' : 'izhs', status: 'pending', created: new Date().toISOString() };
+    orders.push(ord); save(ORD_FILE, orders); track('order_created', sid, { orderId: ord.id });
+    return send(res, 201, { orderId: ord.id, token: ord.token, price: PRICE, mode: PAYMENT_MODE, payUrl: PAYMENT_MODE === 'live' ? payUrl(ord) : null });
+  }
+  if (m === 'GET' && p === '/api/orders/status') {
+    if (rl('status')) return tooMany();
+    const ord = orders.find(x => x.token === String(q.get('token') || '')); if (!ord) return send(res, 404, { error: 'Заказ не найден' });
+    return send(res, 200, { status: ord.status });
   }
   if (m === 'POST' && p === '/api/track') {
-    const o = JSON.parse(await body(req) || '{}'); if (!CLIENT_EVENTS.has(o.type)) return send(res, 400, { error: 'type' });
+    if (rl('track')) return tooMany();
+    const o = parseJSON(await body(req)); if (!o || !CLIENT_EVENTS.has(o.type)) return send(res, 400, { error: 'type' });
+    if (limited('sidcap:' + sid, 200, 36e5)) return send(res, 200, { ok: true });               // не больше 200 событий на визит в час
+    if (o.type === 'visit' && limited('visit:' + sid, 1, 432e5)) return send(res, 200, { ok: true });   // один визит на сессию за 12 часов
     const x = {}; if (Number.isFinite(+o.lng) && Number.isFinite(+o.lat)) { x.lng = +(+o.lng).toFixed(4); x.lat = +(+o.lat).toFixed(4); }
-    track(o.type, req.headers['x-sid'], x); return send(res, 200, { ok: true });
+    track(o.type, sid, x); return send(res, 200, { ok: true });
   }
   if (m === 'POST' && p === '/api/leads') {   // заявка на изыскания
-    const o = JSON.parse(await body(req) || '{}'); const name = String(o.name || '').trim().slice(0, 80), phone = String(o.phone || '').trim();
+    if (rl('lead')) return tooMany();
+    const o = parseJSON(await body(req)); if (!o) return send(res, 400, { error: 'json' }); const name = clean(o.name, 80), phone = String(o.phone || '').trim();
     if (!name) return send(res, 400, { error: 'Укажите имя' });
     if (!/^[+\d][\d\s()\-]{6,20}$/.test(phone)) return send(res, 400, { error: 'Укажите телефон, например +7 701 123 45 67' });
     const lng = +o.lng, lat = +o.lat;
-    const lead = { id: crypto.randomBytes(8).toString('hex'), created: new Date().toISOString(), name, phone, comment: String(o.comment || '').trim().slice(0, 500),
+    const lead = { id: crypto.randomBytes(8).toString('hex'), created: new Date().toISOString(), name, phone, comment: clean(o.comment, 500),
       lng: Number.isFinite(lng) ? +lng.toFixed(5) : null, lat: Number.isFinite(lat) ? +lat.toFixed(5) : null, status: 'new' };
-    leads.push(lead); save(LEAD_FILE, leads); track('lead', req.headers['x-sid'], { lng: lead.lng, lat: lead.lat });
+    leads.push(lead); save(LEAD_FILE, leads); track('lead', sid, { lng: lead.lng, lat: lead.lat });
     return send(res, 201, { ok: true });
   }
   let r;
-  if (m === 'POST' && (r = p.match(/^\/api\/orders\/(\w+)\/pay$/))) {   // ДЕМО-оплата. В боевой версии: webhook Kaspi/Halyk/Freedom Pay
-    const ord = orders.find(x => x.id === r[1]); if (!ord) return send(res, 404, { error: 'Заказ не найден' });
-    if (ord.status !== 'paid') { ord.status = 'paid'; ord.paidAt = new Date().toISOString(); save(ORD_FILE, orders); track('paid', req.headers['x-sid'], { orderId: ord.id, price: ord.price }); }
-    return send(res, 200, { token: ord.id });
+  if (m === 'POST' && (r = p.match(/^\/api\/orders\/(\w+)\/pay$/))) {   // ТОЛЬКО демо-режим (запуск с --demo). В боевом режиме платит провайдер через вебхук
+    if (PAYMENT_MODE !== 'demo') return send(res, 403, { error: 'Демо-оплата отключена' });
+    if (rl('pay')) return tooMany();
+    const o = parseJSON(await body(req)) || {}, ord = orders.find(x => x.id === r[1]); if (!ord || ord.token !== o.token) return send(res, 404, { error: 'Заказ не найден' });
+    markPaid(ord, sid); return send(res, 200, { token: ord.token });
+  }
+  if (m === 'POST' && p === '/api/payments/webhook') {   // вебхук провайдера: подпись HMAC-SHA256 над «order_id.amount.status»; адаптировать под выбранный банк
+    if (PAYMENT_MODE !== 'live') return send(res, 404, { error: 'Not found' });
+    const o = parseJSON(await body(req)); if (!o) return send(res, 400, { error: 'json' });
+    const expect = crypto.createHmac('sha256', WEBHOOK_SECRET).update(`${o.order_id}.${o.amount}.${o.status}`).digest('hex'), got = String(o.signature || '');
+    if (got.length !== expect.length || !crypto.timingSafeEqual(Buffer.from(got), Buffer.from(expect))) return send(res, 401, { error: 'bad signature' });
+    const ord = orders.find(x => x.id === String(o.order_id)); if (!ord) return send(res, 404, { error: 'order' });
+    if (+o.amount !== ord.price) return send(res, 422, { error: 'amount mismatch' });
+    if (o.status === 'paid') markPaid(ord, 'webhook');
+    return send(res, 200, { ok: true });
   }
   if (m === 'GET' && (r = p.match(/^\/api\/report\/(\w+)$/))) {
-    const ord = orders.find(x => x.id === r[1]); if (!ord || ord.status !== 'paid') return send(res, 402, { error: 'Отчёт не оплачен' });
+    if (rl('report')) return tooMany();
+    const ord = orders.find(x => x.token === r[1]); if (!ord || ord.status !== 'paid') return send(res, 402, { error: 'Отчёт не оплачен' });
     const rep = buildReport(ord.lng, ord.lat); if (!rep) return send(res, 404, { error: 'Нет данных' });
-    track('report_view', req.headers['x-sid'], { orderId: ord.id });
+    track('report_view', sid, { orderId: ord.id });
     return send(res, 200, { ...rep, passport: passport(ord.lng, ord.lat, ord.obj), orderId: ord.id, paidAt: ord.paidAt });
   }
   // --- админка ---
   if (p.startsWith('/api/admin/')) {
-    if (!isAdmin(req)) return send(res, 401, { error: 'Неверный пароль' });
+    if (adminLocked(ip)) return send(res, 429, { error: 'Слишком много неверных паролей. Подождите 15 минут.' });
+    if (!isAdmin(req)) { adminFail(ip); return send(res, 401, { error: 'Неверный пароль' }); }
     if (m === 'GET' && p === '/api/admin/boreholes') return send(res, 200, boreholes);
     if (m === 'GET' && p === '/api/admin/orders') return send(res, 200, orders.slice().reverse());
     if (m === 'POST' && p === '/api/admin/boreholes') {
-      const o = JSON.parse(await body(req) || '{}'); const err = validateBH(o); if (err) return send(res, 400, { error: err });
+      const o = parseJSON(await body(req)); const err = validateBH(o); if (err) return send(res, 400, { error: err });
       const nb = normBH(o, 'admin'); const i = boreholes.findIndex(x => x.id === nb.id); if (i >= 0) boreholes[i] = nb; else boreholes.push(nb);
       save(BH_FILE, boreholes); return send(res, 200, { ok: true, updated: i >= 0 });
     }
     if (m === 'POST' && p === '/api/admin/import') {
-      const { rows, errors } = parseCSV(String(JSON.parse(await body(req) || '{}').csv || ''));
+      const { rows, errors } = parseCSV(String((parseJSON(await body(req)) || {}).csv || ''));
       if (errors.length) return send(res, 400, { error: errors.slice(0, 10).join('\n'), errors: errors.length });   // всё или ничего
       let added = 0, updated = 0; for (const nb of rows) { const i = boreholes.findIndex(x => x.id === nb.id); if (i >= 0) { boreholes[i] = nb; updated++; } else { boreholes.push(nb); added++; } }
       save(BH_FILE, boreholes); return send(res, 200, { added, updated });
     }
     if (m === 'POST' && p === '/api/admin/verify') {
-      const o = JSON.parse(await body(req) || '{}'); const b = boreholes.find(x => x.id === o.id); if (!b) return send(res, 404, { error: 'Не найдено' });
+      const o = parseJSON(await body(req)) || {}; const b = boreholes.find(x => x.id === o.id); if (!b) return send(res, 404, { error: 'Не найдено' });
       b.verified = !!o.verified; save(BH_FILE, boreholes); return send(res, 200, { ok: true });
     }
     if (m === 'DELETE' && (r = p.match(/^\/api\/admin\/boreholes\/(.+)$/))) {
@@ -489,28 +567,31 @@ async function api(req, res, url) {
     if (m === 'GET' && p === '/api/admin/layers') {
       const cnt = a => ({ total: a.length, demo: a.filter(x => x.source === 'demo').length });
       const lights = parcelLights('izhs');
-      return send(res, 200, { parcels: cnt(parcels), constraints: cnt(constraints), utilities: cnt(utilities), parcels_ha: +parcels.reduce((s, x) => s + x.area_ha, 0).toFixed(1),
+      return send(res, 200, { parcels: cnt(parcels), constraints: cnt(constraints), utilities: cnt(utilities), coverage: cnt(coverage), parcels_ha: +parcels.reduce((s, x) => s + x.area_ha, 0).toFixed(1),
+        coverage_list: coverage.map(c => ({ id: c.id, layer: c.layer, as_of: c.as_of, source: c.source })),
         geo: { parcels: { type: 'FeatureCollection', features: lights.map(({ p, pp }) => ({ type: 'Feature', properties: { id: p.id, light: pp.overall, status: p.status }, geometry: { type: 'Polygon', coordinates: [p.ring] } })) },
           constraints: { type: 'FeatureCollection', features: constraints.map(z => ({ type: 'Feature', properties: { id: z.id, kind: z.kind, name: z.name }, geometry: { type: 'Polygon', coordinates: [z.ring] } })) },
+          coverage: { type: 'FeatureCollection', features: coverage.map(c => ({ type: 'Feature', properties: { id: c.id, layer: c.layer }, geometry: { type: 'Polygon', coordinates: [c.ring] } })) },
           utilities: { type: 'FeatureCollection', features: utilities.map(u => ({ type: 'Feature', properties: { id: u.id, kind: u.kind, capacity_free: u.capacity_free }, geometry: { type: 'LineString', coordinates: u.line } })) } } });
     }
     let lm;
-    if (m === 'POST' && (lm = p.match(/^\/api\/admin\/layer\/(parcels|constraints|utilities)$/))) {
-      const name = lm[1], o = JSON.parse(await body(req, 25e6) || '{}'); const r2 = importLayer(name, o.geojson);
+    if (m === 'POST' && (lm = p.match(/^\/api\/admin\/layer\/(parcels|constraints|utilities|coverage)$/))) {
+      const name = lm[1], o = parseJSON(await body(req, 25e6)); if (!o) return send(res, 400, { error: 'Файл не является корректным JSON' });
+      const r2 = importLayer(name, o.geojson);
       if (r2.error) return send(res, 400, r2);
-      const arr = name === 'parcels' ? parcels : name === 'constraints' ? constraints : utilities; let added = 0, updated = 0;
+      const arr = name === 'parcels' ? parcels : name === 'constraints' ? constraints : name === 'utilities' ? utilities : coverage; let added = 0, updated = 0;
       if (o.replace) { arr.length = 0; }
       for (const row of r2.rows) { const i = arr.findIndex(x => x.id === row.id); if (i >= 0) { arr[i] = row; updated++; } else { arr.push(row); added++; } }
-      save(name === 'parcels' ? PARCELS_FILE : name === 'constraints' ? CONS_FILE : UTIL_FILE, arr); return send(res, 200, { added, updated });
+      save({ parcels: PARCELS_FILE, constraints: CONS_FILE, utilities: UTIL_FILE, coverage: COV_FILE }[name], arr); return send(res, 200, { added, updated });
     }
     if (m === 'POST' && p === '/api/admin/delete-demo-layers') {
-      parcels = parcels.filter(x => x.source !== 'demo'); constraints = constraints.filter(x => x.source !== 'demo'); utilities = utilities.filter(x => x.source !== 'demo');
-      save(PARCELS_FILE, parcels); save(CONS_FILE, constraints); save(UTIL_FILE, utilities); return send(res, 200, { ok: true });
+      parcels = parcels.filter(x => x.source !== 'demo'); constraints = constraints.filter(x => x.source !== 'demo'); utilities = utilities.filter(x => x.source !== 'demo'); coverage = coverage.filter(x => x.source !== 'demo');
+      save(PARCELS_FILE, parcels); save(CONS_FILE, constraints); save(UTIL_FILE, utilities); save(COV_FILE, coverage); return send(res, 200, { ok: true });
     }
     if (m === 'GET' && p === '/api/admin/analytics') return send(res, 200, analytics(Math.min(180, Math.max(1, +q.get('days') || 30))));
     if (m === 'GET' && p === '/api/admin/leads') return send(res, 200, leads.slice().reverse());
     if (m === 'POST' && p === '/api/admin/lead-status') {
-      const o = JSON.parse(await body(req) || '{}'); const l = leads.find(x => x.id === o.id); if (!l || !['new', 'work', 'done'].includes(o.status)) return send(res, 400, { error: 'Некорректно' });
+      const o = parseJSON(await body(req)) || {}; const l = leads.find(x => x.id === o.id); if (!l || !['new', 'work', 'done'].includes(o.status)) return send(res, 400, { error: 'Некорректно' });
       l.status = o.status; save(LEAD_FILE, leads); return send(res, 200, { ok: true });
     }
     if (m === 'POST' && p === '/api/admin/seed-analytics') { if (events.some(e => e.demo)) return send(res, 400, { error: 'Демо-аналитика уже загружена' }); return send(res, 200, { visitors: seedAnalytics() }); }
@@ -521,12 +602,13 @@ async function api(req, res, url) {
 }
 
 function serveStatic(req, res, url) {
-  let rel = decodeURIComponent(url.pathname); if (rel === '/') rel = '/index.html'; if (rel === '/admin') rel = '/admin.html';
+  let rel; try { rel = decodeURIComponent(url.pathname); } catch { res.writeHead(400); return res.end(); }
+  if (rel === '/') rel = '/index.html'; if (rel === '/admin') rel = '/admin.html';
   const file = path.normalize(path.join(PUBLIC, rel));
   if (!file.startsWith(PUBLIC + path.sep)) { res.writeHead(403); return res.end(); }
   fs.readFile(file, (err, data) => {
-    if (err) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }); return res.end('Не найдено'); }
-    res.writeHead(200, { 'Content-Type': MIME[path.extname(file)] || 'application/octet-stream' }); res.end(data);
+    if (err) { res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8', ...SEC_HEADERS }); return res.end('Не найдено'); }
+    res.writeHead(200, { 'Content-Type': MIME[path.extname(file)] || 'application/octet-stream', ...SEC_HEADERS }); res.end(data);
   });
 }
 
@@ -536,4 +618,4 @@ http.createServer(async (req, res) => {
     if (url.pathname.startsWith('/api/')) return await api(req, res, url);
     serveStatic(req, res, url);
   } catch (e) { console.error(e); if (!res.headersSent) send(res, 500, { error: 'Ошибка сервера' }); }
-}).listen(PORT, () => console.log(`3D Караганда MVP: http://localhost:${PORT}   админка: /admin (пароль: ${ADMIN_PASSWORD === 'admin' ? 'admin — смените!' : 'из ADMIN_PASSWORD'})`));
+}).listen(PORT, () => console.log(`3D Караганда MVP: http://localhost:${PORT}   админка: /admin   оплата: ${PAYMENT_MODE}${PAYMENT_MODE === 'demo' ? ' (ДЕМО — настоящие деньги не принимаются)' : ''}${ADMIN_PASSWORD === 'admin' ? '   ВНИМАНИЕ: пароль админки по умолчанию «admin» — смените!' : ''}`));

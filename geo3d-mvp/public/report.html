@@ -31,9 +31,9 @@ function passportBlock(pp){
   const p=pp.parcel;
   return `<h2>Паспорт участка · ${pp.obj==='multi'?'многоэтажный дом':'ИЖС (частный дом)'}</h2>
     <div style="font-size:17px;font-weight:700;color:${LC[pp.overall]};margin-bottom:6px">● ${LT[pp.overall]}</div>
-    ${p?`<div class="kv"><span>Кадастровый номер</span><b>${p.cad||p.id}</b></div><div class="kv"><span>Площадь</span><b>${f1(p.area_ha)} га</b></div><div class="kv"><span>Статус</span><b>${p.status_ru}</b></div><div class="kv"><span>Назначение</span><b>${p.purposes.join(', ')||'не указано'}</b></div>`:'<div class="kv"><span>Участок в базе</span><b>не найден</b></div>'}
-    <table style="margin-top:8px">${pp.blocks.map(b=>`<tr><td style="width:26px;color:${LC[b.level]};font-size:16px">●</td><td><b>${b.title}</b> <span style="color:${LC[b.level]};font-size:12px">(${TL[b.level]})</span><div style="color:#5b6775;font-size:12.5px">${b.text}</div></td></tr>`).join('')}</table>
-    <h2 style="margin-top:18px">Чего не хватает для начала строительства</h2><ul style="margin:6px 0 0;padding-left:20px">${pp.missing.map(m=>`<li>${m}</li>`).join('')}</ul>`;
+    ${p?`<div class="kv"><span>Кадастровый номер</span><b>${esc(p.cad||p.id)}</b></div><div class="kv"><span>Площадь</span><b>${f1(p.area_ha)} га</b></div><div class="kv"><span>Статус</span><b>${esc(p.status_ru)}</b></div><div class="kv"><span>Назначение</span><b>${esc(p.purposes.join(', ')||'не указано')}</b></div>`:'<div class="kv"><span>Участок в базе</span><b>не найден</b></div>'}
+    <table style="margin-top:8px">${pp.blocks.map(b=>`<tr><td style="width:26px;color:${LC[b.level]};font-size:16px">●</td><td><b>${esc(b.title)}</b> <span style="color:${LC[b.level]};font-size:12px">(${TL[b.level]})</span><div style="color:#5b6775;font-size:12.5px">${esc(b.text)}</div></td></tr>`).join('')}</table>
+    <h2 style="margin-top:18px">Чего не хватает для начала строительства</h2><ul style="margin:6px 0 0;padding-left:20px">${pp.missing.map(m=>`<li>${esc(m)}</li>`).join('')}</ul>`;
 }
 (async()=>{
   const el=document.getElementById('page'), t=new URLSearchParams(location.search).get('t');

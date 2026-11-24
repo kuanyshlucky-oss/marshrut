@@ -148,6 +148,7 @@ map.on('load', async ()=>{
     map.getSource('bh').setData({type:'FeatureCollection',features:bh.map(p=>({type:'Feature',properties:{id:p.id},geometry:{type:'Point',coordinates:[p.lng,p.lat]}}))});
     document.getElementById('demoBadge').style.display = bh.some(p=>p.id.startsWith('DEMO-')) ? 'inline-block':'none';
     await loadLayers();
+    returnFromPayment();
   }catch(e){ toast('Не удалось загрузить данные: '+e.message); }
 });
 
@@ -191,7 +192,7 @@ function renderHome(){
 function drawPlist(){
   const el=document.getElementById('plist'); if(!el||!LD) return;
   const list=LD.parcels.features.map(f=>f.properties).filter(p=>p.status!=='occupied'&&p.area_ha>=MIN_HA).sort((a,b)=>(a.light==='green'?0:a.light==='yellow'?1:2)-(b.light==='green'?0:b.light==='yellow'?1:2)||b.area_ha-a.area_ha);
-  el.innerHTML = list.map(p=>`<div class="it" data-lng="${p.lng}" data-lat="${p.lat}"><span class="dot" style="background:${LC[p.light]}"></span><span class="t">${p.cad||p.id}<small>${p.status_ru} · ${p.purposes||'назначение не указано'}</small></span><span class="ha">${f1(p.area_ha)} га</span></div>`).join('') || '<div class="hint" style="padding:8px 0">Нет участков под этот фильтр.</div>';
+  el.innerHTML = list.map(p=>`<div class="it" data-lng="${p.lng}" data-lat="${p.lat}"><span class="dot" style="background:${LC[p.light]}"></span><span class="t">${esc(p.cad||p.id)}<small>${esc(p.status_ru)} · ${esc(p.purposes||'назначение не указано')}</small></span><span class="ha">${f1(p.area_ha)} га</span></div>`).join('') || '<div class="hint" style="padding:8px 0">Нет участков под этот фильтр.</div>';
   el.onclick=e=>{ const it=e.target.closest('.it'); if(!it) return; const lng=+it.dataset.lng, lat=+it.dataset.lat; map.flyTo({center:[lng,lat],zoom:16.2,duration:1200}); selectPoint(lng,lat); };
 }
 
@@ -210,18 +211,18 @@ async function selectPoint(lng,lat){
 function head(){
   const {lng,lat,d}=current, cf=CONF[d.confidence]||['—',''], p=d.parcel;
   return `<button class="link" id="home">← Свободные участки</button>
-    <h2>${p?('Участок '+(p.cad||p.id)):'Точка на карте'} ${d.light?lightPill(d.light):''}</h2><div class="hint">${lat.toFixed(5)}° с.ш., ${lng.toFixed(5)}° в.д. · ${OBJ==='izhs'?'ИЖС':'многоэтажка'}</div>
-    ${p?`<div class="kv"><span>Площадь</span><b>${f1(p.area_ha)} га</b></div><div class="kv"><span>Статус</span><b>${p.status_ru}</b></div><div class="kv"><span>Назначение</span><b>${p.purposes.join(', ')||'не указано'}</b></div>`:'<div class="kv"><span>Участок в базе</span><b>не найден</b></div>'}
+    <h2>${p?('Участок '+esc(p.cad||p.id)):'Точка на карте'} ${d.light?lightPill(d.light):''}</h2><div class="hint">${lat.toFixed(5)}° с.ш., ${lng.toFixed(5)}° в.д. · ${OBJ==='izhs'?'ИЖС':'многоэтажка'}</div>
+    ${p?`<div class="kv"><span>Площадь</span><b>${f1(p.area_ha)} га</b></div><div class="kv"><span>Статус</span><b>${esc(p.status_ru)}</b></div><div class="kv"><span>Назначение</span><b>${esc(p.purposes.join(', ')||'не указано')}</b></div>`:'<div class="kv"><span>Участок в базе</span><b>не найден</b></div>'}
     <div class="kv"><span>Достоверность модели грунта</span><span class="pill ${cf[1]}">${cf[0]}</span></div>
-    <div class="kv"><span>Ближайшая скважина</span><b>${d.near}, ${d.dmin} м</b></div>`;
+    <div class="kv"><span>Ближайшая скважина</span><b>${d.near?esc(d.near)+', ':'около '}${d.dmin} м</b></div>`;
 }
 function passportHTML(pp){
-  return `<div class="lbl" style="margin:12px 0 2px">Паспорт участка</div>`+pp.blocks.map(b=>`<div class="blk"><span class="d" style="background:${LC[b.level]}"></span><div><b>${b.title}</b><div class="hint">${b.text}</div></div></div>`).join('')+
-    `<div class="lbl" style="margin:12px 0 0">Чего не хватает для старта</div><ul class="miss">${pp.missing.map(m=>`<li>${m}</li>`).join('')}</ul>`;
+  return `<div class="lbl" style="margin:12px 0 2px">Паспорт участка</div>`+pp.blocks.map(b=>`<div class="blk"><span class="d" style="background:${LC[b.level]||LC.gray}"></span><div><b>${esc(b.title)}</b><div class="hint">${esc(b.text)}</div></div></div>`).join('')+
+    `<div class="lbl" style="margin:12px 0 0">Чего не хватает для старта</div><ul class="miss">${pp.missing.map(m=>`<li>${esc(m)}</li>`).join('')}</ul>`;
 }
 function renderFree(){
   const d=current.d;
-  const levels = d.levels ? `<div class="lbl" style="margin:12px 0 2px">Паспорт участка</div>`+d.levels.map(b=>`<div class="kv"><span>${b.title}</span><span style="color:${LC[b.level]};font-size:16px;line-height:1">●</span></div>`).join('')+`<div class="note" style="margin-top:6px">Причины, цифры и список недостающих документов — в отчёте.</div>` : '';
+  const levels = d.levels ? `<div class="lbl" style="margin:12px 0 2px">Паспорт участка</div>`+d.levels.map(b=>`<div class="kv"><span>${esc(b.title)}</span><span style="color:${LC[b.level]||LC.gray};font-size:16px;line-height:1">●</span></div>`).join('')+`<div class="note" style="margin-top:6px">Причины, цифры и список недостающих документов — в отчёте.</div>` : '';
   if(!d.available){
     setInfo(head()+levels+`<div class="note">Рядом с этой точкой нет наших скважин, поэтому мы не продаём отчёт: модель грунта была бы ненадёжной.</div>
       <button class="cta" onclick="openLead()">Заказать изыскания на участке</button>`);
@@ -229,7 +230,7 @@ function renderFree(){
   }
   const fake=[0,1,2,3,4].map(i=>`<tr><td><span class="sw" style="background:#555"></span>Слой ${i+1}</td><td>0,0–0,0 м</td></tr>`).join('');
   setInfo(head()+`
-    <div class="kv"><span>Уровень грунтовых вод</span><b>${f1(d.gw)} м</b></div>`+levels+`
+    <div class="kv"><span>Уровень грунтовых вод (ориентировочно)</span><b>≈ ${f1(d.gw)} м</b></div>`+levels+`
     <div class="col"><div style="opacity:.35">${columnSVG([2,4,6,8],null)}</div>
       <div style="flex:1"><div class="lbl" style="margin-bottom:4px">Слои по глубине · в отчёте</div><table class="locked">${fake}</table></div></div>
     <button class="cta" id="buy">Купить отчёт — ${cfg.price.toLocaleString('ru-RU')} ₸</button>
@@ -275,21 +276,44 @@ function openModal(){
   document.getElementById('go').onclick = async ()=>{
     try{
       const o = await jpost('/api/orders',{lng:current.lng,lat:current.lat,obj:OBJ,email:document.getElementById('email').value});
-      box.innerHTML = `<h3>Оплата</h3><div class="kv"><span>Отчёт по участку</span><b>${o.price.toLocaleString('ru-RU')} ₸</b></div>
-        <div class="note">Демо-режим: настоящая оплата не списывается. В боевой версии здесь откроется Kaspi Pay / Halyk epay.</div>
-        <button class="cta" id="pay">Оплатить (демо)</button>`;
-      document.getElementById('pay').onclick = async ()=>{
-        try{ const t = await jpost(`/api/orders/${o.orderId}/pay`); modal.style.display='none'; await loadReport(t.token); }
-        catch(e){ toast(e.message); }
-      };
+      const sum = `<h3>Оплата</h3><div class="kv"><span>Отчёт по участку</span><b>${o.price.toLocaleString('ru-RU')} ₸</b></div>`;
+      if(o.mode==='demo'){
+        box.innerHTML = sum+`<div class="note">Демо-режим: настоящая оплата не списывается.</div><button class="cta" id="pay">Оплатить (демо)</button>`;
+        document.getElementById('pay').onclick = async ()=>{
+          try{ const t = await jpost(`/api/orders/${o.orderId}/pay`,{token:o.token}); modal.style.display='none'; await loadReport(t.token); }
+          catch(e){ toast(e.message); }
+        };
+      } else if(o.payUrl){
+        box.innerHTML = sum+`<div class="note">Вы перейдёте на страницу платёжной системы и вернётесь сюда после оплаты. Ссылка на отчёт: /report.html?t=${esc(o.token)} — сохраните её.</div><button class="cta" id="pay">Перейти к оплате</button>`;
+        document.getElementById('pay').onclick = ()=>{ try{ localStorage.setItem('geo3d_pending',o.token); }catch{} location.href=o.payUrl; };
+      } else { box.innerHTML = sum+'<div class="err">Оплата временно недоступна.</div>'; }
     }catch(e){ document.getElementById('err').textContent=e.message; }
   };
+}
+
+/* ---------- возврат со страницы оплаты: ждём подтверждения от банка ---------- */
+async function returnFromPayment(){
+  let t=new URLSearchParams(location.search).get('t'); if(!t){ try{ t=localStorage.getItem('geo3d_pending'); }catch{} } if(!t) return;
+  info.innerHTML='<h2>Проверяем оплату…</h2><div class="hint">Обычно это занимает несколько секунд.</div>';
+  for(let i=0;i<30;i++){
+    try{ const s=await jget('/api/orders/status?token='+encodeURIComponent(t));
+      if(s.status==='paid'){ try{ localStorage.removeItem('geo3d_pending'); }catch{} history.replaceState(null,'','/'); await loadReport(t); return; }
+    }catch(e){ if(/не найден/i.test(e.message)){ try{ localStorage.removeItem('geo3d_pending'); }catch{} renderHome(); return; } }
+    await new Promise(r=>setTimeout(r,3000));
+  }
+  info.innerHTML=`<h2>Оплата ещё не подтверждена</h2><div class="hint">Если вы уже оплатили, отчёт появится по ссылке, как только банк подтвердит платёж: <a href="/report.html?t=${encodeURIComponent(t)}" style="color:var(--accent)">открыть отчёт</a>.</div>`;
 }
 
 /* ---------- платная часть ---------- */
 let report=null, token=null;
 async function loadReport(t){
   token=t; report = await jget('/api/report/'+t);
+  if(!current){   // вернулись со страницы оплаты: восстанавливаем участок из отчёта
+    current={lng:report.point.lng,lat:report.point.lat,d:{confidence:report.confidence,near:report.near,dmin:report.dmin,parcel:null,light:null}};
+    if(marker) marker.remove(); marker=new maplibregl.Marker({color:'#f2b84b'}).setLngLat([report.point.lng,report.point.lat]).addTo(map);
+    map.flyTo({center:[report.point.lng,report.point.lat],zoom:16.2,duration:1000});
+  }
+  highlight(report.passport.parcel?report.passport.parcel.id:null);
   current.d.near=report.near; current.d.dmin=report.dmin; current.d.confidence=report.confidence;
   current.d.light=report.passport.overall; current.d.parcel=report.passport.parcel;
   setInfo(head()+passportHTML(report.passport)+`

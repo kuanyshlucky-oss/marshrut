@@ -84,7 +84,7 @@
     <div class="kpis" id="lyKpis"></div>
     <div class="card"><div class="bar" style="justify-content:space-between;margin-bottom:8px"><h2 style="margin:0">Слои на карте</h2><button class="sec" id="rmDemoLy">Удалить демо-слои</button></div>
       <div id="lmap" style="height:380px;border-radius:10px;overflow:hidden"></div>
-      <div class="legend"><span><i style="background:#5fd18a"></i>можно строить</span><span><i style="background:#f2b84b"></i>с условиями</span><span><i style="background:#ef7a6a"></i>препятствия</span><span><i style="background:#dc2626"></i>зоны</span><span><i style="background:#5ab4ff"></i>сети</span></div></div>
+      <div class="legend"><span><i style="background:#5fd18a"></i>можно строить</span><span><i style="background:#f2b84b"></i>с условиями</span><span><i style="background:#ef7a6a"></i>препятствия</span><span><i style="background:#dc2626"></i>зоны</span><span><i style="background:#5ab4ff"></i>сети</span><span><i style="background:#a3e635"></i>пунктир — покрытие данных</span></div></div>
     <div class="card"><h2>Как загрузить слои из QGIS</h2>
       <div style="color:var(--mute);font-size:13px;line-height:1.6">Экспортируйте слой: <b style="color:var(--text)">Слой → Экспорт → Сохранить объекты как → GeoJSON, система координат EPSG:4326 (WGS84)</b>. Загрузите файл ниже. Если в файле есть ошибки, не загружается ничего — исправьте и повторите. MultiPolygon разбивается на отдельные объекты, внутренние контуры (дыры) игнорируются.</div>
     </div>
@@ -124,7 +124,6 @@
 let PW = sessionStorage.getItem('apw') || '';
 const H = () => ({'x-admin-password': PW});
 const $ = id => document.getElementById(id);
-const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const aget = u => fetch(u,{headers:H()}).then(async r=>{const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||r.status);return d;});
 const money = v => Math.round(v).toLocaleString('ru-RU');
 const pct = v => (v*100).toFixed(1).replace('.',',')+'%';
@@ -153,6 +152,8 @@ const LY={
     sample:{type:'FeatureCollection',features:[{type:'Feature',properties:{cad_number:'09:000:001:1',status:'free',purposes:'ИЖС, Многоэтажная',zone:'residential',max_floors:9,slope_pct:2.5,apz:'да',tu:'нет'},geometry:{type:'Polygon',coordinates:[[[73.08,49.80],[73.083,49.80],[73.083,49.802],[73.08,49.802],[73.08,49.80]]]}}]}},
   constraints:{title:'Зоны ограничений (Polygon)',props:'kind (protection|sanitary|undermined|flood|slag|contamination) — обязательно; name, regime (текст режима)',
     sample:{type:'FeatureCollection',features:[{type:'Feature',properties:{kind:'protection',name:'Охранная зона ЛЭП',regime:'Строительство запрещено'},geometry:{type:'Polygon',coordinates:[[[73.07,49.805],[73.1,49.805],[73.1,49.806],[73.07,49.806],[73.07,49.805]]]}}]}},
+  coverage:{title:'Покрытие данных (Polygon) — где слои полные',props:'layer (hazards — опасные процессы | protection — охранные и санитарные зоны | utilities — сети) — обязательно; as_of (дата актуальности ГГГГ-ММ-ДД; старше года — жёлтый), source (откуда данные). ВАЖНО: пока для района не загружено покрытие, соответствующие блоки паспорта серые («нет данных»), а не зелёные. Рисуйте полигон только там, где вы уверены, что слой собран полностью.',
+    sample:{type:'FeatureCollection',features:[{type:'Feature',properties:{layer:'hazards',as_of:'2026-09-01',source:'Управление архитектуры, письмо №…'},geometry:{type:'Polygon',coordinates:[[[73.05,49.78],[73.12,49.78],[73.12,49.83],[73.05,49.83],[73.05,49.78]]]}}]}},
   utilities:{title:'Инженерные сети (LineString)',props:'kind (water|sewer|power|gas|heat) — обязательно; capacity_free (число: свободная мощность; 0 — мощности нет; пусто — не подтверждена), owner',
     sample:{type:'FeatureCollection',features:[{type:'Feature',properties:{kind:'water',capacity_free:120,owner:'Водоканал'},geometry:{type:'LineString',coordinates:[[73.07,49.80],[73.1,49.80]]}}]}}
 };
@@ -176,15 +177,16 @@ $('rmDemoLy').onclick=async()=>{ if(!confirm('Удалить демо-участ
 async function loadLy(){
   buildLyForms();
   const d=await aget('/api/admin/layers');
-  $('lyKpis').innerHTML=[['Участков',d.parcels.total,`${d.parcels_ha} га, демо: ${d.parcels.demo}`],['Зон ограничений',d.constraints.total,`демо: ${d.constraints.demo}`],['Линий сетей',d.utilities.total,`демо: ${d.utilities.demo}`]].map(([l,v,s])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+  $('lyKpis').innerHTML=[['Участков',d.parcels.total,`${d.parcels_ha} га, демо: ${d.parcels.demo}`],['Зон ограничений',d.constraints.total,`демо: ${d.constraints.demo}`],['Линий сетей',d.utilities.total,`демо: ${d.utilities.demo}`],['Зон покрытия',d.coverage.total,d.coverage.total?d.coverage_list.map(c=>esc(c.layer)+(c.as_of?' '+esc(c.as_of):'')).join(', '):'не задано — блоки серые']].map(([l,v,s])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
   const kc=['match',['get','kind'],'undermined','#b45309','flood','#2563eb','slag','#78716c','contamination','#a21caf','protection','#dc2626','sanitary','#e879f9','#999'];
-  const put=()=>{ for(const k of ['parcels','constraints','utilities']) lmap.getSource(k).setData(d.geo[k]); };
+  const put=()=>{ for(const k of ['parcels','constraints','utilities','coverage']) lmap.getSource(k).setData(d.geo[k]); };
   if(!lmap){
     lmap=new maplibregl.Map({container:'lmap',center:[73.085,49.806],zoom:14,style:{version:8,sources:{o:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:'© OpenStreetMap'}},layers:[{id:'bg',type:'background',paint:{'background-color':'#0f1318'}},{id:'o',type:'raster',source:'o',paint:{'raster-brightness-max':.35,'raster-saturation':-.7,'raster-contrast':.2}}]}});
     lmap.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-right');
     lmap.on('load',()=>{
       lmap.resize();
-      for(const k of ['parcels','constraints','utilities']) lmap.addSource(k,{type:'geojson',data:{type:'FeatureCollection',features:[]}});
+      for(const k of ['parcels','constraints','utilities','coverage']) lmap.addSource(k,{type:'geojson',data:{type:'FeatureCollection',features:[]}});
+      lmap.addLayer({id:'cov-l',type:'line',source:'coverage',paint:{'line-color':'#a3e635','line-width':2,'line-dasharray':[4,3]}});
       lmap.addLayer({id:'c-f',type:'fill',source:'constraints',paint:{'fill-color':kc,'fill-opacity':.3}});
       lmap.addLayer({id:'p-f',type:'fill',source:'parcels',paint:{'fill-color':['match',['get','light'],'green','#5fd18a','yellow','#f2b84b','red','#ef7a6a','#7b8794'],'fill-opacity':.35}});
       lmap.addLayer({id:'p-l',type:'line',source:'parcels',paint:{'line-color':'#fff','line-width':1}});
@@ -279,7 +281,7 @@ async function loadOrders(){
   [ORD,LEADS]=await Promise.all([aget('/api/admin/orders'),aget('/api/admin/leads')]);
   $('ocnt').textContent=ORD.length; $('sum').textContent=money(ORD.filter(o=>o.status==='paid').reduce((s,o)=>s+o.price,0));
   $('ordBody').innerHTML=ORD.map(o=>`<tr><td>${new Date(o.created).toLocaleString('ru-RU')}</td><td>${esc(o.email)}</td><td>${o.lat.toFixed(5)}, ${o.lng.toFixed(5)}</td><td>${money(o.price)} ₸</td>
-    <td><span class="tag ${o.status==='paid'?'ok':'no'}">${o.status==='paid'?'оплачен':'ожидает'}</span></td><td>${o.status==='paid'?`<a href="/report.html?t=${o.id}" target="_blank">открыть</a>`:''}</td></tr>`).join('');
+    <td><span class="tag ${o.status==='paid'?'ok':'no'}">${o.status==='paid'?'оплачен':'ожидает'}</span></td><td>${o.status==='paid'?`<a href="/report.html?t=${esc(o.token||o.id)}" target="_blank">открыть</a>`:''}</td></tr>`).join('');
   $('lcnt').textContent=LEADS.length; $('lnew').textContent=LEADS.filter(l=>l.status==='new').length;
   $('leadBody').innerHTML=LEADS.map(l=>`<tr><td>${new Date(l.created).toLocaleString('ru-RU')}</td><td>${esc(l.name)}</td><td><a href="tel:${esc(l.phone)}">${esc(l.phone)}</a></td><td>${esc(l.comment)}</td>
     <td>${l.lat!=null?`<a target="_blank" href="https://www.openstreetmap.org/?mlat=${l.lat}&mlon=${l.lng}#map=17/${l.lat}/${l.lng}">${l.lat.toFixed(4)}, ${l.lng.toFixed(4)}</a>`:'—'}</td>
