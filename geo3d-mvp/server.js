@@ -111,13 +111,13 @@ function makeBH(f) {   // единая форма записи скважины
     date: f.date ?? null, depth: f.depth == null || f.depth === '' ? last : +f.depth, method: clean(f.method, 40), org: clean(f.org, 80), doc: clean(f.doc, 120), layers: L,
     gw_first: f.gw_first == null || f.gw_first === '' ? null : +f.gw_first, gw_stable: f.gw_stable == null || f.gw_stable === '' ? null : +f.gw_stable, gw_date: f.gw_date ?? null,
     bearing_kpa: f.bearing_kpa == null || f.bearing_kpa === '' ? null : +f.bearing_kpa, aggressive: clean(f.aggressive, 60),
-    status: f.status || 'review', verified: false, issues: [], review: null, source: f.source || 'admin', _incons: f._incons || [] };
+    status: f.status || 'review', verified: false, issues: [], review: null, source: f.source || 'admin', _incons: f._incons || [], loaded_at: f.loaded_at === undefined ? new Date().toISOString() : f.loaded_at };
   bh.verified = bh.status === 'verified'; return bh;
 }
 function migrateBH(b) {   // старые записи (id, lng, lat, gw, b[4], verified) → v2
   if (b.layers) return b;
   const bounds = [0, ...b.b, DEPTH], demo = b.source === 'demo';
-  const nb = makeBH({ id: b.id, lng: b.lng, lat: b.lat, acc: demo ? 'A' : 'B', crs_src: 'WGS84', source: b.source, depth: DEPTH, gw_stable: b.gw,
+  const nb = makeBH({ id: b.id, loaded_at: null, lng: b.lng, lat: b.lat, acc: demo ? 'A' : 'B', crs_src: 'WGS84', source: b.source, depth: DEPTH, gw_stable: b.gw,
     z: demo ? +(540 + (b.lng - C.lng) * kx(C.lat) * 0.012 + (b.lat - C.lat) * KY * 0.008).toFixed(2) : null, z_src: demo ? 'демо' : '', date: demo ? '2024-06-15' : null,
     org: demo ? 'Демо' : '', doc: demo ? 'DEMO' : '', method: demo ? 'шнековое' : '', status: b.verified === false ? 'review' : 'verified',
     layers: SOIL_CLASSES.map((name, i) => ({ from: bounds[i], to: bounds[i + 1], soil: name, cls: i, cls_src: 'file' })) });
@@ -199,6 +199,41 @@ function recheckAll() {   // после импорта и изменения с�
   for (const bh of boreholes) applyChecks(bh);
 }
 const issueCounts = bh => ({ errors: bh.issues.filter(i => i.sev === 'error').length, warns: bh.issues.filter(i => i.sev === 'warn').length });
+
+/* --- отчёт по пилоту: статистика замечаний + проверка «убрали скважину и предсказали её по соседям» (leave-one-out) --- */
+const CODE_RU = { E_COORD: 'координаты вне города', E_ACC: 'класс точности D / не указан', E_Z: 'отметка устья вне пределов', E_DATE: 'дата не распознана / в будущем', E_LAYERS: 'ошибка в описании слоёв', E_GAP: 'разрыв между слоями',
+  E_OVERLAP: 'слои перекрываются', E_DEPTH: 'глубина не сходится с подошвой', E_SOIL: 'грунт не сопоставлен с классом', E_GW: 'вода глубже скважины', E_INCONSISTENT: 'разные значения шапки в строках',
+  W_ACC_C: 'класс точности C', W_NO_Z: 'нет отметки устья', W_Z_RANGE: 'необычная отметка устья', W_NO_DATE: 'нет даты бурения', W_OLD: 'данные старше порога', W_SHALLOW: 'мельче модели (12 м)', W_SEQ: 'порядок слоёв ≠ модели',
+  W_FILL: 'насыпной грунт', W_NO_GW: 'нет данных о воде', W_GW_ORDER: 'порядок уровней воды', W_NO_GW_DATE: 'нет даты замера воды', W_NO_DOC: 'нет документа-источника', W_DUP: 'возможный дубль',
+  W_NEIGHBOR: 'расхождение слоёв с соседями', W_NEIGHBOR_GW: 'расхождение УГВ с соседями', W_Z_NEIGHBOR: 'отметка устья ≠ соседи' };
+const LOO_RADIUS = 500;   // м: соседи для проверки «предскажи по соседям»
+const quantile = (a, q) => { if (!a.length) return null; const s = a.slice().sort((x, y) => x - y), i = (s.length - 1) * q, lo = Math.floor(i), hi = Math.ceil(i); return s[lo] + (s[hi] - s[lo]) * (i - lo); };
+const r2 = v => v == null ? null : +v.toFixed(2);
+const summ = a => a.length ? { n: a.length, mean: r2(a.reduce((s, v) => s + v, 0) / a.length), median: r2(quantile(a, .5)), p90: r2(quantile(a, .9)), max: r2(Math.max(...a)) } : { n: 0 };
+function pilotReport(includeDemo) {
+  const set = boreholes.filter(b => includeDemo || b.source !== 'demo'), cnt = (arr, f) => { const m = {}; arr.forEach(x => { const k = f(x) || '—'; m[k] = (m[k] || 0) + 1; }); return m; };
+  const withErr = set.filter(b => b.issues.some(i => i.sev === 'error')).length, withWarn = set.filter(b => !b.issues.some(i => i.sev === 'error') && b.issues.some(i => i.sev === 'warn')).length;
+  const byCode = {}; for (const b of set) for (const code of new Set(b.issues.map(i => i.code))) { const sev = b.issues.find(i => i.code === code).sev; (byCode[code] = byCode[code] || { code, sev, n: 0 }).n++; }
+  const issues = Object.values(byCode).map(x => ({ ...x, share: set.length ? +(x.n / set.length).toFixed(2) : 0, label: CODE_RU[x.code] || x.code })).sort((a, b) => (a.sev === b.sev ? 0 : a.sev === 'error' ? -1 : 1) || b.n - a.n);
+  const unmapped = [...new Set(set.flatMap(b => b.layers.filter(l => l.cls == null).map(l => l.soil)))];
+  // leave-one-out: каждую проверенную скважину предсказываем по остальным в радиусе LOO_RADIUS
+  const pool = set.filter(b => b.verified && b.b && ACC_W[b.acc] != null), errs = [[], [], [], [], []], rows = []; let untestable = 0;
+  for (const t of pool) {
+    const k = kx(t.lat), nn = pool.filter(p => p.id !== t.id).map(p => ({ p, d: Math.hypot((p.lng - t.lng) * k, (p.lat - t.lat) * KY) })).filter(x => x.d <= LOO_RADIUS).sort((a, b) => a.d - b.d).slice(0, 6);
+    if (nn.length < CHECKS.nbMin) { untestable++; continue; }
+    let ws = 0, gw = 0; const b = [0, 0, 0, 0];
+    for (const { p, d } of nn) { const w = ACC_W[p.acc] / (d * d + 25); ws += w; for (let i = 0; i < 4; i++) b[i] += p.b[i] * w; gw += p.gw * w; }
+    const e = [0, 1, 2, 3].map(i => Math.abs(t.b[i] - b[i] / ws)); e.push(Math.abs(t.gw - gw / ws)); e.forEach((v, i) => errs[i].push(v));
+    rows.push({ id: t.id, neighbors: nn.length, errors: e.map(r2), score: r2(Math.max(...e.map((v, i) => v / (i < 4 ? CHECKS.nbDev.b[i] : CHECKS.nbDev.gw)))) });
+  }
+  const names = ['подошва почвы', 'подошва суглинка', 'подошва глины', 'подошва песка', 'уровень воды'], cur = [...CHECKS.nbDev.b, CHECKS.nbDev.gw];
+  const loo = names.map((name, i) => ({ name, ...summ(errs[i]), threshold: cur[i], over: errs[i].filter(v => v > cur[i]).length }));
+  const hrs = set.filter(b => b.loaded_at && b.review && b.review.by === 'админ').map(b => (new Date(b.review.at) - new Date(b.loaded_at)) / 36e5).filter(v => v >= 0);
+  return { total: set.length, includeDemo: !!includeDemo, status: cnt(set, b => b.status), acc: cnt(set, b => b.acc), reports: cnt(set, b => b.report_id || b.doc), orgs: cnt(set, b => b.org),
+    first_pass: { with_errors: withErr, with_warnings_only: withWarn, clean: set.length - withErr - withWarn, error_share: set.length ? +(withErr / set.length).toFixed(2) : 0 },
+    issues, unmapped, loo: { radius: LOO_RADIUS, tested: rows.length, untestable, stats: loo, worst: rows.sort((a, b) => b.score - a.score).slice(0, 5) },
+    review_hours: summ(hrs), generated: new Date().toISOString() };
+}
 
 let boreholes = load(BH_FILE, null);
 if (!boreholes) { boreholes = seedDemo(); save(BH_FILE, boreholes); }
@@ -770,6 +805,7 @@ async function api(req, res, url) {
       recheckAll(); save(BH_FILE, boreholes); return send(res, 200, { ok: true, status: b.status });
     }
     if (m === 'POST' && p === '/api/admin/recheck') { recheckAll(); save(BH_FILE, boreholes); return send(res, 200, { ok: true, total: boreholes.length, demoted: boreholes.filter(b => b.status === 'review' && b.review && b.review.by === 'система').length }); }
+    if (m === 'GET' && p === '/api/admin/pilot-report') return send(res, 200, pilotReport(q.get('demo') === '1'));
     if (m === 'GET' && p === '/api/admin/check-config') return send(res, 200, { checks: CHECKS, acc: ACC_RU, acc_weights: ACC_W, classes: SOIL_CLASSES });
     if (m === 'GET' && p === '/api/admin/soil-dict') {
       const unmapped = [...new Set(boreholes.flatMap(b => b.layers.filter(l => l.cls == null).map(l => l.soil)))];

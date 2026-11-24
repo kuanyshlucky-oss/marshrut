@@ -104,6 +104,12 @@
     </div>
     <div class="card" id="bhDetail" style="display:none"></div>
     <div class="card">
+      <div class="bar" style="justify-content:space-between;margin-bottom:8px"><h2 style="margin:0">Отчёт по пилоту</h2>
+        <div class="bar"><label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="pilotDemo">включая демо-скважины</label><button id="btnPilot">Сформировать</button></div></div>
+      <div style="color:var(--mute);font-size:12.5px;margin-bottom:8px">Какие замечания встречаются чаще всего, насколько точно модель «угадывает» скважину по соседям (скважину убираем и предсказываем её) и сколько времени уходит на проверку. По этим цифрам геолог согласует пороги автопроверок.</div>
+      <div id="pilotOut"></div>
+    </div>
+    <div class="card">
       <h2>Импорт скважин по слоям (CSV / Excel)</h2>
       <div class="bar" style="margin-bottom:10px;padding:10px 12px;background:rgba(242,184,75,.08);border:1px solid rgba(242,184,75,.3);border-radius:10px">
         <b style="font-size:13px">Для камеральщика:</b>
@@ -376,6 +382,26 @@ function openBh(id,keep){
   $('bhDel').onclick=async()=>{ if(!confirm('Удалить скважину '+id+' навсегда?')) return; await fetch('/api/admin/boreholes/'+encodeURIComponent(id),{method:'DELETE',headers:H()}); SEL=null; el.style.display='none'; loadBoreholes(); };
 }
 $('btnRecheck').onclick=async()=>{ try{ const r=await jpost('/api/admin/recheck',{},H()); await loadBoreholes(); loadAnalytics(); }catch(e){ alert(e.message); } };
+
+/* ---- отчёт по пилоту ---- */
+$('btnPilot').onclick=async()=>{ try{ renderPilot(await aget('/api/admin/pilot-report?demo='+($('pilotDemo').checked?1:0))); }catch(e){ $('pilotOut').innerHTML=`<div class="msg err">${esc(e.message)}</div>`; } };
+function renderPilot(p){
+  const o=$('pilotOut'); if(!p.total){ o.innerHTML='<div class="insight">Пока нет скважин для отчёта (демо-скважины исключены). Загрузите пилотную партию.</div>'; return; }
+  const tags=m=>Object.entries(m).map(([k,v])=>`<span class="tag" style="margin-right:4px">${esc(k)}: ${v}</span>`).join('');
+  const fp=p.first_pass, kp=(l,v,s)=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
+  const hint=(s)=>{ if(!s.n) return '—'; if(s.over/s.n>0.1) return `<span style="color:var(--bad)">порог строгий: ${s.over} из ${s.n} нормальных скважин помечаются; рассмотрите ≥ ${s.p90}</span>`; if(s.p90<s.threshold*0.5) return `<span style="color:var(--accent)">порог мягкий: можно ужесточить до ~${Math.max(0.3,s.p90*1.5).toFixed(1)} (не меньше точности замеров)</span>`; return '<span style="color:var(--ok)">порог разумный</span>'; };
+  o.innerHTML=`<div class="kpis">${kp('Скважин в пилоте',p.total,tags(p.status))}${kp('Чисто с первого раза',fp.clean,'без ошибок и предупреждений')}${kp('С ошибками',fp.with_errors,Math.round(fp.error_share*100)+'% от загруженных')}${kp('Только предупреждения',fp.with_warnings_only,'')}${kp('Время до решения',p.review_hours.n?p.review_hours.median+' ч':'—',p.review_hours.n?`медиана по ${p.review_hours.n} скв., от загрузки до решения`:'пока нет принятых')}</div>
+    <div style="font-size:12.5px;color:var(--mute);margin-bottom:10px">Классы точности: ${tags(p.acc)}<br>Отчёты/документы: ${tags(p.reports)}</div>
+    <h2>Какие замечания встречаются чаще всего</h2>
+    <div class="scroll"><table><thead><tr><th>Тип</th><th>Замечание</th><th>Скважин</th><th>Доля</th></tr></thead><tbody>${p.issues.length?p.issues.map(i=>`<tr><td><span class="tag ${i.sev==='error'?'no':''}">${i.sev==='error'?'ошибка':'предупр.'}</span></td><td>${esc(i.label)} <span style="color:var(--mute);font-size:11px">${esc(i.code)}</span></td><td>${i.n}</td><td>${Math.round(i.share*100)}%</td></tr>`).join(''):'<tr><td colspan="4" style="color:var(--mute)">Замечаний нет.</td></tr>'}</tbody></table></div>
+    <h2 style="margin-top:14px">Точность модели: «убрали скважину и предсказали по соседям»</h2>
+    <div style="font-size:12.5px;color:var(--mute);margin-bottom:6px">Проверено ${p.loo.tested} проверенных скважин; не проверялись ${p.loo.untestable} (меньше ${3} соседей в радиусе ${p.loo.radius} м). Ошибка — разница между реальным значением и предсказанием по соседям, м.</div>
+    ${p.loo.tested?`<div class="scroll"><table><thead><tr><th>Показатель</th><th>n</th><th>Среднее</th><th>Медиана</th><th>90% скважин ≤</th><th>Максимум</th><th>Порог сейчас</th><th>Вывод</th></tr></thead><tbody>${p.loo.stats.map(s=>`<tr><td>${esc(s.name)}</td><td>${s.n}</td><td>${s.mean??'—'}</td><td>${s.median??'—'}</td><td><b>${s.p90??'—'}</b></td><td>${s.max??'—'}</td><td>${s.threshold}</td><td style="font-size:12px">${hint(s)}</td></tr>`).join('')}</tbody></table></div>
+    <h2 style="margin-top:14px">Скважины, которые хуже всего предсказываются</h2><div class="scroll"><table><thead><tr><th>ID</th><th>Соседей</th><th>Ошибки: почва / суглинок / глина / песок / вода, м</th><th>Балл (1 = на пороге)</th></tr></thead><tbody>${p.loo.worst.map(w=>`<tr data-open="${esc(w.id)}" style="cursor:pointer"><td><b>${esc(w.id)}</b></td><td>${w.neighbors}</td><td>${w.errors.join(' / ')}</td><td>${w.score}</td></tr>`).join('')}</tbody></table></div>`:'<div class="insight">Для проверки нужно хотя бы несколько проверенных скважин рядом (в радиусе '+p.loo.radius+' м). Примите скважины пилота и сформируйте отчёт снова.</div>'}
+    ${p.unmapped.length?`<div class="insight bad" style="margin-top:12px"><b>Грунты без класса (${p.unmapped.length}):</b> ${p.unmapped.map(esc).join(', ')}</div>`:''}
+    <div style="font-size:11.5px;color:var(--mute);margin-top:10px">Сформировано ${esc(p.generated.slice(0,16).replace('T',' '))}. Рекомендации по порогам — подсказка, окончательное решение принимает геолог.</div>`;
+}
+$('pilotOut').onclick=e=>{ const r=e.target.closest('[data-open]'); if(r) openBh(r.dataset.open); };
 
 /* ---- импорт ---- */
 $('tpl').onclick=()=>{
