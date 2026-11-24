@@ -13,7 +13,8 @@ const ORD_FILE = path.join(DATA, 'orders.json');
 
 /* ---------- хранилище (JSON-файлы; для роста заменить на PostgreSQL/PostGIS) ---------- */
 function load(file, fallback) { try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return fallback; } }
-function save(file, obj) { fs.mkdirSync(DATA, { recursive: true }); const t = file + '.tmp'; fs.writeFileSync(t, JSON.stringify(obj, null, 1)); fs.renameSync(t, file); }
+let dataVersion = 0;   // растёт при любом сохранении данных, сбрасывает кэш паспортов
+function save(file, obj) { fs.mkdirSync(DATA, { recursive: true }); const t = file + '.tmp'; fs.writeFileSync(t, JSON.stringify(obj, null, 1)); fs.renameSync(t, file); dataVersion++; }
 
 /* ---------- геометрия ---------- */
 const C = { lat: 49.806, lng: 73.085 };
@@ -192,10 +193,224 @@ function parseCSV(text) {
   return { rows, errors };
 }
 
+/* =====================================================================
+   Слои: участки, ограничения, сети + ПАСПОРТ УЧАСТКА (светофор по 8 блокам)
+   Правила и пороги ориентировочные — согласовать с геотехником и проектировщиком.
+   ===================================================================== */
+const PARCELS_FILE = path.join(DATA, 'parcels.json'), CONS_FILE = path.join(DATA, 'constraints.json'), UTIL_FILE = path.join(DATA, 'utilities.json');
+const CONS_KINDS = ['protection', 'sanitary', 'undermined', 'flood', 'slag', 'contamination'];
+const UTIL_KINDS = ['water', 'sewer', 'power', 'gas', 'heat'];
+const UNITS = { water: 'м³/сут', sewer: 'м³/сут', power: 'кВт', gas: 'м³/ч', heat: 'Гкал/ч' };
+const UTIL_RU = { water: 'вода', sewer: 'канализация', power: 'электричество', gas: 'газ', heat: 'тепло' };
+const STATUSES = ['free', 'torgi', 'reserve', 'occupied'], ZONES = ['residential', 'public', 'industrial', 'reserve'], PURPOSES = ['ИЖС', 'Многоэтажная', 'Коммерция'];
+const STATUS_RU = { free: 'свободен', torgi: 'на торгах', reserve: 'земля запаса', occupied: 'занят' };
+const OBJ_RU = { izhs: 'ИЖС (частный дом)', multi: 'многоэтажный дом' };
+
+/* --- геометрия (метры в локальной проекции) --- */
+const toXY = (ring, lng0, lat0) => ring.map(([lng, lat]) => [(lng - lng0) * kx(lat0), (lat - lat0) * KY]);
+function inRing(ring, lng, lat) { let c = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, yi] = ring[i], [xj, yj] = ring[j]; if ((yi > lat) !== (yj > lat) && lng < (xj - xi) * (lat - yi) / (yj - yi) + xi) c = !c; } return c; }
+function areaHa(ring) { const p = toXY(ring, ring[0][0], ring[0][1]); let a = 0; for (let i = 0, j = p.length - 1; i < p.length; j = i++) a += p[j][0] * p[i][1] - p[i][0] * p[j][1]; return Math.abs(a) / 2 / 10000; }
+function centroid(ring) {
+  const lng0 = ring[0][0], lat0 = ring[0][1], p = toXY(ring, lng0, lat0); let a = 0, cx = 0, cy = 0;
+  for (let i = 0, j = p.length - 1; i < p.length; j = i++) { const f = p[j][0] * p[i][1] - p[i][0] * p[j][1]; a += f; cx += (p[j][0] + p[i][0]) * f; cy += (p[j][1] + p[i][1]) * f; }
+  if (Math.abs(a) < 1e-9) return [lng0, lat0]; cx /= 3 * a; cy /= 3 * a; return [lng0 + cx / kx(lat0), lat0 + cy / KY];
+}
+function segDist(ax, ay, bx, by) { const dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy; let t = l2 ? (-ax * dx - ay * dy) / l2 : 0; t = Math.max(0, Math.min(1, t)); return Math.hypot(ax + t * dx, ay + t * dy); }
+function distToPath(pts, lng, lat) { const p = toXY(pts, lng, lat); let d = Infinity; for (let i = 1; i < p.length; i++) d = Math.min(d, segDist(p[i - 1][0], p[i - 1][1], p[i][0], p[i][1])); return d; }
+function fractionInside(parcelRing, zoneRing) {   // доля площади участка внутри зоны (выборка 14×14)
+  let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9; for (const [x, y] of parcelRing) { minX = Math.min(minX, x); maxX = Math.max(maxX, x); minY = Math.min(minY, y); maxY = Math.max(maxY, y); }
+  let tot = 0, hit = 0; const N = 14;
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) { const x = minX + (i + .5) * (maxX - minX) / N, y = minY + (j + .5) * (maxY - minY) / N; if (!inRing(parcelRing, x, y)) continue; tot++; if (inRing(zoneRing, x, y)) hit++; }
+  return tot ? hit / tot : 0;
+}
+
+/* --- паспорт --- */
+const RANK = { green: 0, gray: 1, yellow: 1, red: 2 };
+function passport(lng, lat, obj, parcelIn) {
+  obj = obj === 'multi' ? 'multi' : 'izhs';
+  const parcel = parcelIn || parcels.find(p => inRing(p.ring, lng, lat)) || null;
+  const s = interp(lng, lat), cen = parcel ? centroid(parcel.ring) : [lng, lat];
+  const blocks = [], B = (key, title, level, text) => blocks.push({ key, title, level, text });
+  const myPurpose = obj === 'izhs' ? 'ИЖС' : 'Многоэтажная';
+
+  // 1. Право и назначение
+  if (!parcel) B('law', 'Право и назначение', 'gray', 'Участок не найден в базе — сверьте с публичной кадастровой картой.');
+  else if (parcel.encumbrance) B('law', 'Право и назначение', 'red', `Обременение: ${parcel.encumbrance}.`);
+  else if (parcel.status === 'occupied') B('law', 'Право и назначение', 'red', 'Участок уже занят (оформлен за другим лицом).');
+  else if (!parcel.purposes.includes(myPurpose)) B('law', 'Право и назначение', 'yellow', `Назначение (${parcel.purposes.join(', ') || 'не указано'}) не подходит под «${OBJ_RU[obj]}» — потребуется смена назначения.`);
+  else if (parcel.status === 'free') B('law', 'Право и назначение', 'green', 'Свободен, назначение подходит.');
+  else B('law', 'Право и назначение', 'yellow', parcel.status === 'torgi' ? 'Выставлен на торги — участок можно получить только через аукцион.' : 'Земля запаса — оформление через акимат.');
+
+  // 2. Градостроительство
+  if (!parcel) B('urban', 'Градостроительство', 'gray', 'Нет данных по участку.');
+  else if (parcel.zone === 'industrial') B('urban', 'Градостроительство', 'red', 'Промышленная зона по генплану — жильё не допускается.');
+  else if (parcel.zone === 'public') B('urban', 'Градостроительство', 'yellow', 'Общественная зона — жильё возможно только в составе общественной застройки.');
+  else if (parcel.zone === 'reserve') B('urban', 'Градостроительство', 'yellow', 'Резервная территория — застройка после утверждения проекта детальной планировки.');
+  else if (obj === 'multi' && parcel.max_floors != null && parcel.max_floors < 5) B('urban', 'Градостроительство', 'yellow', `Допустимая этажность ${parcel.max_floors} — ниже многоэтажной застройки.`);
+  else B('urban', 'Градостроительство', 'green', `Жилая зона${parcel.max_floors != null ? `, до ${parcel.max_floors} этажей` : ''}.`);
+
+  // 3. Инженерные сети (расстояние от центра участка, мощность)
+  if (!utilities.length) B('utilities', 'Инженерные сети', 'gray', 'Данных по сетям нет.');
+  else {
+    let worst = 'green'; const parts = [];
+    for (const k of ['water', 'sewer', 'power']) {
+      // ближайшая сеть, где есть свободная мощность; если таких нет — просто ближайшая
+      const cands = utilities.filter(u => u.kind === k).map(u => ({ u, d: distToPath(u.line, cen[0], cen[1]) })).sort((a, b) => a.d - b.d);
+      const pick = cands.find(c => c.u.capacity_free !== 0) || cands[0], best = pick ? pick.u : null, bd = pick ? pick.d : Infinity;
+      let lv = 'green', t;
+      if (!best) { lv = 'red'; t = `${UTIL_RU[k]}: сетей нет в базе`; }
+      else {
+        const cap = best.capacity_free;
+        if (bd > 500) lv = 'red'; else if (bd > 150) lv = 'yellow';
+        if (cap === 0) lv = 'red'; else if (cap == null && lv === 'green') lv = 'yellow';
+        t = `${UTIL_RU[k]}: ${Math.round(bd)} м, ${cap == null ? 'мощность не подтверждена' : cap === 0 ? 'свободной мощности нет' : `свободно ${cap} ${UNITS[k]}`}`;
+      }
+      if (k === 'sewer' && obj === 'izhs' && lv === 'red') lv = 'yellow', t += ' (для ИЖС возможен септик)';
+      if (RANK[lv] > RANK[worst]) worst = lv; parts.push(t);
+    }
+    B('utilities', 'Инженерные сети', worst, parts.join('; ') + '.');
+  }
+
+  // 4. Рельеф
+  if (!parcel || parcel.slope_pct == null) B('relief', 'Рельеф', 'gray', 'Уклон не измерен — нужна топосъёмка.');
+  else B('relief', 'Рельеф', parcel.slope_pct <= 5 ? 'green' : parcel.slope_pct <= 10 ? 'yellow' : 'red', `Средний уклон ${String(parcel.slope_pct).replace('.', ',')}%${parcel.slope_pct > 5 ? ' — возможны значительные земляные работы' : ''}.`);
+
+  // 5. Грунты
+  if (!s || s.dmin > MAX_SELL_DISTANCE) B('soil', 'Грунты', 'gray', 'Рядом нет скважин — модель грунта недоступна, нужны изыскания.');
+  else {
+    let lv = s.gw < 2 ? 'red' : s.gw < 3 ? 'yellow' : 'green'; if (s.dmin > 300 && lv === 'green') lv = 'yellow';
+    B('soil', 'Грунты', lv, `Уровень грунтовых вод ${s.gw.toFixed(1).replace('.', ',')} м${s.gw < 3 ? ' — высокий, риск подтопления подвала' : ''}; ближайшая скважина ${s.near} в ${s.dmin} м.`);
+  }
+
+  // 6–7. Зоны: опасные процессы и охранные/санитарные
+  const zoneBlock = (key, title, kinds) => {
+    let lv = 'green'; const parts = [];
+    for (const z of constraints) {
+      if (!kinds.includes(z.kind)) continue;
+      const frac = parcel ? fractionInside(parcel.ring, z.ring) : (inRing(z.ring, lng, lat) ? 1 : 0);
+      const d = distToPath(z.ring, cen[0], cen[1]);
+      let l = 'green'; if (frac > (key === 'hazards' ? 0.3 : 0.5)) l = 'red'; else if (frac > 0 || d < (key === 'hazards' ? 150 : 50)) l = 'yellow';
+      if (l !== 'green') { parts.push(`${z.name}${frac > 0 ? ` — ${Math.round(frac * 100)}% участка` : ` — рядом (${Math.round(d)} м)`}`); if (RANK[l] > RANK[lv]) lv = l; }
+    }
+    B(key, title, lv, parts.length ? parts.join('; ') + '.' : 'Участок не попадает в известные зоны.');
+  };
+  zoneBlock('hazards', 'Опасные процессы', ['undermined', 'flood', 'slag', 'contamination']);
+  zoneBlock('protection', 'Охранные и санитарные зоны', ['protection', 'sanitary']);
+
+  // 8. Достоверность данных
+  if (!s) B('data', 'Достоверность данных', 'red', 'Нет данных.');
+  else B('data', 'Достоверность данных', s.dmin < 120 ? 'green' : s.dmin < 300 ? 'yellow' : 'red', `Ближайшая скважина в ${s.dmin} м${s.dmin >= 120 ? ' — для проектирования нужны собственные изыскания' : ''}.`);
+
+  const lv = blocks.map(b => b.level), overall = lv.includes('red') ? 'red' : lv.some(l => l === 'yellow' || l === 'gray') ? 'yellow' : 'green';
+  const get = k => blocks.find(b => b.key === k).level, missing = [];
+  if (parcel && !parcel.apz) missing.push('Архитектурно-планировочное задание (АПЗ)');
+  if (parcel && !parcel.tu) missing.push('Технические условия на подключение к сетям');
+  if (!s || s.dmin > 120 || get('soil') !== 'green') missing.push('Инженерно-геологические изыскания на участке');
+  if (get('hazards') !== 'green' || get('protection') !== 'green') missing.push('Заключение/согласование по зоне ограничений (подработка, охранные зоны)');
+  if (get('relief') === 'gray' || get('relief') === 'red') missing.push('Топографическая съёмка участка');
+  missing.push(obj === 'multi' ? 'Проектно-сметная документация и экспертиза' : 'Уведомление о начале строительства (уточнить порядок в управлении архитектуры)');
+  return { obj, overall, blocks, missing, parcel: parcel ? { id: parcel.id, cad: parcel.cad, area_ha: +parcel.area_ha.toFixed(2), status: parcel.status, status_ru: STATUS_RU[parcel.status], purposes: parcel.purposes, zone: parcel.zone } : null };
+}
+
+/* --- кэш светофоров участков для карты --- */
+const lightCache = {};
+function parcelLights(obj) {
+  const c = lightCache[obj]; if (c && c.ver === dataVersion) return c.val;
+  const val = parcels.map(p => { const cen = centroid(p.ring), pp = passport(cen[0], cen[1], obj, p); return { p, cen, pp }; });
+  lightCache[obj] = { ver: dataVersion, val }; return val;
+}
+function layersPublic(obj) {
+  const lights = parcelLights(obj), free = lights.filter(x => x.p.status !== 'occupied');
+  return {
+    obj,
+    parcels: { type: 'FeatureCollection', features: lights.map(({ p, cen, pp }) => ({ type: 'Feature', properties: { id: p.id, cad: p.cad, area_ha: +p.area_ha.toFixed(2), status: p.status, status_ru: STATUS_RU[p.status], purposes: p.purposes.join(', '), light: pp.overall, lng: +cen[0].toFixed(5), lat: +cen[1].toFixed(5) }, geometry: { type: 'Polygon', coordinates: [p.ring] } })) },
+    constraints: { type: 'FeatureCollection', features: constraints.map(z => ({ type: 'Feature', properties: { id: z.id, kind: z.kind, name: z.name, regime: z.regime || '' }, geometry: { type: 'Polygon', coordinates: [z.ring] } })) },
+    hectares: { free_ha: +free.reduce((s, x) => s + x.p.area_ha, 0).toFixed(1), green_ha: +free.filter(x => x.pp.overall === 'green').reduce((s, x) => s + x.p.area_ha, 0).toFixed(1), parcels_free: free.length }
+  };
+}
+
+/* --- демо-слои (синтетика вокруг центра, не реальные данные) --- */
+function seedLayers() {
+  let s = 4242; const rnd = () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  const ll = (x, y) => [+(C.lng + x / kx(C.lat)).toFixed(6), +(C.lat + y / KY).toFixed(6)];
+  const rect = (x, y, w, h, j = 0) => { const q = () => (rnd() - .5) * j; const r = [ll(x + q(), y + q()), ll(x + w + q(), y + q()), ll(x + w + q(), y + h + q()), ll(x + q(), y + h + q())]; r.push(r[0]); return r; };
+  const ps = []; let n = 0;
+  for (const y of [-520, -250, 20, 290]) for (const x of [-520, -250, 20, 290]) {
+    n++; const r = rnd(), status = r < .25 ? 'occupied' : r < .65 ? 'free' : r < .8 ? 'torgi' : 'reserve';
+    const zr = rnd(), zone = zr < .75 ? 'residential' : zr < .85 ? 'public' : zr < .93 ? 'reserve' : 'industrial';
+    const purposes = rnd() < .5 ? ['ИЖС'] : rnd() < .6 ? ['Многоэтажная'] : ['ИЖС', 'Многоэтажная'];
+    const ring = rect(x, y, 230, 220, 12);
+    const p = { id: `DEMO-P${String(n).padStart(2, '0')}`, cad: `09:000:${String(100 + n).padStart(3, '0')}:${n * 7}`, ring, area_ha: areaHa(ring), status, purposes, zone, max_floors: [2, 5, 9, 12][Math.floor(rnd() * 4)],
+      slope_pct: +(1 + rnd() * 11).toFixed(1), encumbrance: rnd() < .1 ? 'арест (демо)' : '', apz: rnd() < .4, tu: rnd() < .35, source: 'demo' };
+    if (n === 6 || n === 7) Object.assign(p, { status: 'free', purposes: ['ИЖС', 'Многоэтажная'], zone: 'residential', max_floors: 9, slope_pct: 2.5, encumbrance: '', apz: true, tu: true });   // «идеальные» участки для демонстрации
+    ps.push(p);
+  }
+  const strip = (y, half) => { const r = [ll(-600, y - half), ll(600, y - half), ll(600, y + half), ll(-600, y + half)]; r.push(r[0]); return r; };
+  const poly = pts => { const r = pts.map(([x, y]) => ll(x, y)); r.push(r[0]); return r; };
+  const cs = [
+    { id: 'DEMO-C1', kind: 'protection', name: 'Охранная зона ЛЭП 110 кВ (демо)', regime: 'Строительство запрещено в полосе ±20 м', ring: strip(130, 20) },
+    { id: 'DEMO-C2', kind: 'undermined', name: 'Подработанная территория, шахта (демо)', regime: 'Требуется заключение по устойчивости основания', ring: poly([[250, 250], [620, 230], [640, 620], [230, 600]]) },
+    { id: 'DEMO-C3', kind: 'flood', name: 'Зона подтопления (демо)', regime: 'Высокий уровень грунтовых вод', ring: poly([[-620, -620], [-350, -640], [-330, -400], [-600, -380]]) },
+    { id: 'DEMO-C4', kind: 'sanitary', name: 'СЗЗ промпредприятия (демо)', regime: 'Жильё не допускается', ring: poly([[-100, -620], [160, -620], [160, -540], [-100, -540]]) }
+  ].map(c => ({ ...c, source: 'demo' }));
+  const us = [
+    { id: 'DEMO-U1', kind: 'water', line: [ll(-600, -385), ll(600, -385)], capacity_free: 120, owner: 'Водоканал (демо)' },
+    { id: 'DEMO-U2', kind: 'water', line: [ll(-385, -600), ll(-385, 600)], capacity_free: 120, owner: 'Водоканал (демо)' },
+    { id: 'DEMO-U3', kind: 'sewer', line: [ll(-385, -600), ll(-385, 600)], capacity_free: 80, owner: 'Водоканал (демо)' },
+    { id: 'DEMO-U3c', kind: 'sewer', line: [ll(155, -600), ll(155, 100)], capacity_free: 40, owner: 'Водоканал (демо)' },
+    { id: 'DEMO-U3b', kind: 'sewer', line: [ll(-115, -600), ll(-115, 600)], capacity_free: 60, owner: 'Водоканал (демо)' },
+    { id: 'DEMO-U1b', kind: 'water', line: [ll(-115, -600), ll(-115, 600)], capacity_free: 90, owner: 'Водоканал (демо)' },
+    { id: 'DEMO-U1c', kind: 'water', line: [ll(155, -600), ll(155, 600)], capacity_free: 70, owner: 'Водоканал (демо)' },
+    { id: 'DEMO-U1d', kind: 'water', line: [ll(385, -600), ll(385, 600)], capacity_free: 50, owner: 'Водоканал (демо)' },
+    { id: 'DEMO-U4b', kind: 'power', line: [ll(-600, -130), ll(600, -130)], capacity_free: 600, owner: 'Электросети (демо)' },
+    { id: 'DEMO-U4c', kind: 'power', line: [ll(-600, 410), ll(600, 410)], capacity_free: 400, owner: 'Электросети (демо)' },
+    { id: 'DEMO-U4', kind: 'power', line: [ll(-600, 140), ll(600, 140)], capacity_free: 800, owner: 'Электросети (демо)' },
+    { id: 'DEMO-U5', kind: 'power', line: [ll(300, -600), ll(300, 140)], capacity_free: 0, owner: 'Электросети (демо)' }
+  ].map(u => ({ ...u, source: 'demo' }));
+  return { ps, cs, us };
+}
+let parcels = load(PARCELS_FILE, null), constraints = load(CONS_FILE, null), utilities = load(UTIL_FILE, null);
+if (!parcels || !constraints || !utilities) { const d = seedLayers(); parcels = d.ps; constraints = d.cs; utilities = d.us; save(PARCELS_FILE, parcels); save(CONS_FILE, constraints); save(UTIL_FILE, utilities); }
+
+/* --- импорт GeoJSON (из QGIS, WGS84); всё или ничего --- */
+const truthy = v => v === true || v === 1 || ['true', 'да', 'yes', '1', 'есть'].includes(String(v).trim().toLowerCase());
+const num = v => (v === '' || v == null || !Number.isFinite(+v)) ? null : +v;
+function okCoord(c) { return Array.isArray(c) && c.length >= 2 && Number.isFinite(+c[0]) && Number.isFinite(+c[1]) && +c[1] >= BBOX.minLat && +c[1] <= BBOX.maxLat && +c[0] >= BBOX.minLng && +c[0] <= BBOX.maxLng; }
+function importLayer(name, gj) {
+  if (!gj || gj.type !== 'FeatureCollection' || !Array.isArray(gj.features)) return { error: 'Нужен GeoJSON типа FeatureCollection в системе WGS84 (EPSG:4326).' };
+  if (gj.features.length > 5000) return { error: 'Больше 5000 объектов за раз — разбейте файл.' };
+  const out = [], errors = [], wantPoly = name !== 'utilities';
+  gj.features.forEach((f, idx) => {
+    const pr = f.properties || {}, g = f.geometry || {}, tag = `Объект ${idx + 1}`;
+    let geoms = [];
+    if (wantPoly) { if (g.type === 'Polygon') geoms = [g.coordinates[0]]; else if (g.type === 'MultiPolygon') geoms = g.coordinates.map(p => p[0]); else return errors.push(`${tag}: нужна геометрия Polygon/MultiPolygon`); }
+    else { if (g.type === 'LineString') geoms = [g.coordinates]; else if (g.type === 'MultiLineString') geoms = g.coordinates; else return errors.push(`${tag}: нужна геометрия LineString/MultiLineString`); }
+    for (const [gi, ring] of geoms.entries()) {
+      if (!Array.isArray(ring) || ring.length < (wantPoly ? 4 : 2) || !ring.every(okCoord)) { errors.push(`${tag}: координаты некорректны или вне области Караганды (нужна система WGS84: долгота, широта)`); continue; }
+      const pts = ring.map(c => [+c[0], +c[1]]);
+      const baseId = String(pr.id || pr.cad_number || `${name}-${idx + 1}`).slice(0, 60), id = geoms.length > 1 ? `${baseId}#${gi + 1}` : baseId;
+      if (name === 'parcels') {
+        const status = String(pr.status || '').toLowerCase(); if (!STATUSES.includes(status)) { errors.push(`${tag}: status должен быть один из ${STATUSES.join('|')}`); continue; }
+        const zone = String(pr.zone || '').toLowerCase(); if (zone && !ZONES.includes(zone)) { errors.push(`${tag}: zone должен быть один из ${ZONES.join('|')}`); continue; }
+        const purposes = (Array.isArray(pr.purposes) ? pr.purposes : String(pr.purposes || '').split(/[,;]/)).map(x => x.trim()).filter(Boolean);
+        const bad = purposes.find(x => !PURPOSES.includes(x)); if (bad) { errors.push(`${tag}: purposes содержит «${bad}», допустимо: ${PURPOSES.join(', ')}`); continue; }
+        out.push({ id, cad: String(pr.cad_number || '').slice(0, 40), ring: pts, area_ha: areaHa(pts), status, purposes, zone: zone || 'residential', max_floors: num(pr.max_floors), slope_pct: num(pr.slope_pct), encumbrance: String(pr.encumbrance || '').slice(0, 120), apz: truthy(pr.apz), tu: truthy(pr.tu), source: 'import' });
+      } else if (name === 'constraints') {
+        const kind = String(pr.kind || '').toLowerCase(); if (!CONS_KINDS.includes(kind)) { errors.push(`${tag}: kind должен быть один из ${CONS_KINDS.join('|')}`); continue; }
+        out.push({ id, kind, name: String(pr.name || kind).slice(0, 120), regime: String(pr.regime || '').slice(0, 300), ring: pts, source: 'import' });
+      } else {
+        const kind = String(pr.kind || '').toLowerCase(); if (!UTIL_KINDS.includes(kind)) { errors.push(`${tag}: kind должен быть один из ${UTIL_KINDS.join('|')}`); continue; }
+        out.push({ id, kind, line: pts, capacity_free: num(pr.capacity_free), owner: String(pr.owner || '').slice(0, 80), source: 'import' });
+      }
+    }
+  });
+  return errors.length ? { error: errors.slice(0, 10).join('\n') + (errors.length > 10 ? `\n…и ещё ${errors.length - 10}` : ''), errors: errors.length } : { rows: out };
+}
+
 /* ---------- HTTP ---------- */
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css', '.csv': 'text/csv; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.ico': 'image/x-icon' };
 const send = (res, code, obj) => { res.writeHead(code, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(obj)); };
-function body(req) { return new Promise((ok, no) => { let d = ''; req.on('data', c => { d += c; if (d.length > 2e6) { no(new Error('too large')); req.destroy(); } }); req.on('end', () => ok(d)); req.on('error', no); }); }
+function body(req, limit = 2e6) { return new Promise((ok, no) => { let d = ''; req.on('data', c => { d += c; if (d.length > limit) { no(new Error('too large')); req.destroy(); } }); req.on('end', () => ok(d)); req.on('error', no); }); }
 const isAdmin = req => { const a = Buffer.from(String(req.headers['x-admin-password'] || '')), b = Buffer.from(ADMIN_PASSWORD); return a.length === b.length && crypto.timingSafeEqual(a, b); };
 
 async function api(req, res, url) {
@@ -203,18 +418,21 @@ async function api(req, res, url) {
   // --- публичные ---
   if (m === 'GET' && p === '/api/config') return send(res, 200, { price: PRICE, depth: DEPTH, maxSellDistance: MAX_SELL_DISTANCE });
   if (m === 'GET' && p === '/api/boreholes') return send(res, 200, boreholes.filter(b => b.verified).map(b => ({ id: b.id, lng: b.lng, lat: b.lat })));   // слои наружу не отдаём
+  if (m === 'GET' && p === '/api/layers') return send(res, 200, layersPublic(q.get('obj') === 'multi' ? 'multi' : 'izhs'));   // сети публично не отдаём
   if (m === 'GET' && p === '/api/point') {
     const lng = +q.get('lng'), lat = +q.get('lat'); if (!Number.isFinite(lng) || !Number.isFinite(lat)) return send(res, 400, { error: 'lng/lat' });
     const v = interp(lng, lat); if (!v) return send(res, 200, { available: false });
     track('point_click', req.headers['x-sid'], { lng: +lng.toFixed(4), lat: +lat.toFixed(4), avail: v.dmin <= MAX_SELL_DISTANCE, dmin: v.dmin });
-    return send(res, 200,{ available: v.dmin <= MAX_SELL_DISTANCE, gw: v.gw, near: v.near, dmin: v.dmin, confidence: confidence(v.dmin), price: PRICE });
+    const pp = passport(lng, lat, q.get('obj'));   // бесплатно: только цвета блоков, без причин и цифр
+    return send(res, 200, { available: v.dmin <= MAX_SELL_DISTANCE, gw: v.gw, near: v.near, dmin: v.dmin, confidence: confidence(v.dmin), price: PRICE,
+      parcel: pp.parcel, light: pp.overall, levels: pp.blocks.map(b => ({ key: b.key, title: b.title, level: b.level })) });
   }
   if (m === 'POST' && p === '/api/orders') {
     const o = JSON.parse(await body(req) || '{}'); const lng = +o.lng, lat = +o.lat;
     if (!Number.isFinite(lng) || !Number.isFinite(lat)) return send(res, 400, { error: 'Нет координат' });
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(o.email || ''))) return send(res, 400, { error: 'Укажите корректный email' });
     const v = interp(lng, lat); if (!v || v.dmin > MAX_SELL_DISTANCE) return send(res, 422, { error: 'Рядом нет данных. Закажите инженерные изыскания на участке.' });
-    const ord = { id: crypto.randomBytes(12).toString('hex'), lng, lat, email: String(o.email).slice(0, 120), price: PRICE, status: 'pending', created: new Date().toISOString() };
+    const ord = { id: crypto.randomBytes(12).toString('hex'), lng, lat, email: String(o.email).slice(0, 120), price: PRICE, obj: o.obj === 'multi' ? 'multi' : 'izhs', status: 'pending', created: new Date().toISOString() };
     orders.push(ord); save(ORD_FILE, orders); track('order_created', req.headers['x-sid'], { orderId: ord.id });
     return send(res, 201, { orderId: ord.id, price: PRICE });
   }
@@ -243,7 +461,7 @@ async function api(req, res, url) {
     const ord = orders.find(x => x.id === r[1]); if (!ord || ord.status !== 'paid') return send(res, 402, { error: 'Отчёт не оплачен' });
     const rep = buildReport(ord.lng, ord.lat); if (!rep) return send(res, 404, { error: 'Нет данных' });
     track('report_view', req.headers['x-sid'], { orderId: ord.id });
-    return send(res, 200, { ...rep, orderId: ord.id, paidAt: ord.paidAt });
+    return send(res, 200, { ...rep, passport: passport(ord.lng, ord.lat, ord.obj), orderId: ord.id, paidAt: ord.paidAt });
   }
   // --- админка ---
   if (p.startsWith('/api/admin/')) {
@@ -267,6 +485,27 @@ async function api(req, res, url) {
     }
     if (m === 'DELETE' && (r = p.match(/^\/api\/admin\/boreholes\/(.+)$/))) {
       const id = decodeURIComponent(r[1]); const n = boreholes.length; boreholes = boreholes.filter(x => x.id !== id); save(BH_FILE, boreholes); return send(res, 200, { deleted: n - boreholes.length });
+    }
+    if (m === 'GET' && p === '/api/admin/layers') {
+      const cnt = a => ({ total: a.length, demo: a.filter(x => x.source === 'demo').length });
+      const lights = parcelLights('izhs');
+      return send(res, 200, { parcels: cnt(parcels), constraints: cnt(constraints), utilities: cnt(utilities), parcels_ha: +parcels.reduce((s, x) => s + x.area_ha, 0).toFixed(1),
+        geo: { parcels: { type: 'FeatureCollection', features: lights.map(({ p, pp }) => ({ type: 'Feature', properties: { id: p.id, light: pp.overall, status: p.status }, geometry: { type: 'Polygon', coordinates: [p.ring] } })) },
+          constraints: { type: 'FeatureCollection', features: constraints.map(z => ({ type: 'Feature', properties: { id: z.id, kind: z.kind, name: z.name }, geometry: { type: 'Polygon', coordinates: [z.ring] } })) },
+          utilities: { type: 'FeatureCollection', features: utilities.map(u => ({ type: 'Feature', properties: { id: u.id, kind: u.kind, capacity_free: u.capacity_free }, geometry: { type: 'LineString', coordinates: u.line } })) } } });
+    }
+    let lm;
+    if (m === 'POST' && (lm = p.match(/^\/api\/admin\/layer\/(parcels|constraints|utilities)$/))) {
+      const name = lm[1], o = JSON.parse(await body(req, 25e6) || '{}'); const r2 = importLayer(name, o.geojson);
+      if (r2.error) return send(res, 400, r2);
+      const arr = name === 'parcels' ? parcels : name === 'constraints' ? constraints : utilities; let added = 0, updated = 0;
+      if (o.replace) { arr.length = 0; }
+      for (const row of r2.rows) { const i = arr.findIndex(x => x.id === row.id); if (i >= 0) { arr[i] = row; updated++; } else { arr.push(row); added++; } }
+      save(name === 'parcels' ? PARCELS_FILE : name === 'constraints' ? CONS_FILE : UTIL_FILE, arr); return send(res, 200, { added, updated });
+    }
+    if (m === 'POST' && p === '/api/admin/delete-demo-layers') {
+      parcels = parcels.filter(x => x.source !== 'demo'); constraints = constraints.filter(x => x.source !== 'demo'); utilities = utilities.filter(x => x.source !== 'demo');
+      save(PARCELS_FILE, parcels); save(CONS_FILE, constraints); save(UTIL_FILE, utilities); return send(res, 200, { ok: true });
     }
     if (m === 'GET' && p === '/api/admin/analytics') return send(res, 200, analytics(Math.min(180, Math.max(1, +q.get('days') || 30))));
     if (m === 'GET' && p === '/api/admin/leads') return send(res, 200, leads.slice().reverse());

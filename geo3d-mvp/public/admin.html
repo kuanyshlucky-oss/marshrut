@@ -44,7 +44,7 @@
 
 <div class="wrap" id="app" style="display:none">
   <div class="head"><h1>3D Караганда · управление</h1>
-    <div class="tabs" id="tabs"><button data-t="an" class="on">Аналитика</button><button data-t="ord">Заказы и заявки</button><button data-t="bh">Скважины</button></div></div>
+    <div class="tabs" id="tabs"><button data-t="an" class="on">Аналитика</button><button data-t="ord">Заказы и заявки</button><button data-t="ly">Слои участков</button><button data-t="bh">Скважины</button></div></div>
 
   <!-- ===== Аналитика ===== -->
   <div id="t_an">
@@ -77,6 +77,18 @@
       <div class="bar" style="justify-content:space-between;margin-bottom:8px"><h2 style="margin:0">Заказы отчётов (<span id="ocnt">0</span>) · оплачено: <span id="sum">0</span> ₸</h2><button class="sec" id="expOrd">Экспорт CSV</button></div>
       <div class="scroll"><table><thead><tr><th>Дата</th><th>Email</th><th>Координаты</th><th>Сумма</th><th>Статус</th><th>Отчёт</th></tr></thead><tbody id="ordBody"></tbody></table></div>
     </div>
+  </div>
+
+  <!-- ===== Слои участков ===== -->
+  <div id="t_ly" style="display:none">
+    <div class="kpis" id="lyKpis"></div>
+    <div class="card"><div class="bar" style="justify-content:space-between;margin-bottom:8px"><h2 style="margin:0">Слои на карте</h2><button class="sec" id="rmDemoLy">Удалить демо-слои</button></div>
+      <div id="lmap" style="height:380px;border-radius:10px;overflow:hidden"></div>
+      <div class="legend"><span><i style="background:#5fd18a"></i>можно строить</span><span><i style="background:#f2b84b"></i>с условиями</span><span><i style="background:#ef7a6a"></i>препятствия</span><span><i style="background:#dc2626"></i>зоны</span><span><i style="background:#5ab4ff"></i>сети</span></div></div>
+    <div class="card"><h2>Как загрузить слои из QGIS</h2>
+      <div style="color:var(--mute);font-size:13px;line-height:1.6">Экспортируйте слой: <b style="color:var(--text)">Слой → Экспорт → Сохранить объекты как → GeoJSON, система координат EPSG:4326 (WGS84)</b>. Загрузите файл ниже. Если в файле есть ошибки, не загружается ничего — исправьте и повторите. MultiPolygon разбивается на отдельные объекты, внутренние контуры (дыры) игнорируются.</div>
+    </div>
+    <div id="lyForms"></div>
   </div>
 
   <!-- ===== Скважины ===== -->
@@ -128,10 +140,61 @@ if(PW){ enter(); }
 $('tabs').onclick=e=>{
   const b=e.target.closest('button'); if(!b) return;
   document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));
-  for(const t of ['an','ord','bh']) $('t_'+t).style.display = t===b.dataset.t?'block':'none';
+  for(const t of ['an','ord','ly','bh']) $('t_'+t).style.display = t===b.dataset.t?'block':'none';
   if(b.dataset.t==='an' && dmap) setTimeout(()=>dmap.resize(),50);
+  if(b.dataset.t==='ly'){ loadLy(); if(lmap) setTimeout(()=>lmap.resize(),50); }
 };
 function refreshAll(){ loadAnalytics(); loadOrders(); loadBoreholes(); }
+
+/* ================= СЛОИ УЧАСТКОВ ================= */
+let lmap=null;
+const LY={
+  parcels:{title:'Участки (Polygon)',props:'status (free|torgi|reserve|occupied) — обязательно; cad_number, purposes (ИЖС, Многоэтажная, Коммерция через запятую), zone (residential|public|industrial|reserve), max_floors, slope_pct, encumbrance (текст, если есть), apz (да/нет), tu (да/нет)',
+    sample:{type:'FeatureCollection',features:[{type:'Feature',properties:{cad_number:'09:000:001:1',status:'free',purposes:'ИЖС, Многоэтажная',zone:'residential',max_floors:9,slope_pct:2.5,apz:'да',tu:'нет'},geometry:{type:'Polygon',coordinates:[[[73.08,49.80],[73.083,49.80],[73.083,49.802],[73.08,49.802],[73.08,49.80]]]}}]}},
+  constraints:{title:'Зоны ограничений (Polygon)',props:'kind (protection|sanitary|undermined|flood|slag|contamination) — обязательно; name, regime (текст режима)',
+    sample:{type:'FeatureCollection',features:[{type:'Feature',properties:{kind:'protection',name:'Охранная зона ЛЭП',regime:'Строительство запрещено'},geometry:{type:'Polygon',coordinates:[[[73.07,49.805],[73.1,49.805],[73.1,49.806],[73.07,49.806],[73.07,49.805]]]}}]}},
+  utilities:{title:'Инженерные сети (LineString)',props:'kind (water|sewer|power|gas|heat) — обязательно; capacity_free (число: свободная мощность; 0 — мощности нет; пусто — не подтверждена), owner',
+    sample:{type:'FeatureCollection',features:[{type:'Feature',properties:{kind:'water',capacity_free:120,owner:'Водоканал'},geometry:{type:'LineString',coordinates:[[73.07,49.80],[73.1,49.80]]}}]}}
+};
+function buildLyForms(){
+  if($('lyForms').children.length) return;
+  $('lyForms').innerHTML=Object.entries(LY).map(([k,v])=>`<div class="card"><h2>${v.title}</h2>
+    <div style="color:var(--mute);font-size:12.5px;margin-bottom:8px"><b style="color:var(--text)">Поля:</b> ${v.props}</div>
+    <div class="bar" style="margin-bottom:8px"><input type="file" accept=".geojson,.json" data-file="${k}"><button class="sec" data-sample="${k}">Скачать пример</button><label style="font-size:13px;display:flex;gap:6px;align-items:center"><input type="checkbox" data-replace="${k}">заменить весь слой</label><button data-imp="${k}">Загрузить</button></div>
+    <textarea data-ta="${k}" placeholder="Вставьте GeoJSON или выберите файл"></textarea><div class="msg" data-msg="${k}"></div></div>`).join('');
+}
+$('lyForms').onclick=async e=>{
+  const s=e.target.closest('[data-sample]'), i=e.target.closest('[data-imp]');
+  if(s){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(LY[s.dataset.sample].sample,null,1)],{type:'application/json'})); a.download=s.dataset.sample+'-example.geojson'; a.click(); }
+  if(i){ const k=i.dataset.imp, msg=document.querySelector(`[data-msg=${k}]`);
+    try{ const gj=JSON.parse(document.querySelector(`[data-ta=${k}]`).value); const r=await jpost('/api/admin/layer/'+k,{geojson:gj,replace:document.querySelector(`[data-replace=${k}]`).checked},H());
+      msg.className='msg good'; msg.textContent=`Добавлено: ${r.added}, обновлено: ${r.updated}`; loadLy(); }
+    catch(err){ msg.className='msg err'; msg.textContent=err instanceof SyntaxError?'Это не JSON — проверьте файл':err.message; } }
+};
+$('lyForms').onchange=e=>{ const f=e.target.closest('[data-file]'); if(f&&f.files[0]) f.files[0].text().then(t=>document.querySelector(`[data-ta=${f.dataset.file}]`).value=t); };
+$('rmDemoLy').onclick=async()=>{ if(!confirm('Удалить демо-участки, демо-зоны и демо-сети? Загруженные вами слои останутся.')) return; await jpost('/api/admin/delete-demo-layers',{},H()); loadLy(); };
+async function loadLy(){
+  buildLyForms();
+  const d=await aget('/api/admin/layers');
+  $('lyKpis').innerHTML=[['Участков',d.parcels.total,`${d.parcels_ha} га, демо: ${d.parcels.demo}`],['Зон ограничений',d.constraints.total,`демо: ${d.constraints.demo}`],['Линий сетей',d.utilities.total,`демо: ${d.utilities.demo}`]].map(([l,v,s])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
+  const kc=['match',['get','kind'],'undermined','#b45309','flood','#2563eb','slag','#78716c','contamination','#a21caf','protection','#dc2626','sanitary','#e879f9','#999'];
+  const put=()=>{ for(const k of ['parcels','constraints','utilities']) lmap.getSource(k).setData(d.geo[k]); };
+  if(!lmap){
+    lmap=new maplibregl.Map({container:'lmap',center:[73.085,49.806],zoom:14,style:{version:8,sources:{o:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:'© OpenStreetMap'}},layers:[{id:'bg',type:'background',paint:{'background-color':'#0f1318'}},{id:'o',type:'raster',source:'o',paint:{'raster-brightness-max':.35,'raster-saturation':-.7,'raster-contrast':.2}}]}});
+    lmap.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-right');
+    lmap.on('load',()=>{
+      lmap.resize();
+      for(const k of ['parcels','constraints','utilities']) lmap.addSource(k,{type:'geojson',data:{type:'FeatureCollection',features:[]}});
+      lmap.addLayer({id:'c-f',type:'fill',source:'constraints',paint:{'fill-color':kc,'fill-opacity':.3}});
+      lmap.addLayer({id:'p-f',type:'fill',source:'parcels',paint:{'fill-color':['match',['get','light'],'green','#5fd18a','yellow','#f2b84b','red','#ef7a6a','#7b8794'],'fill-opacity':.35}});
+      lmap.addLayer({id:'p-l',type:'line',source:'parcels',paint:{'line-color':'#fff','line-width':1}});
+      lmap.addLayer({id:'u-l',type:'line',source:'utilities',paint:{'line-color':'#5ab4ff','line-width':2}});
+      put();
+      const b=new maplibregl.LngLatBounds(); let n=0; for(const k of ['parcels','constraints','utilities']) for(const f of d.geo[k].features){ (f.geometry.type==='Polygon'?f.geometry.coordinates[0]:f.geometry.coordinates).forEach(c=>{b.extend(c);n++;}); }
+      if(n) lmap.fitBounds(b,{padding:30,duration:0});
+    });
+  } else if(lmap.isStyleLoaded()) put(); else lmap.once('load',put);
+}
 
 /* ================= АНАЛИТИКА ================= */
 let dmap=null, lastA=null;
