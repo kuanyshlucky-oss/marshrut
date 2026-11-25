@@ -553,14 +553,14 @@ function passport(lng, lat, obj, parcelIn, areaRing) {   // areaRing — кон�
   zoneBlock('protection', 'Охранные и санитарные зоны', ['protection', 'sanitary']);
 
   // 8. Достоверность данных
-  if (!s) B('data', 'Достоверность данных', 'red', 'Нет данных.');
+  if (!s) B('data', 'Достоверность данных', 'gray', 'Нет данных.');
   else {
     const age = s.nearDate ? (Date.now() - new Date(s.nearDate).getTime()) / (365.25 * 864e5) : null, old = age != null && age > CHECKS.maxAgeYears;
-    let lv = s.dmin < 120 ? 'green' : s.dmin < 300 ? 'yellow' : 'red'; if (lv === 'green' && (old || age == null)) lv = 'yellow';
+    let lv = s.dmin < 120 ? 'green' : s.dmin < 300 ? 'yellow' : 'gray'; if (lv === 'green' && (old || age == null)) lv = 'yellow';   // скважин рядом нет — это «нет данных» (серый), а не «препятствие»
     B('data', 'Достоверность данных', lv, `Ближайшая скважина в ${s.dmin} м${s.nearDate ? `, пробурена в ${s.nearDate.slice(0, 4)} году` : ', дата бурения неизвестна'}${old ? ` — данным больше ${CHECKS.maxAgeYears} лет, участок мог измениться` : ''}${s.dmin >= 120 ? ' — для проектирования нужны собственные изыскания' : ''}.`);
   }
 
-  const lv = blocks.map(b => b.level), overall = lv.includes('red') ? 'red' : lv.some(l => l === 'yellow' || l === 'gray') ? 'yellow' : 'green';
+  const lv = blocks.map(b => b.level), overall = lv.includes('red') ? 'red' : blocks.find(b => b.key === 'data').level === 'gray' ? 'gray' : lv.some(l => l === 'yellow' || l === 'gray') ? 'yellow' : 'green';   // красный — реальное препятствие; нет данных рядом — серый
   const get = k => blocks.find(b => b.key === k).level, missing = [];
   if (parcel && !parcel.apz) missing.push('Архитектурно-планировочное задание (АПЗ)');
   if (parcel && !parcel.tu) missing.push('Технические условия на подключение к сетям');
