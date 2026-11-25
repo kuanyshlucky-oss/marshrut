@@ -47,3 +47,36 @@ function track(type, extra) { try { fetch('/api/track', { method: 'POST', header
 
 async function jget(url) { const r = await fetch(url, { headers: { 'x-sid': SID } }); const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'Ошибка ' + r.status); return d; }
 async function jpost(url, obj, headers = {}) { const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-sid': SID, ...headers }, body: JSON.stringify(obj || {}) }); const d = await r.json().catch(() => ({})); if (!r.ok) throw new Error(d.error || 'Ошибка ' + r.status); return d; }
+
+/* ---------- Тёмная подложка из открытых векторных тайлов OpenFreeMap (ключ не нужен) ----------
+   Плитки tile.openstreetmap.org не используем: их политика не допускает такое применение, и они блокируют («403 Access blocked»). */
+const OFM_GLYPHS = 'https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf';
+const OFM_SOURCE = { type: 'vector', url: 'https://tiles.openfreemap.org/planet', attribution: '© OpenStreetMap contributors, OpenFreeMap © OpenMapTiles' };
+const NAME_RU = ['coalesce', ['get', 'name:ru'], ['get', 'name']];
+function ofmGroundLayers() {   // земля, вода, дороги
+  const L = o => ({ source: 'ofm', ...o }), road = ['==', ['geometry-type'], 'LineString'];
+  return [
+    L({ id: 'vb-landcover', type: 'fill', 'source-layer': 'landcover', paint: { 'fill-color': ['match', ['get', 'class'], 'wood', '#1b2822', 'grass', '#1e2b24', 'farmland', '#222b25', 'sand', '#2a2a22', 'ice', '#2a3038', '#1d2722'], 'fill-opacity': .7 } }),
+    L({ id: 'vb-landuse', type: 'fill', 'source-layer': 'landuse', paint: { 'fill-color': ['match', ['get', 'class'], 'residential', '#20262d', 'commercial', '#242a32', 'industrial', '#242a32', 'cemetery', '#1e2a26', 'hospital', '#26292f', 'school', '#26292f', '#20262d'], 'fill-opacity': .8 } }),
+    L({ id: 'vb-park', type: 'fill', 'source-layer': 'park', paint: { 'fill-color': '#1c2b23', 'fill-opacity': .8 } }),
+    L({ id: 'vb-water', type: 'fill', 'source-layer': 'water', paint: { 'fill-color': '#142231' } }),
+    L({ id: 'vb-waterway', type: 'line', 'source-layer': 'waterway', paint: { 'line-color': '#1b2f42', 'line-width': ['interpolate', ['linear'], ['zoom'], 10, .5, 16, 2] } }),
+    L({ id: 'vb-rail', type: 'line', 'source-layer': 'transportation', minzoom: 10, filter: ['all', road, ['==', ['get', 'class'], 'rail']], paint: { 'line-color': '#3a434f', 'line-width': .8, 'line-dasharray': [3, 2] } }),
+    L({ id: 'vb-road-minor', type: 'line', 'source-layer': 'transportation', minzoom: 12, filter: ['all', road, ['in', ['get', 'class'], ['literal', ['minor', 'service', 'track', 'path', 'busway']]]],
+      layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': '#363f4b', 'line-width': ['interpolate', ['linear'], ['zoom'], 12, .3, 15, 1.4, 18, 6] } }),
+    L({ id: 'vb-road-major', type: 'line', 'source-layer': 'transportation', filter: ['all', road, ['in', ['get', 'class'], ['literal', ['motorway', 'trunk', 'primary', 'secondary', 'tertiary']]]],
+      layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': ['match', ['get', 'class'], 'motorway', '#6a7585', 'trunk', '#65707f', 'primary', '#5a6574', '#4d5866'], 'line-width': ['interpolate', ['linear'], ['zoom'], 8, .5, 12, 1.6, 15, 3.5, 18, 12] } })
+  ];
+}
+function ofmLabelLayers() {   // подписи улиц и населённых пунктов (русские названия, если есть)
+  const halo = { 'text-halo-color': '#0f1318', 'text-halo-width': 1.6 };
+  return [
+    { id: 'vb-road-label', type: 'symbol', source: 'ofm', 'source-layer': 'transportation_name', minzoom: 14, layout: { 'symbol-placement': 'line', 'text-field': NAME_RU, 'text-font': ['Noto Sans Regular'], 'text-size': 11 }, paint: { 'text-color': '#aab4c0', ...halo } },
+    { id: 'vb-place-small', type: 'symbol', source: 'ofm', 'source-layer': 'place', minzoom: 11, filter: ['in', ['get', 'class'], ['literal', ['suburb', 'village', 'neighbourhood', 'quarter', 'hamlet', 'isolated_dwelling']]],
+      layout: { 'text-field': NAME_RU, 'text-font': ['Noto Sans Regular'], 'text-size': 12, 'text-max-width': 8 }, paint: { 'text-color': '#8e99a8', ...halo } },
+    { id: 'vb-place-big', type: 'symbol', source: 'ofm', 'source-layer': 'place', minzoom: 4, filter: ['in', ['get', 'class'], ['literal', ['city', 'town']]],
+      layout: { 'text-field': NAME_RU, 'text-font': ['Noto Sans Bold'], 'text-size': ['interpolate', ['linear'], ['zoom'], 6, 12, 14, 18] }, paint: { 'text-color': '#d4dbe4', ...halo } }
+  ];
+}
+// Готовый тёмный стиль для небольших карт (админка)
+function ofmDarkStyle() { return { version: 8, glyphs: OFM_GLYPHS, sources: { ofm: OFM_SOURCE }, layers: [{ id: 'bg', type: 'background', paint: { 'background-color': '#161b22' } }, ...ofmGroundLayers(), ...ofmLabelLayers()] }; }

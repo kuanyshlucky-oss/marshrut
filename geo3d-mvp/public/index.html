@@ -119,15 +119,15 @@ let cfg = {price:15000};
 
 const style = {
   version:8,
+  glyphs:OFM_GLYPHS,
   sources:{
-    dark:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,maxzoom:19,attribution:'© OpenStreetMap'},
     sat:{type:'raster',tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],tileSize:256,maxzoom:19,attribution:'Esri, Maxar, Earthstar Geographics'},
     dem:{type:'raster-dem',tiles:['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],encoding:'terrarium',tileSize:256,maxzoom:15,attribution:'Mapzen / AWS Terrain Tiles'},
-    ofm:{type:'vector',url:'https://tiles.openfreemap.org/planet',attribution:'OpenFreeMap © OpenMapTiles, данные OSM'}
+    ofm:OFM_SOURCE
   },
   layers:[
-    {id:'bg',type:'background',paint:{'background-color':'#0f1318'}},
-    {id:'dark',type:'raster',source:'dark',paint:{'raster-brightness-max':.32,'raster-brightness-min':0,'raster-saturation':-.7,'raster-contrast':.25}},
+    {id:'bg',type:'background',paint:{'background-color':'#161b22'}},
+    ...ofmGroundLayers(),   // тёмная подложка (земля, вода, дороги) — скрывается в режиме «Спутник»
     {id:'sat',type:'raster',source:'sat',layout:{visibility:'none'}},
     // 2D (по умолчанию): плоские контуры зданий, без рельефа и наклона
     {id:'bld-flat',type:'fill',source:'ofm','source-layer':'building',minzoom:13,paint:{'fill-color':'#6b7280','fill-opacity':.55,'fill-outline-color':'#9aa4b2'}},
@@ -135,9 +135,11 @@ const style = {
     {id:'hill',type:'hillshade',source:'dem',layout:{visibility:'none'},paint:{'hillshade-exaggeration':.55,'hillshade-shadow-color':'#000000','hillshade-highlight-color':'#ffffff','hillshade-accent-color':'#333a44'}},
     {id:'bld',type:'fill-extrusion',source:'ofm','source-layer':'building',minzoom:13,layout:{visibility:'none'},paint:{
       'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],6],0,'#4a5568',20,'#6f8fb5',60,'#9fd0e6'],
-      'fill-extrusion-height':['coalesce',['get','render_height'],6],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.92}}
+      'fill-extrusion-height':['coalesce',['get','render_height'],6],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.92}},
+    ...ofmLabelLayers()     // подписи улиц и районов поверх подложки и зданий
   ]
 };
+const BASE_GROUND_IDS = ofmGroundLayers().map(l=>l.id);
 // 3D и вся карта требуют WebGL. Если браузер его не даёт (отключено ускорение, старая видеокарта), говорим об этом прямо
 (function(){
   let gl=null; try{ const c=document.createElement('canvas'); gl=c.getContext('webgl2')||c.getContext('webgl'); }catch(e){}
@@ -186,7 +188,7 @@ map.on('load', async ()=>{
 /* ---------- подложка ---------- */
 document.querySelectorAll('#segBase button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('#segBase button').forEach(x=>x.classList.toggle('on',x===b));
-  map.setLayoutProperty('dark','visibility',b.dataset.v==='dark'?'visible':'none');
+  BASE_GROUND_IDS.forEach(id=>map.setLayoutProperty(id,'visibility',b.dataset.v==='dark'?'visible':'none'));
   map.setLayoutProperty('sat','visibility',b.dataset.v==='sat'?'visible':'none');
 });
 

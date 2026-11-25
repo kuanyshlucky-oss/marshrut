@@ -226,7 +226,7 @@ async function loadLy(){
   const kc=['match',['get','kind'],'undermined','#b45309','flood','#2563eb','slag','#78716c','contamination','#a21caf','protection','#dc2626','sanitary','#e879f9','#999'];
   const put=()=>{ for(const k of ['parcels','constraints','utilities','coverage']) lmap.getSource(k).setData(d.geo[k]); };
   if(!lmap){
-    lmap=new maplibregl.Map({container:'lmap',center:[73.085,49.806],zoom:14,style:{version:8,sources:{o:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:'© OpenStreetMap'}},layers:[{id:'bg',type:'background',paint:{'background-color':'#0f1318'}},{id:'o',type:'raster',source:'o',paint:{'raster-brightness-max':.35,'raster-saturation':-.7,'raster-contrast':.2}}]}});
+    lmap=new maplibregl.Map({container:'lmap',center:[73.085,49.806],zoom:14,style:ofmDarkStyle()});
     lmap.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-right');
     lmap.on('load',()=>{
       lmap.resize();
@@ -309,8 +309,7 @@ function drawDemandMap(a){
   const fc={type:'FeatureCollection',features:a.map.map(c=>({type:'Feature',properties:{n:c.n,noData:c.noData},geometry:{type:'Point',coordinates:[c.lng,c.lat]}}))};
   const fit=()=>{ if(!a.map.length) return; const b=new maplibregl.LngLatBounds(); a.map.forEach(c=>b.extend([c.lng,c.lat])); dmap.fitBounds(b,{padding:40,maxZoom:14,duration:0}); };
   if(!dmap){
-    dmap=new maplibregl.Map({container:'dmap',center:[73.085,49.806],zoom:11.3,style:{version:8,sources:{o:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,attribution:'© OpenStreetMap'}},
-      layers:[{id:'bg',type:'background',paint:{'background-color':'#0f1318'}},{id:'o',type:'raster',source:'o',paint:{'raster-brightness-max':.35,'raster-saturation':-.7,'raster-contrast':.2}}]}});
+    dmap=new maplibregl.Map({container:'dmap',center:[73.085,49.806],zoom:11.3,style:ofmDarkStyle()});
     dmap.addControl(new maplibregl.NavigationControl({showCompass:false}),'top-right');
     dmap.on('load',()=>{
       dmap.addSource('d',{type:'geojson',data:fc});
