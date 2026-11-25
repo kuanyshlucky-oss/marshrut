@@ -113,6 +113,7 @@ node server.js --demo</pre>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="/common.js"></script>
 <script src="/soil3d.js"></script>
+<script src="/geoblock.js"></script>
 <script>
 const C = {lat:49.806, lng:73.085}, KV = 3;
 const kx = lat => 111320*Math.cos(lat*Math.PI/180), KY = 110574;
@@ -373,13 +374,13 @@ async function loadReport(t){
   setInfo(head()+passportHTML(report.passport)+`
     <div class="kv" style="margin-top:10px"><span>Уровень грунтовых вод</span><b>${f1(report.gw)} м</b></div>
     <div class="lbl" style="margin:12px 0 6px">Слои по глубине · 3D</div><div id="lv"></div>
-    <button class="cta" id="b3d">Показать 3D-блок грунта</button>
+    <button class="cta" id="b3d">Открыть геологический блок 3D</button>
     <button class="cta sec" id="bsec">Геологический разрез (запад–восток)</button>
     <a class="cta sec" href="/report.html?t=${t}" target="_blank">Отчёт для печати / PDF</a>
     <div class="note">Ссылка на отчёт сохранится у вас: /report.html?t=${t}</div>`);
   document.getElementById('b3d').onclick = ()=>showBlock();
   document.getElementById('bsec').onclick = ()=>showSection();
-  highlightBlockLayer(null); viewer=buildSoilViewer(document.getElementById('lv'),report,{onSelect:highlightBlockLayer});
+  highlightBlockLayer(null); viewer=buildSoilViewer(document.getElementById('lv'),report,{onSelect:li=>{ highlightBlockLayer(li); if(window.__gb) window.__gb.setLayer(li); }});
   toast(cfg.payment==='free'?'Отчёт открыт. Сейчас пробный период: бесплатно.':'Оплачено (демо). Отчёт открыт.');
 }
 function showSection(){
@@ -389,7 +390,17 @@ function showSection(){
   el.innerHTML = `<h3><span>Геологический разрез · пунктир — грунтовые воды</span><button id="xsec">×</button></h3>${sectionSVG(report.section)}`;
   el.style.display='block'; document.getElementById('xsec').onclick=()=>{el.style.display='none'; map.getSource('secline').setData(emptyFC);};
 }
+/* Геологический блок: цельное 3D-тело со сглаженными границами слоёв, штриховками и колонками скважин (public/geoblock.js).
+   Выбор слоя синхронизирован с 3D-разрезом в панели. Прежний блок из столбиков на карте больше не используется. */
 function showBlock(){
+  track('block_view');
+  openGeoBlock(report,{
+    onSelect:li=>{ if(viewer) viewer.setLayer(li); },
+    onClose:()=>{}
+  });
+  if(window.__gb && viewer) { /* панель → блок */ window.__gbLink=true; }
+}
+function showBlockLegacy(){
   track('block_view');
   const {step,n,cells}=report.block, {lng,lat}=report.point, k=kx(lat), half=(n-1)/2, feats=[];
   const ll=(i,j)=>[lng+(i-half)*step/k, lat+(j-half)*step/KY];

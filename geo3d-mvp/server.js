@@ -352,8 +352,13 @@ function buildReport(lng, lat) {
   }
   const L = 400, ns = 40, sec = [];
   for (let s = 0; s <= ns; s++) { const dx = (-L / 2 + L * s / ns); const c = interp(lng + dx / k, lat); sec.push({ b: c.b, gw: c.gw }); }
+  // реальные проверенные скважины внутри блока (± половина блока + запас): на что опирается модель
+  const reach = half * step + step / 2 + 25;
+  const bhs = boreholes.filter(b => b.verified && b.b).map(b => ({ b, x: (b.lng - lng) * k, y: (b.lat - lat) * KY })).filter(o => Math.abs(o.x) <= reach && Math.abs(o.y) <= reach)
+    .map(({ b, x, y }) => ({ id: b.id, x: +x.toFixed(1), y: +y.toFixed(1), acc: b.acc, date: b.date || null, depth: b.depth || DEPTH, gw: b.gw, bounds: b.b,
+      layers: (b.layers || []).map(l => ({ from: l.from, to: l.to, cls: l.cls, soil: l.soil })) }));
   return { point: { lng, lat }, b: v.b, gw: v.gw, near: v.near, dmin: v.dmin, confidence: confidence(v.dmin),
-    section: { length: L, samples: sec }, block: { step, n, cells }, generated: new Date().toISOString() };
+    section: { length: L, samples: sec }, block: { step, n, cells, boreholes: bhs }, generated: new Date().toISOString() };
 }
 
 /* ---------- проверка данных ---------- */
