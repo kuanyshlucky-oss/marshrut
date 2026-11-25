@@ -264,10 +264,10 @@ function renderFree(){
     <div class="kv"><span>Уровень грунтовых вод (ориентировочно)</span><b>≈ ${f1(d.gw)} м</b></div>`+levels+`
     <div class="col"><div style="opacity:.35">${columnSVG([2,4,6,8],null)}</div>
       <div style="flex:1"><div class="lbl" style="margin-bottom:4px">Слои по глубине · в отчёте</div><table class="locked">${fake}</table></div></div>
-    <button class="cta" id="buy">Купить отчёт — ${cfg.price.toLocaleString('ru-RU')} ₸</button>
+    <button class="cta" id="buy">${cfg.payment==='free'?'Получить отчёт — бесплатно':'Купить отчёт — '+cfg.price.toLocaleString('ru-RU')+' ₸'}</button>
     <button class="cta sec" id="order">Заказать изыскания на участке</button>
-    <div class="note">В отчёте: паспорт участка, слои грунта, 3D-блок, геологический разрез, PDF. Модель ориентировочная и не заменяет инженерно-геологические изыскания.</div>`);
-  document.getElementById('buy').onclick = ()=>{ track('buy_click',{lng:current.lng,lat:current.lat}); openModal(); };
+    <div class="note">В отчёте: паспорт участка, слои грунта, 3D-блок, геологический разрез, PDF.${cfg.payment==='free'?' Сейчас пробный период: отчёты выдаются бесплатно.':''} Модель ориентировочная и не заменяет инженерно-геологические изыскания.</div>`);
+  document.getElementById('buy').onclick = ()=>{ track('buy_click',{lng:current.lng,lat:current.lat}); if(cfg.payment==='free') getFreeReport(); else openModal(); };
   document.getElementById('order').onclick = openLead;
 }
 
@@ -294,6 +294,13 @@ function openLead(){
       modal.style.display='none'; toast('Заявка отправлена. Мы свяжемся с вами.');
     }catch(e){ document.getElementById('err').textContent=e.message; }
   };
+}
+
+/* ---------- пробный период: отчёт сразу, без оплаты и email ---------- */
+async function getFreeReport(){
+  const b=document.getElementById('buy'); if(b){ b.disabled=true; b.textContent='Готовим отчёт…'; }
+  try{ const o=await jpost('/api/orders',{lng:current.lng,lat:current.lat,obj:OBJ}); await loadReport(o.token); }
+  catch(e){ toast(e.message); if(b){ b.disabled=false; b.textContent='Получить отчёт — бесплатно'; } }
 }
 
 /* ---------- покупка ---------- */
@@ -357,7 +364,7 @@ async function loadReport(t){
     <div class="note">Ссылка на отчёт сохранится у вас: /report.html?t=${t}</div>`);
   document.getElementById('b3d').onclick = ()=>showBlock();
   document.getElementById('bsec').onclick = ()=>showSection();
-  toast('Оплачено (демо). Отчёт открыт.');
+  toast(cfg.payment==='free'?'Отчёт открыт. Сейчас пробный период: бесплатно.':'Оплачено (демо). Отчёт открыт.');
 }
 function showSection(){
   track('section_view');

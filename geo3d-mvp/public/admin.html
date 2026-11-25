@@ -62,7 +62,7 @@
     <div class="card"><h2>Что говорят цифры</h2><div id="insights"></div></div>
     <div class="two">
       <div class="card funnel"><h2>Воронка продаж (уникальные визиты)</h2><div id="funnel"></div></div>
-      <div class="card"><h2>Выручка по дням, ₸</h2><div id="chRev"></div><h2 style="margin-top:14px">Визиты и заявки по дням</h2><div id="chVis"></div></div>
+      <div class="card"><h2 id="chRevTitle">Выручка по дням, ₸</h2><div id="chRev"></div><h2 style="margin-top:14px">Визиты и заявки по дням</h2><div id="chVis"></div></div>
     </div>
     <div class="two">
       <div class="card"><h2>Карта спроса: куда кликают клиенты</h2><div id="dmap"></div>
@@ -260,8 +260,8 @@ async function loadAnalytics(){
   $('kpis').innerHTML = [
     ['Посетители',v,'уникальных визитов'],
     ['Кликов по участкам',a.clicks,'проверили грунт'],
-    ['Оплаченных заказов',a.paidCount,'конверсия визит→оплата '+pct(a.conversion)],
-    ['Выручка',money(a.revenue)+' ₸','средний чек '+money(a.avgCheck)+' ₸'],
+    a.payment==='free' ? ['Выдано отчётов',a.paidCount,'конверсия визит→отчёт '+pct(a.conversion)] : ['Оплаченных заказов',a.paidCount,'конверсия визит→оплата '+pct(a.conversion)],
+    a.payment==='free' ? ['Оплата','отключена','пробный период: отчёты бесплатно'] : ['Выручка',money(a.revenue)+' ₸','средний чек '+money(a.avgCheck)+' ₸'],
     ['Заявки на изыскания',a.leads,'новых: '+a.newLeads],
     ['Клики без данных',pct(a.noDataShare),'потерянный спрос'],
     ['Среднее расстояние до скважины',a.avgDmin+' м','по кликам'],
@@ -276,7 +276,8 @@ async function loadAnalytics(){
 
   // графики
   const labels=a.daily.map(d=>d.day);
-  $('chRev').innerHTML = barChart(a.daily.map(d=>d.revenue),labels,'#f2b84b',money);
+  const fr=a.payment==='free'; $('chRevTitle').textContent = fr?'Выдано отчётов по дням':'Выручка по дням, ₸';
+  $('chRev').innerHTML = barChart(a.daily.map(d=>fr?d.orders:d.revenue),labels,'#f2b84b',fr?(v=>v):money);
   $('chVis').innerHTML = barChart(a.daily.map(d=>d.visits),labels,'#5ab4ff') + `<div style="color:var(--mute);font-size:12px">Заявок за период: ${a.leads}</div>`;
 
   // горячие зоны
@@ -294,9 +295,13 @@ function insights(a){
     if(worst) out.push(['bad',`Самое слабое место воронки: «${st[worst.i-1].name}» → «${st[worst.i].name}» — проходит всего ${pct(worst.r)}. Здесь теряется больше всего клиентов.`]);
     if(a.noDataShare>0.25) out.push(['bad',`${pct(a.noDataShare)} кликов приходится на участки, где у вас нет данных — это отказы без продажи. ${a.hot.length?`Главная зона: ${a.hot[0].lat.toFixed(3)}, ${a.hot[0].lng.toFixed(3)} (${a.hot[0].n} кликов). Бурение там превратит спрос в продажи.`:''}`]);
     else if(a.clicks) out.push(['good',`Только ${pct(a.noDataShare)} кликов приходится на участки без данных — покрытие соответствует спросу.`]);
-    if(a.leads) out.push(['good',`Заявок на изыскания за период: ${a.leads}${a.leads&&a.paidCount?` (на ${a.paidCount} оплаченных отчётов)`:''}. Это прямые клиенты для вашего основного геодезического бизнеса.`]);
-    if(st[1].n && st[2].n/Math.max(1,st[1].n)<0.2) out.push(['',`Из тех, кто кликнул по участку, нажимает «Купить» лишь ${pct(st[2].n/st[1].n)}. Проверьте цену и то, что видно бесплатно: возможно, бесплатная часть слишком бедная или цена высокая.`]);
-    if(st[3].n && st[4].n/st[3].n<0.7) out.push(['bad',`Из созданных заказов оплачивается ${pct(st[4].n/st[3].n)}. Низкая оплата — повод упростить оплату (Kaspi Pay, меньше шагов).`]);
+    const free=a.payment==='free', S=t=>st.find(s=>s.type===t), clk=S('point_click'), req=S('buy_click'), od=S('order_created'), pd=S('paid');
+    if(a.leads) out.push(['good',`Заявок на изыскания за период: ${a.leads}${a.paidCount?` (на ${a.paidCount} ${free?'выданных':'оплаченных'} отчётов)`:''}. Это прямые клиенты для вашего основного геодезического бизнеса.`]);
+    if(clk&&req&&clk.n && req.n/Math.max(1,clk.n)<0.2) out.push(['', free
+      ? `Из тех, кто кликнул по участку, запрашивает отчёт лишь ${pct(req.n/clk.n)}. Проверьте, заметна ли кнопка «Получить отчёт» и достаточно ли интересна бесплатная часть паспорта.`
+      : `Из тех, кто кликнул по участку, нажимает «Купить» лишь ${pct(req.n/clk.n)}. Проверьте цену и то, что видно бесплатно: возможно, бесплатная часть слишком бедная или цена высокая.`]);
+    if(!free && od&&pd&&od.n && pd.n/od.n<0.7) out.push(['bad',`Из созданных заказов оплачивается ${pct(pd.n/od.n)}. Низкая оплата — повод упростить оплату (Kaspi Pay, меньше шагов).`]);
+    if(free&&a.paidCount) out.push(['',`Сейчас пробный период: ${a.paidCount} отчётов выдано бесплатно. По этим цифрам удобно оценить, сколько людей готовы пользоваться сервисом, прежде чем включать оплату.`]);
   }
   $('insights').innerHTML = out.map(([c,t])=>`<div class="insight ${c}">${t}</div>`).join('') || '<div class="insight">Данных пока мало для выводов.</div>';
 }
@@ -326,7 +331,7 @@ async function loadOrders(){
   [ORD,LEADS]=await Promise.all([aget('/api/admin/orders'),aget('/api/admin/leads')]);
   $('ocnt').textContent=ORD.length; $('sum').textContent=money(ORD.filter(o=>o.status==='paid').reduce((s,o)=>s+o.price,0));
   $('ordBody').innerHTML=ORD.map(o=>`<tr><td>${new Date(o.created).toLocaleString('ru-RU')}</td><td>${esc(o.email)}</td><td>${o.lat.toFixed(5)}, ${o.lng.toFixed(5)}</td><td>${money(o.price)} ₸</td>
-    <td><span class="tag ${o.status==='paid'?'ok':'no'}">${o.status==='paid'?'оплачен':'ожидает'}</span></td><td>${o.status==='paid'?`<a href="/report.html?t=${esc(o.token||o.id)}" target="_blank">открыть</a>`:''}</td></tr>`).join('');
+    <td><span class="tag ${o.status==='paid'?'ok':'no'}">${o.status==='paid'?(o.free?'выдан бесплатно':'оплачен'):'ожидает'}</span></td><td>${o.status==='paid'?`<a href="/report.html?t=${esc(o.token||o.id)}" target="_blank">открыть</a>`:''}</td></tr>`).join('');
   $('lcnt').textContent=LEADS.length; $('lnew').textContent=LEADS.filter(l=>l.status==='new').length;
   $('leadBody').innerHTML=LEADS.map(l=>`<tr><td>${new Date(l.created).toLocaleString('ru-RU')}</td><td>${esc(l.name)}</td><td><a href="tel:${esc(l.phone)}">${esc(l.phone)}</a></td><td>${esc(l.comment)}</td>
     <td>${l.lat!=null?`<a target="_blank" href="https://www.openstreetmap.org/?mlat=${l.lat}&mlon=${l.lng}#map=17/${l.lat}/${l.lng}">${l.lat.toFixed(4)}, ${l.lng.toFixed(4)}</a>`:'—'}</td>

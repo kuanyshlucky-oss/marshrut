@@ -9,7 +9,8 @@ if (process.argv.includes('--demo')) process.env.PAYMENT_MODE = 'demo';
 const PORT = +process.env.PORT || 8095;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin';   // ПОМЕНЯЙТЕ перед публикацией
 // Оплата: off (по умолчанию, заказы не создаются) | demo (запуск с --demo, «оплата» без денег) | live (платёжный провайдер + вебхук)
-const PAYMENT_MODE = ['demo', 'live'].includes(process.env.PAYMENT_MODE) ? process.env.PAYMENT_MODE : 'off';
+// free — пробный период: отчёты выдаются сразу, без оплаты и email (по умолчанию, пока не подключена оплата); off — отчёты не выдаются; demo — «оплата» без денег; live — боевая
+const PAYMENT_MODE = ['off', 'free', 'demo', 'live'].includes(process.env.PAYMENT_MODE) ? process.env.PAYMENT_MODE : 'free';
 const PAYMENT_URL_TEMPLATE = process.env.PAYMENT_URL_TEMPLATE || '';   // например https://pay.provider.kz/checkout?order={orderId}&amount={amount}&return={returnUrl}
 const WEBHOOK_SECRET = process.env.PAYMENT_WEBHOOK_SECRET || '';
 const PUBLIC_URL = (process.env.PUBLIC_URL || `http://localhost:${process.env.PORT || 8095}`).replace(/\/$/, '');
@@ -258,7 +259,8 @@ const dayKey = t => new Date(t + 5 * 36e5).toISOString().slice(0, 10);   // су
 function analytics(days) {
   const since = Date.now() - days * 864e5, ev = events.filter(e => e.t >= since);
   const uniq = (type, list = ev) => new Set(list.filter(e => e.type === type).map(e => e.sid)).size;
-  const steps = [['Визиты', 'visit'], ['Кликнули по участку', 'point_click'], ['Нажали «Купить»', 'buy_click'], ['Создали заказ', 'order_created'], ['Оплатили', 'paid']]
+  const freeMode = PAYMENT_MODE === 'free';   // без оплаты воронка короче: визит → клик → запросили отчёт → открыли отчёт
+  const steps = [['Визиты', 'visit'], ['Кликнули по участку', 'point_click'], ['Запросили отчёт', 'buy_click'], ...(freeMode ? [] : [['Создали заказ', 'order_created'], ['Оплатили', 'paid']]), ['Открыли отчёт', 'report_view']]
     .map(([name, type]) => ({ name, type, n: uniq(type) }));
   const paid = orders.filter(o => o.status === 'paid' && new Date(o.paidAt).getTime() >= since);
   const revenue = paid.reduce((s, o) => s + o.price, 0);
@@ -280,7 +282,7 @@ function analytics(days) {
   const map = [...cells.values()].map(c => ({ lng: +(c.lng / c.n).toFixed(5), lat: +(c.lat / c.n).toFixed(5), n: c.n, noData: c.na / c.n }));
   const hot = map.filter(c => c.noData > 0.5).sort((a, b) => b.n - a.n).slice(0, 10);
   const verified = boreholes.filter(b => b.verified).length;
-  return { days, steps, revenue, paidCount: paid.length, avgCheck: paid.length ? Math.round(revenue / paid.length) : 0, clicks: clicks.length, noDataShare: clicks.length ? noData.length / clicks.length : 0,
+  return { days, payment: PAYMENT_MODE, steps, revenue, paidCount: paid.length, avgCheck: paid.length ? Math.round(revenue / paid.length) : 0, clicks: clicks.length, noDataShare: clicks.length ? noData.length / clicks.length : 0,
     avgDmin: clicks.length ? Math.round(clicks.reduce((s, e) => s + (e.dmin || 0), 0) / clicks.length) : 0, leads: leadsN, newLeads: leads.filter(l => l.status === 'new').length,
     conversion: steps[0].n ? paid.length / steps[0].n : 0, daily, map, hot, boreholes: verified,
     hasDemo: events.some(e => e.demo) || orders.some(o => o.demo) || leads.some(l => l.demo) };
@@ -717,12 +719,15 @@ async function api(req, res, url) {
     if (PAYMENT_MODE === 'off') return send(res, 503, { error: 'Оплата пока не подключена. Оставьте заявку на изыскания — мы свяжемся с вами.' });
     const o = parseJSON(await body(req)); if (!o) return send(res, 400, { error: 'json' }); const lng = +o.lng, lat = +o.lat;
     if (!Number.isFinite(lng) || !Number.isFinite(lat)) return send(res, 400, { error: 'Нет координат' });
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(o.email || ''))) return send(res, 400, { error: 'Укажите корректный email' });
+    const free = PAYMENT_MODE === 'free', mailOk = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(o.email || ''));
+    if (!mailOk && !(free && !o.email)) return send(res, 400, { error: 'Укажите корректный email' });   // в пробном периоде email необязателен
     const v = interp(lng, lat); if (!v || v.dmin > MAX_SELL_DISTANCE) return send(res, 422, { error: 'Рядом нет данных. Закажите инженерные изыскания на участке.' });
     // id — для платёжного провайдера, token — секрет покупателя (он же ключ отчёта; провайдеру не передаётся)
-    const ord = { id: crypto.randomBytes(12).toString('hex'), token: crypto.randomBytes(16).toString('hex'), lng, lat, email: clean(o.email, 120), price: PRICE, obj: o.obj === 'multi' ? 'multi' : 'izhs', status: 'pending', created: new Date().toISOString() };
+    const now = new Date().toISOString();
+    const ord = { id: crypto.randomBytes(12).toString('hex'), token: crypto.randomBytes(16).toString('hex'), lng, lat, email: clean(o.email, 120), price: free ? 0 : PRICE, free, obj: o.obj === 'multi' ? 'multi' : 'izhs',
+      status: free ? 'paid' : 'pending', created: now, ...(free ? { paidAt: now } : {}) };   // бесплатный отчёт сразу «выдан»
     orders.push(ord); save(ORD_FILE, orders); track('order_created', sid, { orderId: ord.id });
-    return send(res, 201, { orderId: ord.id, token: ord.token, price: PRICE, mode: PAYMENT_MODE, payUrl: PAYMENT_MODE === 'live' ? payUrl(ord) : null });
+    return send(res, 201, { orderId: ord.id, token: ord.token, price: ord.price, free, mode: PAYMENT_MODE, payUrl: PAYMENT_MODE === 'live' ? payUrl(ord) : null });
   }
   if (m === 'GET' && p === '/api/orders/status') {
     if (rl('status')) return tooMany();
@@ -877,4 +882,4 @@ const srv = http.createServer(async (req, res) => {
   } catch (e) { console.error(e); if (!res.headersSent) send(res, 500, { error: 'Ошибка сервера' }); }
 });
 srv.on('error', e => { if (e.code === 'EADDRINUSE') { console.error(`Порт ${PORT} уже занят: карта, скорее всего, уже запущена. Откройте http://localhost:${PORT}`); process.exit(1); } throw e; });
-srv.listen(PORT, () => console.log(`3D Караганда MVP: http://localhost:${PORT}   админка: /admin   оплата: ${PAYMENT_MODE}${PAYMENT_MODE === 'demo' ? ' (ДЕМО — настоящие деньги не принимаются)' : ''}${ADMIN_PASSWORD === 'admin' ? '   ВНИМАНИЕ: пароль админки по умолчанию «admin» — смените!' : ''}`));
+srv.listen(PORT, () => console.log(`3D Караганда MVP: http://localhost:${PORT}   админка: /admin   оплата: ${PAYMENT_MODE}${PAYMENT_MODE === 'demo' ? ' (ДЕМО — настоящие деньги не принимаются)' : PAYMENT_MODE === 'free' ? ' (БЕСПЛАТНЫЙ ПРОБНЫЙ ПЕРИОД: отчёты выдаются без оплаты)' : ''}${ADMIN_PASSWORD === 'admin' ? '   ВНИМАНИЕ: пароль админки по умолчанию «admin» — смените!' : ''}`));
