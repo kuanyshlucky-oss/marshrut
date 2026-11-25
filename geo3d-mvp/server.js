@@ -743,6 +743,7 @@ function markPaid(ord, sid) {
   ord.status = 'paid'; ord.paidAt = new Date().toISOString(); save(ORD_FILE, orders); track('paid', sid, { orderId: ord.id, price: ord.price });
 }
 
+const safeDecode = x => { try { return decodeURIComponent(x); } catch { return null; } };   // битый %-код в адресе — ошибка клиента (400), а не сервера (500)
 async function api(req, res, url) {
   const p = url.pathname, m = req.method, q = url.searchParams, ip = clientIp(req), sid = req.headers['x-sid'];
   const rl = name => limited(name + ':' + ip, ...LIMITS[name]);
@@ -754,7 +755,7 @@ async function api(req, res, url) {
   if (m === 'GET' && p === '/api/grid') { if (rl('layers')) return tooMany(); return send(res, 200, gridPublic(q.get('obj') === 'multi' ? 'multi' : 'izhs')); }
   if (m === 'GET' && p === '/api/point') {
     if (rl('point')) return tooMany();
-    const lng = +q.get('lng'), lat = +q.get('lat'); if (!Number.isFinite(lng) || !Number.isFinite(lat)) return send(res, 400, { error: 'lng/lat' });
+    const lng = q.get('lng') ? +q.get('lng') : NaN, lat = q.get('lat') ? +q.get('lat') : NaN; if (!Number.isFinite(lng) || !Number.isFinite(lat)) return send(res, 400, { error: 'lng/lat' });   // пустое значение не должно превращаться в 0
     const v = interp(lng, lat); if (!v) return send(res, 200, { available: false });
     track('point_click', sid, { lng: +lng.toFixed(4), lat: +lat.toFixed(4), avail: v.dmin <= MAX_SELL_DISTANCE, dmin: v.dmin });
     const pp = passport(lng, lat, q.get('obj'));   // бесплатно: только цвета блоков, без причин; УГВ и расстояние огрублены, ID скважины скрыт
@@ -869,9 +870,9 @@ async function api(req, res, url) {
       if (!Number.isInteger(cls) || cls < 0 || cls > 4) return send(res, 400, { error: 'Класс от 0 до 4' });
       soilDict = soilDict.filter(e => normSoil(e.p) !== pat).concat([{ p: pat, cls }]); save(SOIL_FILE, soilDict); recheckAll(); save(BH_FILE, boreholes); return send(res, 200, { ok: true });
     }
-    if (m === 'DELETE' && (r = p.match(/^\/api\/admin\/soil-dict\/(.+)$/))) { const pat = normSoil(decodeURIComponent(r[1])); soilDict = soilDict.filter(e => normSoil(e.p) !== pat); save(SOIL_FILE, soilDict); recheckAll(); save(BH_FILE, boreholes); return send(res, 200, { ok: true }); }
+    if (m === 'DELETE' && (r = p.match(/^\/api\/admin\/soil-dict\/(.+)$/))) { const raw = safeDecode(r[1]); if (raw === null) return send(res, 400, { error: 'Некорректный адрес' }); const pat = normSoil(raw); soilDict = soilDict.filter(e => normSoil(e.p) !== pat); save(SOIL_FILE, soilDict); recheckAll(); save(BH_FILE, boreholes); return send(res, 200, { ok: true }); }
     if (m === 'DELETE' && (r = p.match(/^\/api\/admin\/boreholes\/(.+)$/))) {
-      const id = decodeURIComponent(r[1]); const n = boreholes.length; boreholes = boreholes.filter(x => x.id !== id); save(BH_FILE, boreholes); return send(res, 200, { deleted: n - boreholes.length });
+      const id = safeDecode(r[1]); if (id === null) return send(res, 400, { error: 'Некорректный адрес' }); const n = boreholes.length; boreholes = boreholes.filter(x => x.id !== id); save(BH_FILE, boreholes); return send(res, 200, { deleted: n - boreholes.length });
     }
     if (m === 'GET' && p === '/api/admin/layers') {
       const cnt = a => ({ total: a.length, demo: a.filter(x => x.source === 'demo').length });

@@ -8,10 +8,11 @@
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <style>
   :root,[data-theme=light]{--bg:#f3f5f8;--panel:#ffffff;--panel-solid:#ffffff;--line:rgba(20,30,45,.13);--text:#1b2430;--mute:#5b6775;--accent:#f2b84b;--accent-text:#8a5a00;--ok:#1f9d55;--warn:#b7791f;--bad:#c0392b;--blue:#1f6fb0;--fill0:rgba(15,25,40,.03);--fill:rgba(15,25,40,.05);--fill2:rgba(15,25,40,.09);--fill3:rgba(15,25,40,.13);--input:#ffffff;--shadow:0 4px 18px rgba(20,30,45,.14)}
-  [data-theme=dark]{--bg:#0f1318;--panel:#171d25;--panel-solid:#161c24;--line:var(--fill2);--text:#e8edf3;--mute:#93a0ae;--accent:#f2b84b;--accent-text:#f2b84b;--ok:#5fd18a;--warn:#f2b84b;--bad:#ef7a6a;--blue:#5ab4ff;--fill0:var(--fill0);--fill:var(--fill);--fill2:var(--fill2);--fill3:var(--fill3);--input:#0f1318;--shadow:0 4px 18px rgba(0,0,0,.35)}
+  [data-theme=dark]{--bg:#0f1318;--panel:#171d25;--panel-solid:#161c24;--line:rgba(255,255,255,.1);--text:#e8edf3;--mute:#93a0ae;--accent:#f2b84b;--accent-text:#f2b84b;--ok:#5fd18a;--warn:#f2b84b;--bad:#ef7a6a;--blue:#5ab4ff;--fill0:rgba(255,255,255,.03);--fill:rgba(255,255,255,.05);--fill2:rgba(255,255,255,.1);--fill3:rgba(255,255,255,.14);--input:#0f1318;--shadow:0 4px 18px rgba(0,0,0,.35)}
   *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
   .wrap{max-width:1150px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:20px;margin:0} h2{font-size:15px;margin:0 0 10px}
+  .kv{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--line);font-size:13px} .kv span{color:var(--mute)} .kv b{text-align:right;font-weight:600}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
   input,textarea,select{background:var(--input);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit}
   textarea{width:100%;min-height:110px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px}

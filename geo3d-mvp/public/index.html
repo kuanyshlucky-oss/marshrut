@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <style>
   :root,[data-theme=light]{--bg:#f3f5f8;--panel:rgba(255,255,255,.95);--panel-solid:#ffffff;--line:rgba(20,30,45,.13);--text:#1b2430;--mute:#5b6775;--accent:#f2b84b;--accent-text:#8a5a00;--ok:#1f9d55;--warn:#b7791f;--bad:#c0392b;--blue:#1f6fb0;--fill0:rgba(15,25,40,.03);--fill:rgba(15,25,40,.05);--fill2:rgba(15,25,40,.09);--fill3:rgba(15,25,40,.13);--input:#ffffff;--shadow:0 4px 18px rgba(20,30,45,.14)}
-  [data-theme=dark]{--bg:#0f1318;--panel:rgba(18,23,30,.88);--panel-solid:#161c24;--line:var(--fill2);--text:#e8edf3;--mute:#93a0ae;--accent:#f2b84b;--accent-text:#f2b84b;--ok:#5fd18a;--warn:#f2b84b;--bad:#ef7a6a;--blue:#5ab4ff;--fill0:var(--fill0);--fill:var(--fill);--fill2:var(--fill2);--fill3:var(--fill3);--input:#0f1318;--shadow:0 4px 18px rgba(0,0,0,.35)}
+  [data-theme=dark]{--bg:#0f1318;--panel:rgba(18,23,30,.88);--panel-solid:#161c24;--line:rgba(255,255,255,.1);--text:#e8edf3;--mute:#93a0ae;--accent:#f2b84b;--accent-text:#f2b84b;--ok:#5fd18a;--warn:#f2b84b;--bad:#ef7a6a;--blue:#5ab4ff;--fill0:rgba(255,255,255,.03);--fill:rgba(255,255,255,.05);--fill2:rgba(255,255,255,.1);--fill3:rgba(255,255,255,.14);--input:#0f1318;--shadow:0 4px 18px rgba(0,0,0,.35)}
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
   #map{position:absolute;inset:0}
@@ -59,8 +59,9 @@
   #btn3d:hover{background:var(--accent);color:#1b1500} #btn3d.on{background:var(--accent);color:#1b1500}
   @media (max-width:820px){
     #btn3d{right:16px;top:16px}
-    #top{max-width:calc(100% - 32px)} #tools{top:auto;bottom:16px;width:calc(100% - 32px);flex-direction:row;flex-wrap:wrap;max-height:30vh;overflow:auto} #tools .row{flex:1 1 140px}
-    #info{top:auto;left:16px;right:16px;width:auto;bottom:calc(30vh + 32px);max-height:38vh} #section{left:16px;right:16px;bottom:auto;top:96px}
+    #top{max-width:calc(100% - 32px)} #tools{top:auto;bottom:64px;width:calc(100% - 32px);flex-direction:row;flex-wrap:wrap;max-height:30vh;overflow:auto} #tools .row{flex:1 1 140px}
+    .maplibregl-ctrl-bottom-right .maplibregl-ctrl-group,.maplibregl-ctrl-bottom-right .maplibregl-ctrl-scale{display:none}   /* на телефоне кнопки зума и масштаб закрывали панель слоёв: масштабируем щипком, а подпись об авторстве карты оставляем */
+    #info{top:auto;left:16px;right:16px;width:auto;bottom:calc(30vh + 80px);max-height:34vh} #section{left:16px;right:16px;bottom:auto;top:96px}
   }
 </style>
 </head>
@@ -486,7 +487,7 @@ function setView(v){
 }
 function applyCut(){ const n=+document.getElementById('cut').value; map.setFilter('block', n?['>=',['get','row'],n]:null); }
 document.getElementById('cut').oninput=applyCut;
-document.getElementById('btnBack').onclick=()=>{ setView('surface'); if(report) marker=new maplibregl.Marker({color:'#f2b84b'}).setLngLat([report.point.lng,report.point.lat]).addTo(map); };
+document.getElementById('btnBack').onclick=()=>{ setView('surface'); if(marker){ marker.remove(); marker=null; } if(report) marker=new maplibregl.Marker({color:'#f2b84b'}).setLngLat([report.point.lng,report.point.lat]).addTo(map); };
 </script>
 </body>
 </html>
