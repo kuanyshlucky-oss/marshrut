@@ -1,0 +1,14 @@
+{
+  "name": "geo3d-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "3D Караганда — MVP. Сервер работает без зависимостей; pg нужен только для миграции на PostgreSQL.",
+  "scripts": {
+    "start": "node server.js",
+    "import:dry": "node tools/import-json-to-pg.js --dry",
+    "import:pg": "node tools/import-json-to-pg.js --migrate --apply"
+  },
+  "dependencies": {
+    "pg": "^8.13.0"
+  }
+}
