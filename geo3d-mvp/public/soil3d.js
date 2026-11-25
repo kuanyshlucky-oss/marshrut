@@ -36,22 +36,22 @@
   .lv-water{position:absolute;left:-12px;width:${W + 24}px;height:${W + 24}px;transform:rotateX(90deg);background:rgba(90,180,255,.26);border:1.5px solid rgba(120,200,255,.9);box-shadow:0 0 22px rgba(90,180,255,.45);animation:lv-water 3.2s ease-in-out infinite;pointer-events:none;transition:opacity .4s}
   .lv-block.ex .lv-water{opacity:0}
   .lv-list{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0}
-  .lv-item{display:flex;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);border-radius:9px;padding:7px 9px;font:inherit;font-size:12.5px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}
-  .lv-item:hover{background:rgba(255,255,255,.09);transform:translateX(2px)}
-  .lv-item.on{border-color:var(--accent);background:rgba(242,184,75,.12)}
-  .lv-item i{flex:0 0 11px;height:11px;border-radius:3px;border:1px solid rgba(255,255,255,.25)}
+  .lv-item{display:flex;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:var(--fill0);color:var(--text);border-radius:9px;padding:7px 9px;font:inherit;font-size:12.5px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s}
+  .lv-item:hover{background:var(--fill2);transform:translateX(2px)}
+  .lv-item.on{border-color:var(--accent-text);background:rgba(242,184,75,.12)}
+  .lv-item i{flex:0 0 11px;height:11px;border-radius:3px;border:1px solid rgba(128,128,128,.5)}
   .lv-item span{flex:1;min-width:0;line-height:1.25}
   .lv-item small{color:var(--mute);white-space:nowrap}
   .lv-tools{display:flex;gap:6px;margin:8px 0}
-  .lv-tools button{flex:1;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);border-radius:9px;padding:7px 6px;font:inherit;font-size:12.5px;cursor:pointer}
-  .lv-tools button:hover{background:rgba(255,255,255,.12)}
-  .lv-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:rgba(255,255,255,.04);min-height:60px}
+  .lv-tools button{flex:1;border:1px solid var(--line);background:var(--fill);color:var(--text);border-radius:9px;padding:7px 6px;font:inherit;font-size:12.5px;cursor:pointer}
+  .lv-tools button:hover{background:var(--fill3)}
+  .lv-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:var(--fill0);min-height:60px}
   .lv-card.in{animation:lv-card .35s cubic-bezier(.2,.8,.2,1)}
   .lv-hint{color:var(--mute);font-size:12.5px;line-height:1.5}
   .lv-ct{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;margin-bottom:8px}
-  .lv-ct i{width:13px;height:13px;border-radius:4px;display:inline-block;border:1px solid rgba(255,255,255,.3)}
+  .lv-ct i{width:13px;height:13px;border-radius:4px;display:inline-block;border:1px solid rgba(128,128,128,.5)}
   .lv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
-  .lv-grid div{background:rgba(255,255,255,.05);border-radius:8px;padding:6px 8px}
+  .lv-grid div{background:var(--fill);border-radius:8px;padding:6px 8px}
   .lv-grid small{display:block;color:var(--mute);font-size:10.5px;text-transform:uppercase;letter-spacing:.4px}
   .lv-grid b{font-size:13.5px}
   .lv-w{font-size:12.5px;padding:7px 9px;border-radius:8px;background:rgba(90,180,255,.10);border:1px solid rgba(90,180,255,.35);margin-bottom:8px}

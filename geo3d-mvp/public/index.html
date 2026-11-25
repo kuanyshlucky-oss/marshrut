@@ -3,26 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var __b=localStorage.getItem('geo3d_base');document.documentElement.dataset.theme=(__b==='dark')?'dark':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
 <title>3D Караганда — грунт и участки</title>
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <style>
-  :root{--bg:#0f1318;--panel:rgba(18,23,30,.88);--line:rgba(255,255,255,.10);--text:#e8edf3;--mute:#93a0ae;--accent:#f2b84b;--ok:#5fd18a;--warn:#f2b84b;--bad:#ef7a6a}
+  :root,[data-theme=light]{--bg:#f3f5f8;--panel:rgba(255,255,255,.95);--panel-solid:#ffffff;--line:rgba(20,30,45,.13);--text:#1b2430;--mute:#5b6775;--accent:#f2b84b;--accent-text:#8a5a00;--ok:#1f9d55;--warn:#b7791f;--bad:#c0392b;--blue:#1f6fb0;--fill0:rgba(15,25,40,.03);--fill:rgba(15,25,40,.05);--fill2:rgba(15,25,40,.09);--fill3:rgba(15,25,40,.13);--input:#ffffff;--shadow:0 4px 18px rgba(20,30,45,.14)}
+  [data-theme=dark]{--bg:#0f1318;--panel:rgba(18,23,30,.88);--panel-solid:#161c24;--line:var(--fill2);--text:#e8edf3;--mute:#93a0ae;--accent:#f2b84b;--accent-text:#f2b84b;--ok:#5fd18a;--warn:#f2b84b;--bad:#ef7a6a;--blue:#5ab4ff;--fill0:var(--fill0);--fill:var(--fill);--fill2:var(--fill2);--fill3:var(--fill3);--input:#0f1318;--shadow:0 4px 18px rgba(0,0,0,.35)}
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
   #map{position:absolute;inset:0}
   .glass{background:var(--panel);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:14px}
   #top{position:absolute;left:16px;top:16px;padding:12px 14px;max-width:330px}
   #top h1{margin:0 0 2px;font-size:16px} #top p{margin:0;color:var(--mute);font-size:12px}
-  .badge{display:inline-block;margin-top:8px;padding:2px 8px;border-radius:999px;background:rgba(242,184,75,.15);color:var(--accent);font-size:11px;border:1px solid rgba(242,184,75,.35)}
+  .badge{display:inline-block;margin-top:8px;padding:2px 8px;border-radius:999px;background:rgba(242,184,75,.15);color:var(--accent-text);font-size:11px;border:1px solid rgba(242,184,75,.35)}
   #tools{position:absolute;left:16px;top:116px;padding:10px;display:flex;flex-direction:column;gap:10px;width:260px}
   .row{display:flex;flex-direction:column;gap:4px}
   .lbl{font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.6px}
-  .seg{display:flex;background:rgba(255,255,255,.06);border-radius:10px;padding:3px;gap:3px}
+  .seg{display:flex;background:var(--fill);border-radius:10px;padding:3px;gap:3px}
   .seg button{flex:1;border:0;background:transparent;color:var(--mute);padding:7px 6px;border-radius:8px;cursor:pointer;font:inherit;font-size:13px}
   .seg button.on{background:var(--accent);color:#1b1500;font-weight:600}
-  input[type=range]{width:100%;accent-color:var(--accent)}
+  input[type=range]{width:100%;accent-color:var(--accent-text)}
   #soilBox{display:none}
-  #legend div{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:3px} #legend i{width:14px;height:14px;border-radius:4px;border:1px solid rgba(255,255,255,.2)}
+  #legend div{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:3px} #legend i{width:14px;height:14px;border-radius:4px;border:1px solid rgba(128,128,128,.5)}
   #info{position:absolute;right:16px;top:16px;width:350px;max-height:calc(100% - 32px);overflow:auto;padding:14px}
   #info h2{margin:0 0 4px;font-size:15px} .hint{color:var(--mute);font-size:13px}
   .kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px} .kv b{font-weight:600}
@@ -33,27 +35,27 @@
   .locked{filter:blur(5px);user-select:none;pointer-events:none}
   .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
   .cta{display:block;width:100%;margin-top:8px;border:0;border-radius:10px;padding:11px;font:inherit;font-weight:700;cursor:pointer;background:var(--accent);color:#1b1500;text-align:center;text-decoration:none}
-  .cta.sec{background:rgba(255,255,255,.08);color:var(--text);font-weight:500}
+  .cta.sec{background:var(--fill2);color:var(--text);font-weight:500}
   .note{margin-top:10px;color:var(--mute);font-size:11.5px}
   #section{position:absolute;left:16px;right:384px;bottom:16px;padding:10px 14px;display:none}
   #section h3{margin:0 0 6px;font-size:13px;display:flex;justify-content:space-between} #section svg{width:100%;height:auto;max-height:220px}
   #section button{background:none;border:0;color:var(--mute);cursor:pointer;font-size:18px;line-height:1}
   #toast{position:absolute;left:50%;top:18px;transform:translateX(-50%);padding:10px 16px;display:none;z-index:5;max-width:90%}
   #modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:10;padding:16px}
-  #modal .box{width:100%;max-width:400px;padding:20px;background:#161c24;border:1px solid var(--line);border-radius:16px}
-  #modal h3{margin:0 0 8px} #modal input{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:#0f1318;color:var(--text);font:inherit;margin:8px 0}
+  #modal .box{width:100%;max-width:400px;padding:20px;background:var(--panel-solid);border:1px solid var(--line);border-radius:16px}
+  #modal h3{margin:0 0 8px} #modal input{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--input);color:var(--text);font:inherit;margin:8px 0}
   #modal .err{color:var(--bad);font-size:12.5px;min-height:18px}
   .dots{display:flex;gap:3px} .dots span{width:14px;height:8px;border-radius:2px}
   .blk{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)} .blk .d{flex:0 0 10px;height:10px;border-radius:50%;margin-top:5px} .blk b{font-size:13px} .blk .hint{font-size:12px;margin-top:1px}
   .link{background:none;border:0;color:var(--mute);cursor:pointer;font:inherit;font-size:12.5px;padding:0 0 6px} .link:hover{color:var(--text)}
   .miss{margin:6px 0 0;padding-left:18px;font-size:12.5px;color:var(--text)} .miss li{margin-bottom:3px}
-  .plist .it{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:8px} .plist .it:hover{background:rgba(255,255,255,.06)}
+  .plist .it{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:8px} .plist .it:hover{background:var(--fill)}
   .plist .dot{width:10px;height:10px;border-radius:50%;flex:0 0 10px} .plist .t{flex:1;min-width:0;font-size:13px} .plist .t small{display:block;color:var(--mute);font-size:11.5px}
   .plist .ha{font-weight:700;font-size:13px;white-space:nowrap}
   .chk{display:flex;gap:14px;font-size:12.5px;color:var(--text)} .chk label{display:flex;gap:6px;align-items:center;cursor:pointer}
   .zl{font-size:11px;color:var(--mute);line-height:1.7} .zl i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px}
-  .fin{width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:#0f1318;color:var(--text);font:inherit}
-  #btn3d{position:absolute;right:382px;top:16px;z-index:3;min-width:62px;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--text);font:inherit;font-size:15px;font-weight:800;letter-spacing:.5px;cursor:pointer;box-shadow:0 4px 18px rgba(0,0,0,.35);transition:background .15s,color .15s}
+  .fin{width:90px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--input);color:var(--text);font:inherit}
+  #btn3d{position:absolute;right:382px;top:16px;z-index:3;min-width:62px;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--text);font:inherit;font-size:15px;font-weight:800;letter-spacing:.5px;cursor:pointer;box-shadow:var(--shadow);transition:background .15s,color .15s}
   #btn3d:hover{background:var(--accent);color:#1b1500} #btn3d.on{background:var(--accent);color:#1b1500}
   @media (max-width:820px){
     #btn3d{right:16px;top:16px}
@@ -85,7 +87,7 @@ node server.js --demo</pre>
 
 <div id="tools" class="glass">
   <div class="row"><span class="lbl">Подложка</span>
-    <div class="seg" id="segBase"><button data-v="dark" class="on">Тёмная</button><button data-v="sat">Спутник</button></div></div>
+    <div class="seg" id="segBase"><button data-v="light" class="on">Светлая</button><button data-v="dark">Тёмная</button><button data-v="sat">Спутник</button></div></div>
   <div class="row"><span class="lbl">Тип объекта</span>
     <div class="seg" id="segObj"><button data-v="izhs" class="on">ИЖС</button><button data-v="multi">Многоэтажка</button></div></div>
   <div class="row"><span class="lbl">Слои</span>
@@ -128,20 +130,21 @@ const style = {
     ofm:OFM_SOURCE
   },
   layers:[
-    {id:'bg',type:'background',paint:{'background-color':'#161b22'}},
-    ...ofmGroundLayers(),   // тёмная подложка (земля, вода, дороги) — скрывается в режиме «Спутник»
+    {id:'bg',type:'background',paint:{'background-color':'#eef1f4'}},
+    ...ofmGroundLayers('light'),         // светлая подложка (по умолчанию)
+    ...ofmGroundLayers('dark',true),     // тёмная подложка (скрыта); в режиме «Спутник» скрыты обе
     {id:'sat',type:'raster',source:'sat',layout:{visibility:'none'}},
     // 2D (по умолчанию): плоские контуры зданий, без рельефа и наклона
-    {id:'bld-flat',type:'fill',source:'ofm','source-layer':'building',minzoom:13,paint:{'fill-color':'#6b7280','fill-opacity':.55,'fill-outline-color':'#9aa4b2'}},
+    {id:'bld-flat',type:'fill',source:'ofm','source-layer':'building',minzoom:13,paint:{'fill-color':'#c3cad4','fill-opacity':.85,'fill-outline-color':'#9aa5b3'}},
     // 3D (кнопка «3D»): тени рельефа и объёмные здания
     {id:'hill',type:'hillshade',source:'dem',layout:{visibility:'none'},paint:{'hillshade-exaggeration':.55,'hillshade-shadow-color':'#000000','hillshade-highlight-color':'#ffffff','hillshade-accent-color':'#333a44'}},
     {id:'bld',type:'fill-extrusion',source:'ofm','source-layer':'building',minzoom:13,layout:{visibility:'none'},paint:{
-      'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],6],0,'#4a5568',20,'#6f8fb5',60,'#9fd0e6'],
+      'fill-extrusion-color':['interpolate',['linear'],['coalesce',['get','render_height'],6],0,'#cfd5de',20,'#a9bbd3',60,'#7f9cc2'],
       'fill-extrusion-height':['coalesce',['get','render_height'],6],'fill-extrusion-base':['coalesce',['get','render_min_height'],0],'fill-extrusion-opacity':.92}},
-    ...ofmLabelLayers()     // подписи улиц и районов поверх подложки и зданий
+    ...ofmLabelLayers('light')     // подписи улиц и районов поверх подложки и зданий
   ]
 };
-const BASE_GROUND_IDS = ofmGroundLayers().map(l=>l.id);
+const BASE_LIGHT_IDS = ofmGroundLayers('light').map(l=>l.id), BASE_DARK_IDS = ofmGroundLayers('dark').map(l=>l.id);
 // 3D и вся карта требуют WebGL. Если браузер его не даёт (отключено ускорение, старая видеокарта), говорим об этом прямо
 (function(){
   let gl=null; try{ const c=document.createElement('canvas'); gl=c.getContext('webgl2')||c.getContext('webgl'); }catch(e){}
@@ -183,16 +186,28 @@ map.on('load', async ()=>{
     map.getSource('bh').setData({type:'FeatureCollection',features:bh.map(p=>({type:'Feature',properties:{id:p.id},geometry:{type:'Point',coordinates:[p.lng,p.lat]}}))});
     document.getElementById('demoBadge').style.display = bh.some(p=>p.id.startsWith('DEMO-')) ? 'inline-block':'none';
     await loadLayers();
+    { let saved='light'; try{ saved=localStorage.getItem('geo3d_base')||'light'; }catch(e){} applyBase(['light','dark','sat'].includes(saved)?saved:'light'); }
     returnFromPayment();
   }catch(e){ toast('Не удалось загрузить данные: '+e.message); }
 });
 
-/* ---------- подложка ---------- */
-document.querySelectorAll('#segBase button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('#segBase button').forEach(x=>x.classList.toggle('on',x===b));
-  BASE_GROUND_IDS.forEach(id=>map.setLayoutProperty(id,'visibility',b.dataset.v==='dark'?'visible':'none'));
-  map.setLayoutProperty('sat','visibility',b.dataset.v==='sat'?'visible':'none');
-});
+/* ---------- подложка и тема: Светлая (по умолчанию) / Тёмная / Спутник ---------- */
+let BASE='light';
+function applyBase(b){
+  BASE=b; const ui=(b==='dark')?'dark':'light', light=(b==='light');
+  document.documentElement.dataset.theme=ui; try{ localStorage.setItem('geo3d_base',b); }catch(e){}
+  document.querySelectorAll('#segBase button').forEach(x=>x.classList.toggle('on',x.dataset.v===b));
+  const has=id=>!!map.getLayer(id), vis=(ids,on)=>ids.forEach(id=>has(id)&&map.setLayoutProperty(id,'visibility',on?'visible':'none')), paint=(id,k,v)=>has(id)&&map.setPaintProperty(id,k,v);
+  vis(BASE_LIGHT_IDS,light); vis(BASE_DARK_IDS,b==='dark'); vis(['sat'],b==='sat');
+  paint('bg','background-color',MAP_PALETTES[ui].bg);
+  const lp=ofmLabelPaint(light?'light':'dark'); Object.entries(lp).forEach(([id,pp])=>Object.entries(pp).forEach(([k,v])=>paint(id,k,v)));   // на спутнике подписи светлые с тёмной обводкой
+  paint('bld-flat','fill-color',light?'#c3cad4':'#6b7280'); paint('bld-flat','fill-opacity',b==='sat'?.5:light?.85:.55); paint('bld-flat','fill-outline-color',light?'#9aa5b3':'#9aa4b2');
+  paint('bld','fill-extrusion-color',['interpolate',['linear'],['coalesce',['get','render_height'],6],0,light?'#cfd5de':'#4a5568',20,light?'#a9bbd3':'#6f8fb5',60,light?'#7f9cc2':'#9fd0e6']);
+  paint('hill','hillshade-shadow-color',light?'#6b7683':'#000000'); paint('hill','hillshade-accent-color',light?'#8a94a1':'#333a44');
+  paint('parcels-sel','line-color',light?'#111827':'#ffffff');
+}
+document.querySelectorAll('#segBase button').forEach(b=>b.onclick=()=>applyBase(b.dataset.v));
+
 
 let tt; function toast(t){const e=document.getElementById('toast');e.textContent=t;e.style.display='block';clearTimeout(tt);tt=setTimeout(()=>e.style.display='none',4000);}
 const info = document.getElementById('info');
@@ -350,7 +365,7 @@ async function returnFromPayment(){
     }catch(e){ if(/не найден/i.test(e.message)){ try{ localStorage.removeItem('geo3d_pending'); }catch{} renderHome(); return; } }
     await new Promise(r=>setTimeout(r,3000));
   }
-  info.innerHTML=`<h2>Оплата ещё не подтверждена</h2><div class="hint">Если вы уже оплатили, отчёт появится по ссылке, как только банк подтвердит платёж: <a href="/report.html?t=${encodeURIComponent(t)}" style="color:var(--accent)">открыть отчёт</a>.</div>`;
+  info.innerHTML=`<h2>Оплата ещё не подтверждена</h2><div class="hint">Если вы уже оплатили, отчёт появится по ссылке, как только банк подтвердит платёж: <a href="/report.html?t=${encodeURIComponent(t)}" style="color:var(--accent-text)">открыть отчёт</a>.</div>`;
 }
 
 /* ---------- платная часть ---------- */
@@ -425,14 +440,14 @@ function applyMode(animate, extra){
   const btn=document.getElementById('btn3d');
   btn.textContent=M3D?'2D':'3D'; btn.classList.toggle('on',M3D); btn.style.display=view==='soil'?'none':'block';
   if(view==='soil') return;
-  if(M3D){   // 3D: рельеф, тени, объёмные здания, наклон и поворот камеры
-    vset(['bld-flat'],false); vset(['bld','hill'],true);
-    enableTilt(true); map.setTerrain({source:'dem',exaggeration:2});
-    const go=()=>map.easeTo({pitch:60,bearing:-20,duration:1100,...extra});
-    animate?setTimeout(go,250):go();   // небольшая пауза: смена рельефа прерывает анимацию камеры
+  if(M3D){   // 3D: объёмные здания, наклон и поворот камеры. Рельеф (terrain) не включаем: вместе с векторной подложкой он ломает отрисовку,
+             // а модель высот 30 м для плоской Караганды почти ничего не даёт; вернём вместе с дроновой DTM
+    vset(['bld-flat'],false); vset(['bld'],true); vset(['hill'],false);
+    enableTilt(true);
+    map.easeTo({pitch:60,bearing:-20,duration:1100,...extra});
   } else {   // 2D: плоские контуры зданий, камера строго сверху
     vset(['bld','hill'],false); vset(['bld-flat'],true);
-    const done=()=>{ if(!M3D&&view!=='soil'){ map.setTerrain(null); enableTilt(false); } };   // рельеф и блокировку наклона снимаем после анимации
+    const done=()=>{ if(!M3D&&view!=='soil'){ enableTilt(false); } };   // блокировку наклона снимаем после анимации
     if(animate){ map.easeTo({pitch:0,bearing:0,duration:900,...extra}); map.once('moveend',done); } else { map.jumpTo({pitch:0,bearing:0}); done(); }
   }
 }

@@ -3,26 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>try{var __b=localStorage.getItem('geo3d_base');document.documentElement.dataset.theme=(__b==='dark')?'dark':'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
 <title>Админка — аналитика, скважины, заказы</title>
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <style>
-  :root{--bg:#0f1318;--panel:#171d25;--line:rgba(255,255,255,.10);--text:#e8edf3;--mute:#93a0ae;--accent:#f2b84b;--bad:#ef7a6a;--ok:#5fd18a;--blue:#5ab4ff}
+  :root,[data-theme=light]{--bg:#f3f5f8;--panel:#ffffff;--panel-solid:#ffffff;--line:rgba(20,30,45,.13);--text:#1b2430;--mute:#5b6775;--accent:#f2b84b;--accent-text:#8a5a00;--ok:#1f9d55;--warn:#b7791f;--bad:#c0392b;--blue:#1f6fb0;--fill0:rgba(15,25,40,.03);--fill:rgba(15,25,40,.05);--fill2:rgba(15,25,40,.09);--fill3:rgba(15,25,40,.13);--input:#ffffff;--shadow:0 4px 18px rgba(20,30,45,.14)}
+  [data-theme=dark]{--bg:#0f1318;--panel:#171d25;--panel-solid:#161c24;--line:var(--fill2);--text:#e8edf3;--mute:#93a0ae;--accent:#f2b84b;--accent-text:#f2b84b;--ok:#5fd18a;--warn:#f2b84b;--bad:#ef7a6a;--blue:#5ab4ff;--fill0:var(--fill0);--fill:var(--fill);--fill2:var(--fill2);--fill3:var(--fill3);--input:#0f1318;--shadow:0 4px 18px rgba(0,0,0,.35)}
   *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
   .wrap{max-width:1150px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:20px;margin:0} h2{font-size:15px;margin:0 0 10px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
-  input,textarea,select{background:#0f1318;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit}
+  input,textarea,select{background:var(--input);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit}
   textarea{width:100%;min-height:110px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
   button{background:var(--accent);color:#1b1500;border:0;border-radius:8px;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer}
-  button.sec{background:rgba(255,255,255,.08);color:var(--text);font-weight:500} button.del{background:none;color:var(--bad);padding:2px 6px}
+  button.sec{background:var(--fill2);color:var(--text);font-weight:500} button.del{background:none;color:var(--bad);padding:2px 6px}
   .head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px}
-  .tabs{display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:10px;padding:3px}
+  .tabs{display:flex;gap:4px;background:var(--fill);border-radius:10px;padding:3px}
   .tabs button{background:transparent;color:var(--mute);font-weight:500;padding:7px 14px} .tabs button.on{background:var(--accent);color:#1b1500;font-weight:700}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:10px}
   .grid label{font-size:11px;color:var(--mute);display:flex;flex-direction:column;gap:3px;text-transform:uppercase;letter-spacing:.5px} .grid input{width:100%}
   table{border-collapse:collapse;width:100%;font-size:13px} th{text-align:left;color:var(--mute);font-weight:500;font-size:11px;text-transform:uppercase;padding:6px 4px;border-bottom:1px solid var(--line)}
   td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
-  .tag{font-size:11px;padding:1px 8px;border-radius:999px;background:rgba(255,255,255,.08)} .tag.ok{background:rgba(95,209,138,.16);color:var(--ok)} .tag.no{background:rgba(239,122,106,.16);color:var(--bad)}
+  .tag{font-size:11px;padding:1px 8px;border-radius:999px;background:var(--fill2)} .tag.ok{background:rgba(95,209,138,.16);color:var(--ok)} .tag.no{background:rgba(239,122,106,.16);color:var(--bad)}
   .msg{margin-top:8px;font-size:13px;white-space:pre-wrap} .err{color:var(--bad)} .good{color:var(--ok)}
   .scroll{overflow-x:auto} .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   #login{max-width:340px;margin:12vh auto}
@@ -31,12 +33,12 @@
   .kpi .v{font-size:24px;font-weight:700;line-height:1.2} .kpi .l{font-size:12px;color:var(--mute)} .kpi .s{font-size:11.5px;color:var(--mute);margin-top:2px}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:16px} @media(max-width:860px){.two{grid-template-columns:1fr}}
   .funnel .st{margin-bottom:10px} .funnel .top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px}
-  .funnel .bg{height:12px;background:rgba(255,255,255,.07);border-radius:6px;overflow:hidden} .funnel .fg{height:100%;background:var(--accent);border-radius:6px}
+  .funnel .bg{height:12px;background:var(--fill2);border-radius:6px;overflow:hidden} .funnel .fg{height:100%;background:var(--accent);border-radius:6px}
   .insight{padding:10px 12px;border-left:3px solid var(--accent);background:rgba(242,184,75,.07);border-radius:0 8px 8px 0;margin-bottom:8px;font-size:13.5px}
   .insight.good{border-color:var(--ok);background:rgba(95,209,138,.07)} .insight.bad{border-color:var(--bad);background:rgba(239,122,106,.07)}
   #dmap{height:360px;border-radius:10px;overflow:hidden}
   .legend{display:flex;gap:14px;font-size:12px;color:var(--mute);margin-top:8px} .legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
-  a{color:var(--accent)}
+  a{color:var(--accent-text)}
 </style>
 </head>
 <body>
@@ -49,6 +51,7 @@
 
 <div class="wrap" id="app" style="display:none">
   <div class="head"><h1>3D Караганда · управление</h1>
+    <button class="sec" id="themeBtn" title="Светлая / тёмная тема">Тёмная тема</button>
     <div class="tabs" id="tabs"><button data-t="an" class="on">Аналитика</button><button data-t="ord">Заказы и заявки</button><button data-t="ly">Слои участков</button><button data-t="bh">Скважины</button></div></div>
 
   <!-- ===== Аналитика ===== -->
@@ -118,9 +121,9 @@
       <h2>Импорт скважин по слоям (CSV / Excel)</h2>
       <div class="bar" style="margin-bottom:10px;padding:10px 12px;background:rgba(242,184,75,.08);border:1px solid rgba(242,184,75,.3);border-radius:10px">
         <b style="font-size:13px">Для камеральщика:</b>
-        <a href="/templates/boreholes-template.xlsx" download style="color:var(--accent)">Шаблон Excel</a> ·
-        <a href="/templates/boreholes-example-filled.xlsx" download style="color:var(--accent)">Заполненный пример</a> ·
-        <a href="/templates/INSTRUCTION.md" target="_blank" style="color:var(--accent)">Инструкция</a>
+        <a href="/templates/boreholes-template.xlsx" download style="color:var(--accent-text)">Шаблон Excel</a> ·
+        <a href="/templates/boreholes-example-filled.xlsx" download style="color:var(--accent-text)">Заполненный пример</a> ·
+        <a href="/templates/INSTRUCTION.md" target="_blank" style="color:var(--accent-text)">Инструкция</a>
         <span style="color:var(--mute);font-size:12px">— вводят шапку и слои, лист «Экспорт» сохраняют как CSV UTF-8 и загружают ниже.</span>
       </div>
       <div class="bar" style="margin-bottom:8px"><button class="sec" id="tpl">Скачать CSV-образец</button><input type="file" id="file" accept=".csv,.txt"><button id="imp">Загрузить на проверку</button></div>
@@ -177,6 +180,7 @@ async function enter(){
   try{ PW=$('pw').value||PW; await aget('/api/admin/boreholes'); sessionStorage.setItem('apw',PW); $('login').style.display='none'; $('app').style.display='block'; refreshAll(); }
   catch(e){ sessionStorage.removeItem('apw'); $('loginErr').textContent='Неверный пароль'; }
 }
+(function(){ const dark=document.documentElement.dataset.theme==='dark', b=document.getElementById('themeBtn'); if(b){ b.textContent=dark?'Светлая тема':'Тёмная тема'; b.onclick=()=>{ try{ localStorage.setItem('geo3d_base',dark?'light':'dark'); }catch(e){} location.reload(); }; } })();
 $('enter').onclick=enter; $('pw').onkeydown=e=>{if(e.key==='Enter')enter();};
 if(PW){ enter(); }
 
@@ -357,7 +361,7 @@ function renderBh(){
   const list=BH.filter(b=>f==='all'||(f==='work'&&b.status==='review')||(f==='errors'&&b.status!=='rejected'&&bhCnt(b).e>0)||b.status===f).sort((a,b)=>(a.status==='review'?0:1)-(b.status==='review'?0:1)||bhCnt(b).e-bhCnt(a).e||a.id.localeCompare(b.id));   // сначала требующие решения, внутри — с ошибками выше
   $('bhBody').innerHTML=list.length?list.map(b=>{ const c=bhCnt(b);
     return `<tr data-open="${esc(b.id)}" style="cursor:pointer"><td><b>${esc(b.id)}</b><div style="color:var(--mute);font-size:11.5px">${esc(b.doc||b.source)}</div></td><td><span class="tag">${esc(b.acc)}</span></td><td>${esc(b.date||'—')}</td><td>${b.depth!=null?b.depth+' м':'—'}</td>
-      <td>${c.e?`<span class="tag no">ошибок: ${c.e}</span> `:''}${c.w?`<span class="tag" style="background:rgba(242,184,75,.16);color:var(--accent)">предупр.: ${c.w}</span>`:''}${!c.e&&!c.w?'<span class="tag ok">чисто</span>':''}</td>
+      <td>${c.e?`<span class="tag no">ошибок: ${c.e}</span> `:''}${c.w?`<span class="tag" style="background:rgba(242,184,75,.16);color:var(--accent-text)">предупр.: ${c.w}</span>`:''}${!c.e&&!c.w?'<span class="tag ok">чисто</span>':''}</td>
       <td><span class="tag ${b.status==='verified'?'ok':b.status==='rejected'?'no':''}">${ST[b.status]||esc(b.status)}</span></td></tr>`; }).join('')
     :'<tr><td colspan="6" style="color:var(--mute)">Нет скважин под этот фильтр.</td></tr>';
 }
@@ -398,7 +402,7 @@ function renderPilot(p){
   const o=$('pilotOut'); if(!p.total){ o.innerHTML='<div class="insight">Пока нет скважин для отчёта (демо-скважины исключены). Загрузите пилотную партию.</div>'; return; }
   const tags=m=>Object.entries(m).map(([k,v])=>`<span class="tag" style="margin-right:4px">${esc(k)}: ${v}</span>`).join('');
   const fp=p.first_pass, kp=(l,v,s)=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`;
-  const hint=(s)=>{ if(!s.n) return '—'; if(s.over/s.n>0.1) return `<span style="color:var(--bad)">порог строгий: ${s.over} из ${s.n} нормальных скважин помечаются; рассмотрите ≥ ${s.p90}</span>`; if(s.p90<s.threshold*0.5) return `<span style="color:var(--accent)">порог мягкий: можно ужесточить до ~${Math.max(0.3,s.p90*1.5).toFixed(1)} (не меньше точности замеров)</span>`; return '<span style="color:var(--ok)">порог разумный</span>'; };
+  const hint=(s)=>{ if(!s.n) return '—'; if(s.over/s.n>0.1) return `<span style="color:var(--bad)">порог строгий: ${s.over} из ${s.n} нормальных скважин помечаются; рассмотрите ≥ ${s.p90}</span>`; if(s.p90<s.threshold*0.5) return `<span style="color:var(--accent-text)">порог мягкий: можно ужесточить до ~${Math.max(0.3,s.p90*1.5).toFixed(1)} (не меньше точности замеров)</span>`; return '<span style="color:var(--ok)">порог разумный</span>'; };
   o.innerHTML=`<div class="kpis">${kp('Скважин в пилоте',p.total,tags(p.status))}${kp('Чисто с первого раза',fp.clean,'без ошибок и предупреждений')}${kp('С ошибками',fp.with_errors,Math.round(fp.error_share*100)+'% от загруженных')}${kp('Только предупреждения',fp.with_warnings_only,'')}${kp('Время до решения',p.review_hours.n?p.review_hours.median+' ч':'—',p.review_hours.n?`медиана по ${p.review_hours.n} скв., от загрузки до решения`:'пока нет принятых')}</div>
     <div style="font-size:12.5px;color:var(--mute);margin-bottom:10px">Классы точности: ${tags(p.acc)}<br>Отчёты/документы: ${tags(p.reports)}</div>
     <h2>Какие замечания встречаются чаще всего</h2>
@@ -437,7 +441,7 @@ $('rmDemo').onclick=async()=>{ if(!confirm('Удалить все демо-ск�
 $('sd_c').innerHTML=CLS_NAMES.map((n,i)=>`<option value="${i}">${i} — ${esc(n)}</option>`).join('');
 async function loadSoil(){
   const d=await aget('/api/admin/soil-dict');
-  $('unmapped').innerHTML=d.unmapped.length?`<div class="insight bad" style="margin:0"><b>Нераспознанные грунты (${d.unmapped.length}):</b> ${d.unmapped.map(s=>`<a href="#" data-um="${esc(s)}" style="color:var(--accent)">${esc(s)}</a>`).join(', ')}<br><span style="font-size:12px">Нажмите на название, затем выберите класс и добавьте.</span></div>`:'';
+  $('unmapped').innerHTML=d.unmapped.length?`<div class="insight bad" style="margin:0"><b>Нераспознанные грунты (${d.unmapped.length}):</b> ${d.unmapped.map(s=>`<a href="#" data-um="${esc(s)}" style="color:var(--accent-text)">${esc(s)}</a>`).join(', ')}<br><span style="font-size:12px">Нажмите на название, затем выберите класс и добавьте.</span></div>`:'';
   $('sdBody').innerHTML=d.dict.slice().sort((a,b)=>a.cls-b.cls||a.p.localeCompare(b.p)).map(e=>`<tr><td>${esc(e.p)}…</td><td><span class="sw" style="display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:${LAYERS[e.cls].color}"></span>${esc(CLS_NAMES[e.cls])}</td><td><button class="del" data-sdel="${esc(e.p)}">×</button></td></tr>`).join('');
 }
 $('unmapped').onclick=e=>{ const a=e.target.closest('[data-um]'); if(!a) return; e.preventDefault(); $('sd_p').value=(a.dataset.um.toLowerCase().replace(/ё/g,'е').match(/^[а-яa-z\-]+/)||[''])[0]; $('sd_c').focus(); };

@@ -10,33 +10,33 @@
   const ensureThree = async () => { if (!window.THREE) await loadScript(THREE_URL); if (!THREE.OrbitControls) await loadScript(ORBIT_URL); };
 
   const css = `
-  .gb{position:absolute;left:0;top:0;bottom:0;right:370px;z-index:6;background:#0f1318;display:flex;flex-direction:column;color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;animation:gb-in .35s ease}
+  .gb{position:absolute;left:0;top:0;bottom:0;right:370px;z-index:6;background:var(--bg);display:flex;flex-direction:column;color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;animation:gb-in .35s ease}
   @keyframes gb-in{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
-  .gb-top{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);background:rgba(18,23,30,.95)}
+  .gb-top{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--panel)}
   .gb-top b{font-size:15px}.gb-sub{color:var(--mute);font-size:12px;flex:1}
-  .gb-x{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);border-radius:9px;padding:7px 12px;cursor:pointer;font:inherit}
+  .gb-x{border:1px solid var(--line);background:var(--fill);color:var(--text);border-radius:9px;padding:7px 12px;cursor:pointer;font:inherit}
   .gb-x:hover{background:var(--accent);color:#1b1500}
   .gb-main{flex:1;display:flex;min-height:0}
   .gb-cv{flex:1;position:relative;min-width:0;cursor:grab}
   .gb-cv canvas{display:block;width:100%;height:100%}
   .gb-load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--mute)}
-  .gb-side{flex:0 0 285px;overflow:auto;padding:12px;border-left:1px solid var(--line);background:rgba(18,23,30,.95)}
+  .gb-side{flex:0 0 285px;overflow:auto;padding:12px;border-left:1px solid var(--line);background:var(--panel)}
   .gb-side h4{margin:12px 0 6px;font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.6px;font-weight:600}
   .gb-side h4:first-child{margin-top:0}
   .gb-row{display:flex;flex-direction:column;gap:2px;margin-bottom:9px;font-size:12.5px}
   .gb-row label{display:flex;justify-content:space-between}
-  .gb-row input[type=range]{width:100%;accent-color:var(--accent)}
+  .gb-row input[type=range]{width:100%;accent-color:var(--accent-text)}
   .gb-chk{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px}.gb-chk label{display:flex;gap:5px;align-items:center;cursor:pointer}
-  .gb-btns{display:flex;gap:6px;margin-top:6px}.gb-btns button{flex:1;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);border-radius:9px;padding:7px 6px;font:inherit;font-size:12.5px;cursor:pointer}
-  .gb-btns button:hover{background:rgba(255,255,255,.14)}
+  .gb-btns{display:flex;gap:6px;margin-top:6px}.gb-btns button{flex:1;border:1px solid var(--line);background:var(--fill2);color:var(--text);border-radius:9px;padding:7px 6px;font:inherit;font-size:12.5px;cursor:pointer}
+  .gb-btns button:hover{background:var(--fill3)}
   .gb-leg{display:flex;flex-direction:column;gap:5px}
-  .gb-li{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--text);border-radius:9px;padding:5px 8px;font:inherit;font-size:12.5px;cursor:pointer;text-align:left;transition:background .15s,border-color .15s}
-  .gb-li:hover{background:rgba(255,255,255,.1)}.gb-li.on{border-color:var(--accent);background:rgba(242,184,75,.12)}
-  .gb-li img{width:30px;height:30px;border-radius:5px;border:1px solid rgba(255,255,255,.25);flex:0 0 30px}
+  .gb-li{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--fill0);color:var(--text);border-radius:9px;padding:5px 8px;font:inherit;font-size:12.5px;cursor:pointer;text-align:left;transition:background .15s,border-color .15s}
+  .gb-li:hover{background:var(--fill2)}.gb-li.on{border-color:var(--accent-text);background:rgba(242,184,75,.12)}
+  .gb-li img{width:30px;height:30px;border-radius:5px;border:1px solid rgba(128,128,128,.5);flex:0 0 30px}
   .gb-li span{flex:1;line-height:1.25}.gb-li small{color:var(--mute);white-space:nowrap}
-  .gb-card{border:1px solid var(--line);border-radius:12px;padding:11px;background:rgba(255,255,255,.04);font-size:12.5px;line-height:1.5}
+  .gb-card{border:1px solid var(--line);border-radius:12px;padding:11px;background:var(--fill0);font-size:12.5px;line-height:1.5}
   .gb-card .t{font-weight:700;font-size:14px;margin-bottom:6px}
-  .gb-card .g{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.gb-card .g div{background:rgba(255,255,255,.05);border-radius:7px;padding:5px 7px}
+  .gb-card .g{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:6px 0}.gb-card .g div{background:var(--fill);border-radius:7px;padding:5px 7px}
   .gb-card .g small{display:block;color:var(--mute);font-size:10.5px;text-transform:uppercase}
   .gb-card .w{padding:6px 8px;border-radius:7px;background:rgba(90,180,255,.1);border:1px solid rgba(90,180,255,.35);margin:6px 0}
   .gb-card .n{color:var(--mute);font-size:11px;margin-top:6px}
@@ -47,6 +47,7 @@
   if (!document.getElementById('gb-css')) { const st = document.createElement('style'); st.id = 'gb-css'; st.textContent = css; document.head.appendChild(st); }
 
   const fmt = v => (Math.round(v * 10) / 10).toFixed(1).replace('.', ',');
+  const isLight = () => (document.documentElement.dataset.theme !== 'dark');   // светлая тема — по умолчанию
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const E = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const hex = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
@@ -85,7 +86,7 @@
     const size = opt.size || 14, c = document.createElement('canvas'), g = c.getContext('2d'); g.font = `700 ${size * 3}px system-ui,sans-serif`;
     const w = Math.ceil(g.measureText(text).width) + 16; c.width = w; c.height = size * 3 + 12; g.font = `700 ${size * 3}px system-ui,sans-serif`; g.textBaseline = 'middle';
     if (opt.bg) { g.fillStyle = opt.bg; g.fillRect(0, 0, w, c.height); }
-    g.lineWidth = 6; g.strokeStyle = 'rgba(15,19,24,.95)'; g.strokeText(text, 8, c.height / 2); g.fillStyle = opt.color || '#e8edf3'; g.fillText(text, 8, c.height / 2);
+    g.lineWidth = 6; g.strokeStyle = isLight() ? 'rgba(255,255,255,.95)' : 'rgba(15,19,24,.95)'; g.strokeText(text, 8, c.height / 2); g.fillStyle = opt.color || (isLight() ? '#1b2430' : '#e8edf3'); g.fillText(text, 8, c.height / 2);
     const tex = new THREE.CanvasTexture(c), spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
     spr.scale.set(c.width / 3 * (opt.k || 1), c.height / 3 * (opt.k || 1), 1); spr.renderOrder = 10; spr.userData.tex = tex; return spr;
   };
@@ -132,7 +133,7 @@
       /* ---------- сцена ---------- */
       const W = () => cv.clientWidth || 600, Hh = () => cv.clientHeight || 400;
       const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1)); renderer.setSize(W(), Hh()); cv.appendChild(renderer.domElement);
-      const scene = new THREE.Scene(); scene.background = new THREE.Color(0x12171d);
+      const scene = new THREE.Scene(); scene.background = new THREE.Color(isLight() ? 0xf3f5f8 : 0x12171d);
       const camera = new THREE.PerspectiveCamera(38, W() / Hh(), 5, 4000);
       scene.add(new THREE.AmbientLight(0xffffff, .78)); const sun = new THREE.DirectionalLight(0xffffff, .62); sun.position.set(-300, 500, 380); scene.add(sun);
       const controls = new THREE.OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.dampingFactor = .09; controls.maxPolarAngle = Math.PI * .495; controls.minDistance = 120; controls.maxDistance = 1400;
@@ -209,8 +210,8 @@
         if (S.water && !S.explode) {
           const pl = new THREE.Mesh(new THREE.PlaneGeometry(x1 - x0 + 14, z1 - z0 + 14), new THREE.MeshBasicMaterial({ color: 0x5ab4ff, transparent: true, opacity: .26, side: THREE.DoubleSide, depthWrite: false }));
           pl.rotation.x = -Math.PI / 2; pl.position.set((x0 + x1) / 2, -rep.gw * EX, (z0 + z1) / 2); pl.renderOrder = 5; root.add(pl); extra.push(pl);
-          const ring = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([[x0 - 7, z0 - 7], [x1 + 7, z0 - 7], [x1 + 7, z1 + 7], [x0 - 7, z1 + 7]].map(([x, z]) => new THREE.Vector3(x, -rep.gw * EX, z))), new THREE.LineBasicMaterial({ color: 0x8fd0ff })); root.add(ring); extra.push(ring);
-          const lb = labelSprite('УГВ ' + fmt(rep.gw) + ' м', { size: 12, color: '#9fd8ff' }); lb.position.set(x1 + 40, -rep.gw * EX + 4, z1 + 6); root.add(lb); extra.push(lb);
+          const ring = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints([[x0 - 7, z0 - 7], [x1 + 7, z0 - 7], [x1 + 7, z1 + 7], [x0 - 7, z1 + 7]].map(([x, z]) => new THREE.Vector3(x, -rep.gw * EX, z))), new THREE.LineBasicMaterial({ color: isLight() ? 0x2b8ad0 : 0x8fd0ff })); root.add(ring); extra.push(ring);
+          const lb = labelSprite('УГВ ' + fmt(rep.gw) + ' м', { size: 12, color: isLight() ? '#1f6fb0' : '#9fd8ff' }); lb.position.set(x1 + 40, -rep.gw * EX + 4, z1 + 6); root.add(lb); extra.push(lb);
         }
         // колонки реальных скважин
         if (S.bh) for (const b of bhs) {
@@ -223,11 +224,11 @@
           col.position.y = 0; root.add(col); extra.push(col);
         }
         // шкала глубины на юго-западном ребре
-        { const sx = x0 - 16, sz = z1 + 14, lm = new THREE.LineBasicMaterial({ color: 0xaab4c0 }); const gp = new THREE.Group();
+        { const sx = x0 - 16, sz = z1 + 14, lm = new THREE.LineBasicMaterial({ color: isLight() ? 0x55606d : 0xaab4c0 }); const gp = new THREE.Group();
           gp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(sx, 0, sz), new THREE.Vector3(sx, -DEPTH * EX, sz)]), lm));
-          for (let d = 0; d <= DEPTH; d += 3) { gp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(sx - 5, -d * EX, sz), new THREE.Vector3(sx + 5, -d * EX, sz)]), lm)); const t = labelSprite(d + ' м', { size: 11, color: '#cfd6de' }); t.position.set(sx - 24, -d * EX, sz); gp.add(t); }
+          for (let d = 0; d <= DEPTH; d += 3) { gp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(sx - 5, -d * EX, sz), new THREE.Vector3(sx + 5, -d * EX, sz)]), lm)); const t = labelSprite(d + ' м', { size: 11, color: isLight() ? '#334155' : '#cfd6de' }); t.position.set(sx - 24, -d * EX, sz); gp.add(t); }
           root.add(gp); extra.push(gp);
-          const nL = labelSprite('С ↑', { size: 16, color: '#f2b84b', k: 1.1 }); nL.position.set((x0 + x1) / 2, 14, z0 - 22); root.add(nL); extra.push(nL); }
+          const nL = labelSprite('С ↑', { size: 16, color: isLight() ? '#b7791f' : '#f2b84b', k: 1.1 }); nL.position.set((x0 + x1) / 2, 14, z0 - 22); root.add(nL); extra.push(nL); }
         if (lastEx !== EX) { controls.target.y = -DEPTH * EX * .42; lastEx = EX; }   // цель камеры сдвигаем только при смене масштаба, чтобы не сбивать повороты и панорамирование
         applyVisual();
         gb.querySelector('#gbSub').textContent = `${EXT}×${EXT} м · глубина ${DEPTH} м · вертикальный масштаб ×${EX} · поверхность условно плоская (рельеф не учтён) · границы слоёв — интерполяция между скважинами`;
