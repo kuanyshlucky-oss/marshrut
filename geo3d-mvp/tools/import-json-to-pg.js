@@ -47,6 +47,7 @@ function build() {
   out.utilities = db.load('utilities', []).flatMap(u => { const g = line(u.line); if (!g) { warn('сеть', u.id, 'нет линии'); return []; }
     return [{ id: u.id, kind: u.kind, g, capacity_free: num(u.capacity_free), owner: u.owner || '', source: u.source || '', props: JSON.stringify(Object.fromEntries(Object.entries(u).filter(([k]) => !['id', 'kind', 'line', 'capacity_free', 'owner', 'source'].includes(k)))) }]; });
   out.coverage = db.load('coverage', []).flatMap(c => { const g = poly(c.ring); if (!g) { warn('покрытие', c.id, 'нет контура'); return []; } return [{ id: c.id, layer: c.layer, as_of: c.as_of || null, g, source: c.source || '' }]; });
+  out.gridCells = db.load('gridCells', []).flatMap(c => { const g = poly(c.ring); if (!g) { warn('ячейка', c.id, 'нет контура'); return []; } return [{ id: c.id, size_m: c.size_m, ix: c.ix, iy: c.iy, g, source: c.source || 'auto' }]; });
   out.orders = db.load('orders', []).flatMap(o => { const g = point(o.lng, o.lat); if (!g) { warn('заказ', o.id, 'нет координат — пропущен'); return []; }
     return [{ id: o.id, token_hash: sha(o.token || o.id), g, email: o.email || '', price: num(o.price) || 0, free: !!o.free, obj: ['izhs', 'multi'].includes(o.obj) ? o.obj : null, status: o.status, created_at: o.created, paid_at: o.paidAt || null, demo: !!o.demo }]; });
   out.leads = db.load('leads', []).map(l => ({ id: l.id, created_at: l.created, name: l.name || '', phone: l.phone || '', comment: l.comment || '', g: point(l.lng, l.lat), status: ['new', 'work', 'done'].includes(l.status) ? l.status : 'new', demo: !!l.demo }));
@@ -68,6 +69,8 @@ const UPSERT = {
     vals: r => [r.id, r.kind, r.g, r.capacity_free, r.owner, r.source, r.props] },
   coverage: { sql: 'INSERT INTO coverage (id,layer,as_of,geom,source) VALUES ($1,$2,$3,ST_SetSRID(ST_GeomFromGeoJSON($4),4326),$5) ON CONFLICT (id) DO UPDATE SET layer=EXCLUDED.layer,as_of=EXCLUDED.as_of,geom=EXCLUDED.geom,source=EXCLUDED.source',
     vals: r => [r.id, r.layer, r.as_of, r.g, r.source] },
+  gridCells: { sql: 'INSERT INTO grid_cells (id,size_m,ix,iy,geom,source) VALUES ($1,$2,$3,$4,ST_SetSRID(ST_GeomFromGeoJSON($5),4326),$6) ON CONFLICT (id) DO UPDATE SET size_m=EXCLUDED.size_m,ix=EXCLUDED.ix,iy=EXCLUDED.iy,geom=EXCLUDED.geom,source=EXCLUDED.source',
+    vals: r => [r.id, r.size_m, r.ix, r.iy, r.g, r.source] },
   orders: { sql: 'INSERT INTO orders (id,token_hash,geom,email,price,free,obj,status,created_at,paid_at,demo) VALUES ($1,$2,ST_SetSRID(ST_GeomFromGeoJSON($3),4326),$4,$5,$6,$7,$8,$9,$10,$11) ON CONFLICT (id) DO UPDATE SET token_hash=EXCLUDED.token_hash,geom=EXCLUDED.geom,email=EXCLUDED.email,price=EXCLUDED.price,free=EXCLUDED.free,obj=EXCLUDED.obj,status=EXCLUDED.status,paid_at=EXCLUDED.paid_at,demo=EXCLUDED.demo',
     vals: r => [r.id, r.token_hash, r.g, r.email, r.price, r.free, r.obj, r.status, r.created_at, r.paid_at, r.demo] },
   leads: { sql: 'INSERT INTO leads (id,created_at,name,phone,comment,geom,status,demo) VALUES ($1,$2,$3,$4,$5,CASE WHEN $6::text IS NULL THEN NULL ELSE ST_SetSRID(ST_GeomFromGeoJSON($6),4326) END,$7,$8) ON CONFLICT (id) DO UPDATE SET name=EXCLUDED.name,phone=EXCLUDED.phone,comment=EXCLUDED.comment,geom=EXCLUDED.geom,status=EXCLUDED.status,demo=EXCLUDED.demo',
@@ -110,7 +113,7 @@ async function apply(d) {
     /* сверка: сколько записей в базе против источника, и суммарная мощность слоёв */
     const cnt = async t => +(await c.query(`SELECT count(*) FROM ${t}`)).rows[0].count;
     const sum = +(await c.query('SELECT coalesce(sum(to_m-from_m),0) s FROM borehole_layers')).rows[0].s;
-    const want = { boreholes: d.boreholes.length, borehole_layers: d.layers.length, parcels: d.parcels.length, constraints: d.constraints.length, utilities: d.utilities.length, coverage: d.coverage.length, orders: d.orders.length, leads: d.leads.length, events: d.events.length, soil_dictionary: d.soil.length };
+    const want = { boreholes: d.boreholes.length, borehole_layers: d.layers.length, parcels: d.parcels.length, constraints: d.constraints.length, utilities: d.utilities.length, coverage: d.coverage.length, grid_cells: d.gridCells.length, orders: d.orders.length, leads: d.leads.length, events: d.events.length, soil_dictionary: d.soil.length };
     let bad = 0; console.log('\nСверка (источник → база):');
     for (const [t, n] of Object.entries(want)) { const got = await cnt(t); const ok = got >= n && (t === 'events' ? got === n : true); if (!ok) bad++; console.log(' ', ok ? 'OK ' : 'ERR', t.padEnd(16), n, '→', got); }
     const srcSum = d.layers.reduce((s, l) => s + (l.to_m - l.from_m), 0);

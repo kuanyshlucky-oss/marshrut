@@ -443,7 +443,7 @@ function upsertBoreholes(rows) {   // новая версия скважины �
    Слои: участки, ограничения, сети + ПАСПОРТ УЧАСТКА (светофор по 8 блокам)
    Правила и пороги ориентировочные — согласовать с геотехником и проектировщиком.
    ===================================================================== */
-const PARCELS_FILE = 'parcels', CONS_FILE = 'constraints', UTIL_FILE = 'utilities', COV_FILE = 'coverage';
+const PARCELS_FILE = 'parcels', CONS_FILE = 'constraints', UTIL_FILE = 'utilities', COV_FILE = 'coverage', GRID_FILE = 'gridCells';
 const COV_LAYERS = ['hazards', 'protection', 'utilities'];   // слои, для которых нужно подтвердить полноту данных
 const CONS_KINDS = ['protection', 'sanitary', 'undermined', 'flood', 'slag', 'contamination'];
 const UTIL_KINDS = ['water', 'sewer', 'power', 'gas', 'heat'];
@@ -478,9 +478,9 @@ const asOf = c => c && c.as_of ? ` (данные на ${c.as_of.split('-').rever
 
 /* --- паспорт --- */
 const RANK = { green: 0, gray: 1, yellow: 1, red: 2 };
-function passport(lng, lat, obj, parcelIn) {
+function passport(lng, lat, obj, parcelIn, areaRing) {   // areaRing — контур ячейки сетки: оцениваем территорию, а не участок
   obj = obj === 'multi' ? 'multi' : 'izhs';
-  const parcel = parcelIn || parcels.find(p => inRing(p.ring, lng, lat)) || null;
+  const parcel = areaRing ? null : (parcelIn || parcels.find(p => inRing(p.ring, lng, lat)) || null);
   const s = interp(lng, lat), cen = parcel ? centroid(parcel.ring) : [lng, lat];
   const blocks = [], B = (key, title, level, text) => blocks.push({ key, title, level, text });
   const myPurpose = obj === 'izhs' ? 'ИЖС' : 'Многоэтажная';
@@ -542,7 +542,7 @@ function passport(lng, lat, obj, parcelIn) {
     let lv = 'green'; const parts = [];
     for (const z of constraints) {
       if (!kinds.includes(z.kind)) continue;
-      const frac = parcel ? fractionInside(parcel.ring, z.ring) : (inRing(z.ring, lng, lat) ? 1 : 0);
+      const frac = parcel ? fractionInside(parcel.ring, z.ring) : areaRing ? fractionInside(areaRing, z.ring) : (inRing(z.ring, lng, lat) ? 1 : 0);
       const d = distToPath(z.ring, cen[0], cen[1]);
       let l = 'green'; if (frac > (key === 'hazards' ? 0.3 : 0.5)) l = 'red'; else if (frac > 0 || d < (key === 'hazards' ? 150 : 50)) l = 'yellow';
       if (l !== 'green') { parts.push(`${z.name}${frac > 0 ? ` — ${Math.round(frac * 100)}% участка` : ` — рядом (${Math.round(d)} м)`}`); if (RANK[l] > RANK[lv]) lv = l; }
@@ -588,6 +588,51 @@ function layersPublic(obj) {
   };
 }
 
+/* --- сетка территории (grid_cells): светофор по районам там, где участков в базе нет --- */
+const GRID_SIZES = [250, 500, 1000, 2000], GRID_MAX_CELLS = 12000;
+const GRID_BLOCKS = ['utilities', 'soil', 'hazards', 'protection'];   // что оцениваем для территории (право, этажность и уклон без участка не определить)
+const GRID_REF_LAT = 49.8;   // параллель, на которой считается шаг по долготе; фиксирована, чтобы id ячеек не менялись между построениями
+function gridStep(size) { return { dLng: size / kx(GRID_REF_LAT), dLat: size / KY }; }
+/* Построить сетку по прямоугольнику (WGS84). Якорь сетки — юго-западный угол BBOX, поэтому id (G500-12-7) стабильны. */
+function buildGrid(size, box) {
+  const { dLng, dLat } = gridStep(size);
+  const x0 = Math.max(0, Math.floor((box.minLng - BBOX.minLng) / dLng)), x1 = Math.ceil((Math.min(box.maxLng, BBOX.maxLng) - BBOX.minLng) / dLng);
+  const y0 = Math.max(0, Math.floor((box.minLat - BBOX.minLat) / dLat)), y1 = Math.ceil((Math.min(box.maxLat, BBOX.maxLat) - BBOX.minLat) / dLat);
+  const n = Math.max(0, x1 - x0) * Math.max(0, y1 - y0);
+  if (n > GRID_MAX_CELLS) return { error: `Получается ${n} ячеек, максимум ${GRID_MAX_CELLS}. Увеличьте размер ячейки или уменьшите область.` };
+  const r6 = v => +v.toFixed(6), out = [];
+  for (let iy = y0; iy < y1; iy++) for (let ix = x0; ix < x1; ix++) {
+    const w = BBOX.minLng + ix * dLng, s = BBOX.minLat + iy * dLat, e = w + dLng, nn = s + dLat;
+    out.push({ id: `G${size}-${ix}-${iy}`, size_m: size, ix, iy, ring: [[r6(w), r6(s)], [r6(e), r6(s)], [r6(e), r6(nn)], [r6(w), r6(nn)], [r6(w), r6(s)]], source: 'auto' });
+  }
+  return { cells: out };
+}
+/* Область по умолчанию: покрытие данных, а если его нет — участки; с запасом 300 м */
+function defaultGridBox() {
+  const rings = coverage.length ? coverage.map(c => c.ring) : parcels.map(p => p.ring);
+  if (!rings.length) return null;
+  let a = 1e9, b = 1e9, c2 = -1e9, d = -1e9; for (const r of rings) for (const [x, y] of r) { a = Math.min(a, x); b = Math.min(b, y); c2 = Math.max(c2, x); d = Math.max(d, y); }
+  const mx = 300 / kx(GRID_REF_LAT), my = 300 / KY; return { minLng: a - mx, minLat: b - my, maxLng: c2 + mx, maxLat: d + my };
+}
+function cellLights(obj) {
+  const key = 'grid-' + obj, c = lightCache[key]; if (c && c.ver === db.version()) return c.val;
+  const freeP = parcels.filter(p => p.status !== 'occupied').map(p => centroid(p.ring));
+  const val = gridCells.map(cell => {
+    const w = cell.ring[0][0], s = cell.ring[0][1], e = cell.ring[2][0], n = cell.ring[2][1];
+    const pp = passport((w + e) / 2, (s + n) / 2, obj, null, cell.ring);
+    const used = pp.blocks.filter(b => GRID_BLOCKS.includes(b.key)), lv = used.map(b => b.level);
+    const light = lv.includes('red') ? 'red' : lv.includes('gray') ? 'gray' : lv.includes('yellow') ? 'yellow' : 'green';
+    return { cell, light, issues: used.filter(b => b.level !== 'green'), free_parcels: freeP.filter(([x, y]) => x >= w && x < e && y >= s && y < n).length };
+  });
+  lightCache[key] = { ver: db.version(), val }; return val;
+}
+function gridPublic(obj) {   // публично: цвет и названия проблемных блоков, без цифр по сетям и скважинам
+  const lights = cellLights(obj), count = { green: 0, yellow: 0, red: 0, gray: 0 }; lights.forEach(x => count[x.light]++);
+  return { obj, size_m: gridCells.length ? gridCells[0].size_m : null, count,
+    cells: { type: 'FeatureCollection', features: lights.map(({ cell, light, issues, free_parcels }) => ({ type: 'Feature',
+      properties: { id: cell.id, light, free_parcels, issues: issues.map(b => `${b.title}: ${b.level === 'red' ? 'препятствие' : b.level === 'gray' ? 'нет данных' : 'с условиями'}`).join('; ') }, geometry: { type: 'Polygon', coordinates: [cell.ring] } })) } };
+}
+
 /* --- демо-слои (синтетика вокруг центра, не реальные данные) --- */
 function seedLayers() {
   let s = 4242; const rnd = () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
@@ -631,6 +676,7 @@ function seedLayers() {
 }
 let parcels = load(PARCELS_FILE, null), constraints = load(CONS_FILE, null), utilities = load(UTIL_FILE, null), coverage = load(COV_FILE, null);
 if (!parcels || !constraints || !utilities) { const d = seedLayers(); parcels = d.ps; constraints = d.cs; utilities = d.us; coverage = d.cv; save(PARCELS_FILE, parcels); save(CONS_FILE, constraints); save(UTIL_FILE, utilities); save(COV_FILE, coverage); }
+let gridCells = load(GRID_FILE, []);
 if (!coverage) { coverage = []; save(COV_FILE, coverage); }   // слои есть, а покрытие не задано → блоки серые, пока администратор его не загрузит
 
 /* --- импорт GeoJSON (из QGIS, WGS84); всё или ничего --- */
@@ -705,6 +751,7 @@ async function api(req, res, url) {
   if (m === 'GET' && p === '/api/config') return send(res, 200, { price: PRICE, depth: DEPTH, maxSellDistance: MAX_SELL_DISTANCE, payment: PAYMENT_MODE });
   if (m === 'GET' && p === '/api/boreholes') { if (rl('layers')) return tooMany(); return send(res, 200, boreholes.filter(b => b.verified).map(b => ({ id: b.id, lng: b.lng, lat: b.lat }))); }
   if (m === 'GET' && p === '/api/layers') { if (rl('layers')) return tooMany(); return send(res, 200, layersPublic(q.get('obj') === 'multi' ? 'multi' : 'izhs')); }   // сети публично не отдаём
+  if (m === 'GET' && p === '/api/grid') { if (rl('layers')) return tooMany(); return send(res, 200, gridPublic(q.get('obj') === 'multi' ? 'multi' : 'izhs')); }
   if (m === 'GET' && p === '/api/point') {
     if (rl('point')) return tooMany();
     const lng = +q.get('lng'), lat = +q.get('lat'); if (!Number.isFinite(lng) || !Number.isFinite(lat)) return send(res, 400, { error: 'lng/lat' });
@@ -829,7 +876,7 @@ async function api(req, res, url) {
     if (m === 'GET' && p === '/api/admin/layers') {
       const cnt = a => ({ total: a.length, demo: a.filter(x => x.source === 'demo').length });
       const lights = parcelLights('izhs');
-      return send(res, 200, { parcels: cnt(parcels), constraints: cnt(constraints), utilities: cnt(utilities), coverage: cnt(coverage), parcels_ha: +parcels.reduce((s, x) => s + x.area_ha, 0).toFixed(1),
+      return send(res, 200, { parcels: cnt(parcels), constraints: cnt(constraints), utilities: cnt(utilities), coverage: cnt(coverage), grid: { total: gridCells.length, size_m: gridCells.length ? gridCells[0].size_m : null }, parcels_ha: +parcels.reduce((s, x) => s + x.area_ha, 0).toFixed(1),
         coverage_list: coverage.map(c => ({ id: c.id, layer: c.layer, as_of: c.as_of, source: c.source })),
         geo: { parcels: { type: 'FeatureCollection', features: lights.map(({ p, pp }) => ({ type: 'Feature', properties: { id: p.id, light: pp.overall, status: p.status }, geometry: { type: 'Polygon', coordinates: [p.ring] } })) },
           constraints: { type: 'FeatureCollection', features: constraints.map(z => ({ type: 'Feature', properties: { id: z.id, kind: z.kind, name: z.name }, geometry: { type: 'Polygon', coordinates: [z.ring] } })) },
@@ -845,6 +892,18 @@ async function api(req, res, url) {
       if (o.replace) { arr.length = 0; }
       for (const row of r2.rows) { const i = arr.findIndex(x => x.id === row.id); if (i >= 0) { arr[i] = row; updated++; } else { arr.push(row); added++; } }
       save({ parcels: PARCELS_FILE, constraints: CONS_FILE, utilities: UTIL_FILE, coverage: COV_FILE }[name], arr); return send(res, 200, { added, updated });
+    }
+    if (m === 'POST' && p === '/api/admin/grid') {   // построить (заменить) сетку территории; size_m и необязательный прямоугольник box
+      const o = parseJSON(await body(req)) || {}, size = +o.size_m;
+      if (o.clear) { gridCells = []; save(GRID_FILE, gridCells); return send(res, 200, { total: 0 }); }
+      if (!GRID_SIZES.includes(size)) return send(res, 400, { error: `Размер ячейки: ${GRID_SIZES.join(', ')} м` });
+      let box = o.box; if (box) { box = { minLng: +box.minLng, minLat: +box.minLat, maxLng: +box.maxLng, maxLat: +box.maxLat }; if (!Object.values(box).every(Number.isFinite) || box.minLng >= box.maxLng || box.minLat >= box.maxLat) return send(res, 400, { error: 'Некорректная область' }); }
+      else box = defaultGridBox();
+      if (!box) return send(res, 400, { error: 'Нет области: загрузите участки или покрытие данных, либо укажите прямоугольник' });
+      const g = buildGrid(size, box); if (g.error) return send(res, 400, g);
+      gridCells = g.cells; save(GRID_FILE, gridCells);
+      const lights = cellLights('izhs'), count = { green: 0, yellow: 0, red: 0, gray: 0 }; lights.forEach(x => count[x.light]++);
+      return send(res, 200, { total: gridCells.length, size_m: size, count });
     }
     if (m === 'POST' && p === '/api/admin/delete-demo-layers') {
       parcels = parcels.filter(x => x.source !== 'demo'); constraints = constraints.filter(x => x.source !== 'demo'); utilities = utilities.filter(x => x.source !== 'demo'); coverage = coverage.filter(x => x.source !== 'demo');

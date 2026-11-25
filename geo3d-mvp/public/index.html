@@ -91,7 +91,7 @@ node server.js --demo</pre>
   <div class="row"><span class="lbl">Тип объекта</span>
     <div class="seg" id="segObj"><button data-v="izhs" class="on">ИЖС</button><button data-v="multi">Многоэтажка</button></div></div>
   <div class="row"><span class="lbl">Слои</span>
-    <div class="chk"><label><input type="checkbox" id="ckParcels" checked>Участки</label><label><input type="checkbox" id="ckZones" checked>Зоны</label></div>
+    <div class="chk"><label><input type="checkbox" id="ckParcels" checked>Участки</label><label><input type="checkbox" id="ckZones" checked>Зоны</label><label title="Светофор по районам 250–2000 м, в том числе там, где участков в базе нет"><input type="checkbox" id="ckGrid">Районы</label></div>
     <div class="zl"><i style="background:#b45309"></i>подработка <i style="background:#2563eb"></i>подтопление <i style="background:#dc2626"></i>охранная <i style="background:#e879f9"></i>СЗЗ <i style="background:#78716c"></i>отвалы</div></div>
   <div class="row" id="soilBox">
     <button class="cta sec" id="btnBack" style="margin:0 0 6px">← К карте города</button>
@@ -175,6 +175,9 @@ map.on('load', async ()=>{
   map.addSource('constraints',{type:'geojson',data:emptyFC});
   map.addLayer({id:'cons-fill',type:'fill',source:'constraints',paint:{'fill-color':['match',['get','kind'],'undermined','#b45309','flood','#2563eb','slag','#78716c','contamination','#a21caf','protection','#dc2626','sanitary','#e879f9','#999999'],'fill-opacity':.3}},'bh-dot');
   map.addLayer({id:'cons-line',type:'line',source:'constraints',paint:{'line-color':['match',['get','kind'],'undermined','#b45309','flood','#2563eb','slag','#78716c','contamination','#a21caf','protection','#dc2626','sanitary','#e879f9','#999999'],'line-width':1.5,'line-dasharray':[3,2]}},'bh-dot');
+  map.addSource('grid',{type:'geojson',data:emptyFC});   // сетка территории: светофор районов (по умолчанию скрыта)
+  map.addLayer({id:'grid-fill',type:'fill',source:'grid',layout:{visibility:'none'},paint:{'fill-color':LCm,'fill-opacity':.28}},'cons-fill');
+  map.addLayer({id:'grid-line',type:'line',source:'grid',layout:{visibility:'none'},paint:{'line-color':LCm,'line-width':.8,'line-opacity':.8}},'cons-fill');
   map.addSource('parcels',{type:'geojson',data:emptyFC});
   map.addLayer({id:'parcels-fill',type:'fill',source:'parcels',paint:{'fill-color':LCm,'fill-opacity':['case',['==',['get','status'],'occupied'],.1,.3]}},'bh-dot');
   map.addLayer({id:'parcels-line',type:'line',source:'parcels',paint:{'line-color':LCm,'line-width':1.6}},'bh-dot');
@@ -215,7 +218,7 @@ const info = document.getElementById('info');
 /* ---------- клик по карте: бесплатная часть ---------- */
 let marker=null, current=null, view='surface';
 let OBJ='izhs', LD=null, MIN_HA=0;
-const LC={green:'#5fd18a',yellow:'#f2b84b',red:'#ef7a6a',gray:'#7b8794'}, LT={green:'Можно строить',yellow:'С условиями',red:'Есть препятствия'};
+const LC={green:'#5fd18a',yellow:'#f2b84b',red:'#ef7a6a',gray:'#7b8794'}, LT={green:'Можно строить',yellow:'С условиями',red:'Есть препятствия',gray:'Нет данных'};
 const lightPill = l=>`<span class="pill" style="background:${LC[l]}26;color:${LC[l]}">${LT[l]}</span>`;
 function setInfo(html){ info.innerHTML=html; const h=document.getElementById('home'); if(h) h.onclick=goHome; }
 function highlight(id){ if(map.getLayer('parcels-sel')) map.setFilter('parcels-sel',['==',['get','id'],id||'']); }
@@ -251,6 +254,10 @@ map.on('click', e=>{
     const f=map.queryRenderedFeatures(e.point,{layers:['block']});
     if(f.length&&viewer){ highlightBlockLayer(viewer.selectLayer(+f[0].properties.l)); }
     return;
+  }
+  if(document.getElementById('ckGrid').checked){   // подсказка по району: цвет и что мешает
+    const g=map.queryRenderedFeatures(e.point,{layers:['grid-fill']})[0];
+    if(g){ const p=g.properties; new maplibregl.Popup({closeButton:false,maxWidth:'260px'}).setLngLat(e.lngLat).setHTML(`<div style="color:#111;font:13px/1.45 system-ui"><b>Район ${esc(p.id)}</b> ${lightPill(p.light)}<br>${p.issues?esc(p.issues):'Препятствий по сетям, грунтам и зонам не найдено'}<br><span style="color:#666">Свободных участков в базе: ${p.free_parcels}</span></div>`).addTo(map); }
   }
   selectPoint(e.lngLat.lng,e.lngLat.lat);
 });
@@ -300,11 +307,18 @@ function renderFree(){
 /* тип объекта и видимость слоёв */
 document.querySelectorAll('#segObj button').forEach(b=>b.onclick=async()=>{
   OBJ=b.dataset.v; document.querySelectorAll('#segObj button').forEach(x=>x.classList.toggle('on',x===b));
-  await loadLayers(); if(current&&!report) selectPoint(current.lng,current.lat);
+  await loadLayers(); if(GRID&&document.getElementById('ckGrid').checked) await loadGrid(); if(current&&!report) selectPoint(current.lng,current.lat);
 });
 const vset=(ids,on)=>ids.forEach(id=>map.getLayer(id)&&map.setLayoutProperty(id,'visibility',on?'visible':'none'));
 document.getElementById('ckParcels').onchange=e=>vset(['parcels-fill','parcels-line','parcels-sel'],e.target.checked);
 document.getElementById('ckZones').onchange=e=>vset(['cons-fill','cons-line'],e.target.checked);
+/* сетка районов: грузится при первом включении и при смене типа объекта */
+let GRID=null;
+async function loadGrid(){ GRID=await jget('/api/grid?obj='+OBJ); map.getSource('grid').setData(GRID.cells); }
+document.getElementById('ckGrid').onchange=async e=>{
+  if(e.target.checked){ try{ await loadGrid(); }catch(err){ toast('Не удалось загрузить районы: '+err.message); e.target.checked=false; return; } if(!GRID.cells.features.length){ toast('Сетка районов ещё не построена (админка → Слои участков).'); e.target.checked=false; return; } }
+  vset(['grid-fill','grid-line'],e.target.checked);
+};
 
 /* ---------- заявка на изыскания ---------- */
 function openLead(){

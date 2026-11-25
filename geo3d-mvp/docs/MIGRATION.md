@@ -7,6 +7,7 @@
 |---|---|
 | `001_boreholes.sql` | `boreholes` (точка `geometry(Point,4326)`, GiST-индекс), `borehole_layers` (слои сверху вниз, каскадное удаление) |
 | `002_map_layers.sql` | `parcels` (Polygon), `constraints` (Polygon), `utilities` (LineString), `coverage` (Polygon) — все с GiST-индексом |
+| `004_grid_cells.sql` | `grid_cells` (Polygon, GiST, уникальность `size_m+ix+iy`) |
 | `003_business.sql` | `orders` (токен только как sha256), `leads`, `events` (jsonb payload), `soil_dictionary`, `audit_log` |
 
 ## Как поля JSON легли в таблицы

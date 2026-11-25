@@ -17,6 +17,7 @@ const FILES = {
   utilities: 'utilities.json',
   coverage: 'coverage.json',
   soilDict: 'soil-dictionary.json',
+  gridCells: 'grid-cells.json',
 };
 const EVENTS_FILE = 'events.jsonl';
 const fileOf = name => { if (!FILES[name]) throw new Error('Неизвестная коллекция: ' + name); return path.join(DATA, FILES[name]); };

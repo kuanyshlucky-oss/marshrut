@@ -91,6 +91,10 @@
   <div id="t_ly" style="display:none">
     <div class="kpis" id="lyKpis"></div>
     <div class="card"><div class="bar" style="justify-content:space-between;margin-bottom:8px"><h2 style="margin:0">Слои на карте</h2><button class="sec" id="rmDemoLy">Удалить демо-слои</button></div>
+      <div id="lyKpis2" class="hint" style="margin:0 0 8px"></div>
+      <div class="bar" style="gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap"><span class="hint">Сетка районов:</span>
+        <select id="gridSize"><option value="250">250 м</option><option value="500" selected>500 м</option><option value="1000">1000 м</option><option value="2000">2000 м</option></select>
+        <button id="gridBuild">Построить сетку</button><button class="sec" id="gridClear">Убрать сетку</button><span class="hint" id="gridMsg"></span></div>
       <div id="lmap" style="height:380px;border-radius:10px;overflow:hidden"></div>
       <div class="legend"><span><i style="background:#5fd18a"></i>можно строить</span><span><i style="background:#f2b84b"></i>с условиями</span><span><i style="background:#ef7a6a"></i>препятствия</span><span><i style="background:#dc2626"></i>зоны</span><span><i style="background:#5ab4ff"></i>сети</span><span><i style="background:#a3e635"></i>пунктир — покрытие данных</span></div></div>
     <div class="card"><h2>Как загрузить слои из QGIS</h2>
@@ -222,10 +226,15 @@ $('lyForms').onclick=async e=>{
     catch(err){ msg.className='msg err'; msg.textContent=err instanceof SyntaxError?'Это не JSON — проверьте файл':err.message; } }
 };
 $('lyForms').onchange=e=>{ const f=e.target.closest('[data-file]'); if(f&&f.files[0]) f.files[0].text().then(t=>document.querySelector(`[data-ta=${f.dataset.file}]`).value=t); };
+$('gridBuild').onclick=async()=>{ const msg=$('gridMsg'); msg.textContent='Строим…';
+  try{ const r=await jpost('/api/admin/grid',{size_m:+$('gridSize').value},H()); msg.textContent=`Готово: ${r.total} ячеек — зелёных ${r.count.green}, жёлтых ${r.count.yellow}, красных ${r.count.red}, серых ${r.count.gray}. Область: покрытие данных (или участки) + 300 м. Включите «Районы» на карте.`; loadLy(); }
+  catch(err){ msg.textContent=err.message; } };
+$('gridClear').onclick=async()=>{ if(!confirm('Убрать сетку районов?')) return; await jpost('/api/admin/grid',{clear:true},H()); $('gridMsg').textContent='Сетка убрана'; loadLy(); };
 $('rmDemoLy').onclick=async()=>{ if(!confirm('Удалить демо-участки, демо-зоны и демо-сети? Загруженные вами слои останутся.')) return; await jpost('/api/admin/delete-demo-layers',{},H()); loadLy(); };
 async function loadLy(){
   buildLyForms();
   const d=await aget('/api/admin/layers');
+  $('lyKpis2').textContent=d.grid&&d.grid.total?`Сетка районов: ${d.grid.total} ячеек по ${d.grid.size_m} м`:'Сетка районов не построена';
   $('lyKpis').innerHTML=[['Участков',d.parcels.total,`${d.parcels_ha} га, демо: ${d.parcels.demo}`],['Зон ограничений',d.constraints.total,`демо: ${d.constraints.demo}`],['Линий сетей',d.utilities.total,`демо: ${d.utilities.demo}`],['Зон покрытия',d.coverage.total,d.coverage.total?d.coverage_list.map(c=>esc(c.layer)+(c.as_of?' '+esc(c.as_of):'')).join(', '):'не задано — блоки серые']].map(([l,v,s])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join('');
   const kc=['match',['get','kind'],'undermined','#b45309','flood','#2563eb','slag','#78716c','contamination','#a21caf','protection','#dc2626','sanitary','#e879f9','#999'];
   const put=()=>{ for(const k of ['parcels','constraints','utilities','coverage']) lmap.getSource(k).setData(d.geo[k]); };
