@@ -20,15 +20,12 @@ if (PAYMENT_MODE === 'live' && (ADMIN_PASSWORD === 'admin' || !WEBHOOK_SECRET ||
 }
 const PRICE = 15000;                                            // ₸ за отчёт по участку
 const MAX_SELL_DISTANCE = 600;                                  // м до ближайшей скважины, дальше отчёт не продаём
-const DATA = path.join(__dirname, 'data');
 const PUBLIC = path.join(__dirname, 'public');
-const BH_FILE = path.join(DATA, 'boreholes.json');
-const ORD_FILE = path.join(DATA, 'orders.json');
 
-/* ---------- хранилище (JSON-файлы; для роста заменить на PostgreSQL/PostGIS) ---------- */
-function load(file, fallback) { try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return fallback; } }
-let dataVersion = 0;   // растёт при любом сохранении данных, сбрасывает кэш паспортов
-function save(file, obj) { fs.mkdirSync(DATA, { recursive: true }); const t = file + '.tmp'; fs.writeFileSync(t, JSON.stringify(obj, null, 1)); fs.renameSync(t, file); dataVersion++; }
+/* ---------- хранилище: всё через db.js (сейчас JSON-файлы; для роста заменить реализацию на PostgreSQL/PostGIS) ---------- */
+const db = require('./db');
+const { load, save } = db;
+const BH_FILE = 'boreholes', ORD_FILE = 'orders';   // имена коллекций в db.js
 
 /* ---------- геометрия ---------- */
 const C = { lat: 49.806, lng: 73.085 };
@@ -65,7 +62,7 @@ function seedDemo() {
    ===================================================================== */
 const clean = (s, max) => String(s ?? '').replace(/[<>\u0000-\u001f]/g, '').trim().slice(0, max);   // убираем < > и управляющие символы из всего, что пришло снаружи
 const SOIL_CLASSES = ['Почвенно-растительный слой', 'Суглинок', 'Глина', 'Песок с гравием', 'Скальный грунт'];   // классы упрощённой модели (по порядку залегания)
-const SOIL_FILE = path.join(DATA, 'soil-dictionary.json');
+const SOIL_FILE = 'soilDict';
 const DEFAULT_SOIL_DICT = [   // сопоставление по ПЕРВОМУ слову названия (основной грунт по ГОСТ 25100); при совпадении побеждает самое длинное начало
   { p: 'почв', cls: 0 }, { p: 'растительн', cls: 0 }, { p: 'чернозем', cls: 0 }, { p: 'насыпн', cls: 0 }, { p: 'техноген', cls: 0 },
   { p: 'суглин', cls: 1 }, { p: 'супес', cls: 1 }, { p: 'лесс', cls: 1 },
@@ -243,15 +240,13 @@ let orders = load(ORD_FILE, []);
 orders.forEach(o => { if (!o.token) o.token = o.id; });   // старые заказы: токен = id
 
 /* ---------- события, заявки, аналитика ---------- */
-const EV_FILE = path.join(DATA, 'events.jsonl');
-const LEAD_FILE = path.join(DATA, 'leads.json');
+const LEAD_FILE = 'leads';
 let leads = load(LEAD_FILE, []);
-let events = [];
-try { events = fs.readFileSync(EV_FILE, 'utf8').split('\n').filter(Boolean).map(l => JSON.parse(l)); } catch { /* файла ещё нет */ }
-{ const keep = events.filter(e => e.t > Date.now() - 180 * 864e5); if (keep.length < events.length) { events = keep; fs.writeFileSync(EV_FILE, events.map(e => JSON.stringify(e)).join('\n') + (events.length ? '\n' : '')); } }   // храним события 180 дней
+let events = db.events.readAll();
+{ const keep = events.filter(e => e.t > Date.now() - 180 * 864e5); if (keep.length < events.length) { events = keep; db.events.replaceAll(events); } }   // храним события 180 дней
 function track(type, sid, extra) {
   const e = { t: Date.now(), type, sid: String(sid || 'anon').replace(/[^\w\-]/g, '').slice(0, 40), ...extra };
-  events.push(e); fs.mkdirSync(DATA, { recursive: true }); fs.appendFileSync(EV_FILE, JSON.stringify(e) + '\n');
+  events.push(e); db.events.append(e);
 }
 const CLIENT_EVENTS = new Set(['visit', 'buy_click', 'survey_click', 'block_view', 'section_view', 'print', 'view3d', 'view2d']);
 const dayKey = t => new Date(t + 5 * 36e5).toISOString().slice(0, 10);   // сутки по времени Казахстана (UTC+5)
@@ -323,12 +318,12 @@ function seedAnalytics() {
       n++;
     }
   }
-  events.sort((a, b) => a.t - b.t); fs.writeFileSync(EV_FILE, events.map(e => JSON.stringify(e)).join('\n') + '\n'); save(ORD_FILE, orders); save(LEAD_FILE, leads);
+  events.sort((a, b) => a.t - b.t); db.events.replaceAll(events); save(ORD_FILE, orders); save(LEAD_FILE, leads);
   return n;
 }
 function deleteDemoAnalytics() {
   events = events.filter(e => !e.demo); orders = orders.filter(o => !o.demo); leads = leads.filter(l => !l.demo);
-  fs.writeFileSync(EV_FILE, events.map(e => JSON.stringify(e)).join('\n') + (events.length ? '\n' : '')); save(ORD_FILE, orders); save(LEAD_FILE, leads);
+  db.events.replaceAll(events); save(ORD_FILE, orders); save(LEAD_FILE, leads);
 }
 
 /* ---------- интерполяция (IDW по 6 ближайшим проверенным скважинам) ---------- */
@@ -448,7 +443,7 @@ function upsertBoreholes(rows) {   // новая версия скважины �
    Слои: участки, ограничения, сети + ПАСПОРТ УЧАСТКА (светофор по 8 блокам)
    Правила и пороги ориентировочные — согласовать с геотехником и проектировщиком.
    ===================================================================== */
-const PARCELS_FILE = path.join(DATA, 'parcels.json'), CONS_FILE = path.join(DATA, 'constraints.json'), UTIL_FILE = path.join(DATA, 'utilities.json'), COV_FILE = path.join(DATA, 'coverage.json');
+const PARCELS_FILE = 'parcels', CONS_FILE = 'constraints', UTIL_FILE = 'utilities', COV_FILE = 'coverage';
 const COV_LAYERS = ['hazards', 'protection', 'utilities'];   // слои, для которых нужно подтвердить полноту данных
 const CONS_KINDS = ['protection', 'sanitary', 'undermined', 'flood', 'slag', 'contamination'];
 const UTIL_KINDS = ['water', 'sewer', 'power', 'gas', 'heat'];
@@ -579,9 +574,9 @@ function passport(lng, lat, obj, parcelIn) {
 /* --- кэш светофоров участков для карты --- */
 const lightCache = {};
 function parcelLights(obj) {
-  const c = lightCache[obj]; if (c && c.ver === dataVersion) return c.val;
+  const c = lightCache[obj]; if (c && c.ver === db.version()) return c.val;
   const val = parcels.map(p => { const cen = centroid(p.ring), pp = passport(cen[0], cen[1], obj, p); return { p, cen, pp }; });
-  lightCache[obj] = { ver: dataVersion, val }; return val;
+  lightCache[obj] = { ver: db.version(), val }; return val;
 }
 function layersPublic(obj) {
   const lights = parcelLights(obj), free = lights.filter(x => x.p.status !== 'occupied');
