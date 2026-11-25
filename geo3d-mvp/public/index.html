@@ -112,6 +112,7 @@ node server.js --demo</pre>
 
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="/common.js"></script>
+<script src="/soil3d.js"></script>
 <script>
 const C = {lat:49.806, lng:73.085}, KV = 3;
 const kx = lat => 111320*Math.cos(lat*Math.PI/180), KY = 110574;
@@ -202,7 +203,7 @@ const LC={green:'#5fd18a',yellow:'#f2b84b',red:'#ef7a6a',gray:'#7b8794'}, LT={gr
 const lightPill = l=>`<span class="pill" style="background:${LC[l]}26;color:${LC[l]}">${LT[l]}</span>`;
 function setInfo(html){ info.innerHTML=html; const h=document.getElementById('home'); if(h) h.onclick=goHome; }
 function highlight(id){ if(map.getLayer('parcels-sel')) map.setFilter('parcels-sel',['==',['get','id'],id||'']); }
-function goHome(){ current=null; report=null; highlight(null); if(marker){marker.remove();marker=null;} document.getElementById('section').style.display='none'; map.getSource('secline').setData(emptyFC); renderHome(); }
+function goHome(){ current=null; report=null; viewer=null; highlightBlockLayer(null); highlight(null); if(marker){marker.remove();marker=null;} document.getElementById('section').style.display='none'; map.getSource('secline').setData(emptyFC); renderHome(); }
 
 async function loadLayers(){
   LD = await jget('/api/layers?obj='+OBJ);
@@ -229,14 +230,21 @@ function drawPlist(){
   el.onclick=e=>{ const it=e.target.closest('.it'); if(!it) return; const lng=+it.dataset.lng, lat=+it.dataset.lat; map.flyTo({center:[lng,lat],zoom:16.2,duration:1200}); selectPoint(lng,lat); };
 }
 
-map.on('click', e=>{ if(view==='soil') return; selectPoint(e.lngLat.lng,e.lngLat.lat); });
+map.on('click', e=>{
+  if(view==='soil'){   // в 3D-блоке грунта клик по слою выбирает его и в панели
+    const f=map.queryRenderedFeatures(e.point,{layers:['block']});
+    if(f.length&&viewer){ highlightBlockLayer(viewer.selectLayer(+f[0].properties.l)); }
+    return;
+  }
+  selectPoint(e.lngLat.lng,e.lngLat.lat);
+});
 async function selectPoint(lng,lat){
   if(marker) marker.remove();
   marker = new maplibregl.Marker({color:'#f2b84b'}).setLngLat([lng,lat]).addTo(map);
   setInfo('<h2>Участок</h2><div class="hint">Загрузка…</div>');
   try{
     const d = await jget(`/api/point?lng=${lng}&lat=${lat}&obj=${OBJ}`);
-    current = {lng,lat,d}; report=null; document.getElementById('section').style.display='none'; map.getSource('secline').setData(emptyFC);
+    current = {lng,lat,d}; report=null; viewer=null; highlightBlockLayer(null); document.getElementById('section').style.display='none'; map.getSource('secline').setData(emptyFC);
     highlight(d.parcel?d.parcel.id:null); renderFree();
   }catch(err){ setInfo(`<button class="link" id="home">← Свободные участки</button><h2>Ошибка</h2><div class="hint">${err.message}</div>`); }
 }
@@ -345,7 +353,13 @@ async function returnFromPayment(){
 }
 
 /* ---------- платная часть ---------- */
-let report=null, token=null;
+let report=null, token=null, viewer=null;
+/* связь 3D-разреза в панели и 3D-блока на карте: выбранный слой подсвечивается, остальные приглушаются */
+function mixHex(a,b,t){ const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)); const A=p(a),B=p(b); return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*t).toString(16).padStart(2,'0')).join(''); }
+function highlightBlockLayer(li){
+  if(!map.getLayer('block')) return;
+  map.setPaintProperty('block','fill-extrusion-color', li==null ? ['get','color'] : ['case',['==',['get','l'],li],['get','color'],['get','dim']]);
+}
 async function loadReport(t){
   token=t; report = await jget('/api/report/'+t);
   if(!current){   // вернулись со страницы оплаты: восстанавливаем участок из отчёта
@@ -358,14 +372,14 @@ async function loadReport(t){
   current.d.light=report.passport.overall; current.d.parcel=report.passport.parcel;
   setInfo(head()+passportHTML(report.passport)+`
     <div class="kv" style="margin-top:10px"><span>Уровень грунтовых вод</span><b>${f1(report.gw)} м</b></div>
-    <div class="col">${columnSVG(report.b,report.gw)}
-      <div style="flex:1"><div class="lbl" style="margin-bottom:4px">Слои по глубине</div><table>${layersTable(report.b)}</table></div></div>
+    <div class="lbl" style="margin:12px 0 6px">Слои по глубине · 3D</div><div id="lv"></div>
     <button class="cta" id="b3d">Показать 3D-блок грунта</button>
     <button class="cta sec" id="bsec">Геологический разрез (запад–восток)</button>
     <a class="cta sec" href="/report.html?t=${t}" target="_blank">Отчёт для печати / PDF</a>
     <div class="note">Ссылка на отчёт сохранится у вас: /report.html?t=${t}</div>`);
   document.getElementById('b3d').onclick = ()=>showBlock();
   document.getElementById('bsec').onclick = ()=>showSection();
+  highlightBlockLayer(null); viewer=buildSoilViewer(document.getElementById('lv'),report,{onSelect:highlightBlockLayer});
   toast(cfg.payment==='free'?'Отчёт открыт. Сейчас пробный период: бесплатно.':'Оплачено (демо). Отчёт открыт.');
 }
 function showSection(){
@@ -382,7 +396,7 @@ function showBlock(){
   for(const c of cells){
     const poly=[[ll(c.i-.5,c.j-.5),ll(c.i+.5,c.j-.5),ll(c.i+.5,c.j+.5),ll(c.i-.5,c.j+.5),ll(c.i-.5,c.j-.5)]];
     const bounds=[0,...c.b,DEPTH];
-    for(let l=0;l<5;l++) feats.push({type:'Feature',properties:{row:c.j,color:LAYERS[l].color,base:(DEPTH-bounds[l+1])*KV,height:(bounds[l+1]-bounds[l])*KV},geometry:{type:'Polygon',coordinates:poly}});
+    for(let l=0;l<5;l++) feats.push({type:'Feature',properties:{row:c.j,l:l,color:LAYERS[l].color,dim:mixHex(LAYERS[l].color,'#1b2128',.74),base:(DEPTH-bounds[l+1])*KV,height:(bounds[l+1]-bounds[l])*KV},geometry:{type:'Polygon',coordinates:poly}});
   }
   map.getSource('block').setData({type:'FeatureCollection',features:feats});
   setView('soil');
